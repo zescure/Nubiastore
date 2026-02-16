@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NUBIA CAPITAL</title>
+<title>Nubia Capital</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
@@ -11,291 +11,272 @@
 
 *{margin:0;padding:0;box-sizing:border-box}
 body{
-font-family:Inter,system-ui;
-background:linear-gradient(180deg,#050816,#02030a 60%);
+font-family:Inter;
+background:linear-gradient(180deg,#040614,#01030a 60%);
 color:white;
 overflow-x:hidden;
 }
 
-/* ===== GLOBAL ===== */
-
 section{
 padding:90px 22px;
-max-width:1100px;
+max-width:1150px;
 margin:auto;
-position:relative;
 }
 
-h1,h2{letter-spacing:.5px}
+h2{margin-bottom:20px}
 
 .glass{
-background:rgba(255,255,255,.04);
+background:rgba(255,255,255,.05);
 border:1px solid rgba(0,255,255,.15);
 backdrop-filter:blur(18px);
 border-radius:22px;
-box-shadow:0 0 40px rgba(0,255,255,.05) inset;
 }
 
-.btn{
-display:inline-block;
-padding:14px 26px;
-border-radius:16px;
-background:linear-gradient(90deg,#00eaff,#6a7bff);
-color:black;
-font-weight:700;
-margin-top:16px;
-transition:.35s;
-text-decoration:none;
-}
-.btn:hover{
-transform:translateY(-3px) scale(1.03);
-box-shadow:0 0 40px #00eaff;
-}
+/* ===== FLIP CARDS ===== */
 
-/* ===== HERO ===== */
-
-.hero{
-text-align:center;
-padding-top:120px;
-}
-
-.hero h1{
-font-size:40px;
-font-weight:800;
-background:linear-gradient(90deg,#fff,#7df9ff);
--webkit-background-clip:text;
-color:transparent;
-}
-
-.tag{opacity:.7;margin-top:14px}
-
-/* hologram orb */
-
-.orb{
-width:180px;height:180px;
-border-radius:50%;
-margin:50px auto;
-background:
-radial-gradient(circle at 30% 30%,#00f0ff,#020c2a 60%);
-box-shadow:
-0 0 80px #00eaff,
-inset 0 0 60px #00eaff55;
-
-animation:spin 9s linear infinite;
-}
-
-@keyframes spin{
-from{transform:rotate(0)}
-to{transform:rotate(360deg)}
-}
-
-/* ===== CARDS ===== */
-
-.grid{
+.portfolio{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:26px;
+}
+
+.flip{
+perspective:1000px;
+height:220px;
+cursor:pointer;
+}
+
+.flip-inner{
+position:relative;
+width:100%;
+height:100%;
+transition:transform .7s;
+transform-style:preserve-3d;
+}
+
+.flip.active .flip-inner{
+transform:rotateY(180deg);
+}
+
+.face{
+position:absolute;
+width:100%;
+height:100%;
+backface-visibility:hidden;
+border-radius:20px;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+}
+
+.front{
+background:rgba(255,255,255,.06);
+border:1px solid #00eaff33;
+}
+
+.logo{
+width:70px;height:70px;
+border-radius:18px;
+background:linear-gradient(145deg,#00eaff,#5d6cff);
+margin-bottom:15px;
+}
+
+.back{
+background:rgba(0,10,30,.95);
+border:1px solid #00eaff;
+transform:rotateY(180deg);
+font-size:13px;
+line-height:1.4;
+}
+
+/* ===== PARTNER AUTO SCROLL ===== */
+
+.partner-wrap{
+overflow:hidden;
+margin-top:40px;
+}
+
+.partner-track{
+display:flex;
+gap:40px;
+width:max-content;
+animation:move 22s linear infinite;
+}
+
+@keyframes move{
+from{transform:translateX(0)}
+to{transform:translateX(-50%)}
+}
+
+.partner{
+width:95px;height:95px;
+border-radius:22px;
+background:linear-gradient(140deg,#00eaff33,#6a7bff22);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+opacity:.7;
+}
+
+/* ===== THESIS ===== */
+
+.thesis{
+display:grid;
 gap:18px;
 margin-top:30px;
 }
 
-.card{
+.block{
 padding:26px;
-text-align:center;
-transition:.4s;
-cursor:pointer;
 }
 
-.card:hover{
-transform:translateY(-8px) scale(1.03);
-box-shadow:0 0 50px #00f0ff33;
-border:1px solid #00f0ff;
-}
+/* ===== BUTTON ===== */
 
-/* ===== PARTNERS ===== */
-
-.partner-strip{
-display:flex;
-gap:40px;
-overflow:auto;
-padding:20px;
-margin-top:30px;
-}
-
-.partner{
-opacity:.5;
+.btn{
+display:inline-block;
+padding:14px 24px;
+background:linear-gradient(90deg,#00eaff,#6a7bff);
+border-radius:16px;
 font-weight:700;
-white-space:nowrap;
-transition:.3s;
-}
-.partner:hover{
-opacity:1;
-color:#00eaff;
-transform:scale(1.15);
-}
-
-/* ===== CHART ===== */
-
-.chart{
-height:220px;
-margin-top:30px;
-position:relative;
-}
-
-.bar{
-position:absolute;
-bottom:0;
-width:14%;
-background:linear-gradient(180deg,#00eaff,#6a7bff);
-border-radius:12px 12px 0 0;
-animation:grow 1.6s forwards;
-}
-
-@keyframes grow{
-from{height:0}
-}
-
-/* ===== SCROLL REVEAL ===== */
-
-.reveal{
-opacity:0;
-transform:translateY(40px);
-transition:1s;
-}
-.reveal.show{
-opacity:1;
-transform:none;
-}
-
-/* ===== FOOTER ===== */
-
-footer{
-text-align:center;
-padding:70px 20px;
-opacity:.5;
-}
-
-/* MOBILE */
-
-@media(max-width:600px){
-.hero h1{font-size:30px}
+color:black;
+text-decoration:none;
+margin-top:18px;
 }
 
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-
-<section class="hero reveal">
-<h1>NUBIA CAPITAL</h1>
-<div class="tag">Investing in Future Technology & Digital Infrastructure</div>
-<div class="orb"></div>
-<a class="btn">Explore Portfolio</a>
-</section>
-
-<!-- ABOUT -->
-
-<section class="reveal glass">
-<h2>Company Mission</h2>
-<p style="margin-top:16px;opacity:.7">
-Building scalable investments in AI platforms, digital finance, and next-generation infrastructure.
-</p>
-
-<div class="grid">
-
-<div class="card glass">
-<h2>32</h2>
-Portfolio
-</div>
-
-<div class="card glass">
-<h2>$180M</h2>
-Assets
-</div>
-
-<div class="card glass">
-<h2>11</h2>
-Countries
-</div>
-
-</div>
-</section>
-
 <!-- PORTFOLIO -->
 
-<section class="reveal">
+<section>
 <h2>Investment Portfolio</h2>
 
-<div class="grid">
+<div class="portfolio">
 
-<div class="card glass">QuantumPay</div>
-<div class="card glass">NovaChain</div>
-<div class="card glass">Orbital AI</div>
-<div class="card glass">Helix Systems</div>
-<div class="card glass">Nebula Cloud</div>
-<div class="card glass">FutureGrid</div>
+<!-- CARD -->
+<div class="flip" onclick="this.classList.toggle('active')">
+<div class="flip-inner">
 
+<div class="face front">
+<div class="logo"></div>
+QuantumPay
 </div>
 
+<div class="face back">
+<b>Industry:</b> Fintech<br>
+<b>Founded:</b> 2021<br>
+<b>Value:</b> $42M<br>
+<b>Status:</b> Operating<br><br>
+Payment infrastructure for global digital wallets.
+</div>
+
+</div>
+</div>
+
+
+<div class="flip" onclick="this.classList.toggle('active')">
+<div class="flip-inner">
+
+<div class="face front">
+<div class="logo"></div>
+Orbital AI
+</div>
+
+<div class="face back">
+<b>Industry:</b> Artificial Intelligence<br>
+<b>Founded:</b> 2019<br>
+<b>Value:</b> $88M<br>
+<b>Status:</b> Scaling<br><br>
+Predictive AI models for industrial automation.
+</div>
+
+</div>
+</div>
+
+
+<div class="flip" onclick="this.classList.toggle('active')">
+<div class="flip-inner">
+
+<div class="face front">
+<div class="logo"></div>
+NovaChain
+</div>
+
+<div class="face back">
+<b>Industry:</b> Blockchain Infra<br>
+<b>Founded:</b> 2020<br>
+<b>Value:</b> $55M<br>
+<b>Status:</b> Active<br><br>
+Enterprise-grade distributed ledger network.
+</div>
+
+</div>
+</div>
+
+</div>
 </section>
 
 <!-- PARTNERS -->
 
-<section class="reveal">
+<section>
 <h2>Strategic Partners</h2>
 
-<div class="partner-strip glass">
-<div class="partner">GLOBAL FINTECH</div>
-<div class="partner">ASTRAL DATA</div>
-<div class="partner">SYNAPSE GROUP</div>
-<div class="partner">VECTOR HOLDINGS</div>
-<div class="partner">NEXUS LAB</div>
+<div class="partner-wrap glass">
+
+<div class="partner-track">
+
+<div class="partner">A</div>
+<div class="partner">B</div>
+<div class="partner">C</div>
+<div class="partner">D</div>
+<div class="partner">E</div>
+<div class="partner">F</div>
+
+<!-- duplicate supaya loop smooth -->
+
+<div class="partner">A</div>
+<div class="partner">B</div>
+<div class="partner">C</div>
+<div class="partner">D</div>
+<div class="partner">E</div>
+<div class="partner">F</div>
+
+</div>
+
 </div>
 
 </section>
 
-<!-- CHART -->
+<!-- THESIS -->
 
-<section class="reveal">
-<h2>Performance Growth</h2>
+<section>
+<h2>Investment Thesis & Capital Mission</h2>
 
-<div class="chart glass">
+<div class="thesis">
 
-<div class="bar" style="left:3%;height:40%"></div>
-<div class="bar" style="left:22%;height:65%"></div>
-<div class="bar" style="left:41%;height:78%"></div>
-<div class="bar" style="left:60%;height:85%"></div>
-<div class="bar" style="left:79%;height:96%"></div>
+<div class="block glass">
+<b>Future Infrastructure Focus</b><br><br>
+We invest in scalable digital infrastructure that powers the next decade of global computing, finance, and automation.
+</div>
+
+<div class="block glass">
+<b>Long-Term Capital Strategy</b><br><br>
+Our thesis prioritizes durable technologies with defensible network effects, strong engineering culture, and real market dependency.
+</div>
+
+<div class="block glass">
+<b>Next Expansion Targets</b><br><br>
+AI industrial systems, distributed compute, financial rails, autonomous logistics, and orbital communications platforms.
+</div>
 
 </div>
 
 </section>
-
-<!-- CTA -->
-
-<section class="reveal glass" style="text-align:center">
-<h2>Join the Future Investment Network</h2>
-<a class="btn">Request Investor Access</a>
-</section>
-
-<footer>
-© 2026 Nubia Capital
-</footer>
-
-<script>
-
-/* scroll reveal */
-
-const obs=new IntersectionObserver(entries=>{
-entries.forEach(e=>{
-if(e.isIntersecting)e.target.classList.add("show")
-})
-},{threshold:.15});
-
-document.querySelectorAll(".reveal")
-.forEach(el=>obs.observe(el));
-
-</script>
 
 </body>
 </html>
