@@ -1,350 +1,396 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Nubia Capital</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-
+/* ========== BASE ========== */
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-font-family:Inter;
-background:linear-gradient(180deg,#040614,#01030a 60%);
-color:white;
-overflow-x:hidden;
+:root{
+  --accent1:#00eaff;
+  --accent2:#6a7bff;
+  --bg1:#040614;
+  --bg2:#01030a;
 }
-
-section{padding:90px 22px;max-width:1150px;margin:auto;}
+body{
+  font-family:Inter,system-ui,Segoe UI,Roboto;
+  background:linear-gradient(180deg,var(--bg1),var(--bg2) 60%);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+  line-height:1.45;
+}
+section{padding:90px 22px;max-width:1150px;margin:auto}
+h1,h2{letter-spacing:.4px}
 h2{margin-bottom:20px}
 
+/* ========== GLASS ========== */
 .glass{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(0,255,255,.15);
-backdrop-filter:blur(18px);
-border-radius:22px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(0,255,255,.08);
+  backdrop-filter:blur(12px);
+  border-radius:18px;
+  box-shadow:0 6px 30px rgba(3,8,30,.45);
 }
 
-/* ================= HERO OPENING ================= */
-
-.hero{
-text-align:center;
-padding-top:120px;
-}
-
+/* ========== HERO ========== */
+.hero{text-align:center;padding-top:120px}
 .hero h1{
-font-size:46px;
-background:linear-gradient(90deg,#fff,#7df9ff);
--webkit-background-clip:text;
-color:transparent;
+  font-size:46px;
+  background:linear-gradient(90deg,#fff,#7df9ff);
+  -webkit-background-clip:text;color:transparent;
+}
+.hero p{opacity:.78;margin-top:12px}
+
+/* ========== CHARTS ========== */
+.chartbox{padding:20px;margin-top:20px}
+.bars{display:flex;gap:14px;height:180px;align-items:flex-end}
+.bar{flex:1;background:linear-gradient(180deg,var(--accent1),var(--accent2));
+border-radius:12px 12px 0 0; /* keep built-in grow animation but reveal will control opacity/translate */
 }
 
-.hero p{
-opacity:.7;
-margin-top:14px;
-}
-
-/* ================= CHARTS ================= */
-
-.chartbox{
-padding:30px;
-margin-top:30px;
-}
-
-/* bars */
-
-.bars{
-display:flex;
-gap:16px;
-height:180px;
-align-items:flex-end;
-}
-
-.bar{
-flex:1;
-background:linear-gradient(180deg,#00eaff,#6a7bff);
-border-radius:12px 12px 0 0;
-animation:grow 1.6s ease forwards;
-}
-
-@keyframes grow{from{height:0}}
-
-/* line chart */
-
-.line{
-height:120px;
-border-left:1px solid #00eaff44;
-border-bottom:1px solid #00eaff44;
-position:relative;
-margin-top:25px;
-}
-
+/* line chart simple */
+.line{height:120px;border-left:1px solid rgba(0,234,255,.12);border-bottom:1px solid rgba(0,234,255,.12);position:relative;margin-top:18px}
 .line svg{position:absolute;width:100%;height:100%}
 
 /* donut */
+.donut{width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--accent1) 0 70%, #0b1220 0);margin:auto;position:relative}
+.donut::after{content:"70%";position:absolute;inset:18px;background:#030511;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
 
-.donut{
-width:120px;height:120px;
-border-radius:50%;
-background:conic-gradient(#00eaff 0 70%, #112 0);
-margin:auto;
-position:relative;
-}
-.donut::after{
-content:"70%";
-position:absolute;
-inset:18px;
-background:#030511;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:700;
-}
+/* ========== PORTFOLIO FLIP ========== */
+.portfolio{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:26px}
+.flip{perspective:1000px;height:220px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}
+.flip.active .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:20px;padding:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.front{background:rgba(255,255,255,.06);border:1px solid rgba(0,234,255,.12)}
+.logo{width:70px;height:70px;border-radius:18px;background:linear-gradient(145deg,var(--accent1),var(--accent2));margin-bottom:15px}
+.back{background:rgba(0,10,30,.95);border:1px solid rgba(0,234,255,.12);transform:rotateY(180deg);font-size:13px;line-height:1.4}
 
-/* ================= PORTFOLIO (UNCHANGED) ================= */
-
-.portfolio{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:26px;
-}
-
-.flip{perspective:1000px;height:220px;cursor:pointer;}
-.flip-inner{position:relative;width:100%;height:100%;transition:.7s;transform-style:preserve-3d;}
-.flip.active .flip-inner{transform:rotateY(180deg);}
-
-.face{
-position:absolute;width:100%;height:100%;
-backface-visibility:hidden;border-radius:20px;
-padding:20px;display:flex;flex-direction:column;
-justify-content:center;align-items:center;text-align:center;
-}
-
-.front{background:rgba(255,255,255,.06);border:1px solid #00eaff33;}
-.logo{width:70px;height:70px;border-radius:18px;background:linear-gradient(145deg,#00eaff,#5d6cff);margin-bottom:15px;}
-
-.back{
-background:rgba(0,10,30,.95);
-border:1px solid #00eaff;
-transform:rotateY(180deg);
-font-size:13px;
-}
-
-/* ================= PARTNER AUTO ================= */
-
-.partner-wrap{overflow:hidden;margin-top:40px;}
-.partner-track{display:flex;gap:40px;width:max-content;animation:move 22s linear infinite;}
+/* ========== PARTNERS ========== */
+.partner-wrap{overflow:hidden;margin-top:40px}
+.partner-track{display:flex;gap:30px;width:max-content;animation:move 22s linear infinite}
 @keyframes move{to{transform:translateX(-50%)}}
-.partner{
-width:95px;height:95px;border-radius:22px;
-background:linear-gradient(140deg,#00eaff33,#6a7bff22);
-display:flex;align-items:center;justify-content:center;font-weight:700;opacity:.7;
-}
+.partner{width:95px;height:95px;border-radius:22px;background:linear-gradient(140deg,rgba(0,234,255,.12),rgba(106,123,255,.08));display:flex;align-items:center;justify-content:center;font-weight:700;opacity:.8}
 
-/* ================= ENVELOPE ================= */
-
-.envelope-wrap{text-align:center;margin-top:40px;}
-
-.envelope{
-width:220px;height:150px;
-margin:auto;
-background:linear-gradient(145deg,#0b1330,#020513);
-border-radius:16px;
-position:relative;
-cursor:pointer;
-border:1px solid #00eaff55;
-}
-
-.flap{
-position:absolute;
-width:100%;height:100%;
-background:linear-gradient(145deg,#101a40,#050a20);
-clip-path:polygon(0 0,100% 0,50% 55%);
-transition:.7s;
-transform-origin:top;
-}
-
-.card-founder{
-width:180px;
-padding:18px;
-background:white;
-color:black;
-border-radius:12px;
-position:absolute;
-left:50%;
-transform:translateX(-50%);
-bottom:15px;
-transition:.8s;
-opacity:0;
-}
-
+/* ========== ENVELOPE ========== */
+.envelope-wrap{text-align:center;margin-top:40px}
+.envelope{width:220px;height:150px;margin:auto;background:linear-gradient(145deg,#0b1330,#020513);border-radius:16px;position:relative;cursor:pointer;border:1px solid rgba(0,234,255,.12)}
+.flap{position:absolute;width:100%;height:100%;background:linear-gradient(145deg,#101a40,#050a20);clip-path:polygon(0 0,100% 0,50% 55%);transition:.7s;transform-origin:top}
+.card-founder{width:180px;padding:16px;background:#fff;color:#000;border-radius:12px;position:absolute;left:50%;transform:translateX(-50%);bottom:15px;transition:.8s;opacity:0}
 .envelope.open .flap{transform:rotateX(180deg)}
-.envelope.open .card-founder{
-bottom:160px;
-opacity:1;
+.envelope.open .card-founder{bottom:160px;opacity:1}
+
+/* ========== THESIS ========== */
+.thesis{display:grid;gap:18px;margin-top:30px}
+.block{padding:20px}
+
+/* ========== BUTTON ========== */
+.btn{display:inline-block;padding:12px 20px;border-radius:14px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#001;font-weight:700;text-decoration:none}
+
+/* ========== SCROLL-REVEAL (initial hidden state) ========== */
+/* We'll apply .sr-hidden to targets so they're invisible before animation */
+.sr-hidden{opacity:0;transform:translateY(10px);will-change:opacity,transform;pointer-events:auto}
+
+/* animation classes (varied) */
+.anim-fadeup{animation:sr-fadeup .72s cubic-bezier(.2,.9,.2,1) both}
+.anim-faderight{animation:sr-faderight .72s cubic-bezier(.2,.9,.2,1) both}
+.anim-fadeleft{animation:sr-fadeleft .72s cubic-bezier(.2,.9,.2,1) both}
+.anim-zoom{animation:sr-zoom .78s cubic-bezier(.2,.9,.2,1) both}
+.anim-rotate{animation:sr-rotate .8s cubic-bezier(.2,.9,.2,1) both}
+.anim-slidein{animation:sr-slidein .74s cubic-bezier(.2,.9,.2,1) both}
+
+/* keyframes */
+@keyframes sr-fadeup{from{opacity:0;transform:translateY(18px) scale(.995)}to{opacity:1;transform:none}}
+@keyframes sr-faderight{from{opacity:0;transform:translateX(24px) scale(.996)}to{opacity:1;transform:none}}
+@keyframes sr-fadeleft{from{opacity:0;transform:translateX(-24px) scale(.996)}to{opacity:1;transform:none}}
+@keyframes sr-zoom{from{opacity:0;transform:scale(.9) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes sr-rotate{from{opacity:0;transform:rotateX(12deg) translateY(10px)}to{opacity:1;transform:none}}
+@keyframes sr-slidein{from{opacity:0;transform:translateY(30px) skewY(3deg)}to{opacity:1;transform:none}}
+
+/* support reduced motion */
+@media (prefers-reduced-motion:reduce){
+  .anim-fadeup,.anim-faderight,.anim-fadeleft,.anim-zoom,.anim-rotate,.anim-slidein{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
 }
 
-/* ================= THESIS ================= */
-
-.thesis{display:grid;gap:18px;margin-top:30px;}
-.block{padding:26px;}
-
+/* small screens */
+@media (max-width:600px){
+  .hero h1{font-size:34px}
+  section{padding:56px 18px}
+}
 </style>
 </head>
 <body>
 
 <!-- HERO -->
 <section class="hero">
-<h1>NUBIA CAPITAL</h1>
-<p>Backing the next generation of scalable technology, digital finance, and autonomous infrastructure.</p>
+  <h1>NUBIA CAPITAL</h1>
+  <p>Backing the next generation of scalable technology, digital finance, and autonomous infrastructure.</p>
 </section>
 
 <!-- MANY CHARTS -->
 <section>
-<h2>Capital Analytics</h2>
+  <h2>Capital Analytics</h2>
 
-<div class="glass chartbox">
-<b>Portfolio Growth</b>
-<div class="bars">
-<div class="bar" style="height:30%"></div>
-<div class="bar" style="height:45%"></div>
-<div class="bar" style="height:70%"></div>
-<div class="bar" style="height:85%"></div>
-<div class="bar" style="height:100%"></div>
-</div>
+  <div class="glass chartbox">
+    <b>Portfolio Growth</b>
+    <div class="bars">
+      <div class="bar" style="height:30%"></div>
+      <div class="bar" style="height:45%"></div>
+      <div class="bar" style="height:70%"></div>
+      <div class="bar" style="height:85%"></div>
+      <div class="bar" style="height:100%"></div>
+    </div>
 
-<div class="line">
-<svg viewBox="0 0 100 40">
-<polyline fill="none" stroke="#00eaff" stroke-width="1.5"
-points="0,35 15,28 30,30 45,18 60,22 75,10 100,4"/>
-</svg>
-</div>
+    <div class="line" aria-hidden="true">
+      <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+        <polyline fill="none" stroke="#00eaff" stroke-width="1.5"
+          points="0,35 15,28 30,30 45,18 60,22 75,10 100,4"/>
+      </svg>
+    </div>
 
-<div style="margin-top:25px">
-<b>AI Sector Allocation</b>
-<div class="donut"></div>
-</div>
-
-</div>
+    <div style="margin-top:18px">
+      <b>AI Sector Allocation</b>
+      <div class="donut" aria-hidden="true"></div>
+    </div>
+  </div>
 </section>
 
 <!-- PORTFOLIO -->
 <section>
-<h2>Investment Portfolio</h2>
-<div class="portfolio">
+  <h2>Investment Portfolio</h2>
+  <div class="portfolio">
 
-<!-- CARD -->
-<div class="flip" onclick="this.classList.toggle('active')">
-<div class="flip-inner">
+    <!-- CARD -->
+    <div class="flip" onclick="this.classList.toggle('active')">
+      <div class="flip-inner">
+        <div class="face front">
+          <div class="logo"></div>
+          QuantumPay
+        </div>
 
-<div class="face front">
-<div class="logo"></div>
-QuantumPay
-</div>
+        <div class="face back">
+          <b>Industry:</b> Fintech<br>
+          <b>Founded:</b> 2021<br>
+          <b>Value:</b> $42M<br>
+          <b>Status:</b> Operating<br><br>
+          Payment infrastructure for global digital wallets.
+        </div>
+      </div>
+    </div>
 
-<div class="face back">
-<b>Industry:</b> Fintech<br>
-<b>Founded:</b> 2021<br>
-<b>Value:</b> $42M<br>
-<b>Status:</b> Operating<br><br>
-Payment infrastructure for global digital wallets.
-</div>
+    <div class="flip" onclick="this.classList.toggle('active')">
+      <div class="flip-inner">
+        <div class="face front">
+          <div class="logo"></div>
+          Orbital AI
+        </div>
 
-</div>
-</div>
+        <div class="face back">
+          <b>Industry:</b> Artificial Intelligence<br>
+          <b>Founded:</b> 2019<br>
+          <b>Value:</b> $88M<br>
+          <b>Status:</b> Scaling<br><br>
+          Predictive AI models for industrial automation.
+        </div>
+      </div>
+    </div>
 
+    <div class="flip" onclick="this.classList.toggle('active')">
+      <div class="flip-inner">
+        <div class="face front">
+          <div class="logo"></div>
+          NovaChain
+        </div>
 
-<div class="flip" onclick="this.classList.toggle('active')">
-<div class="flip-inner">
+        <div class="face back">
+          <b>Industry:</b> Blockchain Infra<br>
+          <b>Founded:</b> 2020<br>
+          <b>Value:</b> $55M<br>
+          <b>Status:</b> Active<br><br>
+          Enterprise-grade distributed ledger network.
+        </div>
+      </div>
+    </div>
 
-<div class="face front">
-<div class="logo"></div>
-Orbital AI
-</div>
-
-<div class="face back">
-<b>Industry:</b> Artificial Intelligence<br>
-<b>Founded:</b> 2019<br>
-<b>Value:</b> $88M<br>
-<b>Status:</b> Scaling<br><br>
-Predictive AI models for industrial automation.
-</div>
-
-</div>
-</div>
-
-
-<div class="flip" onclick="this.classList.toggle('active')">
-<div class="flip-inner">
-
-<div class="face front">
-<div class="logo"></div>
-NovaChain
-</div>
-
-<div class="face back">
-<b>Industry:</b> Blockchain Infra<br>
-<b>Founded:</b> 2020<br>
-<b>Value:</b> $55M<br>
-<b>Status:</b> Active<br><br>
-Enterprise-grade distributed ledger network.
-</div>
-
-</div>
-</div>
-
-</div>
+  </div>
 </section>
 
 <!-- PARTNERS -->
 <section>
-<h2>Strategic Partners</h2>
-<div class="partner-wrap glass">
-<div class="partner-track">
-<div class="partner">A</div><div class="partner">B</div><div class="partner">C</div>
-<div class="partner">D</div><div class="partner">E</div><div class="partner">F</div>
-<div class="partner">A</div><div class="partner">B</div><div class="partner">C</div>
-<div class="partner">D</div><div class="partner">E</div><div class="partner">F</div>
-</div>
-</div>
+  <h2>Strategic Partners</h2>
+  <div class="partner-wrap glass" aria-hidden="false">
+    <div class="partner-track">
+      <div class="partner">A</div><div class="partner">B</div><div class="partner">C</div>
+      <div class="partner">D</div><div class="partner">E</div><div class="partner">F</div>
+      <!-- duplicate supaya loop smooth -->
+      <div class="partner">A</div><div class="partner">B</div><div class="partner">C</div>
+      <div class="partner">D</div><div class="partner">E</div><div class="partner">F</div>
+    </div>
+  </div>
 </section>
 
 <!-- THESIS -->
 <section>
-<h2>Investment Thesis</h2>
-<div class="thesis">
-<div class="block glass">We prioritize scalable technologies with durable market dependency.</div>
-<div class="block glass">Focus sectors include AI compute, financial rails, automation systems.</div>
-</div>
+  <h2>Investment Thesis</h2>
+  <div class="thesis">
+    <div class="block glass">We prioritize scalable technologies with durable market dependency.</div>
+    <div class="block glass">Focus sectors include AI compute, financial rails, automation systems.</div>
+  </div>
 </section>
 
 <!-- ENVELOPE CONTACT -->
 <section>
-<h2>Founder Contact</h2>
-
-<div class="envelope-wrap">
-
-<div class="envelope" onclick="this.classList.toggle('open')">
-
-<div class="flap"></div>
-
-<div class="card-founder">
-<b>Founder</b><br>
-Nubia Capital<br><br>
-email@nubia.com<br>
-+62-XXX-XXXX<br>
-Jakarta
-</div>
-
-</div>
-
-<p style="opacity:.6;margin-top:20px">Click envelope to open</p>
-
-</div>
+  <h2>Founder Contact</h2>
+  <div class="envelope-wrap">
+    <div class="envelope" onclick="this.classList.toggle('open')">
+      <div class="flap"></div>
+      <div class="card-founder">
+        <b>Founder</b><br>
+        Nubia Capital<br><br>
+        email@nubia.com<br>
+        +62-XXX-XXXX<br>
+        Jakarta
+      </div>
+    </div>
+    <p style="opacity:.6;margin-top:20px">Click envelope to open</p>
+  </div>
 </section>
+
+<script>
+/*
+  Scroll-reveal logic:
+  - Select a variety of elements (headings, paragraphs, logos, flips, bars, partners, buttons, thesis blocks, hero).
+  - Assign each a random animation type (unless already specified).
+  - When element enters viewport -> add corresponding .anim-xxx class and remove .sr-hidden
+  - When element leaves viewport -> remove anim classes and re-add .sr-hidden so it plays again.
+*/
+
+// list of animation types (must match CSS classes)
+const ANIMS = ['fadeup','faderight','fadeleft','zoom','rotate','slidein'];
+
+// choose elements to control (avoid .face because it uses transform for flip)
+const selector = [
+  'section .hero h1',
+  'section .hero p',
+  'h2',
+  'section p',
+  '.logo',
+  '.flip',        // animate outer flip container (not .face)
+  '.bar',
+  '.donut',
+  '.line',
+  '.partner',
+  '.partner-track',
+  '.thesis .block',
+  '.card-founder',
+  '.btn',
+  '.glass'
+].join(',');
+
+const nodes = Array.from(document.querySelectorAll(selector));
+
+// initialize each node: set as hidden and assign random anim if not provided
+nodes.forEach((el, idx) => {
+  // don't override interactive elements that should remain visible (if any)
+  if (el.closest && el.closest('.partner-wrap') && el.classList.contains('partner-track')) {
+    // partner-track we'll still handle
+  }
+  // add initial hidden state
+  el.classList.add('sr-hidden');
+
+  // if developer wants to predefine, keep; otherwise random
+  if (!el.dataset.anim) {
+    const pick = ANIMS[Math.floor(Math.random()*ANIMS.length)];
+    el.dataset.anim = pick;
+  }
+
+  // random delay (0-360ms) + slight index offset for more cinematic order
+  const delay = Math.floor(Math.random()*280 + (idx % 6)*40);
+  el.style.setProperty('--sr-delay', delay + 'ms');
+  // also set a small inline style that the animation code will use
+});
+
+// IntersectionObserver options
+const ioOptions = {
+  root: null,
+  rootMargin: '0px 0px -10% 0px',
+  threshold: 0.18
+};
+
+const animClasses = ANIMS.map(a => 'anim-' + a);
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const el = entry.target;
+    const animName = el.dataset.anim ? 'anim-' + el.dataset.anim : animClasses[Math.floor(Math.random()*animClasses.length)];
+    if (entry.isIntersecting) {
+      // apply animation class and use its delay
+      // ensure hidden state removed before animation
+      el.classList.remove('sr-hidden');
+      // apply small delay to styles
+      el.style.animationDelay = el.style.getPropertyValue('--sr-delay') || '0ms';
+      el.classList.add(animName);
+      // mark as animated (optional)
+      el.dataset._animPlaying = '1';
+    } else {
+      // element left viewport -> reset to allow replay on re-enter
+      el.classList.remove(animName);
+      el.style.animationDelay = '';
+      el.classList.add('sr-hidden');
+      delete el.dataset._animPlaying;
+    }
+  });
+}, ioOptions);
+
+// observe all nodes
+nodes.forEach(n => {
+  // guard: don't observe elements not in DOM or invisible
+  if (n && n.getClientRects().length) observer.observe(n);
+});
+
+/* Extra UX: pause partner-track animation on hover to let user inspect */
+const partnerTrack = document.querySelector('.partner-track');
+if (partnerTrack) {
+  partnerTrack.addEventListener('mouseenter', ()=> partnerTrack.style.animationPlayState = 'paused');
+  partnerTrack.addEventListener('mouseleave', ()=> partnerTrack.style.animationPlayState = 'running');
+}
+
+/* Accessibility: if prefers-reduced-motion, disable JS reveal to keep consistent */
+const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (reduced) {
+  // reveal everything quickly and stop observing
+  nodes.forEach(el => {
+    el.classList.remove('sr-hidden');
+    animClasses.forEach(c => el.classList.remove(c));
+    el.style.animationDelay = '';
+  });
+  if (observer) observer.disconnect();
+}
+
+/* small helper: re-evaluate on resize (useful for dynamic layout) */
+let resizeTimer;
+window.addEventListener('resize', ()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(()=> {
+    // re-observe all (safe)
+    if (observer) {
+      observer.disconnect();
+      nodes.forEach(n => { if (n && n.getClientRects().length) observer.observe(n); });
+    }
+  }, 220);
+});
+
+</script>
 
 </body>
 </html>
