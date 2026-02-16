@@ -98,14 +98,15 @@ border-radius:12px 12px 0 0; /* keep built-in grow animation but reveal will con
 .sr-hidden{opacity:0;transform:translateY(10px);will-change:opacity,transform;pointer-events:auto}
 
 /* animation classes (varied) */
-.anim-fadeup{animation:sr-fadeup .72s cubic-bezier(.2,.9,.2,1) both}
-.anim-faderight{animation:sr-faderight .72s cubic-bezier(.2,.9,.2,1) both}
-.anim-fadeleft{animation:sr-fadeleft .72s cubic-bezier(.2,.9,.2,1) both}
-.anim-zoom{animation:sr-zoom .78s cubic-bezier(.2,.9,.2,1) both}
-.anim-rotate{animation:sr-rotate .8s cubic-bezier(.2,.9,.2,1) both}
-.anim-slidein{animation:sr-slidein .74s cubic-bezier(.2,.9,.2,1) both}
+/* <-- DURATIONS INCREASED FOR SLOWER APPEARANCE --> */
+.anim-fadeup{animation:sr-fadeup 1.20s cubic-bezier(.2,.9,.2,1) both}
+.anim-faderight{animation:sr-faderight 1.20s cubic-bezier(.2,.9,.2,1) both}
+.anim-fadeleft{animation:sr-fadeleft 1.20s cubic-bezier(.2,.9,.2,1) both}
+.anim-zoom{animation:sr-zoom 1.30s cubic-bezier(.2,.9,.2,1) both}
+.anim-rotate{animation:sr-rotate 1.35s cubic-bezier(.2,.9,.2,1) both}
+.anim-slidein{animation:sr-slidein 1.25s cubic-bezier(.2,.9,.2,1) both}
 
-/* keyframes */
+/* keyframes (unchanged) */
 @keyframes sr-fadeup{from{opacity:0;transform:translateY(18px) scale(.995)}to{opacity:1;transform:none}}
 @keyframes sr-faderight{from{opacity:0;transform:translateX(24px) scale(.996)}to{opacity:1;transform:none}}
 @keyframes sr-fadeleft{from{opacity:0;transform:translateX(-24px) scale(.996)}to{opacity:1;transform:none}}
@@ -269,10 +270,7 @@ border-radius:12px 12px 0 0; /* keep built-in grow animation but reveal will con
 <script>
 /*
   Scroll-reveal logic:
-  - Select a variety of elements (headings, paragraphs, logos, flips, bars, partners, buttons, thesis blocks, hero).
-  - Assign each a random animation type (unless already specified).
-  - When element enters viewport -> add corresponding .anim-xxx class and remove .sr-hidden
-  - When element leaves viewport -> remove anim classes and re-add .sr-hidden so it plays again.
+  - Same behavior as before but DELAYS increased so reveal overall is slower.
 */
 
 // list of animation types (must match CSS classes)
@@ -301,23 +299,17 @@ const nodes = Array.from(document.querySelectorAll(selector));
 
 // initialize each node: set as hidden and assign random anim if not provided
 nodes.forEach((el, idx) => {
-  // don't override interactive elements that should remain visible (if any)
-  if (el.closest && el.closest('.partner-wrap') && el.classList.contains('partner-track')) {
-    // partner-track we'll still handle
-  }
-  // add initial hidden state
   el.classList.add('sr-hidden');
 
-  // if developer wants to predefine, keep; otherwise random
   if (!el.dataset.anim) {
     const pick = ANIMS[Math.floor(Math.random()*ANIMS.length)];
     el.dataset.anim = pick;
   }
 
-  // random delay (0-360ms) + slight index offset for more cinematic order
-  const delay = Math.floor(Math.random()*280 + (idx % 6)*40);
+  // SLOWER random delay: increase base random and index offset so everything waits longer
+  // previously was: Math.random()*280 + (idx % 6)*40
+  const delay = Math.floor(Math.random()*700 + (idx % 6)*100); // 0-700ms + offset
   el.style.setProperty('--sr-delay', delay + 'ms');
-  // also set a small inline style that the animation code will use
 });
 
 // IntersectionObserver options
@@ -334,16 +326,12 @@ const observer = new IntersectionObserver((entries) => {
     const el = entry.target;
     const animName = el.dataset.anim ? 'anim-' + el.dataset.anim : animClasses[Math.floor(Math.random()*animClasses.length)];
     if (entry.isIntersecting) {
-      // apply animation class and use its delay
-      // ensure hidden state removed before animation
       el.classList.remove('sr-hidden');
-      // apply small delay to styles
+      // use the longer delay value
       el.style.animationDelay = el.style.getPropertyValue('--sr-delay') || '0ms';
       el.classList.add(animName);
-      // mark as animated (optional)
       el.dataset._animPlaying = '1';
     } else {
-      // element left viewport -> reset to allow replay on re-enter
       el.classList.remove(animName);
       el.style.animationDelay = '';
       el.classList.add('sr-hidden');
@@ -354,7 +342,6 @@ const observer = new IntersectionObserver((entries) => {
 
 // observe all nodes
 nodes.forEach(n => {
-  // guard: don't observe elements not in DOM or invisible
   if (n && n.getClientRects().length) observer.observe(n);
 });
 
@@ -368,7 +355,6 @@ if (partnerTrack) {
 /* Accessibility: if prefers-reduced-motion, disable JS reveal to keep consistent */
 const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (reduced) {
-  // reveal everything quickly and stop observing
   nodes.forEach(el => {
     el.classList.remove('sr-hidden');
     animClasses.forEach(c => el.classList.remove(c));
@@ -382,7 +368,6 @@ let resizeTimer;
 window.addEventListener('resize', ()=>{
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(()=> {
-    // re-observe all (safe)
     if (observer) {
       observer.disconnect();
       nodes.forEach(n => { if (n && n.getClientRects().length) observer.observe(n); });
