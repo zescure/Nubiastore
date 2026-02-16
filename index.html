@@ -8,430 +8,478 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>NUBIASTORE - adalah website Top Up Game paling Murah cepat dan aman</title>
   <style>
+    /* ===== RESET & BASE ===== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(ellipse at top, #001f3f, #000);
+      color: #fff;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
 
-/* =========================
-   🎨 COLOR SYSTEM (APP STYLE)
-   ========================= /
-:root{
-  --green-main:#22c55e;
-  --green-dark:#16a34a;
-  --green-soft:#dcfce7;
-
-  --bg-main:#ffffff;
-  --bg-soft:#f6f7f9;
-
-  --text-main:#111;
-  --text-soft:#666;
-
-  --border-soft:#e5e7eb;
+    /* ===== HEADER ===== */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: #011627;
+      position: relative;
+      z-index: 1001;
+    }
+    .menu-btn  {
+      background: none;
+      border: none;
+      color: #00bfff;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+    
+    .login-btn {
+      background: none;
+      border: none;
+      color: #00bfff;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+   .logo {
+  font-size: 1.6rem;
+  color: #00bfff;
+  letter-spacing: 4px;
+  margin-left: -75px;   /* geser ke kanan */
+  /* margin-left: -20px;  geser ke kiri */
 }
 
-/ ===== RESET ===== */
-{margin:0;padding:0;box-sizing:border-box;}
+    /* ===== MOBILE MENU ===== */
+    .mobile-menu {
+      position: fixed;
+      top: 0; left: -100%;
+      width: 80%; max-width: 300px;
+      height: 100%;
+      background-color: #011627;
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 2rem 1rem;
+    }
+    .mobile-menu.open { left: 0; }
+    .mobile-menu ul { list-style: none; margin-top: 2rem; }
+    .mobile-menu ul li { margin: 1.2rem 0; }
+    .mobile-menu ul li a { color: #fff; font-size: 1.1rem; }
 
-body{
-  font-family:'Segoe UI',sans-serif;
-  background:var(--bg-soft);
-  color:var(--text-main);
-  overflow-x:hidden;
+    /* ===== MANUAL SLIDER ===== */
+    /* ===== SLIDER ===== */
+.slider {
+  width: 100%;
+  aspect-ratio: 16 / 9;  /* pastikan sama dengan rasio asli gambar */
+  overflow: hidden;
+  border-radius: 8px;
 }
 
-a{text-decoration:none;color:inherit;}
-
-
-/ =========================
-   HEADER
-   ========================= /
-
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:1rem;
-  background:#fff;
-  border-bottom:1px solid var(--border-soft);
-  position:relative;
-  z-index:1001;
+.slides {
+  display: flex;
+  width: 400%; /* misal ada 3 gambar */
+  height: 100%;
+  transition: transform .5s ease;
 }
 
-.menu-btn,
-.login-btn{
-  background:none;
-  border:none;
-  color:var(--green-main);
-  font-size:1.4rem;
-  cursor:pointer;
+.slides img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* tetap cover, tetapi rasio sesuai → minim crop */
+}
+    .slider-btn {
+  position: absolute;      /* penting agar tombol berada di atas .slider */
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  z-index: 5;
+  border-radius: 50%;
 }
 
-.logo{
-  font-size:1.6rem;
-  color:var(--green-main);
-  letter-spacing:2px;
-  margin-left:-75px;
+.slider-btn.prev { left: 10px; }
+.slider-btn.next { right: 20px; }
+
+    /* ===== PROMO ===== */
+    .promo {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 191, 255, 0.1);
+      border-top: 1px solid #00bfff;
+      border-bottom: 1px solid #00bfff;
+    }
+    .promo h2 {
+      font-size: 1.5rem; margin-bottom: .5rem; color: #00bfff;
+    }
+    .promo p { font-size: 1rem; }
+    .promo strong { color: #fff; }
+
+    /* ===== MENU GAME MOBILE ===== */
+    .game-menu {
+      text-align: center; margin: 1.5rem 0;
+    }
+    .game-menu button {
+      padding: .6rem 1.2rem;
+      background-color: #00bfff;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      color: #011627;
+      cursor: default;
+    }
+
+    /* ===== DAFTAR GAME ===== */
+    .game-list {
+      padding: 0 1rem 2rem;
+    }
+    .game-list h3 {
+      text-align: center; margin-bottom: 1rem; color: #00bfff;
+    }
+    .games {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;
+    }
+    /* CSS */
+/* Parent container grid */
+.games {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 kolom rata */
+  gap: 0.5rem;                           /* jarak antar kartu */
+  width: 100%;
+  padding: 0 0.5rem;                     /* optional: sisi container */
+  box-sizing: border-box;
 }
 
-
-/ =========================
-   MOBILE MENU
-   ========================= /
-
-.mobile-menu{
-  position:fixed;
-  top:0;
-  left:-100%;
-  width:80%;
-  max-width:300px;
-  height:100%;
-  background:#fff;
-  transition:left .3s ease;
-  z-index:1000;
-  padding:2rem 1rem;
-  border-right:1px solid var(--border-soft);
+/* Kartu kotak 1:1 */
+.game-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;      /* selalu square */
+  background: #022c43;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0,191,255,0.3);
 }
 
-.mobile-menu.open{left:0;}
-
-.mobile-menu ul{list-style:none;margin-top:2rem;}
-.mobile-menu ul li{margin:1.2rem 0;}
-.mobile-menu ul li a{
-  color:#111;
-  font-size:1.1rem;
+/* Gambar memenuhi kotak */
+.game-card img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* overlay teks, awalnya tersembunyi */
+.game-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: .5rem;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .2s;
 }
 
+/* tampilkan overlay saat hover */
+.game-card:hover .game-overlay {
+  opacity: 1;
+}
+    /* CSS */
+.produk-title {
+  font-weight: bold;
+  color: skyblue;
+}
+    /* ===== FOOTER ===== */
+    footer {
+      background-color: #011627;
+      color: #fff;
+      padding: 2rem 1rem 1rem;
+      font-size: 0.9rem;
+    }
+    .footer-top {
+      display: flex; flex-wrap: wrap;
+      gap: 2rem; justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .footer-top > div { flex: 1; min-width: 200px; }
+    .footer-top h2, .footer-top h3 {
+      color: #00bfff; margin-bottom: .5rem;
+    }
+    .footer-top p { line-height: 1.5; }
+    .footer-top ul { list-style: none; }
+    .footer-top ul li { margin: .3rem 0; }
+    .social-icons { display: flex; gap: .5rem; }
+    .social-icons img {
+      width:32px; height:32px; object-fit:contain;
+    }
 
-/ =========================
-   SLIDER
-   ========================= /
+    .payment { margin-bottom: 1.5rem; }
+    .payment h3 {
+      text-align: center; color: #00bfff; margin-bottom: 1rem;
+    }
+    .pay-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px,1fr));
+      gap: 1rem; justify-items: center; align-items: center;
+    }
+    .pay-grid img {
+      max-width: 80px; filter: brightness(1.1);
+    }
 
-.slider{
-  width:100%;
-  aspect-ratio:16/9;
-  overflow:hidden;
-  border-radius:12px;
+    .copyright {
+      text-align: center;
+      border-top: 1px solid #00bfff;
+      padding-top: .5rem;
+      font-size: .8rem;
+    }
+  /* Shortcut container */
+ 
+   #shortcutList {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background: rgba(10, 10, 20, 0.95);
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 12px rgba(0, 128, 255, 0.15);
+  overflow-y: auto;
+  max-height: 350px;
+  border: 2px solid transparent;
+  animation: glow-border 3s linear infinite;
+  padding: 8px 0;
+  margin-top: 8px;     /* jarak dari input pencarian */
+  margin-bottom: 12px; /* jarak dari elemen di bawah list */
 }
 
-.slides{
-  display:flex;
-  width:400%;
-  height:100%;
-  transition:transform .5s ease;
+  @keyframes glow-border {
+    0% {
+      border-color: rgba(0, 136, 255, 0.3);
+    }
+    50% {
+      border-color: rgba(50, 200, 255, 0.9);
+    }
+    100% {
+      border-color: rgba(0, 136, 255, 0.3);
+    }
+  }
+
+  .shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #ddd;
+  transition: background 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.slides img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+.shortcut-item:hover {
+  background: rgba(0, 136, 255, 0.1);
 }
 
-.slider-btn{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  background:#fff;
-  border:1px solid var(--border-soft);
-  color:#111;
-  font-size:1.5rem;
-  padding:.4rem .7rem;
-  cursor:pointer;
-  z-index:5;
-  border-radius:50%;
+.shortcut-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
-.slider-btn.prev{left:10px;}
-.slider-btn.next{right:20px;}
-
-
-/ =========================
-   PROMO
-   ========================= /
-
-.promo{
-  text-align:center;
-  padding:1rem;
-  background:var(--green-soft);
-  margin:10px;
-  border-radius:14px;
+.shortcut-item .game-info {
+  display: flex;
+  flex-direction: column;
 }
 
-.promo h2{
-  font-size:1.4rem;
-  margin-bottom:.4rem;
-  color:var(--green-dark);
+.shortcut-item .game-info .title {
+  font-weight: bold;
+  font-size: 14px;
+  color: #fff;
 }
 
-.promo strong{color:#111;}
+.shortcut-item .game-info .provider {
+  font-size: 12px;
+  color: #aaa;
+}
+.promo-msg {
+    color: #4cc8ff;
+    font-weight: bold;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 13px;
+  }
+.search-box input::placeholder {
+    color: #777;
+  }
+.search-box input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background-color: #111;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+  }
 
-
-/ =========================
-   GAME MENU BUTTON
-   ========================= /
-
-.game-menu{text-align:center;margin:1.5rem 0;}
-
-.game-menu button{
-  padding:.6rem 1.2rem;
-  background:var(--green-main);
-  border:none;
-  border-radius:20px;
-  font-weight:bold;
-  color:#fff;
+html {
+  scroll-behavior: smooth;
+}
+/* ✅ Gaya Flash Sale */
+.flash-carousel {
+  overflow-x: auto; /* biar bisa scroll manual */
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  position: relative;
+  padding: 8px 0;
 }
 
-
-/ =========================
-   GAME GRID
-   ========================= /
-
-.game-list{padding:0 1rem 2rem;}
-
-.game-list h3{
-  text-align:center;
-  margin-bottom:1rem;
-  color:var(--green-dark);
+.carousel-track {
+  display: flex;
+  gap: 12px;
+  transition: transform 0.5s ease;
 }
 
-.games{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:.6rem;
-  width:100%;
+@keyframes glowSpace {
+  0% {
+    box-shadow: 0 0 5px #2196f3, 0 0 20px #0d47a1, 0 0 30px #2196f3;
+  }
+  50% {
+    box-shadow: 0 0 4px #2196f3, 0 0 40px #0d47a1, 0 0 60px #2196f3;
+  }
+  100% {
+    box-shadow: 0 0 5px #2196f3, 0 0 20px #0d47a1, 0 0 30px #2196f3;
+  }
 }
 
-.game-card{
-  position:relative;
-  width:100%;
-  aspect-ratio:1/1;
-  background:#fff;
-  border-radius:16px;
-  overflow:hidden;
-  border:1px solid var(--border-soft);
-  box-shadow:0 3px 10px rgba(0,0,0,.06);
-}
-
-.game-card img{
-  position:absolute;
-  top:0;left:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.game-overlay{
-  position:absolute;
-  bottom:0;
-  left:0;
-  width:100%;
-  padding:.5rem;
-  background:rgba(0,0,0,.65);
-  color:#fff;
-  font-weight:bold;
-  text-align:center;
-  opacity:0;
-  transition:.2s;
-}
-
-.game-card:hover .game-overlay{opacity:1;}
-
-.produk-title{font-weight:bold;color:var(--green-dark);}
-
-
-/ =========================
-   FOOTER
-   ========================= /
-
-footer{
-  background:#fff;
-  color:#111;
-  padding:2rem 1rem 1rem;
-  font-size:.9rem;
-  border-top:1px solid var(--border-soft);
-}
-
-.footer-top{
-  display:flex;
-  flex-wrap:wrap;
-  gap:2rem;
-  justify-content:space-between;
-  margin-bottom:2rem;
-}
-
-.footer-top>div{flex:1;min-width:200px;}
-
-.footer-top h2,
-.footer-top h3{
-  color:var(--green-main);
-  margin-bottom:.5rem;
-}
-
-.footer-top ul{list-style:none;}
-.footer-top ul li{margin:.3rem 0;}
-
-.social-icons{display:flex;gap:.5rem;}
-.social-icons img{width:32px;height:32px;}
-
-.payment h3{
-  text-align:center;
-  color:var(--green-main);
-  margin-bottom:1rem;
-}
-
-.pay-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
-  gap:1rem;
-  justify-items:center;
-}
-
-.copyright{
-  text-align:center;
-  border-top:1px solid var(--border-soft);
-  padding-top:.5rem;
-  font-size:.8rem;
-}
-
-
-/ =========================
-   SEARCH BOX
-   ========================= /
-
-.search-box input{
-  width:100%;
-  padding:10px 16px 10px 40px;
-  border-radius:8px;
-  border:1px solid var(--border-soft);
-  background:#fff;
-  color:#111;
-  font-size:14px;
-  outline:none;
-}
-
-.search-box input::placeholder{color:#888;}
-
-
-/ =========================
-   SHORTCUT LIST
-   ========================= /
-
-#shortcutList{
-  display:none;
-  position:absolute;
-  top:100%;
-  left:0;
-  width:100%;
-  z-index:999;
-  background:#fff;
-  border-radius:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
-  overflow-y:auto;
-  max-height:350px;
-  border:1px solid var(--border-soft);
-}
-
-.shortcut-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 15px;
-  color:#111;
-  transition:.2s;
-  border-bottom:1px solid var(--border-soft);
-}
-
-.shortcut-item:hover{background:var(--green-soft);}
-
-.shortcut-item img{
-  width:40px;
-  height:40px;
-  border-radius:8px;
-  object-fit:cover;
-}
-
-.shortcut-item .title{font-weight:bold;font-size:14px;}
-.shortcut-item .provider{font-size:12px;color:#777;}
-
-
-/ =========================
-   FLASH SALE CARD
-   ========================= /
-
-.flash-carousel{
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  width:100%;
-  padding:8px 0;
-}
-
-.carousel-track{
-  display:flex;
-  gap:12px;
-}
-
-.product-promo-card{
-  flex:0 0 auto;
-  min-width:220px;
-  background:#fff;
-  border-radius:16px;
-  padding:10px;
-  display:flex;
-  position:relative;
-  border:1px solid var(--border-soft);
-  box-shadow:0 4px 14px rgba(0,0,0,.07);
-}
-
-.promo-title{
-  font-size:14px;
-  font-weight:bold;
-  color:var(--green-dark);
-}
-
-.original-price{
-  font-size:12px;
-  text-decoration:line-through;
-  color:#999;
-}
-
-.discounted-price{
-  font-size:14px;
-  font-weight:bold;
-  color:var(--green-main);
+.product-promo-card {
+  flex: 0 0 auto;
+  min-width: 220px;
+  background: linear-gradient(to right, #d9f1ff, #cce0ff, #d9f1ff);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  position: relative;
+  scroll-snap-align: start;
+  border: 1px solid #2196f3;
+  animation: glowSpace 2s infinite ease-in-out;
+  transition: transform 0.3s ease;
 }
 
 
-/ =========================
-   FLOATING BUTTON
-   ========================= */
-
-#floatingGift{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  width:60px;
-  height:60px;
-  background:#fff;
-  border:1px solid var(--border-soft);
-  border-radius:50%;
-  box-shadow:0 10px 25px rgba(0,0,0,.15);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  animation:bounce 2s infinite;
-  z-index:1000;
+.promo-image img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
 }
 
-#floatingGift img{
-  width:70%;
-  height:70%;
+.promo-info {
+  margin-left: 10px;
+  flex-grow: 1;
 }
 
-@keyframes bounce{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-6px);}
+.promo-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #2196F3; /* Bisa diganti ke #00bfff, dodgerblue, dsb sesuai selera */
 }
 
-html{scroll-behavior:smooth;}
+.promo-subtitle {
+  font-size: 12px;
+  color: #777;
+}
 
-</style>
+.promo-price {
+  margin-top: 4px;
+}
+
+.original-price {
+  font-size: 12px;
+  text-decoration: line-through;
+  color: red;
+  margin-right: 6px;
+}
+
+.discounted-price {
+  font-size: 14px;
+  font-weight: bold;
+  color: green;
+}
+
+.promo-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff5722;
+  color: white;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  transform: rotate(10deg);
+}
+
+.promo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #0f0f2d;
+  height: 2000px; /* supaya ada scroll untuk demo */
+}
+
+#floatingGift {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: #ffffff;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  animation: bounce 2s infinite;
+  transition: transform 0.2s ease;
+  z-index: 1000;
+}
+
+#floatingGift img {
+  width: 70%;
+  height: 70%;
+}
+
+#floatingGift:hover {
+  transform: scale(1.1);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+    
+
+    
+  </style>
 </head>
 <body>
 
