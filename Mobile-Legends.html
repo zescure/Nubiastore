@@ -113,14 +113,12 @@
     .modal-body { padding:1rem; color:#111; }
     .modal-body p { margin:.4rem 0; font-size:1rem; line-height:1.4; }
     .modal-body p.total { margin-top:12px; font-size:1.1rem; font-weight:bold; }
-    .modal-body img { display:block; max-width:200px; margin:1rem auto; }
     .modal-footer {
       display:flex; gap:1rem; padding:1rem; justify-content:center; background:#f6f7f9;
     }
     .modal-footer button {
       flex:1; padding:.6rem; border:none; border-radius:4px; font-size:1rem; cursor:pointer;
     }
-    #btnDone { background:#22c55e; color:#fff; }
     #btnClose { background:#111; color:#fff; }
     #btnPayNow { background:#0ea5a4; color:#fff; }
 
@@ -222,7 +220,7 @@
     </div>
   </div>
 
-  <!-- MODAL RINCIAN -->
+  <!-- MODAL RINCIAN (tanpa QR/VA) -->
   <div class="modal-overlay" id="modalOverlay" style="display:none;">
     <div class="modal">
       <div class="modal-header">Rincian Pembayaran</div>
@@ -233,29 +231,10 @@
         <p>Harga: Rp <span id="outPrice"></span></p>
         <p>Biaya Admin: Rp <span id="outAdmin"></span></p>
         <p class="total">Total: Rp <span id="outTotal"></span></p>
-
-        <!-- QR Section -->
-        <div id="qrSection">
-          <img id="qrCode" src="qris-placeholder.png" alt="QR Code Pembayaran">
-        </div>
-
-        <!-- VA Section -->
-        <div id="vaSection" style="display:none;">
-          <button id="btnCopyVA">Copy No. VA</button>
-          <p><strong id="vaBankName">Virtual Account</strong></p>
-          <p id="vaNumber"></p>
-          <p><strong>Catatan:</strong></p>
-          <ul>
-            <li>Topup via VA kena potongan Rp 2.500 Tergantung Bank Anda</li>
-            <li>Salin Kode VA untuk membayar</li>
-          </ul>
-        </div>
       </div>
 
       <div class="modal-footer">
         <button id="btnPayNow">Bayar Sekarang</button>
-        <button id="btnDone">Sudah Bayar</button>
-        <button id="btnConfirmWA" style="display:none;">Konfirmasi Pembayaran</button>
         <button id="btnClose">Tutup</button>
       </div>
     </div>
@@ -287,8 +266,7 @@ const db   = getFirestore(app);
 /* =============== STATE =============== */
 let currentUser = null;
 onAuthStateChanged(auth, (u) => {
-  // optional: set currentUser if logged in, but DO NOT force redirect
-  if (u) currentUser = u;
+  if (u) currentUser = u; // login optional, no redirect
 });
 
 /* =============== UI ELEMENTS =============== */
@@ -301,17 +279,6 @@ const vaBRICard    = document.getElementById('vaBRICard');
 const vaBNICard    = document.getElementById('vaBNICard');
 const vaMandiriCard= document.getElementById('vaMandiriCard');
 const vaCards      = [vaBRICard, vaBNICard, vaMandiriCard];
-
-const qrSection    = document.getElementById('qrSection');
-const vaSection    = document.getElementById('vaSection');
-const vaBankName   = document.getElementById('vaBankName');
-const vaNumber     = document.getElementById('vaNumber');
-
-const vaData = {
-  VA_BRI:     { name:'Bank BRI Virtual Account',     number:'5790-8569-7747-768' },
-  VA_BNI:     { name:'Bank BNI Virtual Account',     number:'9888-3081-0216-1147' },
-  VA_MANDIRI: { name:'Bank Mandiri Virtual Account', number:'8889-8285-6977-4776-8' }
-};
 
 /* =============== CARD UI =============== */
 nominalCards.forEach(c=>{
@@ -398,7 +365,7 @@ document.getElementById('btnCheckout').onclick = async ()=>{
   const percent   = parseFloat(paySel.dataset.percent||0)/100;
   const adminCalc = Math.ceil(flatAdmin + price*percent);
 
-  // total (no cashback)
+  // total (no cashback on popup)
   const total     = price + adminCalc;
 
   outId.textContent    = `${idSel} (Srv: ${srvSel})`;
@@ -406,27 +373,6 @@ document.getElementById('btnCheckout').onclick = async ()=>{
   outPrice.textContent = price.toLocaleString('id');
   outAdmin.textContent = adminCalc.toLocaleString('id');
   outTotal.textContent = total.toLocaleString('id');
-
-  if(paySel.dataset.value.startsWith('VA_')){
-    qrSection.style.display = 'none';
-    vaSection.style.display = 'block';
-    const data = vaData[paySel.dataset.value];
-    vaBankName.textContent = data.name;
-    vaNumber.textContent   = data.number;
-  } else {
-    vaSection.style.display = 'none';
-    qrSection.style.display = 'block';
-    const qr = document.getElementById('qrCode');
-    switch(paySel.dataset.value) {
-      case 'DANA PREM':   qr.src = 'https://blogger.googleusercontent.com/img/...png'; break;
-      case 'DANA': qr.src = 'https://blogger.googleusercontent.com/img/...jpeg'; break;
-      case 'SHOPEE': qr.src = 'https://blogger.googleusercontent.com/img/...jpg'; break;
-      case 'SHOPEE PAYLATER': qr.src = 'https://blogger.googleusercontent.com/img/...png'; break;
-      case 'GOPAY':  qr.src = 'https://blogger.googleusercontent.com/img/...jpeg'; break;
-      case 'QRIS':   qr.src = 'https://blogger.googleusercontent.com/img/...jpeg'; break;
-      default: qr.src = 'qris-placeholder.png';
-    }
-  }
 
   lastCalc = {
     uid: currentUser?.uid || null,
@@ -453,39 +399,18 @@ document.getElementById('btnClose').onclick = ()=>{
   document.getElementById('modalOverlay').style.display = 'none';
 };
 
-/* =============== btnDone: open WA confirm (simple) =============== */
-const btnDone = document.getElementById('btnDone');
-const btnConfirmWA = document.getElementById('btnConfirmWA');
+/* =============== btnPayNow -> redirect to checkout =============== */
 const btnPayNow = document.getElementById('btnPayNow');
-
-btnDone.onclick = () => {
-  if (!lastCalc) return alert('Belum ada order aktif.');
-  const { idSel, srvSel, waSel, value, total, payMethod } = lastCalc;
-  const msg =
-    `Saya sudah order Mobile Legends *${value} Diamonds*`+
-    `\nID: ${idSel} (Server: ${srvSel})`+
-    `\nNo. WA: ${waSel}`+
-    `\nMetode: ${payMethod.replace('_',' ')}`+
-    `\nTotal bayar: Rp ${total.toLocaleString('id')}`;
-  window.open(`https://wa.me/6285697747768?text=${encodeURIComponent(msg)}`, '_blank');
-  document.getElementById('modalOverlay').style.display = 'none';
-  // reset flags so user bisa order lagi
-  lastCalc = null;
-  orderSaved = false;
-  lastSavedInvoice = null;
-};
-
-// redirect to checkout?invoice=INVC...
 btnPayNow.onclick = () => {
   const invoice = lastSavedInvoice || outInvoice.textContent;
-  if(!invoice || invoice === '-') {
+  if(!invoice || invoice === '-' ) {
     alert('Invoice belum tersedia. Coba tutup modal lalu ulangi pembayaran.');
     return;
   }
   window.location.href = `/checkout?invoice=${invoice}`;
 };
 
-/* =============== COPY BUTTONS =============== */
+/* =============== COPY Total button =============== */
 const btnCopyTotal = document.createElement('button');
 btnCopyTotal.textContent = 'Copy Total';
 btnCopyTotal.style = 'margin-left:8px;padding:4px 8px;cursor:pointer';
@@ -497,10 +422,6 @@ btnCopyTotal.onclick = ()=>{
   navigator.clipboard.writeText(document.getElementById('outTotal').textContent)
     .then(()=> alert('Total bayar disalin'));
 };
-document.getElementById('btnCopyVA')?.addEventListener('click', ()=>{
-  navigator.clipboard.writeText(document.getElementById('vaNumber').textContent)
-    .then(()=> alert('No. VA disalin'));
-});
 
 /* =============== COUNTDOWN =============== */
 let countdownInterval=null;
