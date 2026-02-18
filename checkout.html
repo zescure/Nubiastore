@@ -64,11 +64,14 @@
 
       <div id="actions" style="margin-top:16px;">
         <button id="btnCopyInvoice" class="copy">Salin Invoice</button>
-        <a id="btnShareWA" class="btn" href="#" target="_blank">Laporkan/Share via WA</a>
+        <a id="btnShareWA" class="btn" href="#" target="_blank">Laporkan Costumer Service</a>
       </div>
 
       <div id="adminNote" class="note" style="display:none;">
-        Admin belum memproses pembayaran. Jika sudah bayar, tunggu update status "completed".
+        Screenshot(SS) Kode Qris DiAtas Lalu Buka E-Wallet Atau Bank Yang Suport Pembayaran Qris, Scan dan Bayar Sesuai Jumlah Yang Tertera.
+      </div>
+      <div id="adminNote" class="note" style="display:none;">
+        Kalo Kamu Sudah Melakukan Proses Pembayaran Tunggu Sampai Status Order (INITIATED) Menjadi (COMPLETED) Lalu Buka In Game Kamu Dan Orderan Kamu Selesai Deh 😉👍.
       </div>
     </div>
   </div>
@@ -316,14 +319,14 @@ function renderOrder(d) {
 
     const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
     let html = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
-      <p class="muted">Scan QR berikut atau gunakan payload. Jumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
+      <p class="muted">Scan QR berikut dan bayar menggunakan semua e-wallet/bank kesayanganmu 😸. Jumlahnya: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
       ${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
       <div class="payload-row">
         ${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}
         <a id="openPayload" class="btn" href="#" target="_blank" style="display:none">Buka/Link</a>
       </div>
       <img id="qrImg" src="${qrUrl}" alt="QR" class="qr" />
-      <p class="muted">Jika provider menerima deep-link, tombol "Buka/Link" akan aktif.</p>`;
+      <p class="muted">Pembayaran Ini Akan Kadaluwarsa Dalam: 15MENIT</p>`;
 
     paymentUI.innerHTML = html;
 
