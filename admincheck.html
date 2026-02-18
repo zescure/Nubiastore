@@ -26,6 +26,7 @@
   .search{padding:8px;border-radius:8px;border:1px solid #e5e7eb;width:250px}
   .top-actions{display:flex;gap:8px;align-items:center}
   pre{background:#f8faf9;padding:8px;border-radius:6px;overflow:auto}
+  .admin-note{padding:8px;background:#fff7ed;border-left:4px solid #f59e0b;color:#92400e;border-radius:6px;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -54,6 +55,10 @@
           <option value="cancelled">cancelled</option>
         </select>
         <span style="margin-left:12px" class="muted">Realtime update aktif — perubahan disimpan ke Firestore</span>
+      </div>
+
+      <div id="adminNoteBox" style="display:none" class="admin-note">
+        Kamu login sebagai admin (akses via UID allowlist). Ingat: ini fitur development. Untuk production, gunakan custom claims server-side.
       </div>
 
       <div class="card" id="listCard">
@@ -85,11 +90,17 @@
   </div>
 
 <script type="module">
+/*
+  admin.html (updated)
+  - Added ADMIN_UIDS allowlist. Insert UID(s) here to allow account(s) access without custom claim.
+  - Security note: this is convenience for dev. Set custom claim on server for production.
+*/
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, collection, query, orderBy, onSnapshot, where,
-  doc, updateDoc, getDoc
+  getFirestore, collection, query, orderBy, onSnapshot,
+  doc, updateDoc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -107,6 +118,7 @@ const db = getFirestore(app);
 
 const authMsg = document.getElementById('authMsg');
 const adminUI = document.getElementById('adminUI');
+const adminNoteBox = document.getElementById('adminNoteBox');
 const ordersTbody = document.getElementById('ordersTbody');
 const detailBox = document.getElementById('detailBox');
 const detailPre = document.getElementById('detailPre');
@@ -117,24 +129,45 @@ const btnSignOut = document.getElementById('btnSignOut');
 let unsubscribeOrders = null;
 let lastOrders = {}; // cache map invoice -> data
 
-// require login + custom claim admin==true
+// === ADMIN ALLOWLIST (development convenience) ===
+// Insert UID(s) yang lu mau langsung jadi admin. Gw tambahin UID yang lu kirim:
+const ADMIN_UIDS = [
+  "8z9b0u1LYfTVM0sCP7qHXbYHvGi1"
+];
+// ==================================================
+
+// require login + (custom claim admin==true OR UID in allowlist)
 onAuthStateChanged(auth, async (u) => {
   if(!u){
     authMsg.innerHTML = '<strong>Harus login sebagai admin</strong> — silakan login di halaman utama.';
     adminUI.style.display = 'none';
+    adminNoteBox.style.display = 'none';
     return;
   }
-  // get id token result to inspect claims
-  const tokenResult = await u.getIdTokenResult();
-  const claims = tokenResult.claims || {};
-  if(!claims.admin){
+  // inspect token claims
+  let isAdmin = false;
+  try {
+    const tokenResult = await u.getIdTokenResult();
+    const claims = tokenResult.claims || {};
+    if(claims.admin) isAdmin = true;
+  } catch(e){
+    console.warn('getIdTokenResult failed', e);
+  }
+
+  // also allow specific UIDs (development)
+  if(ADMIN_UIDS.includes(u.uid)) isAdmin = true;
+
+  if(!isAdmin){
     authMsg.innerHTML = '<strong>Access denied.</strong> Akun tidak memiliki hak admin.';
     adminUI.style.display = 'none';
+    adminNoteBox.style.display = 'none';
     return;
   }
 
+  // success: show UI
   authMsg.style.display = 'none';
   adminUI.style.display = 'block';
+  adminNoteBox.style.display = ADMIN_UIDS.includes(u.uid) ? 'block' : 'none';
   startOrdersListener();
 });
 
@@ -144,7 +177,6 @@ btnSignOut.onclick = ()=> signOut(auth);
 // listen orders realtime (filtered by select + search)
 function startOrdersListener(){
   if(unsubscribeOrders) unsubscribeOrders();
-  // base query: all orders ordered by createdAt desc
   const col = collection(db, 'orders');
   const q = query(col, orderBy('createdAt','desc'));
   unsubscribeOrders = onSnapshot(q, (snap)=>{
@@ -235,7 +267,7 @@ async function showDetail(invoice){
 async function markStatus(invoice, newStatus){
   try{
     const ref = doc(db,'orders',invoice);
-    await updateDoc(ref, { status: newStatus, updatedAt: new Date() }); // serverTimestamp preferred on server
+    await updateDoc(ref, { status: newStatus, updatedAt: serverTimestamp() });
     alert('Status updated: ' + newStatus);
   }catch(e){
     console.error('markStatus err', e);
@@ -247,8 +279,7 @@ async function markStatus(invoice, newStatus){
 function formatMoney(n){ return (typeof n === 'number')? n.toLocaleString('id') : n; }
 function formatDate(ts){
   if(!ts) return '-';
-  // ts may be Firestore Timestamp object with toDate
-  if(ts.toDate) return new Date(ts.toDate()).toLocaleString();
+  if(typeof ts.toDate === 'function') return ts.toDate().toLocaleString();
   return new Date(ts.seconds ? ts.seconds *1000 : ts).toLocaleString();
 }
 
