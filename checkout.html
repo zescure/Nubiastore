@@ -24,6 +24,21 @@
   .note{background:#fff7ed;padding:8px;border-left:4px solid #f59e0b;color:#92400e;margin-top:12px}
   textarea.payload { width:100%; min-height:90px; padding:8px; font-family:monospace; margin-top:8px; border-radius:6px; border:1px solid #e5e7eb; }
   .payload-row { display:flex; gap:8px; align-items:center; margin-top:8px; }
+/* 🔴 PANEL HASIL STATUS */
+.resultBox{
+text-align:center;
+padding:28px 10px;
+}
+.resultBox img{
+width:140px;
+margin:auto;
+display:block;
+margin-bottom:16px;
+}
+.resultBox h2{
+margin:0;
+font-size:1.3rem;
+}
 </style>
 </head>
 <body>
@@ -79,6 +94,40 @@
   - butuh elemen HTML yang sama seperti script sebelumnya.
 */
 
+/* ========= RESULT PANEL ========= */
+
+function showResultUI(type){
+
+const ui=document.getElementById('paymentUI');
+
+if(type==="cancel"){
+
+ui.innerHTML=`
+<div class="resultBox">
+<img src="cancel.png">
+<h2>Orderan kamu gagal / dibatalin nih,<br>
+buat order baru atau chat customer service kami yah!</h2>
+</div>
+`;
+return true;
+}
+
+if(type==="success"){
+
+ui.innerHTML=`
+<div class="resultBox">
+<img src="success.png">
+<h2>Hallo !! Orderan kamu udah di proses nih.<br>
+Sekarang cek in-game kamu ya, item yang kamu beli udah masuk!</h2>
+</div>
+`;
+return true;
+}
+
+return false;
+}
+
+  
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -95,6 +144,33 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 const db = getFirestore();
 
+/* ========= PARAM ========= */
+
+const params=new URLSearchParams(location.search);
+const invoice=params.get('invoice');
+
+const ref=doc(db,'orders',invoice);
+
+onSnapshot(ref,snap=>{
+if(!snap.exists())return;
+
+const d=snap.data();
+
+/* ==== STATUS LOCK ==== */
+
+const s=(d.status||"").toLowerCase();
+
+/* 🔴 CANCEL */
+if(s==="cancelled"||s==="canceled"){
+showResultUI("cancel");
+}
+
+/* 🟢 COMPLETE */
+else if(s==="completed"){
+showResultUI("success");
+}
+
+  
 /* ===== CONFIG / TEMPLATES ===== */
 const HIDE_PAYLOAD_IN_PROD = true;
 const UNIFIED_PAYLOAD_TEMPLATES = {
