@@ -13,15 +13,17 @@
   .field{margin:.6rem 0}
   .muted{color:#666;font-size:.95rem}
   .amount{font-weight:700;font-size:1.2rem;color:#0f172a}
-  .qr{max-width:320px;width:100%;display:block;margin:12px auto}
+  .qr{max-width:320px;width:100%;display:block;margin:12px auto;border:1px solid #eee;padding:8px;border-radius:8px;background:#fff}
   .btn{display:inline-block;padding:.6rem 1rem;background:#16a34a;color:#fff;border-radius:6px;text-decoration:none}
-  .copy{margin-left:8px;padding:.3rem .6rem;background:#111;color:#fff;border-radius:6px;cursor:pointer}
+  .copy{margin-left:8px;padding:.3rem .6rem;background:#111;color:#fff;border-radius:6px;cursor:pointer;border:none}
   .status{display:inline-block;padding:.25rem .6rem;border-radius:6px;font-weight:600}
   .status.initiated{background:#fef3c7;color:#92400e}
   .status.pending{background:#e0f2fe;color:#0369a1}
   .status.completed{background:#dcfce7;color:#166534}
   .status.cancelled{background:#fee2e2;color:#7f1d1d}
   .note{background:#fff7ed;padding:8px;border-left:4px solid #f59e0b;color:#92400e;margin-top:12px}
+  textarea.payload { width:100%; min-height:90px; padding:8px; font-family:monospace; margin-top:8px; border-radius:6px; border:1px solid #e5e7eb; }
+  .payload-row { display:flex; gap:8px; align-items:center; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -56,7 +58,7 @@
       <hr style="margin:14px 0">
 
       <div id="paymentUI">
-        <!-- will be rendered here: QR or VA -->
+        <!-- will be rendered here: QR (dynamic) or VA -->
       </div>
 
       <div id="actions" style="margin-top:16px;">
@@ -71,8 +73,17 @@
   </div>
 
 <script type="module">
+/*
+  Dynamic payload checkout
+  - If order doc has `payment_data.qr_payload` (string) it will be used as payload.
+  - Otherwise, the code will try to use a template from PAYMENT_PAYLOAD_TEMPLATES keyed by payment_method.
+  - Templates can use placeholders: {{amount}}, {{invoice}}, {{phone}}, {{va}}, {{note}}.
+  - QR image is generated using api.qrserver.com (public). The textual payload is shown so user/app can copy.
+  - For VA we still show bank and VA number (no qr-image by default unless you put payload).
+*/
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
@@ -83,36 +94,52 @@ const firebaseConfig = {
   appId: "1:426093692154:web:38c6e9c143af626a623543",
   measurementId: "G-TS0YB9NYW8"
 };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+initializeApp(firebaseConfig);
+const db = getFirestore();
 
-// simple mapping fallback (jika server belum mengisi payment_data)
-const FALLBACK_QR = {
-  "DANA": "https://example.com/fallback-qris-dana.png",
-  "GOPAY": "https://example.com/fallback-qris-gopay.png",
-  "QRIS": "https://example.com/fallback-qris-generic.png"
+// ========== Edit di sini: templates payload per metode ==========
+const PAYMENT_PAYLOAD_TEMPLATES = {
+  // contoh sederhana: QRIS generic (ISO format atau layanan aggregator)
+  // kamu bisa ganti string ini sesuai format provider QRIS/merchant yang kamu gunakan.
+  // placeholders: {{amount}} (angka tanpa titik), {{invoice}}, {{phone}}, {{note}}, {{va}}
+  "QRIS": "00020101021126610014COM .GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  // contoh Dana: (ini hanya contoh teks payload; sesuaikan dengan format aslinya jika perlu)
+  "DANA": "00020101021126610014COM .GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SHOPEE": "00020101021126610014COM .GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "OVO": "00020101021126570011ID.DANA.WWW011893600915381429988202098142998820303UMI51440014ID.CO.QRIS.WWW0215ID10253673508530303UMI5204481453033605802ID5921LingkaranZ hurufBesar6015Kota Tangerang 6105153116304734A",
+  
+  "GOPAY": "00020101021126760024ID.CO.SPEEDCASH.MERCHANT01189360081530000958100215ID10200009581050303UKE51440014ID.CO.QRIS.WWW0215ID10200467631050303UKE5204860253033605802ID5913ZKGAMINGSTORE6007TANGSEL61051531162460509S3290565501091221611470716Zestoreidspedcas63049D4B",
+  // jika provider butuh token / deep link, masukkan link lengkap di sini
+  // VA tidak membutuhkan qr payload default; VA gunakan payment_data.va_number
 };
-const FALLBACK_VA = {
-  VA_BRI: { bank: "BRI", number: "5790-8569-7747-768" },
-  VA_BNI: { bank: "BNI", number: "9888-3081-0216-1147" },
-  VA_MANDIRI: { bank: "Mandiri", number: "8889-8285-6977-4776-8" }
-};
+// =============================================================
 
 function el(id){ return document.getElementById(id); }
 function fmtRp(n){ return typeof n === 'number' ? n.toLocaleString('id') : n; }
 
+// get invoice from URL
 const params = new URLSearchParams(location.search);
 const invoice = params.get('invoice');
-
 if(!invoice){
   el('loading').textContent = 'Invoice kosong. Contoh: /checkout?invoice=INVC-ML-...';
   el('notfound').style.display = 'block';
   throw new Error('no-invoice');
 }
-
 el('loading').textContent = `Menunggu data order ${invoice}...`;
 
 const orderRef = doc(db, 'orders', invoice);
+
+// helper: build payload from template
+function fillTemplate(template, vars){
+  return template.replace(/\{\{(\w+)\}\}/g, (_,k)=> (vars[k] !== undefined ? vars[k] : ''));
+}
+
+// helper: generate QR image url (using api.qrserver.com)
+function qrImageUrlFromPayload(payload, size=360){
+  // ensure payload is a string and encode
+  const encoded = encodeURIComponent(String(payload));
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encoded}`;
+}
 
 // realtime listener
 const unsub = onSnapshot(orderRef, (snap) => {
@@ -124,7 +151,6 @@ const unsub = onSnapshot(orderRef, (snap) => {
   el('loading').style.display = 'none';
   el('notfound').style.display = 'none';
   el('orderBox').style.display = 'block';
-
   const d = snap.data();
   renderOrder(d);
 }, (err) => {
@@ -132,7 +158,7 @@ const unsub = onSnapshot(orderRef, (snap) => {
   el('loading').textContent = 'Gagal mengambil data order.';
 });
 
-// render function
+// render
 function renderOrder(d){
   el('invoiceTxt').textContent = d.invoice || invoice;
   el('gameTxt').textContent = d.game || '-';
@@ -146,31 +172,98 @@ function renderOrder(d){
   el('methodTxt').textContent = (d.payment_method || '-').replace('_',' ');
   setStatusBadge(d.status || 'initiated');
 
+  // show admin note if pending
+  el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
+
   // payment UI
   const paymentUI = el('paymentUI');
   paymentUI.innerHTML = ''; // reset
 
   const pm = d.payment_method || '';
-  const pd = d.payment_data || {};
+  const pd = d.payment_data || {}; // payment-specific fields set from server/admin
+
+  // Build variables for template substitution
+  const vars = {
+    amount: d.amount_total ? Math.round(d.amount_total) : '',
+    invoice: d.invoice || invoice,
+    phone: d.noWA || '',
+    va: pd.va_number || (pd.va && pd.va.number) || '',
+    note: `NUBIA-${d.invoice}`
+  };
 
   if(pm.startsWith('VA_') || pm.startsWith('VA')) {
-    // show VA
+    // Virtual Account: show VA info (and optional payload if provided)
     const bankKey = pm; // e.g. VA_BRI
-    const vaNumber = pd.va_number || (FALLBACK_VA[bankKey] && FALLBACK_VA[bankKey].number) || 'N/A';
-    const bankName = pd.bank || (FALLBACK_VA[bankKey] && FALLBACK_VA[bankKey].bank) || bankKey;
-    paymentUI.innerHTML = `
-      <h3>Pembayaran via Virtual Account</h3>
+    const vaNumber = pd.va_number || (pd.va && pd.va.number) || '';
+    const bankName = pd.bank || (pd.va && pd.va.bank) || bankKey;
+    // If server provided a payload string in pd.qr_payload, use it as well (rare for VA)
+    const vaPayload = pd.qr_payload || null;
+
+    let html = `<h3>Pembayaran via Virtual Account</h3>
       <p class="muted">Bank: <strong>${bankName}</strong></p>
       <p class="muted">No. VA: <strong id="vaNumber">${vaNumber}</strong>
         <button id="copyVa" class="copy">Salin</button></p>
-      <p class="muted">Jumlah yang harus dibayar: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
-    `;
-    document.getElementById('copyVa').onclick = ()=> {
+      <p class="muted">Jumlah yang harus dibayar: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>`;
+
+    if(vaPayload){
+      const qrUrl = qrImageUrlFromPayload(vaPayload, 360);
+      html += `<div style="margin-top:8px"><p class="muted">Payload VA (scan jika tersedia):</p>
+        <textarea id="payloadArea" class="payload">${vaPayload}</textarea>
+        <div class="payload-row"><button id="copyPayload" class="copy">Salin Payload</button></div>
+        <img src="${qrUrl}" alt="QR VA" class="qr" /></div>`;
+    }
+
+    paymentUI.innerHTML = html;
+
+    document.getElementById('copyVa')?.addEventListener('click', ()=> {
+      if(!vaNumber) return alert('Nomor VA kosong.');
       navigator.clipboard.writeText(vaNumber).then(()=> alert('No. VA disalin'));
-    };
+    });
+    document.getElementById('copyPayload')?.addEventListener('click', ()=> {
+      const txt = document.getElementById('payloadArea').value;
+      navigator.clipboard.writeText(txt).then(()=> alert('Payload disalin'));
+    });
+
+    return;
+  }
+
+  // Non-VA methods: build payload from pd.qr_payload or template mapping
+  let payload = pd.qr_payload || null;
+  if(!payload){
+    // if template exists for this pm, fill placeholders
+    const tpl = PAYMENT_PAYLOAD_TEMPLATES[pm];
+    if(tpl) payload = fillTemplate(tpl, vars);
+  }
+  // If payload exists -> show textual payload and generated QR
+  if(payload){
+    const qrUrl = qrImageUrlFromPayload(payload, 360);
+    paymentUI.innerHTML = `
+      <h3>Instruksi Pembayaran (${(pm||'QR')})</h3>
+      <p class="muted">Gunakan payload di bawah (atau scan QR). Jumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
+      <textarea id="payloadArea" class="payload">${payload}</textarea>
+      <div class="payload-row">
+        <button id="copyPayload" class="copy">Salin Payload</button>
+        <a id="openPayload" class="btn" href="#" target="_blank" style="display:none">Buka/Link</a>
+      </div>
+      <img id="qrImg" src="${qrUrl}" alt="QR" class="qr" />
+      <p class="muted">Jika provider menerima deep-link, tombol "Buka/Link" akan aktif.</p>
+    `;
+    // if payload looks like URL, show open link
+    const openBtn = document.getElementById('openPayload');
+    try {
+      if (/^https?:\/\//i.test(payload)) {
+        openBtn.style.display = 'inline-block';
+        openBtn.href = payload;
+      }
+    } catch(e){}
+
+    document.getElementById('copyPayload').addEventListener('click', ()=> {
+      navigator.clipboard.writeText(payload).then(()=> alert('Payload disalin'));
+    });
+
   } else {
-    // QR / manual transfer / link
-    const qrUrl = pd.qr_image_url || FALLBACK_QR[pm] || pd.qr || null;
+    // fallback: no payload nor template — show friendly message / fallback QR image if provided
+    const qrUrl = pd.qr_image_url || null;
     if(qrUrl){
       paymentUI.innerHTML = `
         <h3>Instruksi Pembayaran (${(pm||'QR')})</h3>
@@ -186,14 +279,11 @@ function renderOrder(d){
     }
   }
 
-  // actions
+  // share button (wa)
   const share = encodeURIComponent(
     `Order #${d.invoice}\nGame:${d.game}\nID:${d.game_id}\nTotal: Rp ${fmtRp(d.amount_total)}\nStatus: ${d.status}\n\nCek: ${location.href}`
   );
   el('btnShareWA').href = `https://wa.me/6285697747768?text=${share}`;
-
-  // admin note visibility
-  el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
 }
 
 function setStatusBadge(status){
