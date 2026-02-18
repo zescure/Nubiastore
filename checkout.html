@@ -94,6 +94,24 @@ font-size:1.3rem;
   - butuh elemen HTML yang sama seperti script sebelumnya.
 */
 
+
+  
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===== FIREBASE CONFIG ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543",
+  measurementId: "G-TS0YB9NYW8"
+};
+initializeApp(firebaseConfig);
+const db = getFirestore();
+
 /* ========= RESULT PANEL ========= */
 
 function showResultUI(type){
@@ -126,24 +144,6 @@ return true;
 
 return false;
 }
-
-  
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/* ===== FIREBASE CONFIG ===== */
-const firebaseConfig = {
-  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-  authDomain: "zestoreid-f9e85.firebaseapp.com",
-  projectId: "zestoreid-f9e85",
-  storageBucket: "zestoreid-f9e85.firebasestorage.app",
-  messagingSenderId: "426093692154",
-  appId: "1:426093692154:web:38c6e9c143af626a623543",
-  measurementId: "G-TS0YB9NYW8"
-};
-initializeApp(firebaseConfig);
-const db = getFirestore();
-
 /* ========= PARAM ========= */
 
 const params=new URLSearchParams(location.search);
