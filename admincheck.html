@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin — NUBIASTORE</title>
+<style>
+  body{font-family:Inter,Segoe UI,system-ui;margin:12px;background:#f6f7f9;color:#111}
+  .wrap{max-width:1100px;margin:12px auto}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  h1{color:#16a34a}
+  .card{background:#fff;padding:12px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin-bottom:12px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:.95rem}
+  th{background:#f8faf9}
+  .btn{padding:6px 10px;border-radius:6px;border:none;cursor:pointer}
+  .btn.complete{background:#16a34a;color:#fff}
+  .btn.cancel{background:#ef4444;color:#fff}
+  .btn.view{background:#111;color:#fff}
+  .status{padding:4px 8px;border-radius:6px;font-weight:600}
+  .status.initiated{background:#fef3c7;color:#92400e}
+  .status.pending{background:#e0f2fe;color:#0369a1}
+  .status.completed{background:#dcfce7;color:#166534}
+  .status.cancelled{background:#fee2e2;color:#7f1d1d}
+  .muted{color:#666;font-size:.92rem}
+  .search{padding:8px;border-radius:8px;border:1px solid #e5e7eb;width:250px}
+  .top-actions{display:flex;gap:8px;align-items:center}
+  pre{background:#f8faf9;padding:8px;border-radius:6px;overflow:auto}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Admin Panel — Orders</h1>
+        <div class="muted">Lihat dan kelola order. Hanya admin yang bisa mengubah status.</div>
+      </div>
+      <div class="top-actions">
+        <input id="qInvoice" class="search" placeholder="Cari invoice / user id" />
+        <button id="btnSignOut" class="btn">Sign out</button>
+      </div>
+    </header>
+
+    <div id="authMsg" class="card">Memeriksa otentikasi...</div>
+
+    <div id="adminUI" style="display:none">
+      <div class="card">
+        <strong>Filter:</strong>
+        <select id="filterStatus">
+          <option value="all">Semua</option>
+          <option value="initiated">initiated</option>
+          <option value="pending">pending</option>
+          <option value="completed">completed</option>
+          <option value="cancelled">cancelled</option>
+        </select>
+        <span style="margin-left:12px" class="muted">Realtime update aktif — perubahan disimpan ke Firestore</span>
+      </div>
+
+      <div class="card" id="listCard">
+        <table>
+          <thead>
+            <tr>
+              <th>Invoice</th>
+              <th>User / Game</th>
+              <th>Nominal</th>
+              <th>Total</th>
+              <th>Method</th>
+              <th>Created</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTbody">
+            <!-- rows injected here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Detail Order</h3>
+        <div id="detailBox" class="muted">Klik "View" pada baris untuk melihat detail order.</div>
+        <pre id="detailPre" style="display:none"></pre>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, query, orderBy, onSnapshot, where,
+  doc, updateDoc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543",
+  measurementId: "G-TS0YB9NYW8"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const authMsg = document.getElementById('authMsg');
+const adminUI = document.getElementById('adminUI');
+const ordersTbody = document.getElementById('ordersTbody');
+const detailBox = document.getElementById('detailBox');
+const detailPre = document.getElementById('detailPre');
+const qInvoice = document.getElementById('qInvoice');
+const filterStatus = document.getElementById('filterStatus');
+const btnSignOut = document.getElementById('btnSignOut');
+
+let unsubscribeOrders = null;
+let lastOrders = {}; // cache map invoice -> data
+
+// require login + custom claim admin==true
+onAuthStateChanged(auth, async (u) => {
+  if(!u){
+    authMsg.innerHTML = '<strong>Harus login sebagai admin</strong> — silakan login di halaman utama.';
+    adminUI.style.display = 'none';
+    return;
+  }
+  // get id token result to inspect claims
+  const tokenResult = await u.getIdTokenResult();
+  const claims = tokenResult.claims || {};
+  if(!claims.admin){
+    authMsg.innerHTML = '<strong>Access denied.</strong> Akun tidak memiliki hak admin.';
+    adminUI.style.display = 'none';
+    return;
+  }
+
+  authMsg.style.display = 'none';
+  adminUI.style.display = 'block';
+  startOrdersListener();
+});
+
+// sign out
+btnSignOut.onclick = ()=> signOut(auth);
+
+// listen orders realtime (filtered by select + search)
+function startOrdersListener(){
+  if(unsubscribeOrders) unsubscribeOrders();
+  // base query: all orders ordered by createdAt desc
+  const col = collection(db, 'orders');
+  const q = query(col, orderBy('createdAt','desc'));
+  unsubscribeOrders = onSnapshot(q, (snap)=>{
+    lastOrders = {};
+    snap.forEach(docSnap=>{
+      lastOrders[docSnap.id] = docSnap.data();
+    });
+    renderOrdersTable();
+  }, (err)=>{
+    console.error('orders snapshot err', err);
+  });
+}
+
+function renderOrdersTable(){
+  const filter = filterStatus.value;
+  const search = qInvoice.value.trim().toLowerCase();
+  ordersTbody.innerHTML = '';
+  const rows = Object.values(lastOrders)
+    .filter(d => {
+      if(filter !== 'all' && d.status !== filter) return false;
+      if(!search) return true;
+      return (d.invoice && d.invoice.toLowerCase().includes(search)) ||
+             (d.userId && String(d.userId).toLowerCase().includes(search)) ||
+             (d.game_id && String(d.game_id).toLowerCase().includes(search));
+    })
+    .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+  rows.forEach(d=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${d.invoice || '-'}</td>
+      <td>${d.userId || 'guest'} / ${d.game || '-'}</td>
+      <td>${d.nominalValue || '-'}</td>
+      <td>Rp ${formatMoney(d.amount_total)}</td>
+      <td>${(d.payment_method||'-').replace('_',' ')}</td>
+      <td>${formatDate(d.createdAt)}</td>
+      <td><span class="status ${d.status||'initiated'}">${(d.status||'initiated')}</span></td>
+      <td>
+        <button class="btn view" data-id="${d.invoice}">View</button>
+        <button class="btn complete" data-id="${d.invoice}">Selesai</button>
+        <button class="btn cancel" data-id="${d.invoice}">Batal</button>
+      </td>
+    `;
+    ordersTbody.appendChild(tr);
+  });
+
+  // attach row buttons
+  document.querySelectorAll('button.view').forEach(b=>{
+    b.onclick = async (e)=>{
+      const id = e.target.dataset.id;
+      showDetail(id);
+    };
+  });
+  document.querySelectorAll('button.complete').forEach(b=>{
+    b.onclick = async (e)=>{
+      const id = e.target.dataset.id;
+      if(!confirm('Tandai order '+id+' SELESAI?')) return;
+      await markStatus(id, 'completed');
+    };
+  });
+  document.querySelectorAll('button.cancel').forEach(b=>{
+    b.onclick = async (e)=>{
+      const id = e.target.dataset.id;
+      if(!confirm('Tandai order '+id+' BATAL?')) return;
+      await markStatus(id, 'cancelled');
+    };
+  });
+}
+
+async function showDetail(invoice){
+  try{
+    const docRef = doc(db,'orders',invoice);
+    const snap = await getDoc(docRef);
+    if(!snap.exists()){
+      detailBox.textContent = 'Order tidak ditemukan';
+      detailPre.style.display='none';
+      return;
+    }
+    const data = snap.data();
+    detailBox.style.display = 'none';
+    detailPre.style.display = 'block';
+    detailPre.textContent = JSON.stringify(data, null, 2);
+  }catch(e){
+    console.error(e);
+  }
+}
+
+async function markStatus(invoice, newStatus){
+  try{
+    const ref = doc(db,'orders',invoice);
+    await updateDoc(ref, { status: newStatus, updatedAt: new Date() }); // serverTimestamp preferred on server
+    alert('Status updated: ' + newStatus);
+  }catch(e){
+    console.error('markStatus err', e);
+    alert('Gagal update status: '+e.message);
+  }
+}
+
+// helpers
+function formatMoney(n){ return (typeof n === 'number')? n.toLocaleString('id') : n; }
+function formatDate(ts){
+  if(!ts) return '-';
+  // ts may be Firestore Timestamp object with toDate
+  if(ts.toDate) return new Date(ts.toDate()).toLocaleString();
+  return new Date(ts.seconds ? ts.seconds *1000 : ts).toLocaleString();
+}
+
+// search + filter events
+qInvoice.addEventListener('input', renderOrdersTable);
+filterStatus.addEventListener('change', renderOrdersTable);
+
+</script>
+</body>
+</html>
