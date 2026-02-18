@@ -393,6 +393,64 @@ el('btnCopyInvoice')?.addEventListener('click', () => {
   navigator.clipboard.writeText(invoice).then(() => alert('Invoice disalin'));
 });
 
+/* ========= RESULT PANEL ========= */
+
+function showResultUI(type){
+
+const ui=document.getElementById('paymentUI');
+
+if(type==="cancel"){
+
+ui.innerHTML=`
+<div class="resultBox">
+<img src="cancel.png">
+<h2>Orderan kamu gagal / dibatalin nih,<br>
+buat order baru atau chat customer service kami yah!</h2>
+</div>
+`;
+return true;
+}
+
+if(type==="success"){
+
+ui.innerHTML=`
+<div class="resultBox">
+<img src="success.png">
+<h2>Hallo !! Orderan kamu udah di proses nih.<br>
+Sekarang cek in-game kamu ya, item yang kamu beli udah masuk!</h2>
+</div>
+`;
+return true;
+}
+
+return false;
+}
+/* ========= PARAM ========= */
+
+const params=new URLSearchParams(location.search);
+const invoice=params.get('invoice');
+
+const ref=doc(db,'orders',invoice);
+
+onSnapshot(ref,snap=>{
+if(!snap.exists())return;
+
+const d=snap.data();
+
+/* ==== STATUS LOCK ==== */
+
+const s=(d.status||"").toLowerCase();
+
+/* 🔴 CANCEL */
+if(s==="cancelled"||s==="canceled"){
+showResultUI("cancel");
+}
+
+/* 🟢 COMPLETE */
+else if(s==="completed"){
+showResultUI("success");
+}
+  
 /* ===== CLEANUP (optional) ===== */
 window.addEventListener('beforeunload', () => {
   try { unsub(); } catch (e) { /* ignore */ }
