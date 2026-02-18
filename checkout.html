@@ -74,17 +74,15 @@
 
 <script type="module">
 /*
-  checkout-dynamic-emv.js
-  - Paste menggantikan script type="module" di halaman /checkout.
-  - Requires HTML IDs: loading, notfound, orderBox, invoiceTxt, gameTxt, idTxt, srvTxt, waTxt,
-    nominalTxt, priceTxt, adminTxt, totalTxt, methodTxt, statusBadge, paymentUI, btnShareWA,
-    btnCopyInvoice, adminNote
+  checkout-dynamic-payload-fixed.js
+  - paste ini ke halaman /checkout untuk menggantikan script lama.
+  - butuh elemen HTML yang sama seperti script sebelumnya.
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ===== FIREBASE ===== */
+/* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
   apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
   authDomain: "zestoreid-f9e85.firebaseapp.com",
@@ -97,138 +95,107 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 const db = getFirestore();
 
-/* ===== CONFIG ===== */
-const HIDE_PAYLOAD_IN_PROD = true; // true = user only sees QR image
+/* ===== CONFIG / TEMPLATES ===== */
+const HIDE_PAYLOAD_IN_PROD = true;
 const UNIFIED_PAYLOAD_TEMPLATES = {
-  "QRIS": "00020101021126610014COMw.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "DANA":  "00020101021126610014COMw.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "GOPAY": "00020101021126610014COMw.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "OVO":   "00020101021126610014COMw.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SHOPEE":"00020101021126610014COMw.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  // NOTE: Do NOT put an EMV string here unless it's a proper template without 54 & CRC.
+  "QRIS":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "DANA":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "GOPAY": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "OVO":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SHOPEE":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657"
 };
 
 /* ===== HELPERS ===== */
 const el = id => document.getElementById(id);
 const fmtRp = n => (typeof n === 'number' ? n.toLocaleString('id') : n);
-function fillTemplate(template, vars){ return String(template).replace(/\{\{(\w+)\}\}/g, (_,k)=> (vars[k]!==undefined?vars[k]:'')); }
-function qrImageUrlFromPayload(payload, size=360){ return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(String(payload))}`; }
-function fmtAmountNumber(n){ const num = Number(n); return (!isFinite(num))?0:Math.round(num); }
 
-/* ===== EMV TLV PARSE / BUILD / CRC (from your ref) ===== */
-function parseTLV(s){
-  const items=[]; let i=0;
-  while(i+4 <= s.length){
-    const tag = s.substr(i,2);
-    const len = parseInt(s.substr(i+2,2),10);
-    if (isNaN(len)) break;
-    const val = s.substr(i+4, len);
-    items.push({tag, len, value: val});
-    i += 4 + len;
-  }
-  return items;
+function fillTemplate(template, vars) {
+  return String(template).replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
 }
-function buildTLV(items){
-  return items.map(it=>{
-    const val = it.value ?? '';
-    const len = String(val.length).padStart(2,'0');
-    return it.tag + len + val;
+function qrImageUrlFromPayload(payload, size = 360) {
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(String(payload))}`;
+}
+function fmtAmountNumber(n) {
+  const num = Number(n);
+  if (!isFinite(num)) return 0;
+  return Math.round(num);
+}
+
+/* ===== TLV/EMV helpers (parse/build & CRC) ===== */
+function parseTLV_ASCII(s){
+  // parse ASCII TLV (tag 2 chars, len 2 chars decimal, then len chars of value)
+  let i=0, out=[];
+  while(i < s.length){
+    const tag = s.substr(i,2); i += 2;
+    const len = parseInt(s.substr(i,2),10); i += 2;
+    const value = s.substr(i, len); i += len;
+    out.push({tag, len, value});
+  }
+  return out;
+}
+function buildTLV_ASCII(arr){
+  return arr.map(o => {
+    const v = String(o.value);
+    const l = String(v.length).padStart(2,'0');
+    return o.tag + l + v;
   }).join('');
 }
-function crc16ccitt(str){
-  // compute over ASCII bytes
-  const buf = new TextEncoder().encode(str);
+function setAmountInPayloadCore_ASCII(corePayload, amountStr){
+  // corePayload: TLV ASCII string without trailing CRC (i.e. no 63...).
+  // ensures tag '54' is set to amountStr (format like "12345.00")
+  const parsed = parseTLV_ASCII(corePayload);
+  // filter out existing 54
+  const filtered = parsed.filter(o => o.tag !== '54');
+  // find index for tag 58 to insert before if exists (58 = country/merchant ext usually)
+  const idx58 = filtered.findIndex(o => o.tag === '58');
+  const amountObj = {tag: '54', value: String(amountStr)};
+  if(idx58 >= 0) filtered.splice(idx58, 0, amountObj);
+  else filtered.push(amountObj);
+  return buildTLV_ASCII(filtered);
+}
+// CRC16-CCITT (poly 0x1021, init 0xFFFF) over ASCII bytes, returns hex uppercase 4 chars
+function crc16ccitt_ascii(str){
   let crc = 0xFFFF;
-  for (let b of buf) {
-    crc ^= (b << 8);
-    for (let i=0;i<8;i++){
-      if (crc & 0x8000) crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+  for (let i = 0; i < str.length; i++) {
+    crc ^= (str.charCodeAt(i) & 0xFF) << 8;
+    for (let j = 0; j < 8; j++) {
+      if ((crc & 0x8000) !== 0) crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
       else crc = (crc << 1) & 0xFFFF;
     }
   }
   return crc.toString(16).toUpperCase().padStart(4,'0');
 }
 
-/*
- addAmountToPayload(payload, amountStr)
- - payload: EMV TLV string (may include CRC tag 63). Function will:
-   * remove existing tag 63 if present
-   * remove existing tag 54 if present
-   * insert tag 54 with amountStr (raw string)
-   * rebuild TLV and append CRC tag 63 with CRC16 over (withoutCRC + "6304")
- - returns final EMV string with CRC, or null on failure
-*/
-function addAmountToPayload(payload, amountStr){
-  if(!payload) return null;
-  // try parse
-  let items = parseTLV(payload);
-  if(items.length === 0){
-    // payload not TLV-like
-    return null;
-  }
-  // filter out CRC tag 63 and existing 54
-  items = items.filter(it => it.tag !== '63' && it.tag !== '54');
-
-  // normalize amount string: keep as provided but remove thousands separators
-  let amt = String(amountStr).trim();
-  amt = amt.replace(/[.,]/g, function(ch, idx, s){
-    // if contains dot as decimal separator with digits after -> keep dot
-    // simple heuristic: if string contains '.' and digits after, keep '.'
-    // but for safety remove thousands separator commas only
-    return ch === ',' ? '' : ch;
-  });
-  // do not add currency symbol
-  if(amt === '') return null;
-
-  // insert tag 54
-  items.push({tag:'54', value: amt});
-
-  const withoutCrc = buildTLV(items);
-  const toCrc = withoutCrc + '6304';
-  const crc = crc16ccitt(toCrc);
-  const final = withoutCrc + '63' + '04' + crc;
-  return final;
-}
-
-/* helper to detect EMV-like payload */
-function looksLikeEmv(payload){
-  if(!payload || typeof payload !== 'string') return false;
-  // must start with two digits tag and two digits length (simple heuristic)
-  if(!/^\d{4}/.test(payload)) return false;
-  const parsed = parseTLV(payload);
-  return parsed.length > 0;
-}
-
 /* ===== GET INVOICE PARAM ===== */
 const params = new URLSearchParams(location.search);
 const invoice = params.get('invoice');
-if(!invoice){
-  el('loading').textContent = 'Invoice kosong. Contoh: /checkout?invoice=INVC-ML-...';
+if (!invoice) {
+  el('loading').textContent = 'Invoice kosong. Contoh: /checkout?invoice=INVC-...';
   el('notfound').style.display = 'block';
   throw new Error('no-invoice');
 }
 el('loading').textContent = `Menunggu data order ${invoice}...`;
 
 /* ===== FIRESTORE LISTENER ===== */
-const orderRef = doc(db,'orders', invoice);
+const orderRef = doc(db, 'orders', invoice);
 const unsub = onSnapshot(orderRef, snap => {
-  if(!snap.exists()){
-    el('loading').style.display='none';
-    el('notfound').style.display='block';
+  if (!snap.exists()) {
+    el('loading').style.display = 'none';
+    el('notfound').style.display = 'block';
     return;
   }
-  el('loading').style.display='none';
-  el('notfound').style.display='none';
-  el('orderBox').style.display='block';
+  el('loading').style.display = 'none';
+  el('notfound').style.display = 'none';
+  el('orderBox').style.display = 'block';
   const d = snap.data();
-  renderOrder(d);
+  try { renderOrder(d); } catch (err) { console.error('renderOrder error', err); }
 }, err => {
   console.error('snapshot error', err);
   el('loading').textContent = 'Gagal mengambil data order.';
 });
 
-/* ===== RENDER ===== */
-function renderOrder(d){
+/* ===== RENDER ORDER ===== */
+function renderOrder(d) {
   el('invoiceTxt').textContent = d.invoice || invoice;
   el('gameTxt').textContent = d.game || '-';
   el('idTxt').textContent = d.game_id || '-';
@@ -238,48 +205,68 @@ function renderOrder(d){
   el('priceTxt').textContent = 'Rp ' + fmtRp(d.price || '-');
   el('adminTxt').textContent = 'Rp ' + fmtRp(d.adminFee || 0);
   el('totalTxt').textContent = 'Rp ' + fmtRp(d.amount_total || '-');
-  el('methodTxt').textContent = (d.payment_method || '-').replace('_',' ');
+  el('methodTxt').textContent = (d.payment_method || '-').replace('_', ' ');
   setStatusBadge(d.status || 'initiated');
-
   el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
 
+  // build vars (two amount formats)
+  const amountNumber = Number(d.amount_total) || 0;
   const vars = {
-    amount: fmtAmountNumber(d.amount_total),
+    // for deeplinks / templates — many providers expect integer or no decimals
+    amount: fmtAmountNumber(amountNumber),
+    // amount with decimal for EMV/QRIS (two decimals)
+    amount_decimal: (typeof amountNumber === 'number') ? amountNumber.toFixed(2) : String(d.amount_total || '0.00'),
     invoice: d.invoice || invoice,
     phone: d.noWA || '',
     va: (d.payment_data && (d.payment_data.va_number || (d.payment_data.va && d.payment_data.va.number))) || '',
     note: `NUBIA-${d.invoice || invoice}`
   };
 
-  const pm = (d.payment_method || '').toUpperCase();
-  const pd = d.payment_data || {};
+  // payment render
   const paymentUI = el('paymentUI');
   paymentUI.innerHTML = '';
+  const pm = (d.payment_method || '').toUpperCase();
+  const pd = d.payment_data || {};
 
-  // priority: server-provided qr_payload
+  // priority: server-provided payload (string) OR pd.qr_image_url
   let payload = pd.qr_payload || null;
 
-  // fallback: template (non-EMV)
-  if(!payload && UNIFIED_PAYLOAD_TEMPLATES[pm]) {
-    payload = fillTemplate(UNIFIED_PAYLOAD_TEMPLATES[pm], vars);
+  // fallback: template mapping (use decimal for QRIS when template contains AMT — but keep existing behavior)
+  if (!payload && UNIFIED_PAYLOAD_TEMPLATES[pm]) {
+    // choose amount format sensible: if QRIS template, use decimal, else integer
+    const amtForTemplate = (pm === 'QRIS' || pm.includes('QR')) ? vars.amount_decimal : vars.amount;
+    payload = fillTemplate(UNIFIED_PAYLOAD_TEMPLATES[pm], {...vars, amount: amtForTemplate});
   }
 
-  // If payload is EMV-like and pm is QRIS (or payload looks like EMV) -> inject amount
-  let payloadToUse = null;
-  if(payload && looksLikeEmv(payload)){
-    // If admin supplied an EMV string that already contains tag54, function will strip & replace
-    payloadToUse = addAmountToPayload(payload, vars.amount);
-    if(!payloadToUse){
-      // fallback to raw payload
-      payloadToUse = payload;
+  // Helper to produce final QR payload for EMV-like content
+  function produceFinalEmvPayloadIfNeeded(rawPayload, amountDecimalStr){
+    if (!rawPayload || typeof rawPayload !== 'string') return rawPayload;
+    // detect EMV-like TLV: usually starts with '00' tag and contains numeric tags.
+    // Remove trailing CRC if present (6304 + 4 hex)
+    const crcRegexp = /6304[0-9A-Fa-f]{4}$/;
+    let core = rawPayload;
+    if (crcRegexp.test(core)) {
+      core = core.replace(crcRegexp, '');
+    } else if (core.endsWith('6304')) {
+      core = core.slice(0, -4);
     }
-  } else {
-    // not EMV, use payload as-is (deep-link or text)
-    payloadToUse = payload;
+    // If core looks like TLV (starts with two digits tag), try to insert tag 54
+    if (/^\d{2}/.test(core)) {
+      try {
+        const withAmount = setAmountInPayloadCore_ASCII(core, amountDecimalStr);
+        const toCrc = withAmount + '6304';
+        const crcHex = crc16ccitt_ascii(toCrc);
+        return toCrc + crcHex;
+      } catch (e) {
+        console.warn('EMV attach amount failed', e);
+        return rawPayload;
+      }
+    }
+    return rawPayload;
   }
 
-  // VA branch
-  if(pm.startsWith('VA')){
+  // Virtual Account branch (kept similar)
+  if (pm && pm.startsWith('VA')) {
     const bankName = pd.bank || pm;
     const vaNumber = pd.va_number || vars.va || '';
     let html = `<h3>Pembayaran via Virtual Account</h3>
@@ -288,54 +275,76 @@ function renderOrder(d){
         <button id="copyVa" class="copy">Salin</button></p>
       <p class="muted">Jumlah yang harus dibayar: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>`;
 
-    if(payloadToUse){
+    if (payload) {
+      // try attach amount if payload is EMV-like
+      let payloadToUse = payload;
+      if ((pm.includes('QR') || pm === 'QRIS') || (/^\d{2}/.test(payload))) {
+        payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
+      }
       const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
-      html += `<div style="margin-top:8px">${ HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
-        <div class="payload-row">${ HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>' }</div>
-        <img src="${qrUrl}" alt="QR VA" class="qr" /></div>`;
-    }
-
-    paymentUI.innerHTML = html;
-    document.getElementById('copyVa')?.addEventListener('click', ()=> {
-      if(!vaNumber) return alert('Nomor VA kosong.');
-      navigator.clipboard.writeText(vaNumber).then(()=> alert('No. VA disalin'));
-    });
-    if(!HIDE_PAYLOAD_IN_PROD){
-      document.getElementById('copyPayload')?.addEventListener('click', ()=> {
-        navigator.clipboard.writeText(document.getElementById('payloadArea').value).then(()=> alert('Payload disalin'));
+      html += `<div style="margin-top:8px">${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+        <div class="payload-row">${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}</div>
+        <img id="qrImg" src="${qrUrl}" alt="QR VA" class="qr" /></div>`;
+      paymentUI.innerHTML = html;
+      document.getElementById('copyVa')?.addEventListener('click', () => {
+        if (!vaNumber) return alert('Nomor VA kosong.');
+        navigator.clipboard.writeText(vaNumber).then(() => alert('No. VA disalin'));
       });
+      if (!HIDE_PAYLOAD_IN_PROD) {
+        document.getElementById('copyPayload')?.addEventListener('click', () => {
+          const txt = document.getElementById('payloadArea').value;
+          navigator.clipboard.writeText(txt).then(() => alert('Payload disalin'));
+        });
+      }
+      return;
     }
-    return;
   }
 
   // Non-VA handling
-  if(payloadToUse){
+  if (payload) {
+    // If looks like EMV / QRIS TLV -> insert amount_decimal and recompute CRC
+    let payloadToUse = payload;
+    if ((pm === 'QRIS' || pm.includes('QR')) || /^\d{2}/.test(payload)) {
+      payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
+    }
+
     const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
-    let html = `<h3>Instruksi Pembayaran (${pm || 'QR'})</h3>
+    let html = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
       <p class="muted">Scan QR berikut atau gunakan payload. Jumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
-      ${ HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+      ${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
       <div class="payload-row">
-        ${ HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}
+        ${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}
         <a id="openPayload" class="btn" href="#" target="_blank" style="display:none">Buka/Link</a>
       </div>
-      <img src="${qrUrl}" alt="QR" class="qr" />`;
+      <img id="qrImg" src="${qrUrl}" alt="QR" class="qr" />
+      <p class="muted">Jika provider menerima deep-link, tombol "Buka/Link" akan aktif.</p>`;
+
     paymentUI.innerHTML = html;
 
+    // show open link if payload is URL scheme-like
     const openBtn = document.getElementById('openPayload');
-    if(openBtn && /^https?:\/\//i.test(payloadToUse)){
+    if (openBtn && /^https?:\/\//i.test(payloadToUse)) {
       openBtn.style.display = 'inline-block';
       openBtn.href = payloadToUse;
     }
-    if(!HIDE_PAYLOAD_IN_PROD){
-      document.getElementById('copyPayload')?.addEventListener('click', ()=> {
-        navigator.clipboard.writeText(document.getElementById('payloadArea').value).then(()=> alert('Payload disalin'));
+
+    if (!HIDE_PAYLOAD_IN_PROD) {
+      document.getElementById('copyPayload')?.addEventListener('click', () => {
+        navigator.clipboard.writeText(payloadToUse).then(() => alert('Payload disalin'));
       });
     }
+
+    // store dataset for possible share / pay attempts
+    const qrImg = document.getElementById('qrImg');
+    if (qrImg) {
+      qrImg.dataset.payload = payloadToUse;
+      qrImg.dataset.total = String(vars.amount_decimal);
+    }
   } else {
-    // fallback to qr_image_url
-    const qrUrl = pd.qr_image_url || null;
-    if(qrUrl){
-      paymentUI.innerHTML = `<h3>Instruksi Pembayaran (${pm || 'QR'})</h3>
+    // fallback to qr_image_url inside payment_data
+    const qrUrl = (pd && pd.qr_image_url) || null;
+    if (qrUrl) {
+      paymentUI.innerHTML = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
         <p class="muted">Scan QR berikut lalu bayar sejumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
         <img src="${qrUrl}" alt="QRIS" class="qr" />
         <p class="muted">Atau gunakan aplikasi pembayaran sesuai metode.</p>`;
@@ -345,24 +354,29 @@ function renderOrder(d){
     }
   }
 
-  // share link
+  // update share link
   const share = encodeURIComponent(
     `Order #${d.invoice}\nGame:${d.game}\nID:${d.game_id}\nTotal: Rp ${fmtRp(d.amount_total)}\nStatus: ${d.status}\n\nCek: ${location.href}`
   );
   el('btnShareWA').href = `https://wa.me/6285697747768?text=${share}`;
 }
 
-/* ===== UI helpers ===== */
-function setStatusBadge(status){
+/* ===== UI HELPERS ===== */
+function setStatusBadge(status) {
   const b = el('statusBadge');
   b.className = 'status ' + (status || 'initiated');
   b.textContent = (status || 'initiated').toUpperCase();
 }
-el('btnCopyInvoice')?.addEventListener('click', ()=> navigator.clipboard.writeText(invoice).then(()=> alert('Invoice disalin')));
 
-/* cleanup */
-window.addEventListener('beforeunload', ()=> { try{ unsub(); }catch(e){} });
+/* ===== COPY INVOICE BUTTON ===== */
+el('btnCopyInvoice')?.addEventListener('click', () => {
+  navigator.clipboard.writeText(invoice).then(() => alert('Invoice disalin'));
+});
 
+/* ===== CLEANUP (optional) ===== */
+window.addEventListener('beforeunload', () => {
+  try { unsub(); } catch (e) { /* ignore */ }
+});
 </script>
 </body>
 </html>
