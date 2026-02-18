@@ -74,11 +74,12 @@
 
 <script type="module">
 /*
-  checkout-dynamic-payload.js
-  - paste ini ke halaman /checkout untuk menggantikan script lama.
-  - pastikan HTML kamu punya elemen dengan id: loading, notfound, orderBox,
-    invoiceTxt, gameTxt, idTxt, srvTxt, waTxt, nominalTxt, priceTxt, adminTxt,
-    totalTxt, methodTxt, statusBadge, paymentUI, btnShareWA, btnCopyInvoice, adminNote
+  checkout-emv-dynamic.js
+  - Paste ini ke halaman /checkout (ganti script lama).
+  - Harus ada elemen id: loading, notfound, orderBox,
+    invoiceTxt, gameTxt, idTxt, srvTxt, waTxt, nominalTxt,
+    priceTxt, adminTxt, totalTxt, methodTxt, statusBadge,
+    paymentUI, btnShareWA, btnCopyInvoice, adminNote
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -97,18 +98,17 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 const db = getFirestore();
 
-/* ===== CONFIG / TEMPLATES ===== */
-// true = hide textual payload from users (production mode)
+/* ===== CONFIG ===== */
+// sembunyikan payload text di production supaya user hanya lihat QR
 const HIDE_PAYLOAD_IN_PROD = true;
 
-// Unified payload templates (edit sesuai kebutuhan provider/aggregator)
-// Placeholders: {{amount}} (integer), {{invoice}}, {{phone}}, {{va}}, {{note}}
+// template fallback per metode (sesuaikan jika perlu)
 const UNIFIED_PAYLOAD_TEMPLATES = {
-  "QRIS":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "DANA":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "GOPAY": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "OVO":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SHOPEE":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657"
+  "QRIS":  "NUBIAQR|INVC={{invoice}}|AMT={{amount}}|NOTE={{note}}",
+  "DANA":  "dana://pay?phone={{phone}}&amount={{amount}}&ref={{invoice}}",
+  "GOPAY": "gopay://pay?phone={{phone}}&amount={{amount}}&ref={{invoice}}",
+  "OVO":   "ovo://pay?phone={{phone}}&amount={{amount}}&ref={{invoice}}",
+  "SHOPEE":"shopeepay://pay?phone={{phone}}&amount={{amount}}&ref={{invoice}}"
 };
 
 /* ===== HELPERS ===== */
@@ -121,29 +121,71 @@ function fillTemplate(template, vars) {
 function qrImageUrlFromPayload(payload, size = 360) {
   return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(String(payload))}`;
 }
-function fmtAmountNumber(n) {
-  // ensure integer amount (no thousand separators)
+function fmtAmountInteger(n) {
   const num = Number(n);
   if (!isFinite(num)) return 0;
   return Math.round(num);
 }
 
-/* ===== OPTIONAL: EMV CRC16 (naive client side) =====
-   - This is experimental. For production EMV QRIS generation, generate server-side.
+/* ===== EMV/TLV UTIL (taken & adapted from your snippet) =====
+   parseTLV, buildTLV, crc16ccitt, addAmountToPayload
 */
+function parseTLV(s) {
+  const items = [];
+  let i = 0;
+  while (i + 4 <= s.length) {
+    const tag = s.substr(i,2);
+    const len = parseInt(s.substr(i+2,2), 10);
+    if (isNaN(len)) break;
+    const val = s.substr(i+4, len);
+    items.push({tag, len, value: val});
+    i += 4 + len;
+  }
+  return items;
+}
+function buildTLV(items) {
+  return items.map(it => {
+    const val = it.value ?? '';
+    const len = String(val.length).padStart(2,'0');
+    return it.tag + len + val;
+  }).join('');
+}
 function crc16ccitt(str) {
+  const buf = new TextEncoder().encode(str);
   let crc = 0xFFFF;
-  for (let i = 0; i < str.length; i++) {
-    crc ^= str.charCodeAt(i) << 8;
-    for (let j = 0; j < 8; j++) {
-      crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+  for (let b of buf) {
+    crc ^= (b << 8);
+    for (let i=0;i<8;i++) {
+      if (crc & 0x8000) crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+      else crc = (crc << 1) & 0xFFFF;
     }
   }
-  return crc.toString(16).toUpperCase().padStart(4, '0');
+  return crc.toString(16).toUpperCase().padStart(4,'0');
 }
-function makeEmvWithCrc(emvNoCrc) {
-  const toCrc = emvNoCrc + "6304";
-  return toCrc + crc16ccitt(toCrc);
+// Insert/replace tag 54 (amount) before CRC (tag 63)
+function addAmountToPayload(payload, amountStr) {
+  // parse and remove existing CRC (tag 63) and 54 if present
+  let items = parseTLV(payload);
+  items = items.filter(it => it.tag !== '63' && it.tag !== '54');
+
+  let amt = String(amountStr).trim();
+  if (amt === '') return null;
+
+  // normalize amount
+  if (amt.indexOf('.') === -1) {
+    // keep integer as-is
+  } else {
+    // normalize to max 2 decimals, drop .00
+    amt = parseFloat(amt).toFixed(2).replace(/\.00$/,'');
+  }
+
+  items.push({ tag: '54', value: amt });
+
+  const withoutCrc = buildTLV(items);
+  const toCrc = withoutCrc + '6304';
+  const crc = crc16ccitt(toCrc);
+  const final = withoutCrc + '63' + '04' + crc;
+  return final;
 }
 
 /* ===== GET INVOICE PARAM ===== */
@@ -156,7 +198,7 @@ if (!invoice) {
 }
 el('loading').textContent = `Menunggu data order ${invoice}...`;
 
-/* ===== FIRESTORE LISTENER ===== */
+/* ===== FIRESTORE: realtime order listener ===== */
 const orderRef = doc(db, 'orders', invoice);
 const unsub = onSnapshot(orderRef, snap => {
   if (!snap.exists()) {
@@ -168,17 +210,13 @@ const unsub = onSnapshot(orderRef, snap => {
   el('notfound').style.display = 'none';
   el('orderBox').style.display = 'block';
   const d = snap.data();
-  try {
-    renderOrder(d);
-  } catch (err) {
-    console.error('renderOrder error', err);
-  }
+  renderOrder(d);
 }, err => {
   console.error('snapshot error', err);
   el('loading').textContent = 'Gagal mengambil data order.';
 });
 
-/* ===== RENDER ORDER ===== */
+/* ===== RENDER LOGIC ===== */
 function renderOrder(d) {
   el('invoiceTxt').textContent = d.invoice || invoice;
   el('gameTxt').textContent = d.game || '-';
@@ -194,32 +232,40 @@ function renderOrder(d) {
 
   el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
 
-  // build vars
-  const vars = {
-    amount: fmtAmountNumber(d.amount_total),
-    invoice: d.invoice || invoice,
-    phone: d.noWA || '',
-    va: (d.payment_data && (d.payment_data.va_number || (d.payment_data.va && d.payment_data.va.number))) || '',
-    note: `NUBIA-${d.invoice || invoice}`
-  };
-
-  // payment render
+  const pm = (d.payment_method || '').toUpperCase();
+  const pd = d.payment_data || {};
   const paymentUI = el('paymentUI');
   paymentUI.innerHTML = '';
 
-  const pm = d.payment_method || '';
-  const pd = d.payment_data || {};
+  const vars = {
+    amount: fmtAmountInteger(d.amount_total),
+    invoice: d.invoice || invoice,
+    phone: d.noWA || '',
+    va: pd.va_number || '',
+    note: `NUBIA-${d.invoice || invoice}`
+  };
 
-  // priority: server-provided payload
+  // priority: server-provided payload (pd.qr_payload)
   let payload = pd.qr_payload || null;
 
-  // fallback: template mapping
+  // fallback template
   if (!payload && UNIFIED_PAYLOAD_TEMPLATES[pm]) {
     payload = fillTemplate(UNIFIED_PAYLOAD_TEMPLATES[pm], vars);
   }
 
-  // Virtual Account branch
-  if (pm && pm.toUpperCase().startsWith('VA')) {
+  // If payload looks like EMV (starts with '00' TLV), inject amount dynamically via addAmountToPayload
+  if (payload && payload.length > 2 && /^00/.test(payload)) {
+    // try to add amount; if fails, fallback to using payload as-is
+    try {
+      const newPayload = addAmountToPayload(payload, String(vars.amount));
+      if (newPayload) payload = newPayload;
+    } catch (e) {
+      console.warn('addAmountToPayload failed', e);
+    }
+  }
+
+  // VA branch (show VA number + optional payload)
+  if (pm.startsWith('VA')) {
     const bankName = pd.bank || pm;
     const vaNumber = pd.va_number || vars.va || '';
     let html = `<h3>Pembayaran via Virtual Account</h3>
@@ -229,23 +275,13 @@ function renderOrder(d) {
       <p class="muted">Jumlah yang harus dibayar: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>`;
 
     if (payload) {
-      // generate qr from payload
-      // if looks like EMV and missing CRC, try append CRC (experimental)
-      let payloadToUse = payload;
-      if (pm.toUpperCase().includes('QR') || pm.toUpperCase() === 'QRIS') {
-        if (!/6304/i.test(payloadToUse) && payloadToUse.startsWith('00')) {
-          try { payloadToUse = makeEmvWithCrc(payloadToUse); } catch (e) { /* ignore */ }
-        }
-      }
-      const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
-      html += `<div style="margin-top:8px">${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+      const qrUrl = qrImageUrlFromPayload(payload, 360);
+      html += `<div style="margin-top:8px">${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payload}</textarea>`}
         <div class="payload-row">${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}</div>
         <img src="${qrUrl}" alt="QR VA" class="qr" /></div>`;
     }
 
     paymentUI.innerHTML = html;
-
-    // event handlers
     document.getElementById('copyVa')?.addEventListener('click', () => {
       if (!vaNumber) return alert('Nomor VA kosong.');
       navigator.clipboard.writeText(vaNumber).then(() => alert('No. VA disalin'));
@@ -259,18 +295,12 @@ function renderOrder(d) {
     return;
   }
 
-  // Non-VA handling
+  // Non-VA methods
   if (payload) {
-    // If QRIS and payload looks like EMV without CRC, append (experimental)
-    let payloadToUse = payload;
-    if ((pm.toUpperCase() === 'QRIS' || pm.toUpperCase().includes('QR')) && !/6304/i.test(payloadToUse) && payloadToUse.startsWith('00')) {
-      try { payloadToUse = makeEmvWithCrc(payloadToUse); } catch (e) { /* ignore */ }
-    }
-
-    const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
+    const qrUrl = qrImageUrlFromPayload(payload, 360);
     let html = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
       <p class="muted">Scan QR berikut atau gunakan payload. Jumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
-      ${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+      ${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payload}</textarea>`}
       <div class="payload-row">
         ${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}
         <a id="openPayload" class="btn" href="#" target="_blank" style="display:none">Buka/Link</a>
@@ -282,18 +312,17 @@ function renderOrder(d) {
 
     // show open link if payload is URL
     const openBtn = document.getElementById('openPayload');
-    if (openBtn && /^https?:\/\//i.test(payloadToUse)) {
+    if (openBtn && /^https?:\/\//i.test(payload)) {
       openBtn.style.display = 'inline-block';
-      openBtn.href = payloadToUse;
+      openBtn.href = payload;
     }
     if (!HIDE_PAYLOAD_IN_PROD) {
       document.getElementById('copyPayload')?.addEventListener('click', () => {
-        navigator.clipboard.writeText(payloadToUse).then(() => alert('Payload disalin'));
+        navigator.clipboard.writeText(payload).then(() => alert('Payload disalin'));
       });
     }
-
   } else {
-    // fallback to any provided qr_image_url inside payment_data
+    // fallback to payment_data.qr_image_url or friendly message
     const qrUrl = (pd && pd.qr_image_url) || null;
     if (qrUrl) {
       paymentUI.innerHTML = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
@@ -325,11 +354,10 @@ el('btnCopyInvoice')?.addEventListener('click', () => {
   navigator.clipboard.writeText(invoice).then(() => alert('Invoice disalin'));
 });
 
-/* ===== CLEANUP (optional) ===== */
+/* ===== CLEANUP ===== */
 window.addEventListener('beforeunload', () => {
   try { unsub(); } catch (e) { /* ignore */ }
 });
-
 </script>
 </body>
 </html>
