@@ -27,6 +27,12 @@
   .top-actions{display:flex;gap:8px;align-items:center}
   pre{background:#f8faf9;padding:8px;border-radius:6px;overflow:auto}
   .admin-note{padding:8px;background:#fff7ed;border-left:4px solid #f59e0b;color:#92400e;border-radius:6px;margin-bottom:12px}
+
+  /* detail small fields */
+  .detail-grid { display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; }
+  .detail-item { background:#f8faf9;padding:8px;border-radius:6px; min-width:180px }
+  .detail-title { font-weight:700; margin-bottom:4px; color:#111 }
+  .small-muted { color:#6b7280; font-size:.92rem; margin-top:6px }
 </style>
 </head>
 <body>
@@ -37,7 +43,7 @@
         <div class="muted">Lihat dan kelola order. Hanya admin yang bisa mengubah status.</div>
       </div>
       <div class="top-actions">
-        <input id="qInvoice" class="search" placeholder="Cari invoice / user id" />
+        <input id="qInvoice" class="search" placeholder="Cari invoice / user id / game id / server" />
         <button id="btnSignOut" class="btn">Sign out</button>
       </div>
     </header>
@@ -66,7 +72,10 @@
           <thead>
             <tr>
               <th>Invoice</th>
-              <th>User / Game</th>
+              <th>User</th>
+              <th>Game</th>
+              <th>Game ID</th>
+              <th>Server</th>
               <th>Nominal</th>
               <th>Total</th>
               <th>Method</th>
@@ -84,8 +93,17 @@
       <div class="card">
         <h3>Detail Order</h3>
         <h4>Catatan: game_id (id akun) | server (srv akun) | amount_total (harga)</h4>
-        <div id="detailBox" class="muted">Klik "View" pada baris untuk melihat detail order.</div>
-        <pre id="detailPre" style="display:none"></pre>
+
+        <div id="detailBox" class="muted">
+          Klik "View" pada baris untuk melihat detail order.
+        </div>
+
+        <!-- detail area yang lebih mudah dibaca + raw JSON -->
+        <div id="detailArea" style="display:none">
+          <div class="detail-grid" id="detailGrid"></div>
+          <div class="small-muted">Raw document:</div>
+          <pre id="detailPre"></pre>
+        </div>
       </div>
     </div>
   </div>
@@ -93,8 +111,9 @@
 <script type="module">
 /*
   admin.html (updated)
-  - Added ADMIN_UIDS allowlist. Insert UID(s) here to allow account(s) access without custom claim.
-  - Security note: this is convenience for dev. Set custom claim on server for production.
+  - Menambahkan kolom Game ID & Server di tabel
+  - Memperlihatkan game_id & server di panel detail (plus raw JSON)
+  - Memperluas pencarian agar bisa cari berdasarkan game_id / server
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -123,6 +142,8 @@ const adminNoteBox = document.getElementById('adminNoteBox');
 const ordersTbody = document.getElementById('ordersTbody');
 const detailBox = document.getElementById('detailBox');
 const detailPre = document.getElementById('detailPre');
+const detailGrid = document.getElementById('detailGrid');
+const detailArea = document.getElementById('detailArea');
 const qInvoice = document.getElementById('qInvoice');
 const filterStatus = document.getElementById('filterStatus');
 const btnSignOut = document.getElementById('btnSignOut');
@@ -131,7 +152,6 @@ let unsubscribeOrders = null;
 let lastOrders = {}; // cache map invoice -> data
 
 // === ADMIN ALLOWLIST (development convenience) ===
-// Insert UID(s) yang lu mau langsung jadi admin. Gw tambahin UID yang lu kirim:
 const ADMIN_UIDS = [
   "8z9b0u1LYfTVM0sCP7qHXbYHvGi1"
 ];
@@ -155,7 +175,6 @@ onAuthStateChanged(auth, async (u) => {
     console.warn('getIdTokenResult failed', e);
   }
 
-  // also allow specific UIDs (development)
   if(ADMIN_UIDS.includes(u.uid)) isAdmin = true;
 
   if(!isAdmin){
@@ -199,9 +218,12 @@ function renderOrdersTable(){
     .filter(d => {
       if(filter !== 'all' && d.status !== filter) return false;
       if(!search) return true;
+      // include game_id and server in search
       return (d.invoice && d.invoice.toLowerCase().includes(search)) ||
              (d.userId && String(d.userId).toLowerCase().includes(search)) ||
-             (d.game_id && String(d.game_id).toLowerCase().includes(search));
+             (d.game_id && String(d.game_id).toLowerCase().includes(search)) ||
+             (d.server && String(d.server).toLowerCase().includes(search)) ||
+             (d.game && String(d.game).toLowerCase().includes(search));
     })
     .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
 
@@ -209,7 +231,10 @@ function renderOrdersTable(){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${d.invoice || '-'}</td>
-      <td>${d.userId || 'guest'} / ${d.game || '-'}</td>
+      <td>${d.userId || 'guest'}</td>
+      <td>${d.game || '-'}</td>
+      <td>${d.game_id || '-'}</td>
+      <td>${d.server || '-'}</td>
       <td>${d.nominalValue || '-'}</td>
       <td>Rp ${formatMoney(d.amount_total)}</td>
       <td>${(d.payment_method||'-').replace('_',' ')}</td>
@@ -254,14 +279,42 @@ async function showDetail(invoice){
     if(!snap.exists()){
       detailBox.textContent = 'Order tidak ditemukan';
       detailPre.style.display='none';
+      detailArea.style.display='none';
       return;
     }
     const data = snap.data();
-    detailBox.style.display = 'none';
-    detailPre.style.display = 'block';
+
+    // tampilkan ringkasan penting dulu (mudah dilihat)
+    detailGrid.innerHTML = '';
+    const items = [
+      { title: 'Invoice', value: data.invoice || invoice },
+      { title: 'User ID', value: data.userId || '-' },
+      { title: 'Game', value: data.game || '-' },
+      { title: 'Game ID', value: data.game_id || '-' },
+      { title: 'Server', value: data.server || '-' },
+      { title: 'Nominal', value: data.nominalValue || '-' },
+      { title: 'Jumlah (total)', value: (data.amount_total ? 'Rp ' + formatMoney(data.amount_total) : '-') },
+      { title: 'Metode', value: (data.payment_method||'-').replace('_',' ') },
+      { title: 'Status', value: data.status || '-' },
+      { title: 'Created', value: formatDate(data.createdAt) },
+    ];
+    items.forEach(it=>{
+      const elItem = document.createElement('div');
+      elItem.className = 'detail-item';
+      elItem.innerHTML = `<div class="detail-title">${it.title}</div><div>${it.value}</div>`;
+      detailGrid.appendChild(elItem);
+    });
+
+    // show raw JSON below
+    detailPre.style.display='block';
     detailPre.textContent = JSON.stringify(data, null, 2);
+    detailBox.style.display = 'none';
+    detailArea.style.display = 'block';
   }catch(e){
     console.error(e);
+    detailBox.textContent = 'Error fetch detail';
+    detailPre.style.display='none';
+    detailArea.style.display='none';
   }
 }
 
