@@ -25,7 +25,7 @@
   textarea.payload { width:100%; min-height:90px; padding:8px; font-family:monospace; margin-top:8px; border-radius:6px; border:1px solid #e5e7eb; }
   .payload-row { display:flex; gap:8px; align-items:center; margin-top:8px; }
 
-  /* result box for terminal states */
+  /* === ADDED: resultBox styling === */
   .result-box {
     text-align:center;
     margin-top:12px;
@@ -36,8 +36,6 @@
   }
   .result-box img { width:96px; height:96px; object-fit:contain; display:block; margin:0 auto 8px; }
   .result-box p { font-weight:700; color:#111; margin:0; line-height:1.3; }
-
-  /* cancelled style tweak */
   .result-box.cancel { background: linear-gradient(180deg,#fff5f5,#ffffff); }
 
   /* small responsive tweak */
@@ -81,7 +79,7 @@
         <!-- will be rendered here: QR (dynamic) or VA -->
       </div>
 
-      <!-- result box (hidden by default) -->
+      <!-- === ADDED: resultBox element (hidden by default) === -->
       <div id="resultBox" style="display:none"></div>
 
       <div id="actions" style="margin-top:16px;">
@@ -97,13 +95,14 @@
 
 <script type="module">
 /*
-  checkout-dynamic-payload-fixed-with-status.js
-  - copy paste file ini untuk menggantikan file checkout lama.
-  - pastikan ganti /assets/check.png & /assets/cross.png sesuai path PNG-mu.
+  checkout-dynamic-payload-fixed.js
+  - paste ini ke halaman /checkout untuk menggantikan script lama.
+  - butuh elemen HTML yang sama seperti script sebelumnya.
+  - QRIS/EMV logic TIDAK DIUBAH sama sekali (gw cuma cek status dan show resultBox).
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
@@ -121,16 +120,17 @@ const db = getFirestore();
 /* ===== CONFIG / TEMPLATES ===== */
 const HIDE_PAYLOAD_IN_PROD = true;
 const UNIFIED_PAYLOAD_TEMPLATES = {
-  "QRIS":  "000201...QRIS_TEMPLATE_EXAMPLE...", // placeholder, kept for fallback
-  "DANA":  "DANA_TEMPLATE_EXAMPLE",
-  "GOPAY": "GOPAY_TEMPLATE_EXAMPLE",
-  "OVO":   "OVO_TEMPLATE_EXAMPLE",
-  "SHOPEE":"SHOPEE_TEMPLATE_EXAMPLE"
+  "QRIS":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "DANA":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "GOPAY": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "OVO":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SHOPEE":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657"
 };
 
 /* ===== HELPERS ===== */
 const el = id => document.getElementById(id);
-const fmtRp = n => (typeof n === 'number' ? n.toLocaleString('id') : String(n));
+const fmtRp = n => (typeof n === 'number' ? n.toLocaleString('id') : n);
+
 function fillTemplate(template, vars) {
   return String(template).replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
 }
@@ -145,6 +145,7 @@ function fmtAmountNumber(n) {
 
 /* ===== TLV/EMV helpers (parse/build & CRC) ===== */
 function parseTLV_ASCII(s){
+  // parse ASCII TLV (tag 2 chars, len 2 chars decimal, then len chars of value)
   let i=0, out=[];
   while(i < s.length){
     const tag = s.substr(i,2); i += 2;
@@ -162,8 +163,12 @@ function buildTLV_ASCII(arr){
   }).join('');
 }
 function setAmountInPayloadCore_ASCII(corePayload, amountStr){
+  // corePayload: TLV ASCII string without trailing CRC (i.e. no 63...).
+  // ensures tag '54' is set to amountStr (format like "12345.00")
   const parsed = parseTLV_ASCII(corePayload);
+  // filter out existing 54
   const filtered = parsed.filter(o => o.tag !== '54');
+  // find index for tag 58 to insert before if exists (58 = country/merchant ext usually)
   const idx58 = filtered.findIndex(o => o.tag === '58');
   const amountObj = {tag: '54', value: String(amountStr)};
   if(idx58 >= 0) filtered.splice(idx58, 0, amountObj);
@@ -211,9 +216,8 @@ const unsub = onSnapshot(orderRef, snap => {
   el('loading').textContent = 'Gagal mengambil data order.';
 });
 
-/* ===== RENDER ORDER (dengan hasil success/cancel handling) ===== */
+/* ===== RENDER ORDER ===== */
 function renderOrder(d) {
-  // base fields
   el('invoiceTxt').textContent = d.invoice || invoice;
   el('gameTxt').textContent = d.game || '-';
   el('idTxt').textContent = d.game_id || '-';
@@ -227,58 +231,55 @@ function renderOrder(d) {
   setStatusBadge(d.status || 'initiated');
   el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
 
-  // normalize status and terminal checks
-  const statusNorm = String(d.status || '').trim().toLowerCase();
-  const successStates = ['completed','complete','paid','success'];
-  const cancelStates  = ['cancelled','canceled','failed','expired','rejected'];
-
+  /* === ADDED: terminal status handling (tidak mengubah QRIS logic) === */
   const paymentUI = el('paymentUI');
   const resultBox = el('resultBox');
   const actions = el('actions');
 
-  // TERMINAL: success
+  const statusNorm = String(d.status || '').trim().toLowerCase();
+  const successStates = ['completed','complete','paid','success'];
+  const cancelStates  = ['cancelled','canceled','failed','expired','rejected'];
+
   if (successStates.includes(statusNorm)) {
+    // hide payment UI and actions, show success box
     if (paymentUI) paymentUI.style.display = 'none';
     if (actions) actions.style.display = 'none';
     if (el('adminNote')) el('adminNote').style.display = 'none';
-
     resultBox.innerHTML = `
       <div class="result-box">
         <img src="/assets/check.png" alt="Berhasil" />
         <p>Orderan kamu berhasil diproses — silakan cek in-game kamu.</p>
-        <p style="font-weight:600;font-size:0.95rem;margin-top:8px;color:#6b7280;">Thanks! Kalau belum masuk, hubungi CS.</p>
-      </div>
-    `;
+      </div>`;
     resultBox.style.display = 'block';
-    return;
+    return; // stop further rendering (QRIS logic untouched)
   }
 
-  // TERMINAL: cancelled/failed
   if (cancelStates.includes(statusNorm)) {
     if (paymentUI) paymentUI.style.display = 'none';
     if (actions) actions.style.display = 'none';
     if (el('adminNote')) el('adminNote').style.display = 'none';
-
     resultBox.innerHTML = `
       <div class="result-box cancel">
         <img src="/assets/cross.png" alt="Dibatalkan" />
         <p>Orderan kamu dibatalkan karena kode pembayaran kedaluwarsa.</p>
         <p style="font-weight:600;font-size:0.9rem;margin-top:8px;color:#6b7280;">Silakan buat order baru atau hubungi customer service untuk bantuan.</p>
-      </div>
-    `;
+      </div>`;
     resultBox.style.display = 'block';
-    return;
+    return; // stop further rendering
   }
 
-  // NON-TERMINAL: show payment UI
+  // non-terminal -> ensure payment UI visible, hide resultBox
   if (paymentUI) paymentUI.style.display = 'block';
   if (actions) actions.style.display = 'block';
   resultBox.style.display = 'none';
+  /* === END ADDED BLOCK === */
 
-  // --- continue with existing payment rendering logic ---
+  // build vars (two amount formats)
   const amountNumber = Number(d.amount_total) || 0;
   const vars = {
+    // for deeplinks / templates — many providers expect integer or no decimals
     amount: fmtAmountNumber(amountNumber),
+    // amount with decimal for EMV/QRIS (two decimals)
     amount_decimal: (typeof amountNumber === 'number') ? amountNumber.toFixed(2) : String(d.amount_total || '0.00'),
     invoice: d.invoice || invoice,
     phone: d.noWA || '',
@@ -286,19 +287,26 @@ function renderOrder(d) {
     note: `NUBIA-${d.invoice || invoice}`
   };
 
+  // payment render
+  paymentUI.innerHTML = '';
   const pm = (d.payment_method || '').toUpperCase();
   const pd = d.payment_data || {};
 
   // priority: server-provided payload (string) OR pd.qr_image_url
   let payload = pd.qr_payload || null;
 
+  // fallback: template mapping (use decimal for QRIS when template contains AMT — but keep existing behavior)
   if (!payload && UNIFIED_PAYLOAD_TEMPLATES[pm]) {
+    // choose amount format sensible: if QRIS template, use decimal, else integer
     const amtForTemplate = (pm === 'QRIS' || pm.includes('QR')) ? vars.amount_decimal : vars.amount;
     payload = fillTemplate(UNIFIED_PAYLOAD_TEMPLATES[pm], {...vars, amount: amtForTemplate});
   }
 
+  // Helper to produce final QR payload for EMV-like content
   function produceFinalEmvPayloadIfNeeded(rawPayload, amountDecimalStr){
     if (!rawPayload || typeof rawPayload !== 'string') return rawPayload;
+    // detect EMV-like TLV: usually starts with '00' tag and contains numeric tags.
+    // Remove trailing CRC if present (6304 + 4 hex)
     const crcRegexp = /6304[0-9A-Fa-f]{4}$/;
     let core = rawPayload;
     if (crcRegexp.test(core)) {
@@ -306,6 +314,7 @@ function renderOrder(d) {
     } else if (core.endsWith('6304')) {
       core = core.slice(0, -4);
     }
+    // If core looks like TLV (starts with two digits tag), try to insert tag 54
     if (/^\d{2}/.test(core)) {
       try {
         const withAmount = setAmountInPayloadCore_ASCII(core, amountDecimalStr);
@@ -320,7 +329,7 @@ function renderOrder(d) {
     return rawPayload;
   }
 
-  // Virtual Account branch
+  // Virtual Account branch (kept similar)
   if (pm && pm.startsWith('VA')) {
     const bankName = pd.bank || pm;
     const vaNumber = pd.va_number || vars.va || '';
@@ -331,6 +340,7 @@ function renderOrder(d) {
       <p class="muted">Jumlah yang harus dibayar: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>`;
 
     if (payload) {
+      // try attach amount if payload is EMV-like
       let payloadToUse = payload;
       if ((pm.includes('QR') || pm === 'QRIS') || (/^\d{2}/.test(payload))) {
         payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
@@ -354,8 +364,9 @@ function renderOrder(d) {
     }
   }
 
-  // Non-VA handling (QRIS / ewallet)
+  // Non-VA handling
   if (payload) {
+    // If looks like EMV / QRIS TLV -> insert amount_decimal and recompute CRC
     let payloadToUse = payload;
     if ((pm === 'QRIS' || pm.includes('QR')) || /^\d{2}/.test(payload)) {
       payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
@@ -374,6 +385,7 @@ function renderOrder(d) {
 
     paymentUI.innerHTML = html;
 
+    // show open link if payload is URL scheme-like
     const openBtn = document.getElementById('openPayload');
     if (openBtn && /^https?:\/\//i.test(payloadToUse)) {
       openBtn.style.display = 'inline-block';
@@ -386,12 +398,14 @@ function renderOrder(d) {
       });
     }
 
+    // store dataset for possible share / pay attempts
     const qrImg = document.getElementById('qrImg');
     if (qrImg) {
       qrImg.dataset.payload = payloadToUse;
       qrImg.dataset.total = String(vars.amount_decimal);
     }
   } else {
+    // fallback to qr_image_url inside payment_data
     const qrUrl = (pd && pd.qr_image_url) || null;
     if (qrUrl) {
       paymentUI.innerHTML = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
