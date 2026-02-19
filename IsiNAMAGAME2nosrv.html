@@ -466,7 +466,7 @@ paymentCards.forEach(c=>{
 /* =============== MODAL + SAVE ORDER =============== */
 function genInvoice() {
   const rnd = Math.random().toString(36).slice(2,8).toUpperCase();
-  return `INVC-ML-${Date.now()}-${rnd}`;
+  return `INVC-IsinamaGAME-${Date.now()}-${rnd}`;
 }
 
 let orderSaved = false;
@@ -478,7 +478,7 @@ async function saveOrderToFirestore(payload){
   const docData = {
     invoice,
     userId: payload.uid || null,
-    game: 'mobile-legends',
+    game: 'ISI-NAMAGAME',
     game_id: payload.idSel,
     server: payload.srvSel,
     noWA: payload.waSel,
