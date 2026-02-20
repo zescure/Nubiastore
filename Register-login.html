@@ -177,13 +177,14 @@
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDVUEZ3ZVmH4ld7LVnEq_L368wEJpEs-l8",
-      authDomain: "zeepaylater-93a94.firebaseapp.com",
-      projectId: "zeepaylater-93a94",
-      storageBucket: "zeepaylater-93a94.appspot.com",
-      messagingSenderId: "358065954807",
-      appId: "1:358065954807:web:66619211fea82a4b2518f2"
-    };
+    apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+    authDomain: "zestoreid-f9e85.firebaseapp.com",
+    projectId: "zestoreid-f9e85",
+    storageBucket: "zestoreid-f9e85.firebasestorage.app",
+    messagingSenderId: "426093692154",
+    appId: "1:426093692154:web:38c6e9c143af626a623543",
+    measurementId: "G-TS0YB9NYW8"
+  };
 
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -245,7 +246,7 @@
       try {
         const { user } = await signInWithEmailAndPassword(auth, email, password);
         await ensureUserDocuments(user);
-        window.location.href = "https://zestore.netlify.app/home";
+        window.location.href = "https://nubiastore.netlify.app/";
       } catch (err) {
         alertText.textContent = err.message;
       }
