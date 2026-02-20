@@ -234,7 +234,8 @@
       <div class="step-header">Pilih Nominal Disini</div>
       <div class="step-content">
         <div class="nominal-grid" id="nominalGrid">
-          <div class="nominal-card" data-value="WEEKLY DIAMOND PASS" data-price="27387" data-bg="https://i.imgur.com/6X0d3vB.png">
+          <!-- contoh nominal cards, per card bisa diset data-bg untuk gambar price overlay -->
+          <div class="nominal-card" data-value="WEEKLY DIAMOND PASS" data-price="27387" data-bg="https://i.pinimg.com/originals/71/51/13/71511393d36a8af4d760469b5a21432d.gif">
             <div class="top">
               <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
               <div class="count">WEEKLY PASS</div>
@@ -243,7 +244,7 @@
             <div class="label">Limited • Restock tiap 00:01 WIB</div>
           </div>
 
-          <div class="nominal-card" data-value="3💎" data-price="985" data-bg="https://i.imgur.com/1bX5QH6.png">
+          <div class="nominal-card" data-value="3💎" data-price="985" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
             <div class="top">
               <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="Diamond">
               <div class="count">3</div>
@@ -251,13 +252,15 @@
             <div class="price-overlay"></div>
           </div>
 
-          <div class="nominal-card" data-value="5💎" data-price="1341" data-bg="https://i.imgur.com/1bX5QH6.png">
+          <div class="nominal-card" data-value="5💎" data-price="1341" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
             <div class="top">
               <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="Diamond">
               <div class="count">5</div>
             </div>
             <div class="price-overlay"></div>
           </div>
+
+          <!-- tambahin lebih banyak sesuai list mu, cukup copy struktur di atas -->
         </div>
       </div>
     </div>
@@ -268,7 +271,7 @@
       <div class="step-content">
         <div class="payment-grid" id="paymentGrid">
           <div class="payment-card" data-value="QRIS" data-admin="0" data-percent="1">
-            <img src="https://i.imgur.com/qrISexample.png" alt="QRIS">
+            <img src="https://cdn.isellercommerce.com/5d09154a498048e8aa9db882f88e4ea0/theme_content/logo-qris.png" alt="QRIS">
             <div class="meta">
               <div class="name">QRIS</div>
               <div class="fee">Gratis Admin + 1%</div>
@@ -277,14 +280,14 @@
               <div class="total-label">Total</div>
               <div class="total-amt">-</div>
             </div>
-            <div class="ribbon" style="display:none">*---TERMURAH</div>
+            <div class="ribbon" style="display:none">""*---TERMURAH</div>
           </div>
 
-          <div class="payment-card" data-value="DANA" data-admin="820" data-percent="0">
-            <img src="https://i.imgur.com/dana.png" alt="DANA">
+          <div class="payment-card" data-value="DANA" data-admin="820" data-percent="1">
+            <img src="https://tugashub.id/assets/2024/09/dana.png" alt="DANA">
             <div class="meta">
               <div class="name">DANA</div>
-              <div class="fee">Admin Rp 820</div>
+              <div class="fee">Admin Rp 820 + 1%</div>
             </div>
             <div class="total-box">
               <div class="total-label">Total</div>
@@ -292,11 +295,83 @@
             </div>
           </div>
 
-          <div class="payment-card" data-value="VA_BRI" data-admin="2500" data-percent="0" id="vaBRICard">
-            <img src="https://i.imgur.com/bri.png" alt="VA BRI">
+          <div class="payment-card" data-value="GOPAY" data-admin="820" data-percent="1">
+            <img src="https://logos-world.net/wp-content/uploads/2023/03/GoPay-Logo.png" alt="GOPAY">
+            <div class="meta">
+              <div class="name">GOPAY</div>
+              <div class="fee">Admin Rp 820 + 1%</div>
+            </div>
+            <div class="total-box">
+              <div class="total-label">Total</div>
+              <div class="total-amt">-</div>
+            </div>
+          </div>
+
+          <div class="payment-card" data-value="SHOPEE" data-admin="820" data-percent="1">
+            <img src="https://assets.pikiran-rakyat.com/crop/0x0:0x0/720x0/webp/photo/2024/07/16/366956180.png" alt="SHOPEE">
+            <div class="meta">
+              <div class="name">SHOPEE</div>
+              <div class="fee">Admin Rp 820 + 1%</div>
+            </div>
+            <div class="total-box">
+              <div class="total-label">Total</div>
+              <div class="total-amt">-</div>
+            </div>
+          </div>
+
+          <div class="payment-card" data-value="OVO" data-admin="1500" data-percent="1.4">
+            <img src="https://developers.bri.co.id/themes/briapi_v20/img/client-logo/ovo.png" alt="OVO">
+            <div class="meta">
+              <div class="name">OVO</div>
+              <div class="fee">Admin Rp 1.500 + 1%</div>
+            </div>
+            <div class="total-box">
+              <div class="total-label">Total</div>
+              <div class="total-amt">-</div>
+            </div>
+          </div>
+
+          <div class="payment-card" data-value="SEABANK" data-admin="1500" data-percent="1.6">
+            <img src="https://media.cake.me/image/upload/s--TzB8N9kD--/c_pad,fl_png8,h_315,w_600/v1670899643/icl7myi47g1gwtajsaao.png" alt="SEABANK">
+            <div class="meta">
+              <div class="name">SEABANK</div>
+              <div class="fee">Admin Rp 1.500 + 1%</div>
+            </div>
+            <div class="total-box">
+              <div class="total-label">Total</div>
+              <div class="total-amt">-</div>
+            </div>
+          </div>
+
+          <div class="payment-card" data-value="BANKJAGO" data-admin="1500" data-percent="1.8">
+            <img src="https://tuwaga.id/wp-content/uploads/2025/01/FI022-_-Bank-Jago-1-300x215.png" alt="BANKJAGO">
+            <div class="meta">
+              <div class="name">BANK-JAGO</div>
+              <div class="fee">Admin Rp 1.500 + 1%</div>
+            </div>
+            <div class="total-box">
+              <div class="total-label">Total</div>
+              <div class="total-amt">-</div>
+            </div>
+          </div>
+
+          <div class="payment-card" data-value="SUPERBANK" data-admin="1500" data-percent="1.8">
+            <img src="https://images.bisnis.com/posts/2023/08/11/1683668/logo_superbank_2_1680866191.jpg" alt="SUPERBANK">
+            <div class="meta">
+              <div class="name">SUPERBANK</div>
+              <div class="fee">Admin Rp 1.500 + 1%</div>
+            </div>
+            <div class="total-box">
+              <div class="total-label">Total</div>
+              <div class="total-amt">-</div>
+            </div>
+          </div>
+
+          <div class="payment-card" data-value="VA_BRI" data-admin="2500" data-percent="2" id="vaBRICard">
+            <img src="https://tuwaga.id/wp-content/uploads/2025/01/FI004-_-BRI.png" alt="VA BRI">
             <div class="meta">
               <div class="name">VA BRI</div>
-              <div class="fee">Admin Rp 2.500 (Min Rp 10.000)</div>
+              <div class="fee">Admin Rp 2.500 + 2% (Min Rp 10.000)</div>
             </div>
             <div class="total-box">
               <div class="total-label">Total</div>
@@ -304,6 +379,31 @@
             </div>
           </div>
 
+          <div class="payment-card" data-value="VA_BNI" data-admin="2500" data-percent="2" id="vaBNICard">
+            <img src="https://upload.wikimedia.org/wikipedia/id/thumb/5/5b/BNI_Life.png/1280px-BNI_Life.png" alt="VA BNI">
+            <div class="meta">
+              <div class="name">VA BNI</div>
+              <div class="fee">Admin Rp 2.500 + 2% (Min Rp 10.000)</div>
+            </div>
+            <div class="total-box">
+              <div class="total-label">Total</div>
+              <div class="total-amt">-</div>
+            </div>
+          </div>
+
+          <div class="payment-card" data-value="VA_BCA" data-admin="2500" data-percent="2.1" id="vaBCACard">
+            <img src="https://www.freepnglogos.com/uploads/logo-bca-png/bank-bca-bca-photo-anezq-photobucket-1.png" alt="VA BCA">
+            <div class="meta">
+              <div class="name">VA BCA</div>
+              <div class="fee">Admin Rp 2.500 + 2% (Min Rp 10.000)</div>
+            </div>
+            <div class="total-box">
+              <div class="total-label">Total</div>
+              <div class="total-amt">-</div>
+            </div>
+          </div>
+
+          <!-- tambahin payment-card lainnya sesuai list mu -->
         </div>
       </div>
     </div>
