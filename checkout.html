@@ -186,75 +186,137 @@ const unsub = onSnapshot(orderRef, snap => {
    NUBIAPAY payment (transaction)
    ========================= */
 async function payWithNubia(orderData){
-  // require currentUser to be present and match order userId
+  // safety: must have currentUser and order owner match
   if (!currentUser) {
-    console.warn('payWithNubia: no currentUser -> will retry after login');
+    console.warn('payWithNubia: no currentUser yet — will retry after login');
     pendingNubiaInvoice = orderData.invoice;
-    return;
+    return { ok:false, reason:'no_current_user' };
   }
   if (!orderData.userId) {
-    console.warn('payWithNubia: orderData.userId missing');
-    return;
+    console.error('payWithNubia: orderData.userId missing', orderData);
+    return { ok:false, reason:'order_missing_userId' };
   }
-  if (currentUser.uid !== orderData.userId) {
-    console.warn('payWithNubia: current user does not match order owner');
-    return;
+  if (String(currentUser.uid) !== String(orderData.userId)) {
+    console.warn('payWithNubia: current user not owner', { currentUser: currentUser.uid, owner: orderData.userId });
+    return { ok:false, reason:'not_owner' };
   }
 
-  const orderRefLocal = doc(db,'orders',orderData.invoice);
-  const userRef = doc(db,'users',currentUser.uid);
+  const orderRefLocal = doc(db,'orders', orderData.invoice);
+  const userRef = doc(db,'users', currentUser.uid);
+  const logRefOutside = doc(collection(db, 'orders', orderData.invoice, 'nubiaLogs')); // will try to write even on fail
+
+  const attemptMeta = {
+    ts: serverTimestamp(),
+    actorUid: currentUser.uid,
+    orderInvoice: orderData.invoice,
+    amount_total: Number(orderData.amount_total || 0)
+  };
+
+  // write a "started" log (best-effort)
+  try { await setDoc(logRefOutside, { ...attemptMeta, status:'started' }, { merge:true }); } catch(e){ console.warn('nubiaLog start failed', e); }
 
   try {
     await runTransaction(db, async (t) => {
       const oSnap = await t.get(orderRefLocal);
-      if (!oSnap.exists()) throw new Error('order missing');
+      if (!oSnap.exists()) {
+        throw new Error('order_missing_in_tx');
+      }
       const o = oSnap.data();
 
-      // double-check
-      if (o.status !== 'initiated') return;
-      if (o.__nubiaPaid === true) return;
+      // double-check owner & state inside tx
+      if (String(o.userId) !== String(currentUser.uid)) {
+        throw new Error('owner_mismatch_in_tx');
+      }
+      if (o.status !== 'initiated') {
+        // nothing to do
+        throw new Error('order_not_initiated');
+      }
+      if (o.__nubiaPaid === true) {
+        throw new Error('already_nubiaPaid');
+      }
 
       const uSnap = await t.get(userRef);
-      if (!uSnap.exists()) throw new Error('user missing');
-
+      if (!uSnap.exists()) {
+        throw new Error('user_doc_missing');
+      }
       const saldo = Number(uSnap.data().nubiPayBalance || 0);
       const total = Number(o.amount_total || 0);
 
       if (saldo < total) {
-        alert('Saldo NUBIAPAY tidak cukup.');
-        throw new Error('saldo_kurang');
+        throw new Error('insufficient_balance');
       }
 
-      // potong saldo
+      // update user balance
       t.update(userRef, {
         nubiPayBalance: saldo - total,
         updatedAt: serverTimestamp()
       });
 
-      // add tx
+      // add transaction record
       const txRef = doc(collection(db, `users/${currentUser.uid}/transactions`));
       t.set(txRef, {
         amount: -total,
         type: 'PAY_ORDER',
-        note: o.invoice || '',
+        note: `payWithNubia ${o.invoice}`,
         timestamp: serverTimestamp()
       });
 
-      // complete order
+      // update order
       t.update(orderRefLocal, {
         status: 'completed',
         __nubiaPaid: true,
-        paidAt: serverTimestamp()
+        paidAt: serverTimestamp(),
+        processedBy: currentUser.uid
+      });
+
+      // inside tx: also write a log doc to nubiaLogs (optional)
+      const logRefInTx = doc(collection(db, 'orders', orderData.invoice, 'nubiaLogs'));
+      t.set(logRefInTx, {
+        ts: serverTimestamp(),
+        status: 'success',
+        actorUid: currentUser.uid,
+        amount: total,
+        note: 'client-side payWithNubia'
       });
     });
 
-    console.log('payWithNubia: transaksi selesai');
-  } catch (e) {
-    if (String(e).includes('saldo_kurang')) {
-      // handled
+    // after success: fetch fresh user balance and render
+    try {
+      const freshUser = await getDoc(userRef);
+      const newBal = freshUser.exists() ? Number(freshUser.data().nubiPayBalance || 0) : 0;
+      console.log('payWithNubia succeeded, new balance:', newBal);
+      // render immediately (if you have function to render)
+      renderUserBalanceCard(newBal);
+      // write final outside log
+      try { await setDoc(logRefOutside, { ...attemptMeta, status:'ok', resultBalance:newBal }, { merge:true }); } catch(e){ console.warn('nubiaLog-ok failed', e); }
+    } catch(e){ console.warn('post-tx get user failed', e); }
+
+    return { ok:true };
+  } catch (err) {
+    console.error('payWithNubia transaction error:', err);
+
+    // friendly mapping for UI
+    const reason = (err && err.message) ? err.message : String(err);
+
+    // write a fail log (best-effort)
+    try {
+      await setDoc(logRefOutside, {
+        ...attemptMeta,
+        status:'error',
+        error: reason
+      }, { merge:true });
+    } catch(e){ console.warn('nubiaLog-error failed', e); }
+
+    // show alert for developer / user
+    if (reason === 'insufficient_balance') {
+      alert('Saldo NubiPay tidak cukup. Silakan topup atau pilih metode lain.');
+    } else if (reason === 'owner_mismatch_in_tx' || reason === 'order_missing_userId') {
+      alert('Terjadi masalah kepemilikan order. Coba login dengan akun pemilik order atau hubungi admin.');
     } else {
-      console.error('payWithNubia transaction error', e);
+      alert('Gagal memproses NUBIAPAY. Cek console & nubiaLogs di Firestore untuk detail.');
     }
+
+    return { ok:false, reason };
   }
 }
 
