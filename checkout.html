@@ -94,18 +94,19 @@
   </div>
 
 <script type="module">
-/* checkout-dynamic-payload-fixed-v3.js
-   - Auto retry payWithNubia saat user login kalau pertama buka belum login
-   - Hanya potong saldo ketika currentUser.uid === order.userId
-   - Tampilkan sisa saldo nubiapay (card hijau + card sisa saldo)
-   - Jika order completed tapi __nubiaPaid missing -> tampil peringatan
+/*
+  checkout-merged-nubia-v1.js
+  - Gabungan fitur dari checkout-dynamic-payload-fixed.js + checkout-dynamic-payload-fixed-v3.js
+  - 1x initializeApp, 1x getAuth, 1x getFirestore
+  - NUBIAPAY auto-retry saat login, listener saldo realtime, transaction potong saldo
+  - QR/VA logic & EMV helpers tetap ada
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, doc, onSnapshot,
   runTransaction, serverTimestamp,
-  collection, getDoc
+  collection, getDoc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth, onAuthStateChanged
@@ -129,18 +130,18 @@ const auth = getAuth(app);
 let currentUser = null;
 let pendingNubiaInvoice = null; // invoice to retry when user logs in
 let userBalanceUnsub = null;    // unsub for user balance listener
+let unsub = null;               // unsub for order listener
 
 onAuthStateChanged(auth, async (u) => {
   currentUser = u;
-  // if there's a pending invoice (we opened checkout before login), try to process it now
+  // retry pending nubia invoice if any
   if (currentUser && pendingNubiaInvoice) {
     try {
       const od = await getDoc(doc(db,'orders', pendingNubiaInvoice));
       if (od.exists()) {
         const d = od.data();
-        // only try if still initiated and payment method is NUBIAPAY and user matches
         if (d.status === 'initiated' && String((d.payment_method||'')).toUpperCase() === 'NUBIAPAY' && d.userId === currentUser.uid) {
-          payWithNubia(d);
+          await payWithNubia(d);
           pendingNubiaInvoice = null;
         }
       }
@@ -150,10 +151,87 @@ onAuthStateChanged(auth, async (u) => {
   }
 });
 
+/* ===== CONFIG / TEMPLATES ===== */
+const HIDE_PAYLOAD_IN_PROD = true;
+const UNIFIED_PAYLOAD_TEMPLATES = {
+  "QRIS":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "DANA":  "DANA_TEMPLATE_EXAMPLE",
+  "GOPAY": "GOPAY_TEMPLATE_EXAMPLE",
+  "OVO":   "OVO_TEMPLATE_EXAMPLE",
+  "SEABANK":"SEABANK_TEMPLATE_EXAMPLE",
+  "BANKJAGO":"BANKJAGO_TEMPLATE_EXAMPLE",
+  "SUPERBANK":"SUPERBANK_TEMPLATE_EXAMPLE",
+  "SHOPEE":"SHOPEE_TEMPLATE_EXAMPLE"
+};
+
 /* ===== HELPERS ===== */
 const el = id => document.getElementById(id);
 const fmtRp = n => (typeof n === 'number' ? n.toLocaleString('id') : n);
 function fmtAmountNumber(n) { const num = Number(n); if (!isFinite(num)) return 0; return Math.round(num); }
+function fillTemplate(template, vars) {
+  return String(template).replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
+}
+function qrImageUrlFromPayload(payload, size = 360) {
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(String(payload))}`;
+}
+
+/* ===== TLV/EMV helpers (parse/build & CRC) ===== */
+function parseTLV_ASCII(s){
+  let i=0, out=[];
+  while(i < s.length){
+    const tag = s.substr(i,2); i += 2;
+    const len = parseInt(s.substr(i,2),10); i += 2;
+    const value = s.substr(i, len); i += len;
+    out.push({tag, len, value});
+  }
+  return out;
+}
+function buildTLV_ASCII(arr){
+  return arr.map(o => {
+    const v = String(o.value);
+    const l = String(v.length).padStart(2,'0');
+    return o.tag + l + v;
+  }).join('');
+}
+function setAmountInPayloadCore_ASCII(corePayload, amountStr){
+  const parsed = parseTLV_ASCII(corePayload);
+  const filtered = parsed.filter(o => o.tag !== '54');
+  const idx58 = filtered.findIndex(o => o.tag === '58');
+  const amountObj = {tag: '54', value: String(amountStr)};
+  if(idx58 >= 0) filtered.splice(idx58, 0, amountObj);
+  else filtered.push(amountObj);
+  return buildTLV_ASCII(filtered);
+}
+function crc16ccitt_ascii(str){
+  let crc = 0xFFFF;
+  for (let i = 0; i < str.length; i++) {
+    crc ^= (str.charCodeAt(i) & 0xFF) << 8;
+    for (let j = 0; j < 8; j++) {
+      if ((crc & 0x8000) !== 0) crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+      else crc = (crc << 1) & 0xFFFF;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4,'0');
+}
+function produceFinalEmvPayloadIfNeeded(rawPayload, amountDecimalStr){
+  if (!rawPayload || typeof rawPayload !== 'string') return rawPayload;
+  const crcRegexp = /6304[0-9A-Fa-f]{4}$/;
+  let core = rawPayload;
+  if (crcRegexp.test(core)) core = core.replace(crcRegexp, '');
+  else if (core.endsWith('6304')) core = core.slice(0, -4);
+  if (/^\d{2}/.test(core)) {
+    try {
+      const withAmount = setAmountInPayloadCore_ASCII(core, amountDecimalStr);
+      const toCrc = withAmount + '6304';
+      const crcHex = crc16ccitt_ascii(toCrc);
+      return toCrc + crcHex;
+    } catch (e) {
+      console.warn('EMV attach amount failed', e);
+      return rawPayload;
+    }
+  }
+  return rawPayload;
+}
 
 /* ===== GET INVOICE PARAM ===== */
 const params = new URLSearchParams(location.search);
@@ -164,9 +242,9 @@ if (!invoice) {
 }
 if (el('loading')) el('loading').textContent = `Menunggu data order ${invoice}...`;
 
-/* ===== ORDER LISTENER ===== */
-const orderRef = doc(db, 'orders', invoice);
-const unsub = onSnapshot(orderRef, snap => {
+/* ===== FIRESTORE ORDER LISTENER ===== */
+const orderDocRef = doc(db, 'orders', invoice);
+unsub = onSnapshot(orderDocRef, snap => {
   if (!snap.exists()) {
     if (el('loading')) el('loading').style.display = 'none';
     if (el('notfound')) el('notfound').style.display = 'block';
@@ -183,22 +261,22 @@ const unsub = onSnapshot(orderRef, snap => {
 });
 
 /* =========================
-   NUBIAPAY payment (transaction)
+   NUBIAPAY payment (transaction) - robust v3
    ========================= */
 async function payWithNubia(orderData){
   // require currentUser to be present and match order userId
   if (!currentUser) {
     console.warn('payWithNubia: no currentUser -> will retry after login');
     pendingNubiaInvoice = orderData.invoice;
-    return;
+    return { ok:false, reason:'no_current_user' };
   }
   if (!orderData.userId) {
     console.warn('payWithNubia: orderData.userId missing');
-    return;
+    return { ok:false, reason:'order_missing_userId' };
   }
-  if (currentUser.uid !== orderData.userId) {
+  if (String(currentUser.uid) !== String(orderData.userId)) {
     console.warn('payWithNubia: current user does not match order owner');
-    return;
+    return { ok:false, reason:'not_owner' };
   }
 
   const orderRefLocal = doc(db,'orders',orderData.invoice);
@@ -248,13 +326,20 @@ async function payWithNubia(orderData){
       });
     });
 
-    console.log('payWithNubia: transaksi selesai');
-  } catch (e) {
-    if (String(e).includes('saldo_kurang')) {
-      // handled
-    } else {
-      console.error('payWithNubia transaction error', e);
+    // after success: fetch fresh user balance and render
+    try {
+      const freshUser = await getDoc(userRef);
+      const newBal = freshUser.exists() ? Number(freshUser.data().nubiPayBalance || 0) : 0;
+      renderUserBalanceCard(newBal);
+      console.log('payWithNubia: transaksi selesai, new balance:', newBal);
+    } catch(e) {
+      console.warn('post-tx get user failed', e);
     }
+
+    return { ok:true };
+  } catch (e) {
+    console.error('payWithNubia transaction error', e);
+    return { ok:false, reason: (e && e.message) ? e.message : String(e) };
   }
 }
 
@@ -290,14 +375,12 @@ function renderUserBalanceCard(balanceNumber){
   if (existing) {
     existing.outerHTML = html;
   } else {
-    // append after existing paymentUI content
     parent.insertAdjacentHTML('beforeend', html);
   }
 }
 
 /* =========================
-   Render order + payment UI
-   (preserve your original QR/VA logic elsewhere)
+   Render order + payment UI (merged)
    ========================= */
 function setStatusBadge(status) {
   const b = el('statusBadge');
@@ -307,7 +390,7 @@ function setStatusBadge(status) {
 }
 
 function renderOrder(d) {
-  // fill basic fields
+  // fill basic fields (safe guards if element missing)
   if (el('invoiceTxt')) el('invoiceTxt').textContent = d.invoice || invoice;
   if (el('gameTxt')) el('gameTxt').textContent = d.game || '-';
   if (el('idTxt')) el('idTxt').textContent = d.game_id || '-';
@@ -341,9 +424,7 @@ function renderOrder(d) {
         </div>`;
       resultBox.style.display = 'block';
     }
-    // if completed AND payment_method is NUBIAPAY but __nubiaPaid not set => show warning
     if (String((d.payment_method||'')).toUpperCase() === 'NUBIAPAY' && !d.__nubiaPaid) {
-      // still show user balance card for transparency
       attachUserBalanceListener(d.userId || null);
       if (paymentUI) {
         paymentUI.style.display = 'block';
@@ -371,20 +452,32 @@ function renderOrder(d) {
     return;
   }
 
-  // non-terminal
+  // non-terminal -> ensure payment UI visible, hide resultBox
   if (paymentUI) paymentUI.style.display = 'block';
   if (actions) actions.style.display = 'block';
   if (resultBox) resultBox.style.display = 'none';
 
-  // pm must be defined
-  const pm = (d.payment_method || '').toUpperCase();
+  // build vars (two amount formats)
+  const amountNumber = Number(d.amount_total) || 0;
+  const vars = {
+    amount: fmtAmountNumber(amountNumber),
+    amount_decimal: (typeof amountNumber === 'number') ? amountNumber.toFixed(2) : String(d.amount_total || '0.00'),
+    invoice: d.invoice || invoice,
+    phone: d.noWA || '',
+    va: (d.payment_data && (d.payment_data.va_number || (d.payment_data.va && d.payment_data.va.number))) || '',
+    note: `NUBIA-${d.invoice || invoice}`
+  };
 
-  // === NUBIAPAY branch ===
+  // pm must be defined BEFORE using payload logic
+  const pm = (d.payment_method || '').toUpperCase();
+  const pd = d.payment_data || {};
+
+  // === NUBIAPAY branch (v3 behavior) ===
   if (pm === 'NUBIAPAY') {
     // attach balance listener (so user sees real-time balance)
     attachUserBalanceListener(d.userId || null);
 
-    // If order already marked completed and __nubiaPaid true, just show card and balance (will reflect new balance via listener)
+    // If order already marked completed and __nubiaPaid true, just show card and balance
     if (d.status === 'completed' && d.__nubiaPaid) {
       if (paymentUI) paymentUI.innerHTML = `
         <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;text-align:center;background:#fff;">
@@ -392,7 +485,7 @@ function renderOrder(d) {
                style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
           <p style="font-weight:600">Saldo kamu sudah dipotong. Terima kasih! Tunggu proses top-up dan cek in gamenya ya.</p>
           <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
-            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu menyenangkan
+            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
           </div>
         </div>`;
       return;
@@ -407,14 +500,14 @@ function renderOrder(d) {
                style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
           <p style="font-weight:600">Untuk menyelesaikan pembayaran NUBIAPAY, silakan <strong>login</strong> dengan akun yang memilki order ini.</p>
           <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
-            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu menyenangkan
+            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
           </div>
         </div>`;
       return;
     }
 
     // If logged in but not owner -> inform
-    if (currentUser.uid !== d.userId) {
+    if (String(currentUser.uid) !== String(d.userId)) {
       if (paymentUI) paymentUI.innerHTML = `
         <div style="border:1px solid #fee2e2;border-radius:14px;padding:18px;text-align:center;background:#fff;">
           <p style="font-weight:600;color:#991b1b">Kamu bukan pemilik order ini. Silakan login dengan akun pemilik order untuk membayar dengan NUBIAPAY.</p>
@@ -423,28 +516,119 @@ function renderOrder(d) {
     }
 
     // Otherwise: attempt auto-pay (user logged in and is owner)
-    // Note: payWithNubia will check again & run transaction
     payWithNubia(d);
 
     // show processing UI (balance card will appear via attachUserBalanceListener)
     if (paymentUI) paymentUI.innerHTML = `
       <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;text-align:center;background:#fff;">
-        <img src="https://cdn.dribbble.com/userupload/24524439/file/original-4b82316a71d7182998ff7b59d5332331.gif"
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png"
              style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
         <p style="font-weight:600">Sedang memproses potongan saldo NUBIAPAY jika saldo mencukupi. Tunggu sebentar...</p>
         <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
-          makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu menyenangkan
+          makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
         </div>
       </div>
     `;
-    // balance card will be appended by attachUserBalanceListener
     return;
   }
 
-  // === else: QR/VA logic (kept minimal here; your full QR logic can stay as before) ===
-  const pd = d.payment_data || {};
-  // (Preserve your existing QR/VA rendering code here — omitted for brevity in this patch)
-  if (paymentUI) paymentUI.innerHTML = `<h3>Instruksi Pembayaran ${ (d.payment_method||'') }</h3><p>Bayar: Rp ${fmtRp(d.amount_total)}</p>`;
+  /* ===== QR/VA handling (original behavior preserved) ===== */
+
+  // priority: server-provided payload OR pd.qr_image_url
+  let payload = pd.qr_payload || null;
+  if (!payload && UNIFIED_PAYLOAD_TEMPLATES[pm]) {
+    const amtForTemplate = (pm === 'QRIS' || pm.includes('QR')) ? vars.amount_decimal : vars.amount;
+    payload = fillTemplate(UNIFIED_PAYLOAD_TEMPLATES[pm], {...vars, amount: amtForTemplate});
+  }
+
+  // Virtual Account branch
+  if (pm && pm.startsWith('VA')) {
+    const bankName = pd.bank || pm;
+    const vaNumber = pd.va_number || vars.va || '';
+    let html = `<h3>Pembayaran via Virtual Account</h3>
+      <p class="muted">Bank: <strong>${bankName}</strong></p>
+      <p class="muted">No. VA: <strong id="vaNumber">${vaNumber}</strong>
+        <button id="copyVa" class="copy">Salin</button></p>
+      <p class="muted">Jumlah yang harus dibayar: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>`;
+
+    if (payload) {
+      let payloadToUse = payload;
+      if ((pm.includes('QR') || pm === 'QRIS') || (/^\d{2}/.test(payload))) {
+        payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
+      }
+      const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
+      html += `<div style="margin-top:8px">${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+        <div class="payload-row">${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}</div>
+        <img id="qrImg" src="${qrUrl}" alt="QR VA" class="qr" /></div>`;
+      if (paymentUI) paymentUI.innerHTML = html;
+      document.getElementById('copyVa')?.addEventListener('click', () => {
+        if (!vaNumber) return alert('Nomor VA kosong.');
+        navigator.clipboard.writeText(vaNumber).then(() => alert('No. VA disalin'));
+      });
+      if (!HIDE_PAYLOAD_IN_PROD) {
+        document.getElementById('copyPayload')?.addEventListener('click', () => {
+          const txt = document.getElementById('payloadArea').value;
+          navigator.clipboard.writeText(txt).then(() => alert('Payload disalin'));
+        });
+      }
+      return;
+    }
+  }
+
+  // Non-VA handling
+  if (payload) {
+    let payloadToUse = payload;
+    if ((pm === 'QRIS' || pm.includes('QR')) || /^\d{2}/.test(payload)) {
+      payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
+    }
+    const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
+    let html = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
+      <p class="muted">Scan QR berikut dan bayar Pake semua e-wallet/bank kesayanganmu 😸. Jumlahnya: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
+      ${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+      <div class="payload-row">
+        ${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}
+        <a id="openPayload" class="btn" href="#" target="_blank" style="display:none">Buka/Link</a>
+      </div>
+      <img id="qrImg" src="${qrUrl}" alt="QR" class="qr" />
+      <p class="muted">Pembayaran Ini Akan Kadaluwarsa Dalam: 15 MENIT</p>`;
+
+    if (paymentUI) paymentUI.innerHTML = html;
+
+    const openBtn = document.getElementById('openPayload');
+    if (openBtn && /^https?:\/\//i.test(payloadToUse)) {
+      openBtn.style.display = 'inline-block';
+      openBtn.href = payloadToUse;
+    }
+
+    if (!HIDE_PAYLOAD_IN_PROD) {
+      document.getElementById('copyPayload')?.addEventListener('click', () => {
+        navigator.clipboard.writeText(payloadToUse).then(() => alert('Payload disalin'));
+      });
+    }
+
+    const qrImg = document.getElementById('qrImg');
+    if (qrImg) {
+      qrImg.dataset.payload = payloadToUse;
+      qrImg.dataset.total = String(vars.amount_decimal);
+    }
+  } else {
+    const qrUrl = (pd && pd.qr_image_url) || null;
+    if (qrUrl) {
+      if (paymentUI) paymentUI.innerHTML = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
+        <p class="muted">Scan QR berikut lalu bayar sejumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
+        <img src="${qrUrl}" alt="QRIS" class="qr" />
+        <p class="muted">Atau gunakan aplikasi pembayaran sesuai metode.</p>`;
+    } else {
+      if (paymentUI) paymentUI.innerHTML = `<h3>Instruksi Pembayaran</h3>
+        <p class="muted">Instruksi pembayaran belum tersedia. Tunggu beberapa saat atau hubungi admin via WA.</p>`;
+    }
+  }
+
+  // update share WA link
+  const share = encodeURIComponent(
+    `Order #${d.invoice}\nGame:${d.game}\nID:${d.game_id}\nTotal: Rp ${fmtRp(d.amount_total)}\nStatus: ${d.status}\n\nCek: ${location.href}`
+  );
+  if (el('btnShareWA')) el('btnShareWA').href = `https://wa.me/6285697747768?text=${share}`;
 }
 
 /* ===== COPY INVOICE BUTTON ===== */
@@ -454,7 +638,7 @@ el('btnCopyInvoice')?.addEventListener('click', () => {
 
 /* ===== CLEANUP ===== */
 window.addEventListener('beforeunload', () => {
-  try { unsub(); if (userBalanceUnsub) userBalanceUnsub(); } catch (e) { /* ignore */ }
+  try { if (unsub) unsub(); if (userBalanceUnsub) userBalanceUnsub(); } catch (e) { /* ignore */ }
 });
 </script>
 </body>
