@@ -511,31 +511,22 @@ const nubiaPayCard = document.getElementById('nubiaPayCard');
 let USER_NUBIA_SALDO = 0;
 const saldoElem = document.getElementById('nubiaSaldo');
 
-/* ===== LOAD SALDO DARI FIRESTORE USER ===== */
 async function loadNubiaSaldo(uid){
 
   try{
 
-    /* ===== TRY PATH 1 : users/{uid} ===== */
-    const ref1 = doc(db,'users',uid);
-    const snap1 = await getDoc(ref1);
+    const ref = doc(db,'users',uid);
+    const snap = await getDoc(ref);
 
-    if(snap1.exists()){
+    if(snap.exists()){
 
-      const data = snap1.data();
+      const data = snap.data();
 
-      if(typeof data.nubiaSaldo === 'number'){
-        USER_NUBIA_SALDO = data.nubiaSaldo;
-      }
-
-      /* optional nested object */
-      if(data.nubiapay && typeof data.nubiapay.saldo === 'number'){
-        USER_NUBIA_SALDO = data.nubiapay.saldo;
-      }
+      /* ===== INI FIELD YANG BENER ===== */
+      USER_NUBIA_SALDO = Number(data.nubiPayBalance || 0);
 
     }
 
-    /* update UI */
     if(saldoElem){
       saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString('id');
     }
