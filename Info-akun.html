@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Info Akun — NUBIASTORE</title>
+<link rel="icon" href="/favicon.ico" />
+<style>
+  /* ===== Base (cocok sama halaman lain NUBIASTORE) ===== */
+  :root{
+    --green:#16a34a;
+    --green-700:#15803d;
+    --bg:#f6f7f9;
+    --card:#ffffff;
+    --muted:#6b7280;
+    --maxw:720px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: 'Segoe UI', Inter, system-ui, sans-serif;
+    background: radial-gradient(ellipse at top, #ffffff, #f6f7f9);
+    color:#0f172a; padding:14px 12px 80px;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto}
+  header.top{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:12px;
+  }
+  .logo{font-weight:800;color:var(--green);letter-spacing:2px}
+  .btn{background:var(--green);color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--green);border:1px solid rgba(22,163,74,.12)}
+  .card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(0,0,0,.04)}
+  .profile {
+    display:flex;gap:12px;align-items:center;
+  }
+  .avatar{
+    width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#d1fae5,#ecfccb);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--green);font-size:20px;
+  }
+  .meta small{color:var(--muted);display:block}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .col{flex:1;min-width:180px}
+  .label{font-size:.85rem;color:var(--muted);margin-bottom:6px}
+  .value{font-weight:700;font-size:1rem}
+  .nubiapay-balance{font-size:1.6rem;font-weight:800;color:var(--green-700)}
+  .actions{display:flex;gap:8px;margin-top:10px}
+  .muted{color:var(--muted)}
+  .tx-list{list-style:none;padding:0;margin:0}
+  .tx-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #eee}
+  .tx-item .left{max-width:70%}
+  .tx-item .right{text-align:right}
+  .small{font-size:.85rem;color:var(--muted)}
+  .link{color:var(--green);text-decoration:underline;cursor:pointer}
+  .footer-note{font-size:.85rem;color:var(--muted);margin-top:8px}
+
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
+  .modal{background:#fff;max-width:560px;width:100%;border-radius:10px;padding:14px;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+  .modal .title{font-weight:800;margin-bottom:8px}
+  .modal .close{float:right;background:transparent;border:none;font-weight:700;color:#111;cursor:pointer}
+
+  /* responsive tweaks */
+  @media (max-width:520px){
+    .avatar{width:60px;height:60px;border-radius:10px;font-size:18px}
+    .nubiapay-balance{font-size:1.3rem}
+    body{padding:12px 10px 80px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="logo">NUBIASTORE</div>
+      <div>
+        <button id="btnSignOut" class="btn" style="display:none">Keluar</button>
+      </div>
+    </header>
+
+    <!-- PROFILE CARD -->
+    <div class="card" id="profileCard">
+      <div class="profile">
+        <div class="avatar" id="avatar">NZ</div>
+        <div class="meta">
+          <div id="nick" style="font-size:1.15rem;font-weight:800">—</div>
+          <div class="small" id="email">—</div>
+          <div class="small" id="uid">UID: —</div>
+        </div>
+      </div>
+      <div style="margin-top:12px" class="muted">
+        Data pendaftaran:
+        <div class="small" id="regInfo">—</div>
+      </div>
+    </div>
+
+    <!-- NUBIAPAY PANEL -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div class="small">Saldo NUBIAPAY</div>
+          <div class="nubiapay-balance" id="nubiBalance">Rp 0</div>
+          <div class="small">Bisa dipakai untuk top up game & pembelian di NUBIASTORE</div>
+        </div>
+        <div class="actions" style="flex-direction:column;align-items:flex-end">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <a id="btnDeposit" class="btn" href="#" target="_blank">Deposit</a>
+            <button id="btnNubiHistory" class="btn ghost">Histori</button>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">
+        Catatan: saldo bersifat digital. Admin dapat menyesuaikan saldo via <span class="small">/admin-nubiapay</span>.
+      </div>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <div style="font-weight:800">Riwayat Transaksi</div>
+          <div class="small">Menampilkan transaksi terakhir (realtime)</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button id="btnLoadMore" class="btn ghost">Load more</button>
+          <button id="btnRefresh" class="btn ghost">Refresh</button>
+        </div>
+      </div>
+
+      <ul id="txList" class="tx-list">
+        <!-- transactions injected here -->
+      </ul>
+
+      <div id="txEmpty" class="small muted" style="display:none">Belum ada riwayat transaksi.</div>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:800">Kebijakan Privasi</div>
+          <div class="small">Informasi singkat — data akun tersimpan aman di sistem kami.</div>
+        </div>
+        <div><a id="linkPrivacy" class="link">Baca lengkap</a></div>
+      </div>
+      <div class="small muted" style="margin-top:8px">
+        Kami menyimpan data dasar (email, uid, histori transaksi). Data sensitif tidak dibagikan.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- modal: nubi history -->
+  <div id="overlay" class="overlay">
+    <div class="modal">
+      <button class="close" id="closeModal">✕</button>
+      <div class="title">Histori NUBIAPAY</div>
+      <div id="nubiHistoryBox" style="max-height:60vh;overflow:auto;padding-top:8px"></div>
+    </div>
+  </div>
+
+  <!-- modal: privacy -->
+  <div id="overlayPrivacy" class="overlay">
+    <div class="modal">
+      <button class="close" id="closePrivacy">✕</button>
+      <div class="title">Kebijakan Privasi — NUBIASTORE</div>
+      <div style="max-height:70vh;overflow:auto;padding-top:6px">
+        <p style="margin-bottom:8px">Versi singkat: data akun (email, uid, histori transaksi, saldo NUBIAPAY) disimpan di Firebase Firestore untuk keperluan layanan. Kami tidak membagikan data ke pihak ketiga kecuali ada kewajiban hukum.</p>
+        <p class="small muted">Jika mau versi lengkap (untuk halaman publik), bilang aja nanti gw bikin lengkap.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JS (module) ================= -->
+  <script type="module">
+  // ===== Firebase imports (v10 modular) =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, onSnapshot,
+    collection, query, orderBy, limit, startAfter, getDocs, where
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+    authDomain: "zestoreid-f9e85.firebaseapp.com",
+    projectId: "zestoreid-f9e85",
+    storageBucket: "zestoreid-f9e85.firebasestorage.app",
+    messagingSenderId: "426093692154",
+    appId: "1:426093692154:web:38c6e9c143af626a623543",
+    measurementId: "G-TS0YB9NYW8"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // UI refs
+  const avatarEl = document.getElementById('avatar');
+  const nickEl = document.getElementById('nick');
+  const emailEl = document.getElementById('email');
+  const uidEl = document.getElementById('uid');
+  const regInfoEl = document.getElementById('regInfo');
+  const nubiBalanceEl = document.getElementById('nubiBalance');
+  const txListEl = document.getElementById('txList');
+  const txEmptyEl = document.getElementById('txEmpty');
+  const btnSignOut = document.getElementById('btnSignOut');
+  const btnDeposit = document.getElementById('btnDeposit');
+  const btnNubiHistory = document.getElementById('btnNubiHistory');
+  const overlay = document.getElementById('overlay');
+  const closeModal = document.getElementById('closeModal');
+  const nubiHistoryBox = document.getElementById('nubiHistoryBox');
+  const linkPrivacy = document.getElementById('linkPrivacy');
+  const overlayPrivacy = document.getElementById('overlayPrivacy');
+  const closePrivacy = document.getElementById('closePrivacy');
+  const btnLoadMore = document.getElementById('btnLoadMore');
+  const btnRefresh = document.getElementById('btnRefresh');
+
+  // state
+  let currentUser = null;
+  let txLimit = 20; // initial show 20, can load up to 50
+  let lastVisible = null;
+  let isListeningTx = false;
+  let unsubscribeTxRealtime = null;
+
+  // deposit link (ubah ke halaman/deeplink kamu)
+  btnDeposit.href = '/deposit'; // atau external link to payment gateway
+
+  // auth listener: require login to see info
+  onAuthStateChanged(auth, async (u) => {
+    if(!u){
+      // show minimal, prompt login
+      nickEl.textContent = 'Belum login';
+      emailEl.textContent = 'Silakan login di halaman utama';
+      uidEl.textContent = 'UID: -';
+      avatarEl.textContent = 'NU';
+      btnSignOut.style.display = 'none';
+      // optionally redirect to login page:
+      // location.href = '/login-registerNUBIASTORE';
+      return;
+    }
+    currentUser = u;
+    btnSignOut.style.display = 'inline-block';
+    btnSignOut.onclick = async ()=> {
+      await signOut(auth);
+      location.reload();
+    };
+    await loadUserProfile(u.uid);
+    startTxRealtime(u.uid, txLimit);
+    startNubiBalanceRealtime(u.uid);
+  });
+
+  // load profile info from users/{uid}
+  async function loadUserProfile(uid){
+    try{
+      // auth profile (displayName, email, photoURL) + doc in users collection
+      const udocRef = doc(db,'users', uid);
+      const udocSnap = await getDoc(udocRef);
+      let profile = {};
+      if(udocSnap.exists()){
+        profile = udocSnap.data();
+      }
+      // prefer auth displayName / photoURL
+      const displayName = (currentUser && currentUser.displayName) || profile.displayName || profile.nickname || 'NUBIA USER';
+      const email = (currentUser && currentUser.email) || profile.email || '-';
+      const createdAt = profile.createdAt ? (profile.createdAt.toDate ? profile.createdAt.toDate() : new Date(profile.createdAt)) : (profile.created_at || '-');
+
+      // avatar: try photoURL, else initials
+      const initials = displayName.split(' ').map(s=>s[0]).join('').slice(0,2).toUpperCase();
+      if(currentUser && currentUser.photoURL){
+        // render image instead of colored box
+        avatarEl.style.background = 'transparent';
+        avatarEl.innerHTML = `<img src="${currentUser.photoURL}" alt="avatar" style="width:72px;height:72px;border-radius:10px;object-fit:cover" />`;
+      } else {
+        avatarEl.style.background = 'linear-gradient(135deg,#d1fae5,#ecfccb)';
+        avatarEl.textContent = initials || 'NU';
+      }
+
+      nickEl.textContent = displayName;
+      emailEl.textContent = email;
+      uidEl.textContent = 'UID: ' + uid;
+      if(createdAt && createdAt !== '-') {
+        const dateStr = (createdAt instanceof Date) ? createdAt.toLocaleString() : createdAt;
+        regInfoEl.textContent = `Terdaftar: ${dateStr}`;
+      } else regInfoEl.textContent = 'Tanggal pendaftaran tidak tersedia';
+
+      // If user doc contains nubiapayBalance, show it (fallback 0)
+      const bal = (profile.nubiPayBalance !== undefined) ? Number(profile.nubiPayBalance) : (profile.balance || 0);
+      nubiBalanceEl.textContent = 'Rp ' + (typeof bal === 'number' ? bal.toLocaleString('id') : bal);
+    }catch(e){
+      console.error('loadUserProfile', e);
+    }
+  }
+
+  // realtime NUBIAPAY balance (listen to users/{uid})
+  let unsubBalance = null;
+  function startNubiBalanceRealtime(uid){
+    try{
+      if(unsubBalance) unsubBalance();
+      const userRef = doc(db,'users', uid);
+      unsubBalance = onSnapshot(userRef, snap=>{
+        if(!snap.exists()) return;
+        const data = snap.data();
+        const bal = (data.nubiPayBalance !== undefined) ? Number(data.nubiPayBalance) : (data.balance || 0);
+        nubiBalanceEl.textContent = 'Rp ' + (typeof bal === 'number' ? bal.toLocaleString('id') : bal);
+      });
+    }catch(e){ console.error('startNubiBalanceRealtime', e); }
+  }
+
+  // transactions: realtime list limited by txLimit
+  async function startTxRealtime(uid, limitCount = 20){
+    // cleanup old listener
+    if(unsubscribeTxRealtime) unsubscribeTxRealtime();
+    txListEl.innerHTML = '<li class="small muted">Memuat...</li>';
+    const txCol = collection(db, 'users', uid, 'transactions');
+    const q = query(txCol, orderBy('timestamp', 'desc'), limit(limitCount));
+    unsubscribeTxRealtime = onSnapshot(q, snap=>{
+      const arr = [];
+      snap.forEach(s => { arr.push({ id: s.id, ...s.data() }); });
+      renderTxList(arr);
+      // save lastVisible for load more via getDocs (not necessary for onSnapshot limited)
+      lastVisible = snap.docs[snap.docs.length -1] || null;
+    }, err=>{
+      console.error('tx snapshot err', err);
+      txListEl.innerHTML = '<li class="small muted">Gagal memuat riwayat.</li>';
+    });
+    isListeningTx = true;
+  }
+
+  function renderTxList(arr){
+    txListEl.innerHTML = '';
+    if(!arr.length){
+      txEmptyEl.style.display = 'block';
+      return;
+    } else txEmptyEl.style.display = 'none';
+    arr.forEach(t=>{
+      const li = document.createElement('li');
+      li.className = 'tx-item';
+      const left = document.createElement('div'); left.className = 'left';
+      const right = document.createElement('div'); right.className = 'right';
+      left.innerHTML = `<div style="font-weight:700">${t.type || t.description || 'Transaksi'}</div>
+                        <div class="small muted">${t.note || ''}</div>`;
+      const amountSign = (t.type && String(t.type).toLowerCase().includes('topup')) ? '+' : ((t.amount && t.amount<0) ? '' : '+');
+      const amt = (t.amount !== undefined) ? Number(t.amount) : (t.value || 0);
+      right.innerHTML = `<div style="font-weight:800">${ amountSign } Rp ${ (typeof amt === 'number' ? amt.toLocaleString('id') : amt) }</div>
+                         <div class="small muted">${ t.timestamp && t.timestamp.toDate ? t.timestamp.toDate().toLocaleString() : (t.timestamp || '') }</div>`;
+      li.appendChild(left); li.appendChild(right);
+      txListEl.appendChild(li);
+    });
+  }
+
+  // Load more (one-time fetch older items, up to 50)
+  btnLoadMore.addEventListener('click', async ()=>{
+    if(!currentUser) return alert('Login dulu');
+    const uid = currentUser.uid;
+    // fetch additional entries (not realtime): limit to 50 total
+    const totalWanted = 50;
+    const txCol = collection(db, 'users', uid, 'transactions');
+    // get docs ordered desc limit totalWanted
+    try{
+      const qAll = query(txCol, orderBy('timestamp','desc'), limit(totalWanted));
+      const snap = await getDocs(qAll);
+      const arr = [];
+      snap.forEach(s => arr.push({ id:s.id, ...s.data() }));
+      renderTxList(arr);
+    }catch(e){
+      console.error('loadMore err', e);
+      alert('Gagal load more: '+ (e.message || e));
+    }
+  });
+
+  btnRefresh.addEventListener('click', ()=>{
+    if(!currentUser) return;
+    startTxRealtime(currentUser.uid, txLimit);
+  });
+
+  // NUBIAPAY History Modal
+  btnNubiHistory.addEventListener('click', async ()=>{
+    if(!currentUser) return alert('Silakan login dulu.');
+    overlay.style.display = 'flex';
+    nubiHistoryBox.innerHTML = '<div class="small muted">Memuat histori NUBIAPAY...</div>';
+    try{
+      // get last 50 transactions tagged with wallet change (or reuse same transactions collection)
+      const txCol = collection(db, 'users', currentUser.uid, 'transactions');
+      const qh = query(txCol, orderBy('timestamp','desc'), limit(50));
+      const s = await getDocs(qh);
+      const arr = [];
+      s.forEach(d => arr.push({ id:d.id, ...d.data() }));
+      // render inside modal
+      if(!arr.length) nubiHistoryBox.innerHTML = '<div class="small muted">Belum ada histori NUBIAPAY.</div>';
+      else {
+        nubiHistoryBox.innerHTML = '';
+        arr.forEach(t=>{
+          const div = document.createElement('div');
+          div.style.padding = '10px 0'; div.style.borderBottom = '1px dashed #eee';
+          div.innerHTML = `<div style="display:flex;justify-content:space-between"><div style="font-weight:700">${t.type || t.description || 'Transaksi'}</div><div>Rp ${ (typeof t.amount === 'number' ? t.amount.toLocaleString('id') : (t.amount||t.value||0)) }</div></div>
+                           <div class="small muted">${ t.timestamp && t.timestamp.toDate ? t.timestamp.toDate().toLocaleString() : (t.timestamp || '') }</div>
+                           <div class="small muted">${ t.note || '' }</div>`;
+          nubiHistoryBox.appendChild(div);
+        });
+      }
+    }catch(e){
+      console.error('nubi history err', e);
+      nubiHistoryBox.innerHTML = '<div class="small muted">Gagal memuat histori.</div>';
+    }
+  });
+
+  closeModal.addEventListener('click', ()=> overlay.style.display = 'none');
+  // privacy modal
+  linkPrivacy.addEventListener('click', ()=> overlayPrivacy.style.display = 'flex');
+  closePrivacy.addEventListener('click', ()=> overlayPrivacy.style.display = 'none');
+
+  // small UX: click outside modal close
+  document.getElementById('overlay').addEventListener('click', (ev)=>{
+    if(ev.target === overlay) overlay.style.display = 'none';
+  });
+  document.getElementById('overlayPrivacy').addEventListener('click', (ev)=>{
+    if(ev.target === overlayPrivacy) overlayPrivacy.style.display = 'none';
+  });
+
+  // initial empty state
+  txEmptyEl.style.display = 'none';
+
+  // End module
+  </script>
+
+</body>
+</html>
