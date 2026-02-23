@@ -295,7 +295,31 @@
       <div class="step-header">Metode Pembayaran Disini</div>
       <div class="step-content">
         <div class="payment-grid" id="paymentGrid">
-          <div class="payment-card" data-value="QRIS" data-admin="0" data-percent="1.1">
+          
+          <div class="payment-card" 
+     data-value="NUBIAPAY" 
+     data-admin="0" 
+     data-percent="0"
+     id="nubiaPayCard">
+
+  <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png">
+
+  <div class="meta">
+    <div class="name">NUBIAPAY</div>
+    <div class="fee">Gratis Admin</div>
+    <div style="font-size:10px;opacity:.8">
+      Saldo: Rp <span id="nubiaSaldo">-</span>
+    </div>
+  </div>
+
+  <div class="total-box">
+    <div class="total-label">Total</div>
+    <div class="total-amt">-</div>
+  </div>
+
+</div>
+          
+          <div class="payment-card" data-value="QRIS" data-admin="0" data-percent="1">
             <img src="https://cdn.isellercommerce.com/5d09154a498048e8aa9db882f88e4ea0/theme_content/logo-qris.png" alt="QRIS">
             <div class="meta">
               <div class="name">QRIS</div>
@@ -308,7 +332,7 @@
             <div class="ribbon" style="display:none">""*---TERMURAH</div>
           </div>
 
-          <div class="payment-card" data-value="DANA" data-admin="820" data-percent="1.2">
+          <div class="payment-card" data-value="DANA" data-admin="820" data-percent="1">
             <img src="https://tugashub.id/assets/2024/09/dana.png" alt="DANA">
             <div class="meta">
               <div class="name">DANA</div>
@@ -320,7 +344,7 @@
             </div>
           </div>
 
-          <div class="payment-card" data-value="GOPAY" data-admin="820" data-percent="1.2">
+          <div class="payment-card" data-value="GOPAY" data-admin="820" data-percent="1">
             <img src="https://logos-world.net/wp-content/uploads/2023/03/GoPay-Logo.png" alt="GOPAY">
             <div class="meta">
               <div class="name">GOPAY</div>
@@ -332,7 +356,7 @@
             </div>
           </div>
 
-          <div class="payment-card" data-value="SHOPEE" data-admin="820" data-percent="1.2">
+          <div class="payment-card" data-value="SHOPEE" data-admin="820" data-percent="1">
             <img src="https://assets.pikiran-rakyat.com/crop/0x0:0x0/720x0/webp/photo/2024/07/16/366956180.png" alt="SHOPEE">
             <div class="meta">
               <div class="name">SHOPEE</div>
@@ -469,7 +493,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-  getFirestore, doc, setDoc, serverTimestamp
+  getFirestore, doc, setDoc, serverTimestamp, getDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -487,7 +511,16 @@ const db   = getFirestore(app);
 
 /* =============== STATE =============== */
 let currentUser = null;
-onAuthStateChanged(auth, (u) => { if (u) currentUser = u; });
+onAuthStateChanged(auth, (u) => {
+
+  if (u){
+    currentUser = u;
+
+    /* load saldo firestore */
+    loadNubiaSaldo(u.uid);
+  }
+
+});
 
 /* =============== UI ELEMENTS =============== */
 const mobileMenu = document.getElementById('mobileMenu');
@@ -498,6 +531,36 @@ const nominalCards = document.querySelectorAll('.nominal-card');
 const paymentGrid = document.getElementById('paymentGrid');
 const paymentCards = document.querySelectorAll('.payment-card');
 const vaBRICard    = document.getElementById('vaBRICard');
+const nubiaPayCard = document.getElementById('nubiaPayCard');
+
+let USER_NUBIA_SALDO = 0;
+const saldoElem = document.getElementById('nubiaSaldo');
+
+async function loadNubiaSaldo(uid){
+
+  try{
+
+    const ref = doc(db,'users',uid);
+    const snap = await getDoc(ref);
+
+    if(snap.exists()){
+
+      const data = snap.data();
+
+      /* ===== INI FIELD YANG BENER ===== */
+      USER_NUBIA_SALDO = Number(data.nubiPayBalance || 0);
+
+    }
+
+    if(saldoElem){
+      saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString('id');
+    }
+
+  }catch(err){
+    console.error('Load saldo error',err);
+  }
+
+}
 
 const serverInput = document.getElementById('server');
 const serverLabel = document.querySelector('label[for="server"]');
@@ -536,31 +599,56 @@ nominalCards.forEach(card=>{
 
 /* ===== When nominal selected -> update payment-card totals ===== */
 function updatePaymentTotals(price){
+
+  const selectedNom = document.querySelector('.nominal-card.selected');
+  const nubiaOnly = selectedNom?.dataset.nubiaOnly === "true";
+
   paymentCards.forEach(pc=>{
+
     const flatAdmin = parseFloat(pc.dataset.admin || 0);
     const percent   = parseFloat(pc.dataset.percent || 0) / 100;
     const adminCalc = Math.ceil(flatAdmin + price * percent);
     const total = price + adminCalc;
+
     const totalElem = pc.querySelector('.total-amt');
     if(totalElem){
       totalElem.textContent = `Rp ${formatRupiah(total)}`;
     }
 
+    /* ===== VA MIN 10K ===== */
     if(pc.id && pc.id.startsWith('va') && total < 10000){
       pc.classList.add('disabled');
     } else {
       pc.classList.remove('disabled');
     }
+
+    /* ===== NUBIA ONLY LOCK ===== */
+    if(nubiaOnly && pc.dataset.value !== 'NUBIAPAY'){
+      pc.classList.add('disabled');
+    }
+
+    /* ===== SALDO CHECK ===== */
+    if(pc.dataset.value === 'NUBIAPAY'){
+      if(USER_NUBIA_SALDO < total){
+        pc.classList.add('disabled');
+      }
+    }
+
   });
 
   let minCard = null; let minVal = Infinity;
+
   paymentCards.forEach(pc=>{
     const txt = pc.querySelector('.total-amt')?.textContent || '-';
     if(txt && txt !== '-'){
       const v = Number(txt.replace(/[^\d]/g,''));
-      if(!isNaN(v) && v < minVal){ minVal = v; minCard = pc; }
+      if(!isNaN(v) && v < minVal){
+        minVal = v;
+        minCard = pc;
+      }
     }
   });
+
   paymentCards.forEach(pc=>{
     const r = pc.querySelector('.ribbon');
     if(r) r.style.display = (pc === minCard) ? 'block' : 'none';
@@ -591,7 +679,7 @@ paymentCards.forEach(c=>{
 /* =============== MODAL + SAVE ORDER =============== */
 function genInvoice() {
   const rnd = Math.random().toString(36).slice(2,8).toUpperCase();
-  return `INVC-FF-${Date.now()}-${rnd}`;
+  return `INVC-IsinamaGAME-${Date.now()}-${rnd}`;
 }
 
 let orderSaved = false;
@@ -603,7 +691,7 @@ async function saveOrderToFirestore(payload){
   const docData = {
     invoice,
     userId: payload.uid || null,
-    game: 'FREE-FIRE',
+    game: 'ISI-NAMAGAME',
     game_id: payload.idSel,
     server: payload.srvSel,
     noWA: payload.waSel,
