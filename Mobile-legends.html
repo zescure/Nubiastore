@@ -671,7 +671,31 @@
       <div class="step-header">Metode Pembayaran Disini</div>
       <div class="step-content">
         <div class="payment-grid" id="paymentGrid">
-          <div class="payment-card" data-value="QRIS" data-admin="0" data-percent="1.2">
+          
+          <div class="payment-card" 
+     data-value="NUBIAPAY" 
+     data-admin="0" 
+     data-percent="0"
+     id="nubiaPayCard">
+
+  <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png">
+
+  <div class="meta">
+    <div class="name">NUBIAPAY</div>
+    <div class="fee">Gratis Admin</div>
+    <div style="font-size:10px;opacity:.8">
+      Saldo: Rp <span id="nubiaSaldo">-</span>
+    </div>
+  </div>
+
+  <div class="total-box">
+    <div class="total-label">Total</div>
+    <div class="total-amt">-</div>
+  </div>
+
+</div>
+          
+          <div class="payment-card" data-value="QRIS" data-admin="0" data-percent="1">
             <img src="https://cdn.isellercommerce.com/5d09154a498048e8aa9db882f88e4ea0/theme_content/logo-qris.png" alt="QRIS">
             <div class="meta">
               <div class="name">QRIS</div>
@@ -684,7 +708,7 @@
             <div class="ribbon" style="display:none">""*---TERMURAH</div>
           </div>
 
-          <div class="payment-card" data-value="DANA" data-admin="820" data-percent="1.2">
+          <div class="payment-card" data-value="DANA" data-admin="820" data-percent="1">
             <img src="https://tugashub.id/assets/2024/09/dana.png" alt="DANA">
             <div class="meta">
               <div class="name">DANA</div>
@@ -696,7 +720,7 @@
             </div>
           </div>
 
-          <div class="payment-card" data-value="GOPAY" data-admin="820" data-percent="1.2">
+          <div class="payment-card" data-value="GOPAY" data-admin="820" data-percent="1">
             <img src="https://logos-world.net/wp-content/uploads/2023/03/GoPay-Logo.png" alt="GOPAY">
             <div class="meta">
               <div class="name">GOPAY</div>
@@ -708,7 +732,7 @@
             </div>
           </div>
 
-          <div class="payment-card" data-value="SHOPEE" data-admin="820" data-percent="1.2">
+          <div class="payment-card" data-value="SHOPEE" data-admin="820" data-percent="1">
             <img src="https://assets.pikiran-rakyat.com/crop/0x0:0x0/720x0/webp/photo/2024/07/16/366956180.png" alt="SHOPEE">
             <div class="meta">
               <div class="name">SHOPEE</div>
@@ -829,10 +853,8 @@
         <p>Biaya Admin: Rp <span id="outAdmin"></span></p>
         <p class="total">Total: Rp <span id="outTotal"></span></p>
       </div>
-      <div class="modal-body">
       <h5>Catatan: SEBELUM KAMU KLIK BAYAR MOHON DI CEK KEMBALI YA DATA KAMU DAN ORDERAN KAMU</h5>
       <h6>Kalo Udah Bener Semua Cuss Kita Lanjut Ke Pembayaran!!</h6>
-      </div>
 
       <div class="modal-footer">
         <button id="btnPayNow">Bayar Sekarang</button>
@@ -847,7 +869,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-  getFirestore, doc, setDoc, serverTimestamp
+  getFirestore, doc, setDoc, serverTimestamp, getDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -857,7 +879,7 @@ const firebaseConfig = {
   storageBucket: "zestoreid-f9e85.firebasestorage.app",
   messagingSenderId: "426093692154",
   appId: "1:426093692154:web:38c6e9c143af626a623543",
-  measurementId: "G-TS0YB9NYW8"
+  measurementId: "G-TS0Y9NYW8"
 };
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -865,7 +887,16 @@ const db   = getFirestore(app);
 
 /* =============== STATE =============== */
 let currentUser = null;
-onAuthStateChanged(auth, (u) => { if (u) currentUser = u; });
+onAuthStateChanged(auth, (u) => {
+
+  if (u){
+    currentUser = u;
+
+    /* load saldo firestore */
+    loadNubiaSaldo(u.uid);
+  }
+
+});
 
 /* =============== UI ELEMENTS =============== */
 const mobileMenu = document.getElementById('mobileMenu');
@@ -876,6 +907,51 @@ const nominalCards = document.querySelectorAll('.nominal-card');
 const paymentGrid = document.getElementById('paymentGrid');
 const paymentCards = document.querySelectorAll('.payment-card');
 const vaBRICard    = document.getElementById('vaBRICard');
+const nubiaPayCard = document.getElementById('nubiaPayCard');
+
+let USER_NUBIA_SALDO = 0;
+const saldoElem = document.getElementById('nubiaSaldo');
+
+async function loadNubiaSaldo(uid){
+
+  try{
+
+    const ref = doc(db,'users',uid);
+    const snap = await getDoc(ref);
+
+    if(snap.exists()){
+
+      const data = snap.data();
+
+      /* ===== INI FIELD YANG BENER ===== */
+      USER_NUBIA_SALDO = Number(data.nubiPayBalance || 0);
+
+    }
+
+    if(saldoElem){
+      saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString('id');
+    }
+
+  }catch(err){
+    console.error('Load saldo error',err);
+  }
+
+}
+
+const serverInput = document.getElementById('server');
+const serverLabel = document.querySelector('label[for="server"]');
+
+/* Detect whether this page requires server input.
+   - If body has data-requires-server="true" then show & require server.
+   - Otherwise hide server input and auto-fill '0000' at checkout.
+*/
+const requiresServer = document.body.dataset.requiresServer === 'true';
+
+// hide server input if not required
+if (!requiresServer) {
+  if (serverInput) serverInput.style.display = 'none';
+  if (serverLabel) serverLabel.style.display = 'none';
+}
 
 /* helper format */
 function formatRupiah(num){
@@ -899,33 +975,56 @@ nominalCards.forEach(card=>{
 
 /* ===== When nominal selected -> update payment-card totals ===== */
 function updatePaymentTotals(price){
+
+  const selectedNom = document.querySelector('.nominal-card.selected');
+  const nubiaOnly = selectedNom?.dataset.nubiaOnly === "true";
+
   paymentCards.forEach(pc=>{
+
     const flatAdmin = parseFloat(pc.dataset.admin || 0);
     const percent   = parseFloat(pc.dataset.percent || 0) / 100;
     const adminCalc = Math.ceil(flatAdmin + price * percent);
     const total = price + adminCalc;
+
     const totalElem = pc.querySelector('.total-amt');
     if(totalElem){
       totalElem.textContent = `Rp ${formatRupiah(total)}`;
     }
 
-    // disable VA if total < min (contoh min 10000 untuk VA)
+    /* ===== VA MIN 10K ===== */
     if(pc.id && pc.id.startsWith('va') && total < 10000){
       pc.classList.add('disabled');
     } else {
       pc.classList.remove('disabled');
     }
+
+    /* ===== NUBIA ONLY LOCK ===== */
+    if(nubiaOnly && pc.dataset.value !== 'NUBIAPAY'){
+      pc.classList.add('disabled');
+    }
+
+    /* ===== SALDO CHECK ===== */
+    if(pc.dataset.value === 'NUBIAPAY'){
+      if(USER_NUBIA_SALDO < total){
+        pc.classList.add('disabled');
+      }
+    }
+
   });
 
-  // optional: beri ribbon BEST PRICE ke yang paling murah
   let minCard = null; let minVal = Infinity;
+
   paymentCards.forEach(pc=>{
     const txt = pc.querySelector('.total-amt')?.textContent || '-';
     if(txt && txt !== '-'){
       const v = Number(txt.replace(/[^\d]/g,''));
-      if(!isNaN(v) && v < minVal){ minVal = v; minCard = pc; }
+      if(!isNaN(v) && v < minVal){
+        minVal = v;
+        minCard = pc;
+      }
     }
   });
+
   paymentCards.forEach(pc=>{
     const r = pc.querySelector('.ribbon');
     if(r) r.style.display = (pc === minCard) ? 'block' : 'none';
@@ -939,10 +1038,7 @@ nominalCards.forEach(c=>{
     c.classList.add('selected');
 
     const price = parseFloat(c.dataset.price || 0);
-    // update payment cards totals
     updatePaymentTotals(price);
-
-    // auto-scroll to payment grid for UX
     paymentGrid.scrollIntoView({ behavior:'smooth', block:'start' });
   };
 });
@@ -952,16 +1048,14 @@ paymentCards.forEach(c=>{
     if(c.classList.contains('disabled')) return;
     paymentCards.forEach(x=> x.classList.remove('selected'));
     c.classList.add('selected');
-    // scroll to checkout button
     document.getElementById('btnCheckout').scrollIntoView({ behavior:'smooth', block:'center' });
   };
 });
 
 /* =============== MODAL + SAVE ORDER =============== */
-/* reuse functions dari kode mu sebelumnya (invoice gen + saveOrderToFirestore) */
 function genInvoice() {
   const rnd = Math.random().toString(36).slice(2,8).toUpperCase();
-  return `INVC-ML-${Date.now()}-${rnd}`;
+  return `INVC-IsinamaGAME-${Date.now()}-${rnd}`;
 }
 
 let orderSaved = false;
@@ -973,7 +1067,7 @@ async function saveOrderToFirestore(payload){
   const docData = {
     invoice,
     userId: payload.uid || null,
-    game: 'mobile-legends',
+    game: 'ISI-NAMAGAME',
     game_id: payload.idSel,
     server: payload.srvSel,
     noWA: payload.waSel,
@@ -1005,9 +1099,18 @@ let lastCalc = null;
 /* Checkout button */
 document.getElementById('btnCheckout').onclick = async ()=>{
   const idSel = document.getElementById('userId').value.trim();
-  const srvSel= document.getElementById('server').value.trim();
+  let srvSel= (document.getElementById('server')?.value || '').trim();
   const waSel = document.getElementById('whatsapp').value.trim();
-  if(!idSel||!srvSel||!waSel) return alert('Kayaknya kamu belum masukin ID/Server dan No telpon ya? isi dulu ya supaya bisa kita lanjut');
+
+  // jika server tidak wajib (field disembunyikan), auto set '0000'
+  if (!requiresServer) {
+    srvSel = '0000';
+  }
+
+  // validasi: hanya butuh server kalau requiresServer === true
+  if(!idSel || (requiresServer && !srvSel) || !waSel) {
+    return alert('Kayaknya kamu belum masukin ID/Server dan No telpon ya? isi dulu ya supaya bisa kita lanjut');
+  }
 
   const nomSel = document.querySelector('.nominal-card.selected');
   if(!nomSel) return alert('Pilih dulu kamu mau beli apa supaya bisa kita lanjut');
