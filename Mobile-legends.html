@@ -869,7 +869,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-  getFirestore, doc, setDoc, serverTimestamp, getDoc
+  getFirestore, doc, setDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -879,7 +879,7 @@ const firebaseConfig = {
   storageBucket: "zestoreid-f9e85.firebasestorage.app",
   messagingSenderId: "426093692154",
   appId: "1:426093692154:web:38c6e9c143af626a623543",
-  measurementId: "G-TS0Y9NYW8"
+  measurementId: "G-TS0YB9NYW8"
 };
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -887,16 +887,7 @@ const db   = getFirestore(app);
 
 /* =============== STATE =============== */
 let currentUser = null;
-onAuthStateChanged(auth, (u) => {
-
-  if (u){
-    currentUser = u;
-
-    /* load saldo firestore */
-    loadNubiaSaldo(u.uid);
-  }
-
-});
+onAuthStateChanged(auth, (u) => { if (u) currentUser = u; });
 
 /* =============== UI ELEMENTS =============== */
 const mobileMenu = document.getElementById('mobileMenu');
@@ -907,51 +898,6 @@ const nominalCards = document.querySelectorAll('.nominal-card');
 const paymentGrid = document.getElementById('paymentGrid');
 const paymentCards = document.querySelectorAll('.payment-card');
 const vaBRICard    = document.getElementById('vaBRICard');
-const nubiaPayCard = document.getElementById('nubiaPayCard');
-
-let USER_NUBIA_SALDO = 0;
-const saldoElem = document.getElementById('nubiaSaldo');
-
-async function loadNubiaSaldo(uid){
-
-  try{
-
-    const ref = doc(db,'users',uid);
-    const snap = await getDoc(ref);
-
-    if(snap.exists()){
-
-      const data = snap.data();
-
-      /* ===== INI FIELD YANG BENER ===== */
-      USER_NUBIA_SALDO = Number(data.nubiPayBalance || 0);
-
-    }
-
-    if(saldoElem){
-      saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString('id');
-    }
-
-  }catch(err){
-    console.error('Load saldo error',err);
-  }
-
-}
-
-const serverInput = document.getElementById('server');
-const serverLabel = document.querySelector('label[for="server"]');
-
-/* Detect whether this page requires server input.
-   - If body has data-requires-server="true" then show & require server.
-   - Otherwise hide server input and auto-fill '0000' at checkout.
-*/
-const requiresServer = document.body.dataset.requiresServer === 'true';
-
-// hide server input if not required
-if (!requiresServer) {
-  if (serverInput) serverInput.style.display = 'none';
-  if (serverLabel) serverLabel.style.display = 'none';
-}
 
 /* helper format */
 function formatRupiah(num){
@@ -975,56 +921,33 @@ nominalCards.forEach(card=>{
 
 /* ===== When nominal selected -> update payment-card totals ===== */
 function updatePaymentTotals(price){
-
-  const selectedNom = document.querySelector('.nominal-card.selected');
-  const nubiaOnly = selectedNom?.dataset.nubiaOnly === "true";
-
   paymentCards.forEach(pc=>{
-
     const flatAdmin = parseFloat(pc.dataset.admin || 0);
     const percent   = parseFloat(pc.dataset.percent || 0) / 100;
     const adminCalc = Math.ceil(flatAdmin + price * percent);
     const total = price + adminCalc;
-
     const totalElem = pc.querySelector('.total-amt');
     if(totalElem){
       totalElem.textContent = `Rp ${formatRupiah(total)}`;
     }
 
-    /* ===== VA MIN 10K ===== */
+    // disable VA if total < min (contoh min 10000 untuk VA)
     if(pc.id && pc.id.startsWith('va') && total < 10000){
       pc.classList.add('disabled');
     } else {
       pc.classList.remove('disabled');
     }
-
-    /* ===== NUBIA ONLY LOCK ===== */
-    if(nubiaOnly && pc.dataset.value !== 'NUBIAPAY'){
-      pc.classList.add('disabled');
-    }
-
-    /* ===== SALDO CHECK ===== */
-    if(pc.dataset.value === 'NUBIAPAY'){
-      if(USER_NUBIA_SALDO < total){
-        pc.classList.add('disabled');
-      }
-    }
-
   });
 
+  // optional: beri ribbon BEST PRICE ke yang paling murah
   let minCard = null; let minVal = Infinity;
-
   paymentCards.forEach(pc=>{
     const txt = pc.querySelector('.total-amt')?.textContent || '-';
     if(txt && txt !== '-'){
       const v = Number(txt.replace(/[^\d]/g,''));
-      if(!isNaN(v) && v < minVal){
-        minVal = v;
-        minCard = pc;
-      }
+      if(!isNaN(v) && v < minVal){ minVal = v; minCard = pc; }
     }
   });
-
   paymentCards.forEach(pc=>{
     const r = pc.querySelector('.ribbon');
     if(r) r.style.display = (pc === minCard) ? 'block' : 'none';
@@ -1038,7 +961,10 @@ nominalCards.forEach(c=>{
     c.classList.add('selected');
 
     const price = parseFloat(c.dataset.price || 0);
+    // update payment cards totals
     updatePaymentTotals(price);
+
+    // auto-scroll to payment grid for UX
     paymentGrid.scrollIntoView({ behavior:'smooth', block:'start' });
   };
 });
@@ -1048,11 +974,13 @@ paymentCards.forEach(c=>{
     if(c.classList.contains('disabled')) return;
     paymentCards.forEach(x=> x.classList.remove('selected'));
     c.classList.add('selected');
+    // scroll to checkout button
     document.getElementById('btnCheckout').scrollIntoView({ behavior:'smooth', block:'center' });
   };
 });
 
 /* =============== MODAL + SAVE ORDER =============== */
+/* reuse functions dari kode mu sebelumnya (invoice gen + saveOrderToFirestore) */
 function genInvoice() {
   const rnd = Math.random().toString(36).slice(2,8).toUpperCase();
   return `INVC-ML-${Date.now()}-${rnd}`;
