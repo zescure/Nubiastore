@@ -102,7 +102,15 @@
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { 
+  getFirestore, doc, onSnapshot,
+  runTransaction, serverTimestamp,
+  collection
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { 
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 /* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
@@ -115,7 +123,12 @@ const firebaseConfig = {
   measurementId: "G-TS0YB9NYW8"
 };
 initializeApp(firebaseConfig);
-const db = getFirestore();
+const auth = getAuth();
+let currentUser=null;
+
+onAuthStateChanged(auth,u=>{
+  currentUser=u;
+});
 
 /* ===== CONFIG / TEMPLATES ===== */
 const HIDE_PAYLOAD_IN_PROD = true;
@@ -219,6 +232,74 @@ const unsub = onSnapshot(orderRef, snap => {
   el('loading').textContent = 'Gagal mengambil data order.';
 });
 
+async function payWithNubia(orderData){
+
+  if(!currentUser) return;
+
+  if(orderData.__nubiaPaid) return; 
+  // anti re-run dari snapshot refresh
+
+  const orderRef = doc(db,'orders',orderData.invoice);
+  const userRef  = doc(db,'users',currentUser.uid);
+
+  try{
+
+    await runTransaction(db, async(t)=>{
+
+      const oSnap=await t.get(orderRef);
+      if(!oSnap.exists()) throw "order missing";
+
+      const o=oSnap.data();
+
+      if(o.status!=="initiated") return;
+
+      if(o.__nubiaPaid===true) return;
+
+      const uSnap=await t.get(userRef);
+      if(!uSnap.exists()) throw "user missing";
+
+      const saldo=Number(uSnap.data().nubiPayBalance||0);
+      const total=Number(o.amount_total||0);
+
+      if(saldo<total){
+        alert("Saldo NUBIAPAY tidak cukup");
+        throw "saldo kurang";
+      }
+
+      /* ===== POTONG SALDO ===== */
+
+      t.update(userRef,{
+        nubiPayBalance: saldo-total,
+        updatedAt:serverTimestamp()
+      });
+
+      /* ===== HISTORI ===== */
+
+      const txRef=doc(collection(db,`users/${currentUser.uid}/transactions`));
+
+      t.set(txRef,{
+        amount:-total,
+        type:"PAY_ORDER",
+        note:o.invoice,
+        timestamp:serverTimestamp()
+      });
+
+      /* ===== UPDATE ORDER ===== */
+
+      t.update(orderRef,{
+        status:"completed",
+        __nubiaPaid:true,
+        paidAt:serverTimestamp()
+      });
+
+    });
+
+  }catch(e){
+    console.log("nubiaPay err",e);
+  }
+
+}
+
 /* ===== RENDER ORDER ===== */
 function renderOrder(d) {
   el('invoiceTxt').textContent = d.invoice || invoice;
@@ -292,7 +373,53 @@ function renderOrder(d) {
 
   // payment render
   paymentUI.innerHTML = '';
+
+  if(pm==="NUBIAPAY"){
+
+paymentUI.innerHTML=`
+
+<div style="
+border:1px solid #e5e7eb;
+border-radius:14px;
+padding:18px;
+text-align:center;
+background:#fff;
+">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png"
+style="width:160px;filter:grayscale(1);margin-bottom:12px">
+
+<p style="font-weight:600">
+saldo anda sudah terpotong, sekarang kamu tinggal menunggu sama-sama orderan kamu completed dan cek in gamenya yah!
+</p>
+
+<div style="
+margin-top:12px;
+background:#ecfdf5;
+color:#047857;
+padding:10px;
+border-radius:10px;
+font-size:13px;
+">
+
+makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+
+</div>
+
+</div>
+`;
+
+return;
+}
+  
   const pm = (d.payment_method || '').toUpperCase();
+
+  /* ===== AUTO PAY NUBIAPAY ===== */
+
+if(pm==="NUBIAPAY"){
+  payWithNubia(d);
+}
+  
   const pd = d.payment_data || {};
 
   // priority: server-provided payload (string) OR pd.qr_image_url
