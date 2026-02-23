@@ -170,6 +170,16 @@ th,td{
 
 }
 
+.depositBtn{
+  padding:16px 14px;
+  min-height:60px;
+  border-radius:12px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+  
 </style>
 </head>
 <body>
@@ -185,7 +195,7 @@ th,td{
         </div>
       </div>
       <div style="text-align:right">
-        <button id="btnSignOut" class="btn grey">Keluar</button>
+        <button id="btnBack" class="btn grey">← Kembali</button>
       </div>
     </div>
 
@@ -519,7 +529,9 @@ depositBtns.forEach(b=>{
 });
 
 /* ===== sign out ===== */
-btnSignOut.addEventListener('click', ()=> signOut(auth));
+document.getElementById('btnBack').onclick = ()=>{
+  location.href = "https://nubiastore.netlify.app";
+};
 
 </script>
 </body>
