@@ -102,323 +102,194 @@
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
+import {
   getFirestore, doc, onSnapshot,
   runTransaction, serverTimestamp,
   collection
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { 
+import {
   getAuth, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* ===== FIREBASE CONFIG ===== */
-const firebaseConfig = {
-  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-  authDomain: "zestoreid-f9e85.firebaseapp.com",
-  projectId: "zestoreid-f9e85",
-  storageBucket: "zestoreid-f9e85.firebasestorage.app",
-  messagingSenderId: "426093692154",
-  appId: "1:426093692154:web:38c6e9c143af626a623543",
-  measurementId: "G-TS0YB9NYW8"
+/* FIREBASE */
+
+const firebaseConfig={
+  apiKey:"AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain:"zestoreid-f9e85.firebaseapp.com",
+  projectId:"zestoreid-f9e85",
+  storageBucket:"zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId:"426093692154",
+  appId:"1:426093692154:web:38c6e9c143af626a623543"
 };
-initializeApp(firebaseConfig);
-const auth = getAuth();
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
 let currentUser=null;
 
-onAuthStateChanged(auth,u=>{
-  currentUser=u;
+onAuthStateChanged(auth,u=>currentUser=u);
+
+/* HELPERS */
+
+const el=id=>document.getElementById(id);
+const fmtRp=n=>typeof n==="number"?n.toLocaleString("id"):n;
+
+/* INVOICE */
+
+const params=new URLSearchParams(location.search);
+const invoice=params.get("invoice");
+
+if(!invoice){
+  el('loading').textContent="Invoice kosong";
+  throw new Error("no invoice");
+}
+
+/* LISTEN ORDER */
+
+const orderRef=doc(db,"orders",invoice);
+
+onSnapshot(orderRef,snap=>{
+
+ if(!snap.exists()){
+   el('loading').textContent="Order tidak ditemukan";
+   return;
+ }
+
+ el('loading').style.display="none";
+ renderOrder(snap.data());
+
 });
 
-/* ===== CONFIG / TEMPLATES ===== */
-const HIDE_PAYLOAD_IN_PROD = true;
-const UNIFIED_PAYLOAD_TEMPLATES = {
-  "QRIS":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "DANA":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "GOPAY": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "OVO":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SEABANK":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "BANKJAGO": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SUPERBANK":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SHOPEE":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657"
-};
-
-/* ===== HELPERS ===== */
-const el = id => document.getElementById(id);
-const fmtRp = n => (typeof n === 'number' ? n.toLocaleString('id') : n);
-
-function fillTemplate(template, vars) {
-  return String(template).replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
-}
-function qrImageUrlFromPayload(payload, size = 360) {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(String(payload))}`;
-}
-function fmtAmountNumber(n) {
-  const num = Number(n);
-  if (!isFinite(num)) return 0;
-  return Math.round(num);
-}
-
-/* ===== TLV/EMV helpers (parse/build & CRC) ===== */
-function parseTLV_ASCII(s){
-  // parse ASCII TLV (tag 2 chars, len 2 chars decimal, then len chars of value)
-  let i=0, out=[];
-  while(i < s.length){
-    const tag = s.substr(i,2); i += 2;
-    const len = parseInt(s.substr(i,2),10); i += 2;
-    const value = s.substr(i, len); i += len;
-    out.push({tag, len, value});
-  }
-  return out;
-}
-function buildTLV_ASCII(arr){
-  return arr.map(o => {
-    const v = String(o.value);
-    const l = String(v.length).padStart(2,'0');
-    return o.tag + l + v;
-  }).join('');
-}
-function setAmountInPayloadCore_ASCII(corePayload, amountStr){
-  // corePayload: TLV ASCII string without trailing CRC (i.e. no 63...).
-  // ensures tag '54' is set to amountStr (format like "12345.00")
-  const parsed = parseTLV_ASCII(corePayload);
-  // filter out existing 54
-  const filtered = parsed.filter(o => o.tag !== '54');
-  // find index for tag 58 to insert before if exists (58 = country/merchant ext usually)
-  const idx58 = filtered.findIndex(o => o.tag === '58');
-  const amountObj = {tag: '54', value: String(amountStr)};
-  if(idx58 >= 0) filtered.splice(idx58, 0, amountObj);
-  else filtered.push(amountObj);
-  return buildTLV_ASCII(filtered);
-}
-// CRC16-CCITT (poly 0x1021, init 0xFFFF) over ASCII bytes, returns hex uppercase 4 chars
-function crc16ccitt_ascii(str){
-  let crc = 0xFFFF;
-  for (let i = 0; i < str.length; i++) {
-    crc ^= (str.charCodeAt(i) & 0xFF) << 8;
-    for (let j = 0; j < 8; j++) {
-      if ((crc & 0x8000) !== 0) crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
-      else crc = (crc << 1) & 0xFFFF;
-    }
-  }
-  return crc.toString(16).toUpperCase().padStart(4,'0');
-}
-
-/* ===== GET INVOICE PARAM ===== */
-const params = new URLSearchParams(location.search);
-const invoice = params.get('invoice');
-if (!invoice) {
-  el('loading').textContent = 'Invoice kosong. Contoh: /checkout?invoice=INVC-...';
-  el('notfound').style.display = 'block';
-  throw new Error('no-invoice');
-}
-el('loading').textContent = `Menunggu data order ${invoice}...`;
-
-/* ===== FIRESTORE LISTENER ===== */
-const orderRef = doc(db, 'orders', invoice);
-const unsub = onSnapshot(orderRef, snap => {
-  if (!snap.exists()) {
-    el('loading').style.display = 'none';
-    el('notfound').style.display = 'block';
-    return;
-  }
-  el('loading').style.display = 'none';
-  el('notfound').style.display = 'none';
-  el('orderBox').style.display = 'block';
-  const d = snap.data();
-  try { renderOrder(d); } catch (err) { console.error('renderOrder error', err); }
-}, err => {
-  console.error('snapshot error', err);
-  el('loading').textContent = 'Gagal mengambil data order.';
-});
+/* ========================= */
+/* ====== NUBIAPAY ======== */
+/* ========================= */
 
 async function payWithNubia(orderData){
 
-  if(!currentUser) return;
+ if(!currentUser) return;
 
-  if(orderData.__nubiaPaid) return; 
-  // anti re-run dari snapshot refresh
+ const orderRef=doc(db,'orders',orderData.invoice);
+ const userRef=doc(db,'users',currentUser.uid);
 
-  const orderRef = doc(db,'orders',orderData.invoice);
-  const userRef  = doc(db,'users',currentUser.uid);
+ try{
 
-  try{
+  await runTransaction(db,async(t)=>{
 
-    await runTransaction(db, async(t)=>{
+    const oSnap=await t.get(orderRef);
+    if(!oSnap.exists()) throw "order missing";
 
-      const oSnap=await t.get(orderRef);
-      if(!oSnap.exists()) throw "order missing";
+    const o=oSnap.data();
 
-      const o=oSnap.data();
+    if(o.status!=="initiated") return;
+    if(o.__nubiaPaid===true) return;
 
-      if(o.status!=="initiated") return;
+    const uSnap=await t.get(userRef);
+    if(!uSnap.exists()) throw "user missing";
 
-      if(o.__nubiaPaid===true) return;
+    const saldo=Number(uSnap.data().nubiPayBalance||0);
+    const total=Number(o.amount_total||0);
 
-      const uSnap=await t.get(userRef);
-      if(!uSnap.exists()) throw "user missing";
+    if(saldo<total){
+      alert("Saldo NUBIAPAY tidak cukup");
+      throw "saldo kurang";
+    }
 
-      const saldo=Number(uSnap.data().nubiPayBalance||0);
-      const total=Number(o.amount_total||0);
+    /* POTONG SALDO */
 
-      if(saldo<total){
-        alert("Saldo NUBIAPAY tidak cukup");
-        throw "saldo kurang";
-      }
-
-      /* ===== POTONG SALDO ===== */
-
-      t.update(userRef,{
-        nubiPayBalance: saldo-total,
-        updatedAt:serverTimestamp()
-      });
-
-      /* ===== HISTORI ===== */
-
-      const txRef=doc(collection(db,`users/${currentUser.uid}/transactions`));
-
-      t.set(txRef,{
-        amount:-total,
-        type:"PAY_ORDER",
-        note:o.invoice,
-        timestamp:serverTimestamp()
-      });
-
-      /* ===== UPDATE ORDER ===== */
-
-      t.update(orderRef,{
-        status:"completed",
-        __nubiaPaid:true,
-        paidAt:serverTimestamp()
-      });
-
+    t.update(userRef,{
+      nubiPayBalance:saldo-total,
+      updatedAt:serverTimestamp()
     });
 
-  }catch(e){
-    console.log("nubiaPay err",e);
-  }
+    /* HISTORI */
+
+    const txRef=doc(collection(db,`users/${currentUser.uid}/transactions`));
+
+    t.set(txRef,{
+      amount:-total,
+      type:"PAY_ORDER",
+      note:o.invoice,
+      timestamp:serverTimestamp()
+    });
+
+    /* COMPLETE ORDER */
+
+    t.update(orderRef,{
+      status:"completed",
+      __nubiaPaid:true,
+      paidAt:serverTimestamp()
+    });
+
+  });
+
+ }catch(e){
+   console.log("nubia error",e);
+ }
 
 }
 
+/* ========================= */
 /* ===== RENDER ORDER ===== */
-function renderOrder(d) {
-  el('invoiceTxt').textContent = d.invoice || invoice;
-  el('gameTxt').textContent = d.game || '-';
-  el('idTxt').textContent = d.game_id || '-';
-  el('srvTxt').textContent = d.server || '-';
-  el('waTxt').textContent = d.noWA || '-';
-  el('nominalTxt').textContent = (d.nominalValue ?? '-') + (d.nominalValue && typeof d.nominalValue !== 'string' ? ' 💎' : '');
-  el('priceTxt').textContent = 'Rp ' + fmtRp(d.price || '-');
-  el('adminTxt').textContent = 'Rp ' + fmtRp(d.adminFee || 0);
-  el('totalTxt').textContent = 'Rp ' + fmtRp(d.amount_total || '-');
-  el('methodTxt').textContent = (d.payment_method || '-').replace('_', ' ');
-  setStatusBadge(d.status || 'initiated');
-  el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
+/* ========================= */
 
-  /* === ADDED: terminal status handling (tidak mengubah QRIS logic) === */
-  const paymentUI = el('paymentUI');
-  const resultBox = el('resultBox');
-  const actions = el('actions');
+function renderOrder(d){
 
-  const statusNorm = String(d.status || '').trim().toLowerCase();
-  const successStates = ['completed','complete','paid','success'];
-  const cancelStates  = ['cancelled','canceled','failed','expired','rejected'];
+ el('invoiceTxt').textContent=d.invoice||invoice;
+ el('gameTxt').textContent=d.game||'-';
+ el('totalTxt').textContent='Rp '+fmtRp(d.amount_total||0);
 
-  if (successStates.includes(statusNorm)) {
-    // hide payment UI and actions, show success box
-    if (paymentUI) paymentUI.style.display = 'none';
-    if (actions) actions.style.display = 'none';
-    if (el('adminNote')) el('adminNote').style.display = 'none';
-    resultBox.innerHTML = `
-      <div class="result-box">
-        <img src="https://media.tenor.com/BSY1qTH8g-oAAAAM/check.gif" alt="Berhasil" />
-        <p>Orderan kamu berhasil diproses — silakan cek in-game kamu.</p>
-      </div>`;
-    resultBox.style.display = 'block';
-    return; // stop further rendering (QRIS logic untouched)
-  }
+ const paymentUI=el('paymentUI');
 
-  if (cancelStates.includes(statusNorm)) {
-    if (paymentUI) paymentUI.style.display = 'none';
-    if (actions) actions.style.display = 'none';
-    if (el('adminNote')) el('adminNote').style.display = 'none';
-    resultBox.innerHTML = `
-      <div class="result-box cancel">
-        <img src="https://www.emojiall.com/images/240/telegram/274c.gif" alt="Dibatalkan" />
-        <p>Orderan kamu dibatalkan karena kode pembayaran kedaluwarsa.</p>
-        <p style="font-weight:600;font-size:0.9rem;margin-top:8px;color:#6b7280;">Silakan buat order baru atau hubungi customer service untuk bantuan.</p>
-      </div>`;
-    resultBox.style.display = 'block';
-    return; // stop further rendering
-  }
+ /* ===== FIX: PM HARUS DULU ===== */
 
-  // non-terminal -> ensure payment UI visible, hide resultBox
-  if (paymentUI) paymentUI.style.display = 'block';
-  if (actions) actions.style.display = 'block';
-  resultBox.style.display = 'none';
-  /* === END ADDED BLOCK === */
+ const pm=(d.payment_method||'').toUpperCase();
 
-  // build vars (two amount formats)
-  const amountNumber = Number(d.amount_total) || 0;
-  const vars = {
-    // for deeplinks / templates — many providers expect integer or no decimals
-    amount: fmtAmountNumber(amountNumber),
-    // amount with decimal for EMV/QRIS (two decimals)
-    amount_decimal: (typeof amountNumber === 'number') ? amountNumber.toFixed(2) : String(d.amount_total || '0.00'),
-    invoice: d.invoice || invoice,
-    phone: d.noWA || '',
-    va: (d.payment_data && (d.payment_data.va_number || (d.payment_data.va && d.payment_data.va.number))) || '',
-    note: `NUBIA-${d.invoice || invoice}`
-  };
+ paymentUI.innerHTML="";
 
-  // payment render
-  paymentUI.innerHTML = '';
+ /* ====================== */
+ /* ===== NUBIAPAY ======= */
+ /* ====================== */
 
-  if(pm==="NUBIAPAY"){
+ if(pm==="NUBIAPAY"){
 
-paymentUI.innerHTML=`
+   payWithNubia(d);   // <-- AUTO POTONG
 
-<div style="
-border:1px solid #e5e7eb;
-border-radius:14px;
-padding:18px;
-text-align:center;
-background:#fff;
-">
+   paymentUI.innerHTML=`
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png"
-style="width:160px;filter:grayscale(1);margin-bottom:12px">
+   <div style="
+   border:1px solid #e5e7eb;
+   border-radius:14px;
+   padding:18px;
+   text-align:center;
+   background:#fff">
 
-<p style="font-weight:600">
-saldo anda sudah terpotong, sekarang kamu tinggal menunggu sama-sama orderan kamu completed dan cek in gamenya yah!
-</p>
+   <h3>Pembayaran NubiPay</h3>
 
-<div style="
-margin-top:12px;
-background:#ecfdf5;
-color:#047857;
-padding:10px;
-border-radius:10px;
-font-size:13px;
-">
+   <p>Saldo kamu sedang diproses…</p>
 
-makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+   <div style="
+   margin-top:12px;
+   background:#ecfdf5;
+   color:#047857;
+   padding:10px;
+   border-radius:10px;
+   font-size:13px">
 
-</div>
+   Jika saldo cukup order akan otomatis selesai
 
-</div>
-`;
+   </div>
 
-return;
-}
-  
-  const pm = (d.payment_method || '').toUpperCase();
+   </div>
+   `;
 
-  /* ===== AUTO PAY NUBIAPAY ===== */
+   return;
+ }
 
-if(pm==="NUBIAPAY"){
-  payWithNubia(d);
-}
+ /* ====================== */
+ /* ===== QR / VA ======== */
+ /* ====================== */
   
   const pd = d.payment_data || {};
 
