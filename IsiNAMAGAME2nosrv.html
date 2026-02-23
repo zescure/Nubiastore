@@ -468,7 +468,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-  getFirestore, doc, setDoc, serverTimestamp
+  getFirestore, doc, setDoc, serverTimestamp, getDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -486,7 +486,16 @@ const db   = getFirestore(app);
 
 /* =============== STATE =============== */
 let currentUser = null;
-onAuthStateChanged(auth, (u) => { if (u) currentUser = u; });
+onAuthStateChanged(auth, (u) => {
+
+  if (u){
+    currentUser = u;
+
+    /* load saldo firestore */
+    loadNubiaSaldo(u.uid);
+  }
+
+});
 
 /* =============== UI ELEMENTS =============== */
 const mobileMenu = document.getElementById('mobileMenu');
@@ -499,10 +508,43 @@ const paymentCards = document.querySelectorAll('.payment-card');
 const vaBRICard    = document.getElementById('vaBRICard');
 const nubiaPayCard = document.getElementById('nubiaPayCard');
 
-/* ====== SIMULASI SALDO USER (nanti bisa tarik dari firestore user profile) ====== */
-let USER_NUBIA_SALDO = 50000; // contoh saldo
+let USER_NUBIA_SALDO = 0;
 const saldoElem = document.getElementById('nubiaSaldo');
-if(saldoElem) saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString('id');
+
+/* ===== LOAD SALDO DARI FIRESTORE USER ===== */
+async function loadNubiaSaldo(uid){
+
+  try{
+
+    /* ===== TRY PATH 1 : users/{uid} ===== */
+    const ref1 = doc(db,'users',uid);
+    const snap1 = await getDoc(ref1);
+
+    if(snap1.exists()){
+
+      const data = snap1.data();
+
+      if(typeof data.nubiaSaldo === 'number'){
+        USER_NUBIA_SALDO = data.nubiaSaldo;
+      }
+
+      /* optional nested object */
+      if(data.nubiapay && typeof data.nubiapay.saldo === 'number'){
+        USER_NUBIA_SALDO = data.nubiapay.saldo;
+      }
+
+    }
+
+    /* update UI */
+    if(saldoElem){
+      saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString('id');
+    }
+
+  }catch(err){
+    console.error('Load saldo error',err);
+  }
+
+}
 
 const serverInput = document.getElementById('server');
 const serverLabel = document.querySelector('label[for="server"]');
