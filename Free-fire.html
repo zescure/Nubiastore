@@ -290,6 +290,273 @@
       </div>
     </div>
 
+    <!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MOBILE-LEGENDS - NUBIASTORE</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Segoe UI',sans-serif;
+      background: radial-gradient(ellipse at top, #ffffff, #f6f7f9);
+      color:#111;
+      counter-reset:step;
+    }
+    a { text-decoration:none; color:inherit; }
+    .container { max-width:480px; margin:1rem auto; padding:1rem; }
+    h2 { margin-bottom:1rem; color:#16a34a; }
+
+    /* ===== HEADER ===== */
+    header {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1rem; background:#ffffff; position:relative; z-index:1001;
+    }
+    .menu-btn  {
+      background: none;
+      border: none;
+      color: #16a34a;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+    
+    .login-btn {
+      background: none;
+      border: none;
+      color: #16a34a;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+   .logo {
+      font-size: 1.6rem;
+      color: #16a34a;
+      letter-spacing: 4px;
+      margin-left: -75px;
+    }
+
+    /* ===== MOBILE MENU ===== */
+    .mobile-menu {
+      position:fixed; top:0; left:-100%;
+      width:80%; max-width:300px; height:100%;
+      background:#ffffff; padding:2rem 1rem;
+      transition:left .3s ease; z-index:1000;
+    }
+    .mobile-menu.open { left:0; }
+    .mobile-menu ul { list-style:none; margin-top:2rem; }
+    .mobile-menu li { margin:1.2rem 0; }
+    .mobile-menu a { color:#111; font-size:1.1rem; }
+
+    /* ===== STEP / FORM ===== */
+    .step {
+      background:#ffffff; border-radius:6px;
+      margin-bottom:1.5rem; overflow:hidden;
+    }
+    .step-header {
+      background:#16a34a; padding:.8rem 1rem; position:relative;
+    }
+    .step-header::before {
+      content:counter(step); counter-increment:step;
+      position:absolute; left:-18px; top:50%; transform:translateY(-50%);
+      background:#ffffff; color:#111;
+      width:28px; height:28px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:bold;
+    }
+    .step-content { padding:1rem; }
+    .step-content label { display:block; margin:.5rem 0 .2rem; font-weight:600; }
+    .step-content input {
+      width:100%; padding:.6rem; border:none; border-radius:4px; font-size:1rem;
+      background: #f8faf9;
+    }
+
+    /* ===== NOMINAL GRID & PAYMENT GRID ===== */
+    .nominal-grid {
+      display:grid; grid-template-columns:repeat(3, 1fr); gap:0.8rem;
+    }
+    .payment-grid {
+      display:grid; grid-template-columns:1fr; gap:0.8rem;
+    }
+
+    .nominal-card, .payment-card {
+      background:#111827; color:#fff;
+      border-radius:8px; padding:.5rem; text-align:center;
+      cursor:pointer; position:relative; overflow:hidden;
+      box-shadow:0 6px 18px rgba(0,0,0,0.35);
+      transition:transform .12s ease, box-shadow .12s ease, border .12s;
+      border:2px solid transparent;
+    }
+    .nominal-card:hover, .payment-card:hover { transform:translateY(-4px); }
+
+    .nominal-card.selected, .payment-card.selected { border-color:#facc15; box-shadow:0 8px 20px rgba(250,204,21,0.12); }
+
+    .nominal-card .top {
+      display:flex; align-items:center; justify-content:center; gap:.4rem;
+      padding:6px 4px 0 4px;
+    }
+    .nominal-card img.icon {
+      width:34px; height:34px;
+    }
+    .nominal-card .count {
+      font-weight:700; font-size:0.94rem;
+      text-shadow:0 1px 2px rgba(0,0,0,0.35);
+    }
+
+    .price-overlay {
+      margin-top:8px;
+      height:44px; border-radius:6px;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800; font-size:0.95rem;
+      background-size:cover; background-position:center; color:#fff;
+      text-shadow:0 2px 6px rgba(0,0,0,0.6);
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    .nominal-card .price { display:none; }
+    .nominal-card .label { font-size:11px; color:#e5e7eb; opacity:0.9; margin-top:6px; }
+
+    .payment-card {
+      display:flex; gap:12px; align-items:center; padding:12px;
+      background:linear-gradient(180deg,#374151,#111827);
+    }
+    .payment-card img {
+      width:56px; height:36px; object-fit:contain; background:#fff; padding:4px; border-radius:6px;
+    }
+    .payment-card .meta { flex:1; text-align:left; }
+    .payment-card .meta .name { font-weight:700; font-size:1rem; color:#fff; }
+    .payment-card .meta .fee { font-size:12px; color:#e5e7eb; opacity:0.9; margin-top:4px; }
+    .payment-card .total-box { min-width:110px; text-align:right; }
+    .payment-card .total-box .total-label { font-size:11px; color:#f3f4f6; opacity:0.85; }
+    .payment-card .total-box .total-amt { font-weight:800; font-size:1.05rem; color:#facc15; margin-top:4px; }
+
+    .payment-card.disabled { opacity:0.45; pointer-events:none; filter:grayscale(0.2); }
+
+    .ribbon {
+      position:absolute; right:-10px; top:-3px;
+      background:#facc15; color:#111; font-weight:800; font-size:10px;
+      padding:5px 8px; transform:rotate(28deg); box-shadow:0 3px 8px rgba(0,0,0,0.25);
+    }
+
+    /* ===== BUTTON ===== */
+    .btn {
+      display:block; background:#16a34a; color:#111;
+      padding:.7rem 1.5rem; border:none; border-radius:4px;
+      font-size:1rem; cursor:pointer; margin-top:1rem;
+      text-align:center;
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.6); display:none;
+      align-items:center; justify-content:center; z-index:1002;
+      padding:16px;
+    }
+    .modal {
+      background:#ffffff; color:#111; border-radius:6px; width:90%; max-width:400px; overflow:hidden;
+      display:flex; flex-direction:column;
+    }
+    .modal-header {
+      background:#16a34a; padding:.8rem 1rem; color:#ffffff; font-weight:bold; text-align:center;
+    }
+    .modal-body { padding:1rem; color:#111; }
+    .modal-body p { margin:.4rem 0; font-size:1rem; line-height:1.4; }
+    .modal-body p.total { margin-top:12px; font-size:1.1rem; font-weight:bold; }
+    .modal-footer {
+      display:flex; gap:1rem; padding:1rem; justify-content:center; background:#f6f7f9;
+    }
+    .modal-footer button {
+      flex:1; padding:.6rem; border:none; border-radius:4px; font-size:1rem; cursor:pointer;
+    }
+    #btnClose { background:#111; color:#fff; }
+    #btnPayNow { background:#0ea5a4; color:#fff; }
+
+    @media (max-width:480px) {
+      .modal { width:100%; height:100%; border-radius:0; justify-content:flex-start; }
+      .modal-body { padding:12px; }
+      .modal-footer { padding:8px 12px; }
+    }
+  </style>
+</head>
+
+<!--
+  NOTE:
+  - data-requires-server="false" -> server input hidden, checkout will use '0000'
+  - set data-requires-server="true" if you want user to fill server (eg. Mobile Legends)
+-->
+<body data-requires-server="false">
+
+  <!-- HEADER -->
+  <header>
+    <button class="menu-btn">&#9776;</button>
+    <div class="logo">NUBIASTORE</div>
+    <button class="login-btn">login</button>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <nav class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="https://nubiastore.netlify.app">Home</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN FORM -->
+  <div class="container">
+    <h2>Diamonds Mobile Legends</h2>
+    <h5>Top Up Diamond Mobile Legend Kamu Di NUBIASTORE Paling Murah Paling Aman Dan cepat.</h5>
+
+    <!-- STEP 1: Data -->
+    <div class="step">
+      <div class="step-header">Masukan Data</div>
+      <div class="step-content">
+        <label for="userId">ID Akun: contoh 1234567890</label>
+        <input type="text" id="userId" placeholder="Masukkan ID">
+
+        <label for="server">Server: contoh (1234)</label>
+        <input type="text" id="server" placeholder="Masukkan Server">
+
+        <label for="whatsapp">No. WhatsApp</label>
+        <input type="text" id="whatsapp" placeholder="08xxxxxxxxxxx">
+      </div>
+    </div>
+
+    <!-- STEP 2: Nominal -->
+    <div class="step">
+      <div class="step-header">Pilih Nominal Disini</div>
+      <div class="step-content">
+        <div class="nominal-grid" id="nominalGrid">
+          <!-- contoh nominal cards, per card bisa diset data-bg untuk gambar price overlay -->
+          <div class="nominal-card" data-value="WEEKLY DIAMOND PASS" data-price="27387" data-nubia-only="true" data-bg="https://i.pinimg.com/originals/71/51/13/71511393d36a8af4d760469b5a21432d.gif">
+            <div class="top">
+              <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
+              <div class="count">WEEKLY PASS</div>
+            </div>
+            <div class="price-overlay"></div>
+            <div class="label">Limited • Restock tiap 00:01 WIB</div>
+          </div>
+
+          <div class="nominal-card" data-value="3💎" data-price="985" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+            <div class="top">
+              <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="Diamond">
+              <div class="count">3</div>
+            </div>
+            <div class="price-overlay"></div>
+          </div>
+
+          <div class="nominal-card" data-value="5💎" data-price="1341" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+            <div class="top">
+              <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="Diamond">
+              <div class="count">5</div>
+            </div>
+            <div class="price-overlay"></div>
+          </div>
+
+          <!-- tambahin lebih banyak sesuai list mu, cukup copy struktur di atas -->
+        </div>
+      </div>
+    </div>
+
     <!-- STEP 3: Pembayaran -->
     <div class="step">
       <div class="step-header">Metode Pembayaran Disini</div>
@@ -316,7 +583,7 @@
     <div class="total-label">Total</div>
     <div class="total-amt">-</div>
   </div>
-<div class="ribbon" style="display:none">""*---TERMURAH</div>
+
 </div>
           
           <div class="payment-card" data-value="QRIS" data-admin="0" data-percent="1">
@@ -493,7 +760,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-  getFirestore, doc, setDoc, serverTimestamp
+  getFirestore, doc, setDoc, serverTimestamp, getDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -503,7 +770,7 @@ const firebaseConfig = {
   storageBucket: "zestoreid-f9e85.firebasestorage.app",
   messagingSenderId: "426093692154",
   appId: "1:426093692154:web:38c6e9c143af626a623543",
-  measurementId: "G-TS0YB9NYW8"
+  measurementId: "G-TS0Y9NYW8"
 };
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -511,7 +778,16 @@ const db   = getFirestore(app);
 
 /* =============== STATE =============== */
 let currentUser = null;
-onAuthStateChanged(auth, (u) => { if (u) currentUser = u; });
+onAuthStateChanged(auth, (u) => {
+
+  if (u){
+    currentUser = u;
+
+    /* load saldo firestore */
+    loadNubiaSaldo(u.uid);
+  }
+
+});
 
 /* =============== UI ELEMENTS =============== */
 const mobileMenu = document.getElementById('mobileMenu');
@@ -522,6 +798,51 @@ const nominalCards = document.querySelectorAll('.nominal-card');
 const paymentGrid = document.getElementById('paymentGrid');
 const paymentCards = document.querySelectorAll('.payment-card');
 const vaBRICard    = document.getElementById('vaBRICard');
+const nubiaPayCard = document.getElementById('nubiaPayCard');
+
+let USER_NUBIA_SALDO = 0;
+const saldoElem = document.getElementById('nubiaSaldo');
+
+async function loadNubiaSaldo(uid){
+
+  try{
+
+    const ref = doc(db,'users',uid);
+    const snap = await getDoc(ref);
+
+    if(snap.exists()){
+
+      const data = snap.data();
+
+      /* ===== INI FIELD YANG BENER ===== */
+      USER_NUBIA_SALDO = Number(data.nubiPayBalance || 0);
+
+    }
+
+    if(saldoElem){
+      saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString('id');
+    }
+
+  }catch(err){
+    console.error('Load saldo error',err);
+  }
+
+}
+
+const serverInput = document.getElementById('server');
+const serverLabel = document.querySelector('label[for="server"]');
+
+/* Detect whether this page requires server input.
+   - If body has data-requires-server="true" then show & require server.
+   - Otherwise hide server input and auto-fill '0000' at checkout.
+*/
+const requiresServer = document.body.dataset.requiresServer === 'true';
+
+// hide server input if not required
+if (!requiresServer) {
+  if (serverInput) serverInput.style.display = 'none';
+  if (serverLabel) serverLabel.style.display = 'none';
+}
 
 /* helper format */
 function formatRupiah(num){
@@ -545,33 +866,56 @@ nominalCards.forEach(card=>{
 
 /* ===== When nominal selected -> update payment-card totals ===== */
 function updatePaymentTotals(price){
+
+  const selectedNom = document.querySelector('.nominal-card.selected');
+  const nubiaOnly = selectedNom?.dataset.nubiaOnly === "true";
+
   paymentCards.forEach(pc=>{
+
     const flatAdmin = parseFloat(pc.dataset.admin || 0);
     const percent   = parseFloat(pc.dataset.percent || 0) / 100;
     const adminCalc = Math.ceil(flatAdmin + price * percent);
     const total = price + adminCalc;
+
     const totalElem = pc.querySelector('.total-amt');
     if(totalElem){
       totalElem.textContent = `Rp ${formatRupiah(total)}`;
     }
 
-    // disable VA if total < min (contoh min 10000 untuk VA)
+    /* ===== VA MIN 10K ===== */
     if(pc.id && pc.id.startsWith('va') && total < 10000){
       pc.classList.add('disabled');
     } else {
       pc.classList.remove('disabled');
     }
+
+    /* ===== NUBIA ONLY LOCK ===== */
+    if(nubiaOnly && pc.dataset.value !== 'NUBIAPAY'){
+      pc.classList.add('disabled');
+    }
+
+    /* ===== SALDO CHECK ===== */
+    if(pc.dataset.value === 'NUBIAPAY'){
+      if(USER_NUBIA_SALDO < total){
+        pc.classList.add('disabled');
+      }
+    }
+
   });
 
-  // optional: beri ribbon BEST PRICE ke yang paling murah
   let minCard = null; let minVal = Infinity;
+
   paymentCards.forEach(pc=>{
     const txt = pc.querySelector('.total-amt')?.textContent || '-';
     if(txt && txt !== '-'){
       const v = Number(txt.replace(/[^\d]/g,''));
-      if(!isNaN(v) && v < minVal){ minVal = v; minCard = pc; }
+      if(!isNaN(v) && v < minVal){
+        minVal = v;
+        minCard = pc;
+      }
     }
   });
+
   paymentCards.forEach(pc=>{
     const r = pc.querySelector('.ribbon');
     if(r) r.style.display = (pc === minCard) ? 'block' : 'none';
@@ -585,10 +929,7 @@ nominalCards.forEach(c=>{
     c.classList.add('selected');
 
     const price = parseFloat(c.dataset.price || 0);
-    // update payment cards totals
     updatePaymentTotals(price);
-
-    // auto-scroll to payment grid for UX
     paymentGrid.scrollIntoView({ behavior:'smooth', block:'start' });
   };
 });
@@ -598,16 +939,14 @@ paymentCards.forEach(c=>{
     if(c.classList.contains('disabled')) return;
     paymentCards.forEach(x=> x.classList.remove('selected'));
     c.classList.add('selected');
-    // scroll to checkout button
     document.getElementById('btnCheckout').scrollIntoView({ behavior:'smooth', block:'center' });
   };
 });
 
 /* =============== MODAL + SAVE ORDER =============== */
-/* reuse functions dari kode mu sebelumnya (invoice gen + saveOrderToFirestore) */
 function genInvoice() {
   const rnd = Math.random().toString(36).slice(2,8).toUpperCase();
-  return `INVC-ML-${Date.now()}-${rnd}`;
+  return `INVC-IsinamaGAME-${Date.now()}-${rnd}`;
 }
 
 let orderSaved = false;
@@ -619,7 +958,7 @@ async function saveOrderToFirestore(payload){
   const docData = {
     invoice,
     userId: payload.uid || null,
-    game: 'mobile-legends',
+    game: 'ISI-NAMAGAME',
     game_id: payload.idSel,
     server: payload.srvSel,
     noWA: payload.waSel,
@@ -651,9 +990,18 @@ let lastCalc = null;
 /* Checkout button */
 document.getElementById('btnCheckout').onclick = async ()=>{
   const idSel = document.getElementById('userId').value.trim();
-  const srvSel= document.getElementById('server').value.trim();
+  let srvSel= (document.getElementById('server')?.value || '').trim();
   const waSel = document.getElementById('whatsapp').value.trim();
-  if(!idSel||!srvSel||!waSel) return alert('Kayaknya kamu belum masukin ID/Server dan No telpon ya? isi dulu ya supaya bisa kita lanjut');
+
+  // jika server tidak wajib (field disembunyikan), auto set '0000'
+  if (!requiresServer) {
+    srvSel = '0000';
+  }
+
+  // validasi: hanya butuh server kalau requiresServer === true
+  if(!idSel || (requiresServer && !srvSel) || !waSel) {
+    return alert('Kayaknya kamu belum masukin ID/Server dan No telpon ya? isi dulu ya supaya bisa kita lanjut');
+  }
 
   const nomSel = document.querySelector('.nominal-card.selected');
   if(!nomSel) return alert('Pilih dulu kamu mau beli apa supaya bisa kita lanjut');
