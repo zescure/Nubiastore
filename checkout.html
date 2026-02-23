@@ -186,137 +186,75 @@ const unsub = onSnapshot(orderRef, snap => {
    NUBIAPAY payment (transaction)
    ========================= */
 async function payWithNubia(orderData){
-  // safety: must have currentUser and order owner match
+  // require currentUser to be present and match order userId
   if (!currentUser) {
-    console.warn('payWithNubia: no currentUser yet — will retry after login');
+    console.warn('payWithNubia: no currentUser -> will retry after login');
     pendingNubiaInvoice = orderData.invoice;
-    return { ok:false, reason:'no_current_user' };
+    return;
   }
   if (!orderData.userId) {
-    console.error('payWithNubia: orderData.userId missing', orderData);
-    return { ok:false, reason:'order_missing_userId' };
+    console.warn('payWithNubia: orderData.userId missing');
+    return;
   }
-  if (String(currentUser.uid) !== String(orderData.userId)) {
-    console.warn('payWithNubia: current user not owner', { currentUser: currentUser.uid, owner: orderData.userId });
-    return { ok:false, reason:'not_owner' };
+  if (currentUser.uid !== orderData.userId) {
+    console.warn('payWithNubia: current user does not match order owner');
+    return;
   }
 
-  const orderRefLocal = doc(db,'orders', orderData.invoice);
-  const userRef = doc(db,'users', currentUser.uid);
-  const logRefOutside = doc(collection(db, 'orders', orderData.invoice, 'nubiaLogs')); // will try to write even on fail
-
-  const attemptMeta = {
-    ts: serverTimestamp(),
-    actorUid: currentUser.uid,
-    orderInvoice: orderData.invoice,
-    amount_total: Number(orderData.amount_total || 0)
-  };
-
-  // write a "started" log (best-effort)
-  try { await setDoc(logRefOutside, { ...attemptMeta, status:'started' }, { merge:true }); } catch(e){ console.warn('nubiaLog start failed', e); }
+  const orderRefLocal = doc(db,'orders',orderData.invoice);
+  const userRef = doc(db,'users',currentUser.uid);
 
   try {
     await runTransaction(db, async (t) => {
       const oSnap = await t.get(orderRefLocal);
-      if (!oSnap.exists()) {
-        throw new Error('order_missing_in_tx');
-      }
+      if (!oSnap.exists()) throw new Error('order missing');
       const o = oSnap.data();
 
-      // double-check owner & state inside tx
-      if (String(o.userId) !== String(currentUser.uid)) {
-        throw new Error('owner_mismatch_in_tx');
-      }
-      if (o.status !== 'initiated') {
-        // nothing to do
-        throw new Error('order_not_initiated');
-      }
-      if (o.__nubiaPaid === true) {
-        throw new Error('already_nubiaPaid');
-      }
+      // double-check
+      if (o.status !== 'initiated') return;
+      if (o.__nubiaPaid === true) return;
 
       const uSnap = await t.get(userRef);
-      if (!uSnap.exists()) {
-        throw new Error('user_doc_missing');
-      }
+      if (!uSnap.exists()) throw new Error('user missing');
+
       const saldo = Number(uSnap.data().nubiPayBalance || 0);
       const total = Number(o.amount_total || 0);
 
       if (saldo < total) {
-        throw new Error('insufficient_balance');
+        alert('Saldo NUBIAPAY tidak cukup.');
+        throw new Error('saldo_kurang');
       }
 
-      // update user balance
+      // potong saldo
       t.update(userRef, {
         nubiPayBalance: saldo - total,
         updatedAt: serverTimestamp()
       });
 
-      // add transaction record
+      // add tx
       const txRef = doc(collection(db, `users/${currentUser.uid}/transactions`));
       t.set(txRef, {
         amount: -total,
         type: 'PAY_ORDER',
-        note: `payWithNubia ${o.invoice}`,
+        note: o.invoice || '',
         timestamp: serverTimestamp()
       });
 
-      // update order
+      // complete order
       t.update(orderRefLocal, {
         status: 'completed',
         __nubiaPaid: true,
-        paidAt: serverTimestamp(),
-        processedBy: currentUser.uid
-      });
-
-      // inside tx: also write a log doc to nubiaLogs (optional)
-      const logRefInTx = doc(collection(db, 'orders', orderData.invoice, 'nubiaLogs'));
-      t.set(logRefInTx, {
-        ts: serverTimestamp(),
-        status: 'success',
-        actorUid: currentUser.uid,
-        amount: total,
-        note: 'client-side payWithNubia'
+        paidAt: serverTimestamp()
       });
     });
 
-    // after success: fetch fresh user balance and render
-    try {
-      const freshUser = await getDoc(userRef);
-      const newBal = freshUser.exists() ? Number(freshUser.data().nubiPayBalance || 0) : 0;
-      console.log('payWithNubia succeeded, new balance:', newBal);
-      // render immediately (if you have function to render)
-      renderUserBalanceCard(newBal);
-      // write final outside log
-      try { await setDoc(logRefOutside, { ...attemptMeta, status:'ok', resultBalance:newBal }, { merge:true }); } catch(e){ console.warn('nubiaLog-ok failed', e); }
-    } catch(e){ console.warn('post-tx get user failed', e); }
-
-    return { ok:true };
-  } catch (err) {
-    console.error('payWithNubia transaction error:', err);
-
-    // friendly mapping for UI
-    const reason = (err && err.message) ? err.message : String(err);
-
-    // write a fail log (best-effort)
-    try {
-      await setDoc(logRefOutside, {
-        ...attemptMeta,
-        status:'error',
-        error: reason
-      }, { merge:true });
-    } catch(e){ console.warn('nubiaLog-error failed', e); }
-
-    // show alert for developer / user
-    if (reason === 'insufficient_balance') {
-      alert('Saldo NubiPay tidak cukup. Silakan topup atau pilih metode lain.');
-    } else if (reason === 'owner_mismatch_in_tx' || reason === 'order_missing_userId') {
-      alert('Terjadi masalah kepemilikan order. Coba login dengan akun pemilik order atau hubungi admin.');
+    console.log('payWithNubia: transaksi selesai');
+  } catch (e) {
+    if (String(e).includes('saldo_kurang')) {
+      // handled
     } else {
-      alert('Gagal memproses NUBIAPAY. Cek console & nubiaLogs di Firestore untuk detail.');
+      console.error('payWithNubia transaction error', e);
     }
-
-    return { ok:false, reason };
   }
 }
 
@@ -454,7 +392,7 @@ function renderOrder(d) {
                style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
           <p style="font-weight:600">Saldo kamu sudah dipotong. Terima kasih! Tunggu proses top-up dan cek in gamenya ya.</p>
           <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
-            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu menyenangkan
           </div>
         </div>`;
       return;
@@ -469,7 +407,7 @@ function renderOrder(d) {
                style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
           <p style="font-weight:600">Untuk menyelesaikan pembayaran NUBIAPAY, silakan <strong>login</strong> dengan akun yang memilki order ini.</p>
           <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
-            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu menyenangkan
           </div>
         </div>`;
       return;
@@ -491,11 +429,11 @@ function renderOrder(d) {
     // show processing UI (balance card will appear via attachUserBalanceListener)
     if (paymentUI) paymentUI.innerHTML = `
       <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;text-align:center;background:#fff;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png"
+        <img src="https://cdn.dribbble.com/userupload/24524439/file/original-4b82316a71d7182998ff7b59d5332331.gif"
              style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
         <p style="font-weight:600">Sedang memproses potongan saldo NUBIAPAY jika saldo mencukupi. Tunggu sebentar...</p>
         <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
-          makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+          makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu menyenangkan
         </div>
       </div>
     `;
