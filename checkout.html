@@ -414,9 +414,13 @@ function renderOrder(d){
         <img src="${qrUrl}" alt="QRIS" class="qr" />
         <p class="muted">Atau gunakan aplikasi pembayaran sesuai metode.</p>`;
     } else {
-      paymentUI.innerHTML = `<h3>Instruksi Pembayaran</h3>
-        <p class="muted">Instruksi pembayaran belum tersedia. Tunggu beberapa saat atau hubungi admin via WA.</p>`;
-    }
+      paymentUI.innerHTML=`
+   <h3>Instruksi Pembayaran ${pm}</h3>
+   <p>Bayar: Rp ${fmtRp(d.amount_total)}</p>
+ `;
+
+}
+
   }
 
   // update share link
