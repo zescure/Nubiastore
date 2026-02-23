@@ -21,6 +21,7 @@
   th,td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:.95rem}
   .admin-panel{border-left:4px solid #16a34a;padding:10px;margin-top:12px;background:#f8fff8}
   .hide{display:none}
+  .tx-box{max-height:320px;overflow:auto;padding:6px;background:#fff;border-radius:6px;border:1px solid #eef}
 </style>
 </head>
 <body>
@@ -63,7 +64,11 @@
 
       <div class="col">
         <div class="field"><div class="muted">Histori Transaksi (recent)</div>
-          <div id="txList" class="small muted">Memuat...</div>
+          <div id="txList" class="tx-box small muted">Memuat...</div>
+        </div>
+
+        <div class="field" style="margin-top:12px"><div class="muted">Histori Top-up / Orders (recent)</div>
+          <div id="ordersList" class="tx-box small muted">Memuat...</div>
         </div>
       </div>
     </div>
@@ -90,7 +95,7 @@ import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/fi
 import {
   getFirestore, doc, getDoc, setDoc, serverTimestamp,
   collection, query, orderBy, limit, onSnapshot, addDoc,
-  runTransaction
+  runTransaction, where
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -105,10 +110,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ===== CONFIG: admin allowlist fallback (optional) =====
-   Kita prioritaskan admin/meta doc di firestore; kalau nggak ada, bisa isi di array ini. 
-   NOTE: hardcoded UID di client = convenience dev only (not secure).
-*/
+/* ===== CONFIG: admin allowlist fallback (optional) ===== */
 const ADMIN_UIDS_FALLBACK = [
   // "8z9b0u1LYfTVM0sCP7qHXbYHvGi1"
 ];
@@ -120,6 +122,7 @@ const emailEl = document.getElementById('email');
 const uidTxt = document.getElementById('uidTxt');
 const nubiPayBalanceEl = document.getElementById('nubiPayBalance');
 const txList = document.getElementById('txList');
+const ordersList = document.getElementById('ordersList');
 const depositBtns = document.querySelectorAll('.depositBtn');
 const adminPanel = document.getElementById('adminPanel');
 const adminBadge = document.getElementById('adminBadge');
@@ -132,6 +135,7 @@ const btnSignOut = document.getElementById('btnSignOut');
 
 let currentUser = null;
 let unsubscribeTx = null;
+let unsubscribeOrders = null;
 let isAdmin = false;
 
 /* ===== UTILS ===== */
@@ -142,12 +146,12 @@ function shortUid(u){ return u ? u.slice(0,6)+'...' + u.slice(-4) : '-' }
 onAuthStateChanged(auth, async (u) => {
   currentUser = u;
   if(!u){
-    // redirect ke login/register page bila perlu
     displayNameEl.textContent = '-';
     emailEl.textContent = '-';
     uidTxt.textContent = '-';
     nubiPayBalanceEl.textContent = 'Rp 0';
     txList.textContent = 'Silakan login terlebih dulu.';
+    ordersList.textContent = 'Silakan login terlebih dulu.';
     adminPanel.classList.add('hide');
     adminBadge.textContent = '';
     return;
@@ -161,24 +165,33 @@ onAuthStateChanged(auth, async (u) => {
   // ensure user doc exists (auto-create) — merge true
   const userRef = doc(db, 'users', u.uid);
   try{
+    // read first to preserve existing balance if any
+    const existing = await getDoc(userRef);
+    const existingBalance = existing.exists() ? (existing.data().nubiPayBalance || 0) : 0;
     await setDoc(userRef, {
       displayName: u.displayName || '',
       email: u.email || '',
-      createdAt: serverTimestamp(),
-      nubiPayBalance: (await getDoc(userRef)).exists() ? (await getDoc(userRef)).data().nubiPayBalance || 0 : 0
+      createdAt: existing.exists() ? existing.data().createdAt || serverTimestamp() : serverTimestamp(),
+      nubiPayBalance: existingBalance
     }, { merge: true });
   }catch(e){
     console.error('set user doc err', e);
   }
 
-  // check admin: read admin/meta doc (map uids) OR fallback array
+  // check admin: support both shapes of admin/meta doc
   isAdmin = false;
   try{
     const metaRef = doc(db, 'admin', 'meta');
     const metaSnap = await getDoc(metaRef);
     if(metaSnap.exists()){
       const data = metaSnap.data();
-      if(data && data.uids && data.uids[u.uid] === true) isAdmin = true;
+      // support two shapes:
+      // 1) data.uids = { "<uid>": true }
+      // 2) data["<uid>"] = true
+      if(data){
+        if(data.uids && data.uids[u.uid] === true) isAdmin = true;
+        if(data[u.uid] === true) isAdmin = true;
+      }
     } else {
       if(ADMIN_UIDS_FALLBACK.includes(u.uid)) isAdmin = true;
     }
@@ -193,12 +206,13 @@ onAuthStateChanged(auth, async (u) => {
   // load user info + transactions listener
   subscribeUserProfile(u.uid);
   subscribeTransactions(u.uid);
+  subscribeOrdersForUser(u.uid);
 });
 
 /* ===== LOAD & LISTEN user profile n balance ===== */
 async function subscribeUserProfile(uid){
   const ref = doc(db, 'users', uid);
-  // realtime not strictly needed but simple get
+  // initial read
   const snap = await getDoc(ref);
   if(snap.exists()){
     const data = snap.data();
@@ -206,15 +220,11 @@ async function subscribeUserProfile(uid){
   }else{
     nubiPayBalanceEl.textContent = fmtRp(0);
   }
-  // also attach onSnapshot to update balance realtime
-  // reuse onSnapshot if you want (lightweight)
-  // optional: if already subscribed, skip
-  // simple: use onSnapshot for balance
-  const unsub = onSnapshot(ref, s=>{
+  // realtime update
+  onSnapshot(ref, s=>{
     if(s.exists()) nubiPayBalanceEl.textContent = fmtRp(s.data().nubiPayBalance || 0);
     else nubiPayBalanceEl.textContent = fmtRp(0);
   }, e=> console.warn('profile snapshot err', e));
-  // note: not stored to unsubscribe in this simple page
 }
 
 /* ===== TRANSACTIONS LIST (recent 50) ===== */
@@ -233,6 +243,7 @@ function subscribeTransactions(uid){
         <div class="small">${d.amount ? fmtRp(d.amount) : '-' } ${d.adminUid ? ' • by admin' : ''}</div>
       </div>`);
     });
+    // don't overwrite orders list — show tx here
     txList.innerHTML = rows.join('');
   }, e=>{
     console.error('tx snapshot err', e);
@@ -240,9 +251,40 @@ function subscribeTransactions(uid){
   });
 }
 
-/* ===== DEPOSIT: buat order deposit & redirect ke checkout (sama seperti flow topup) ===== */
+/* ===== ORDERS LIST for user (recent 50) ===== */
+function subscribeOrdersForUser(uid){
+  if(unsubscribeOrders) unsubscribeOrders();
+  const colRef = collection(db, 'orders');
+  const q = query(colRef, where('userId','==', uid), orderBy('createdAt','desc'), limit(50));
+  unsubscribeOrders = onSnapshot(q, (snap)=>{
+    if(snap.empty){ ordersList.innerHTML = '<div class="small muted">Belum ada order</div>'; return;}
+    const rows = [];
+    snap.forEach(docSnap=>{
+      const d = docSnap.data();
+      const when = d.createdAt ? (d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : new Date(d.createdAt.seconds*1000).toLocaleString()) : '-';
+      rows.push(`<div style="padding:6px 0;border-bottom:1px solid #eee">
+        <div style="display:flex;justify-content:space-between"><div><strong>${d.invoice || '-'}</strong> • ${d.game || '-'}</div><div class="small muted">${when}</div></div>
+        <div class="small">${d.nominalValue ? fmtRp(d.nominalValue) : '-'} • ${d.payment_method || '-'} • <strong>${d.status||'-'}</strong></div>
+      </div>`);
+    });
+    ordersList.innerHTML = rows.join('');
+  }, e=>{
+    console.error('orders snapshot err', e);
+    ordersList.textContent = 'Gagal memuat orders';
+  });
+}
+
+/* ===== DEPOSIT: popup confirm (hitung fee 1.6%) & buat order deposit ===== */
 async function createDepositOrder(amount, payMethod='QRIS'){
   if(!currentUser) return alert('Silakan login terlebih dulu.');
+  // hitung fee 1.6%
+  const adminFee = Math.ceil(amount * 0.016);
+  const total = amount + adminFee;
+  const ok = confirm(
+    `Konfirmasi deposit:\n\nTujuan: UID ${currentUser.uid}\nNominal: Rp ${amount.toLocaleString()}\nBiaya admin 1.6%: Rp ${adminFee.toLocaleString()}\nTotal tagihan: Rp ${total.toLocaleString()}\n\nLanjutkan ke checkout?`
+  );
+  if(!ok) return;
+
   const invoice = `INVC-NP-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
   const orderRef = doc(db, 'orders', invoice);
   const payload = {
@@ -254,8 +296,8 @@ async function createDepositOrder(amount, payMethod='QRIS'){
     noWA: currentUser.phoneNumber || '',
     nominalValue: amount,
     price: amount,
-    adminFee: 0,
-    amount_total: amount, // no fee in popup — admin tanggung
+    adminFee: adminFee,
+    amount_total: total,
     payment_method: payMethod,
     isDeposit: true,
     status: 'initiated',
@@ -264,7 +306,6 @@ async function createDepositOrder(amount, payMethod='QRIS'){
   };
   try{
     await setDoc(orderRef, payload);
-    // redirect to checkout (global checkout already handles order)
     location.href = `/checkout?invoice=${invoice}`;
   }catch(e){
     console.error('create deposit order err', e);
@@ -288,15 +329,13 @@ btnAdminAdjust.addEventListener('click', async ()=>{
     await runTransaction(db, async (t) => {
       const uSnap = await t.get(userRef);
       if(!uSnap.exists()){
-        // create user doc minimal
         t.set(userRef, { createdAt: serverTimestamp(), nubiPayBalance: 0 }, { merge: true });
       }
       const cur = (uSnap.exists() && (uSnap.data().nubiPayBalance||0)) || 0;
       const next = cur + delta;
       t.update(userRef, { nubiPayBalance: next, updatedAt: serverTimestamp() });
 
-      // write transaction log
-      const txRef = doc(collection(db, `users/${target}/transactions`)); // auto id
+      const txRef = doc(collection(db, `users/${target}/transactions`));
       t.set(txRef, {
         amount: delta,
         type: 'admin_adjust',
@@ -318,8 +357,6 @@ btnAdminAdjust.addEventListener('click', async ()=>{
 depositBtns.forEach(b=>{
   b.addEventListener('click', (ev)=>{
     const amt = Number(ev.currentTarget.dataset.amt || 0);
-    // optional: choose pay method or default QRIS
-    if(!confirm('Buat order deposit Rp '+amt.toLocaleString()+'? Lanjut ke checkout.')) return;
     createDepositOrder(amt, 'QRIS');
   });
 });
