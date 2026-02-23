@@ -1096,21 +1096,22 @@ const outTotal    = document.getElementById('outTotal');
 
 let lastCalc = null;
 
+/* modal outputs */
+const outInvoice  = document.getElementById('outInvoice');
+const outId       = document.getElementById('outId');
+const outDiam     = document.getElementById('outDiam');
+const outPrice    = document.getElementById('outPrice');
+const outAdmin    = document.getElementById('outAdmin');
+const outTotal    = document.getElementById('outTotal');
+
+let lastCalc = null;
+
 /* Checkout button */
 document.getElementById('btnCheckout').onclick = async ()=>{
   const idSel = document.getElementById('userId').value.trim();
-  let srvSel= (document.getElementById('server')?.value || '').trim();
+  const srvSel= document.getElementById('server').value.trim();
   const waSel = document.getElementById('whatsapp').value.trim();
-
-  // jika server tidak wajib (field disembunyikan), auto set '0000'
-  if (!requiresServer) {
-    srvSel = '0000';
-  }
-
-  // validasi: hanya butuh server kalau requiresServer === true
-  if(!idSel || (requiresServer && !srvSel) || !waSel) {
-    return alert('Kayaknya kamu belum masukin ID/Server dan No telpon ya? isi dulu ya supaya bisa kita lanjut');
-  }
+  if(!idSel||!srvSel||!waSel) return alert('Kayaknya kamu belum masukin ID/Server dan No telpon ya? isi dulu ya supaya bisa kita lanjut');
 
   const nomSel = document.querySelector('.nominal-card.selected');
   if(!nomSel) return alert('Pilih dulu kamu mau beli apa supaya bisa kita lanjut');
