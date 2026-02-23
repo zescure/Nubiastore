@@ -5,23 +5,171 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Info Akun — NUBIASTORE</title>
 <style>
-  body{font-family:Inter,Segoe UI,system-ui;background:#f6f7f9;color:#111;padding:12px}
-  .card{background:#fff;border-radius:8px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.06);max-width:900px;margin:12px auto}
-  .row{display:flex;gap:12px;flex-wrap:wrap}
-  .col{flex:1;min-width:220px}
-  .avatar{width:64px;height:64px;border-radius:50%;object-fit:cover}
-  .muted{color:#666;font-size:.95rem}
-  .amount{font-weight:800;font-size:1.3rem;color:#0f172a}
-  .btn{padding:.55rem 1rem;border-radius:6px;background:#16a34a;color:#fff;border:none;cursor:pointer}
-  .btn.grey{background:#111;color:#fff}
-  .small{font-size:.85rem;color:#666}
-  .field{margin:.6rem 0}
-  .input,textarea,select{width:100%;padding:.6rem;border-radius:6px;border:1px solid #e5e7eb}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:.95rem}
-  .admin-panel{border-left:4px solid #16a34a;padding:10px;margin-top:12px;background:#f8fff8}
-  .hide{display:none}
-  .tx-box{max-height:320px;overflow:auto;padding:6px;background:#fff;border-radius:6px;border:1px solid #eef}
+
+/* ===== BASE ===== */
+
+*{box-sizing:border-box}
+
+body{
+  font-family:Inter,Segoe UI,system-ui;
+  background:#f6f7f9;
+  color:#111;
+  padding:clamp(8px,2vw,20px);
+  margin:0;
+}
+
+
+/* ===== CARD AUTO WIDTH ===== */
+
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:clamp(14px,2.5vw,26px);
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+
+  width:100%;
+  max-width:min(100%,920px);
+  margin:auto;
+}
+
+
+/* ===== FLEX GRID ===== */
+
+.row{
+  display:flex;
+  gap:clamp(10px,2vw,18px);
+  flex-wrap:wrap;
+}
+
+.col{
+  flex:1 1 320px;
+  min-width:0;
+}
+
+
+/* ===== HEADER WRAP FIX ===== */
+
+#profileCard > div:first-child{
+  flex-wrap:wrap;
+}
+
+
+/* ===== AVATAR RESPONSIVE ===== */
+
+.avatar{
+  width:clamp(52px,9vw,72px);
+  height:clamp(52px,9vw,72px);
+  border-radius:50%;
+  object-fit:cover;
+}
+
+
+/* ===== TEXT ===== */
+
+.muted{color:#666;font-size:.95rem}
+
+.amount{
+  font-weight:800;
+  font-size:clamp(1.1rem,3vw,1.6rem);
+  color:#0f172a;
+}
+
+
+/* ===== BUTTON ===== */
+
+.btn{
+  padding:.65rem 1rem;
+  border-radius:8px;
+  background:#16a34a;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.btn.grey{background:#111;color:#fff}
+
+.small{font-size:.85rem;color:#666}
+
+
+/* ===== INPUT ===== */
+
+.field{margin:.6rem 0}
+
+.input,textarea,select{
+  width:100%;
+  padding:.65rem;
+  border-radius:8px;
+  border:1px solid #e5e7eb;
+  font-size:16px; /* penting biar iOS ga zoom */
+}
+
+
+/* ===== TABLE ===== */
+
+table{width:100%;border-collapse:collapse}
+
+th,td{
+  padding:8px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+  font-size:.95rem;
+}
+
+
+/* ===== ADMIN PANEL ===== */
+
+.admin-panel{
+  border-left:4px solid #16a34a;
+  padding:12px;
+  margin-top:14px;
+  background:#f8fff8;
+  border-radius:8px;
+}
+
+.hide{display:none}
+
+
+/* ===== HISTORY BOX ===== */
+
+.tx-box{
+  max-height:40vh;
+  overflow:auto;
+  padding:8px;
+  background:#fff;
+  border-radius:8px;
+  border:1px solid #eef;
+}
+
+
+/* ===== DEPOSIT BUTTON GRID AUTO ===== */
+
+.depositBtn{
+  flex:1 1 120px;
+}
+
+.field > div[style*="display:flex"]{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+}
+
+
+/* ===== MOBILE EXTRA ===== */
+
+@media(max-width:640px){
+
+  body{padding:10px}
+
+  .card{border-radius:14px}
+
+  .btn{
+    flex:1 1 45%;
+    text-align:center;
+  }
+
+}
+
 </style>
 </head>
 <body>
