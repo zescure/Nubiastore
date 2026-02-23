@@ -1055,7 +1055,7 @@ paymentCards.forEach(c=>{
 /* =============== MODAL + SAVE ORDER =============== */
 function genInvoice() {
   const rnd = Math.random().toString(36).slice(2,8).toUpperCase();
-  return `INVC-ML-${Date.now()}-${rnd}`;
+  return `INVC-IsinamaGAME-${Date.now()}-${rnd}`;
 }
 
 let orderSaved = false;
@@ -1067,7 +1067,7 @@ async function saveOrderToFirestore(payload){
   const docData = {
     invoice,
     userId: payload.uid || null,
-    game: 'mobile-legends',
+    game: 'ISI-NAMAGAME',
     game_id: payload.idSel,
     server: payload.srvSel,
     noWA: payload.waSel,
@@ -1099,9 +1099,18 @@ let lastCalc = null;
 /* Checkout button */
 document.getElementById('btnCheckout').onclick = async ()=>{
   const idSel = document.getElementById('userId').value.trim();
-  const srvSel= document.getElementById('server').value.trim();
+  let srvSel= (document.getElementById('server')?.value || '').trim();
   const waSel = document.getElementById('whatsapp').value.trim();
-  if(!idSel||!srvSel||!waSel) return alert('Kayaknya kamu belum masukin ID/Server dan No telpon ya? isi dulu ya supaya bisa kita lanjut');
+
+  // jika server tidak wajib (field disembunyikan), auto set '0000'
+  if (!requiresServer) {
+    srvSel = '0000';
+  }
+
+  // validasi: hanya butuh server kalau requiresServer === true
+  if(!idSel || (requiresServer && !srvSel) || !waSel) {
+    return alert('Kayaknya kamu belum masukin ID/Server dan No telpon ya? isi dulu ya supaya bisa kita lanjut');
+  }
 
   const nomSel = document.querySelector('.nominal-card.selected');
   if(!nomSel) return alert('Pilih dulu kamu mau beli apa supaya bisa kita lanjut');
