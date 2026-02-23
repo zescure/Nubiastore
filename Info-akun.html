@@ -56,7 +56,7 @@
             <button class="btn depositBtn" data-amt="20000">Deposit Rp 20.000</button>
             <button class="btn depositBtn" data-amt="50000">Deposit Rp 50.000</button>
           </div>
-          <div class="small" style="margin-top:8px">Deposit akan membuat order & diteruskan ke halaman checkout untuk bayar.</div>
+          <div class="small" style="margin-top:8px">Deposit NUBIAPAY kamu dan Dapatkan Harga Khusus Pengguna NUBIAPAY Termurah.</div>
         </div>
 
         <div id="adminBadge" class="small muted" style="margin-top:8px"></div>
@@ -240,7 +240,7 @@ function subscribeTransactions(uid){
       const when = d.timestamp ? (d.timestamp.toDate ? d.timestamp.toDate().toLocaleString() : new Date(d.timestamp.seconds*1000).toLocaleString()) : '-';
       rows.push(`<div style="padding:6px 0;border-bottom:1px solid #eee">
         <div style="display:flex;justify-content:space-between"><div><strong>${d.type||'tx'}</strong> ${d.note?'- '+d.note:''}</div><div class="small muted">${when}</div></div>
-        <div class="small">${d.amount ? fmtRp(d.amount) : '-' } ${d.adminUid ? ' • by admin' : ''}</div>
+        <div class="small">${d.amount ? fmtRp(d.amount) : '-' } ${d.adminUid ? ' • DEPOSIT' : ''}</div>
       </div>`);
     });
     // don't overwrite orders list — show tx here
@@ -290,7 +290,7 @@ async function createDepositOrder(amount, payMethod='QRIS'){
   const payload = {
     invoice,
     userId: currentUser.uid,
-    game: 'nubi-pay',
+    game: 'nubia-pay',
     game_id: 'DEPOSIT',
     server: '',
     noWA: currentUser.phoneNumber || '',
@@ -338,7 +338,7 @@ btnAdminAdjust.addEventListener('click', async ()=>{
       const txRef = doc(collection(db, `users/${target}/transactions`));
       t.set(txRef, {
         amount: delta,
-        type: 'admin_adjust',
+        type: 'Perubahan_Saldo',
         note,
         adminUid: currentUser.uid,
         timestamp: serverTimestamp()
