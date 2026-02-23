@@ -94,243 +94,338 @@
   </div>
 
 <script type="module">
-/*
-  checkout-dynamic-payload-fixed.js
-  - paste ini ke halaman /checkout untuk menggantikan script lama.
-  - butuh elemen HTML yang sama seperti script sebelumnya.
-  - QRIS/EMV logic TIDAK DIUBAH sama sekali (gw cuma cek status dan show resultBox).
+/* checkout-dynamic-payload-fixed-v2.js
+   Full fixed version:
+   - semua helper ada
+   - pm/vars dideklarasikan sebelum dipakai
+   - unsub disimpan untuk cleanup
+   - NUBIAPAY auto-potong dengan transaction
+   - QR/VA logic tetap dipertahankan
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, doc, onSnapshot,
   runTransaction, serverTimestamp,
-  collection
+  collection, getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
   getAuth, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* FIREBASE */
+/* ===== FIREBASE CONFIG ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543",
+  measurementId: "G-TS0YB9NYW8"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const auth = getAuth(app);
 
-const firebaseConfig={
-  apiKey:"AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-  authDomain:"zestoreid-f9e85.firebaseapp.com",
-  projectId:"zestoreid-f9e85",
-  storageBucket:"zestoreid-f9e85.firebasestorage.app",
-  messagingSenderId:"426093692154",
-  appId:"1:426093692154:web:38c6e9c143af626a623543"
+let currentUser = null;
+onAuthStateChanged(auth, (u) => { currentUser = u; });
+
+/* ===== CONFIG / TEMPLATES ===== */
+const HIDE_PAYLOAD_IN_PROD = true;
+const UNIFIED_PAYLOAD_TEMPLATES = {
+  "QRIS":  "000201010211...QRIS_TEMPLATE_EXAMPLE...6304", // (truncated example — keep orig or real templates)
+  "DANA":  "DANA_TEMPLATE_EXAMPLE",
+  "GOPAY": "GOPAY_TEMPLATE_EXAMPLE",
+  "OVO":   "OVO_TEMPLATE_EXAMPLE",
+  "SEABANK":"SEABANK_TEMPLATE_EXAMPLE",
+  "BANKJAGO":"BANKJAGO_TEMPLATE_EXAMPLE",
+  "SUPERBANK":"SUPERBANK_TEMPLATE_EXAMPLE",
+  "SHOPEE":"SHOPEE_TEMPLATE_EXAMPLE"
 };
 
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
-const auth=getAuth(app);
-
-let currentUser=null;
-
-onAuthStateChanged(auth,u=>currentUser=u);
-
-/* HELPERS */
-
-const el=id=>document.getElementById(id);
-const fmtRp=n=>typeof n==="number"?n.toLocaleString("id"):n;
-
-/* INVOICE */
-
-const params=new URLSearchParams(location.search);
-const invoice=params.get("invoice");
-
-if(!invoice){
-  el('loading').textContent="Invoice kosong";
-  throw new Error("no invoice");
+/* ===== HELPERS ===== */
+const el = id => document.getElementById(id);
+const fmtRp = n => (typeof n === 'number' ? n.toLocaleString('id') : n);
+function fillTemplate(template, vars) {
+  return String(template).replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
+}
+function qrImageUrlFromPayload(payload, size = 360) {
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(String(payload))}`;
+}
+function fmtAmountNumber(n) {
+  const num = Number(n);
+  if (!isFinite(num)) return 0;
+  return Math.round(num);
 }
 
-/* LISTEN ORDER */
+/* ===== TLV/EMV helpers (parse/build & CRC) ===== */
+function parseTLV_ASCII(s){
+  let i=0, out=[];
+  while(i < s.length){
+    const tag = s.substr(i,2); i += 2;
+    const len = parseInt(s.substr(i,2),10); i += 2;
+    const value = s.substr(i, len); i += len;
+    out.push({tag, len, value});
+  }
+  return out;
+}
+function buildTLV_ASCII(arr){
+  return arr.map(o => {
+    const v = String(o.value);
+    const l = String(v.length).padStart(2,'0');
+    return o.tag + l + v;
+  }).join('');
+}
+function setAmountInPayloadCore_ASCII(corePayload, amountStr){
+  const parsed = parseTLV_ASCII(corePayload);
+  const filtered = parsed.filter(o => o.tag !== '54');
+  const idx58 = filtered.findIndex(o => o.tag === '58');
+  const amountObj = {tag: '54', value: String(amountStr)};
+  if(idx58 >= 0) filtered.splice(idx58, 0, amountObj);
+  else filtered.push(amountObj);
+  return buildTLV_ASCII(filtered);
+}
+function crc16ccitt_ascii(str){
+  let crc = 0xFFFF;
+  for (let i = 0; i < str.length; i++) {
+    crc ^= (str.charCodeAt(i) & 0xFF) << 8;
+    for (let j = 0; j < 8; j++) {
+      if ((crc & 0x8000) !== 0) crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+      else crc = (crc << 1) & 0xFFFF;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4,'0');
+}
 
-const orderRef=doc(db,"orders",invoice);
+/* ===== UTIL: produce EMV payload if needed ===== */
+function produceFinalEmvPayloadIfNeeded(rawPayload, amountDecimalStr){
+  if (!rawPayload || typeof rawPayload !== 'string') return rawPayload;
+  const crcRegexp = /6304[0-9A-Fa-f]{4}$/;
+  let core = rawPayload;
+  if (crcRegexp.test(core)) core = core.replace(crcRegexp, '');
+  else if (core.endsWith('6304')) core = core.slice(0, -4);
+  if (/^\d{2}/.test(core)) {
+    try {
+      const withAmount = setAmountInPayloadCore_ASCII(core, amountDecimalStr);
+      const toCrc = withAmount + '6304';
+      const crcHex = crc16ccitt_ascii(toCrc);
+      return toCrc + crcHex;
+    } catch (e) {
+      console.warn('EMV attach amount failed', e);
+      return rawPayload;
+    }
+  }
+  return rawPayload;
+}
 
-onSnapshot(orderRef,snap=>{
+/* ===== GET INVOICE PARAM ===== */
+const params = new URLSearchParams(location.search);
+const invoice = params.get('invoice');
+if (!invoice) {
+  if (el('loading')) el('loading').textContent = 'Invoice kosong. Contoh: /checkout?invoice=INVC-...';
+  throw new Error('no-invoice');
+}
+if (el('loading')) el('loading').textContent = `Menunggu data order ${invoice}...`;
 
- if(!snap.exists()){
-   el('loading').textContent="Order tidak ditemukan";
-   return;
- }
-
- el('loading').style.display="none";
- renderOrder(snap.data());
-
+/* ===== FIRESTORE LISTENER (capture unsub for cleanup) ===== */
+const orderRef = doc(db, 'orders', invoice);
+const unsub = onSnapshot(orderRef, snap => {
+  if (!snap.exists()) {
+    if (el('loading')) el('loading').style.display = 'none';
+    if (el('notfound')) el('notfound').style.display = 'block';
+    return;
+  }
+  if (el('loading')) el('loading').style.display = 'none';
+  if (el('notfound')) el('notfound').style.display = 'none';
+  if (el('orderBox')) el('orderBox').style.display = 'block';
+  const d = snap.data();
+  try { renderOrder(d); } catch (err) { console.error('renderOrder error', err); }
+}, err => {
+  console.error('snapshot error', err);
+  if (el('loading')) el('loading').textContent = 'Gagal mengambil data order.';
 });
 
 /* ========================= */
-/* ====== NUBIAPAY ======== */
+/* ====== NUBIAPAY PAY ===== */
 /* ========================= */
-
 async function payWithNubia(orderData){
+  if(!currentUser) {
+    console.warn('payWithNubia: no currentUser yet');
+    return;
+  }
 
- if(!currentUser) return;
+  const orderRefLocal = doc(db,'orders',orderData.invoice);
+  const userRef = doc(db,'users',currentUser.uid);
 
- const orderRef=doc(db,'orders',orderData.invoice);
- const userRef=doc(db,'users',currentUser.uid);
+  try{
+    await runTransaction(db, async (t) => {
+      const oSnap = await t.get(orderRefLocal);
+      if(!oSnap.exists()) throw new Error('order missing');
+      const o = oSnap.data();
 
- try{
+      if(o.status !== 'initiated') return;
+      if(o.__nubiaPaid === true) return;
 
-  await runTransaction(db,async(t)=>{
+      const uSnap = await t.get(userRef);
+      if(!uSnap.exists()) throw new Error('user missing');
 
-    const oSnap=await t.get(orderRef);
-    if(!oSnap.exists()) throw "order missing";
+      const saldo = Number(uSnap.data().nubiPayBalance || 0);
+      const total = Number(o.amount_total || 0);
 
-    const o=oSnap.data();
+      if(saldo < total){
+        // Do not throw generic error that will swallow. Just return and show UI alert.
+        alert('Saldo NUBIAPAY tidak cukup.');
+        throw new Error('saldo_kurang');
+      }
 
-    if(o.status!=="initiated") return;
-    if(o.__nubiaPaid===true) return;
+      // potong saldo
+      t.update(userRef, {
+        nubiPayBalance: saldo - total,
+        updatedAt: serverTimestamp()
+      });
 
-    const uSnap=await t.get(userRef);
-    if(!uSnap.exists()) throw "user missing";
+      // add tx
+      const txRef = doc(collection(db, `users/${currentUser.uid}/transactions`));
+      t.set(txRef, {
+        amount: -total,
+        type: 'PAY_ORDER',
+        note: o.invoice || '',
+        timestamp: serverTimestamp()
+      });
 
-    const saldo=Number(uSnap.data().nubiPayBalance||0);
-    const total=Number(o.amount_total||0);
+      // mark order completed (server-side logic normally)
+      t.update(orderRefLocal, {
+        status: 'completed',
+        __nubiaPaid: true,
+        paidAt: serverTimestamp()
+      });
 
-    if(saldo<total){
-      alert("Saldo NUBIAPAY tidak cukup");
-      throw "saldo kurang";
+    });
+  } catch (e) {
+    if (String(e) === 'saldo_kurang') {
+      // handled above
+    } else {
+      console.error('payWithNubia transaction error', e);
     }
-
-    /* POTONG SALDO */
-
-    t.update(userRef,{
-      nubiPayBalance:saldo-total,
-      updatedAt:serverTimestamp()
-    });
-
-    /* HISTORI */
-
-    const txRef=doc(collection(db,`users/${currentUser.uid}/transactions`));
-
-    t.set(txRef,{
-      amount:-total,
-      type:"PAY_ORDER",
-      note:o.invoice,
-      timestamp:serverTimestamp()
-    });
-
-    /* COMPLETE ORDER */
-
-    t.update(orderRef,{
-      status:"completed",
-      __nubiaPaid:true,
-      paidAt:serverTimestamp()
-    });
-
-  });
-
- }catch(e){
-   console.log("nubia error",e);
- }
-
+  }
 }
 
 /* ========================= */
 /* ===== RENDER ORDER ===== */
 /* ========================= */
+function setStatusBadge(status) {
+  const b = el('statusBadge');
+  if(!b) return;
+  b.className = 'status ' + (status || 'initiated');
+  b.textContent = (status || 'initiated').toUpperCase();
+}
 
-function renderOrder(d){
+function renderOrder(d) {
+  // basic fields
+  if (el('invoiceTxt')) el('invoiceTxt').textContent = d.invoice || invoice;
+  if (el('gameTxt')) el('gameTxt').textContent = d.game || '-';
+  if (el('idTxt')) el('idTxt').textContent = d.game_id || '-';
+  if (el('srvTxt')) el('srvTxt').textContent = d.server || '-';
+  if (el('waTxt')) el('waTxt').textContent = d.noWA || '-';
+  if (el('nominalTxt')) el('nominalTxt').textContent = (d.nominalValue ?? '-') + (d.nominalValue && typeof d.nominalValue !== 'string' ? ' 💎' : '');
+  if (el('priceTxt')) el('priceTxt').textContent = 'Rp ' + fmtRp(d.price || '-');
+  if (el('adminTxt')) el('adminTxt').textContent = 'Rp ' + fmtRp(d.adminFee || 0);
+  if (el('totalTxt')) el('totalTxt').textContent = 'Rp ' + fmtRp(d.amount_total || '-');
+  if (el('methodTxt')) el('methodTxt').textContent = (d.payment_method || '-').replace('_', ' ');
+  setStatusBadge(d.status || 'initiated');
+  if (el('adminNote')) el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
 
- el('invoiceTxt').textContent=d.invoice||invoice;
- el('gameTxt').textContent=d.game||'-';
- el('totalTxt').textContent='Rp '+fmtRp(d.amount_total||0);
+  // determine helper vars used in payload/QR logic (make them BEFORE payload usage)
+  const amountNumber = Number(d.amount_total) || 0;
+  const vars = {
+    amount: fmtAmountNumber(amountNumber),
+    amount_decimal: (typeof amountNumber === 'number') ? amountNumber.toFixed(2) : String(d.amount_total || '0.00'),
+    invoice: d.invoice || invoice,
+    phone: d.noWA || '',
+    va: (d.payment_data && (d.payment_data.va_number || (d.payment_data.va && d.payment_data.va.number))) || '',
+    note: `NUBIA-${d.invoice || invoice}`
+  };
 
- const paymentUI=el('paymentUI');
+  const paymentUI = el('paymentUI');
+  const resultBox = el('resultBox');
+  const actions = el('actions');
 
- /* ===== FIX: PM HARUS DULU ===== */
+  const statusNorm = String(d.status || '').trim().toLowerCase();
+  const successStates = ['completed','complete','paid','success'];
+  const cancelStates  = ['cancelled','canceled','failed','expired','rejected'];
 
- const pm=(d.payment_method||'').toUpperCase();
+  if (successStates.includes(statusNorm)) {
+    if (paymentUI) paymentUI.style.display = 'none';
+    if (actions) actions.style.display = 'none';
+    if (el('adminNote')) el('adminNote').style.display = 'none';
+    if (resultBox) {
+      resultBox.innerHTML = `
+        <div class="result-box">
+          <img src="https://media.tenor.com/BSY1qTH8g-oAAAAM/check.gif" alt="Berhasil" />
+          <p>Orderan kamu berhasil diproses — silakan cek in-game kamu.</p>
+        </div>`;
+      resultBox.style.display = 'block';
+    }
+    return;
+  }
 
- paymentUI.innerHTML="";
+  if (cancelStates.includes(statusNorm)) {
+    if (paymentUI) paymentUI.style.display = 'none';
+    if (actions) actions.style.display = 'none';
+    if (el('adminNote')) el('adminNote').style.display = 'none';
+    if (resultBox) {
+      resultBox.innerHTML = `
+        <div class="result-box cancel">
+          <img src="https://www.emojiall.com/images/240/telegram/274c.gif" alt="Dibatalkan" />
+          <p>Orderan kamu dibatalkan karena kode pembayaran kedaluwarsa.</p>
+          <p style="font-weight:600;font-size:0.9rem;margin-top:8px;color:#6b7280;">Silakan buat order baru atau hubungi customer service untuk bantuan.</p>
+        </div>`;
+      resultBox.style.display = 'block';
+    }
+    return;
+  }
 
- /* ====================== */
- /* ===== NUBIAPAY ======= */
- /* ====================== */
+  // non-terminal -> ensure payment UI visible, hide resultBox
+  if (paymentUI) paymentUI.style.display = 'block';
+  if (actions) actions.style.display = 'block';
+  if (resultBox) resultBox.style.display = 'none';
 
- if(pm==="NUBIAPAY"){
-
-   payWithNubia(d);   // <-- AUTO POTONG
-
-   paymentUI.innerHTML=`
-
-   <div style="
-   border:1px solid #e5e7eb;
-   border-radius:14px;
-   padding:18px;
-   text-align:center;
-   background:#fff">
-
-   <h3>Pembayaran NubiPay</h3>
-
-   <p>Saldo kamu sedang diproses…</p>
-
-   <div style="
-   margin-top:12px;
-   background:#ecfdf5;
-   color:#047857;
-   padding:10px;
-   border-radius:10px;
-   font-size:13px">
-
-   Jika saldo cukup order akan otomatis selesai
-
-   </div>
-
-   </div>
-   `;
-
-   return;
- }
-
- /* ====================== */
- /* ===== QR / VA ======== */
- /* ====================== */
-  
+  // pm must be defined before payload logic
+  const pm = (d.payment_method || '').toUpperCase();
   const pd = d.payment_data || {};
 
-  // priority: server-provided payload (string) OR pd.qr_image_url
-  let payload = pd.qr_payload || null;
+  // === NUBIAPAY special UI + auto-pay ===
+  if (pm === 'NUBIAPAY') {
+    // try auto-pay (won't run if user not logged in yet)
+    payWithNubia(d);
 
-  // fallback: template mapping (use decimal for QRIS when template contains AMT — but keep existing behavior)
+    // show ATM-style card + thank you text
+    if (paymentUI) {
+      paymentUI.innerHTML = `
+      <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;text-align:center;background:#fff;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png"
+             style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
+        <p style="font-weight:600">saldo anda sudah terpotong, sekarang kamu tinggal menunggu sama-sama orderan kamu completed dan cek in gamenya yah!</p>
+        <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
+          makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+        </div>
+      </div>`;
+    }
+    // done for NUBIAPAY
+    return;
+  }
+
+  // === QR / VA logic (original behaviour preserved) ===
+
+  // pick payload from server or template
+  let payload = (pd && pd.qr_payload) || null;
   if (!payload && UNIFIED_PAYLOAD_TEMPLATES[pm]) {
-    // choose amount format sensible: if QRIS template, use decimal, else integer
     const amtForTemplate = (pm === 'QRIS' || pm.includes('QR')) ? vars.amount_decimal : vars.amount;
     payload = fillTemplate(UNIFIED_PAYLOAD_TEMPLATES[pm], {...vars, amount: amtForTemplate});
   }
 
-  // Helper to produce final QR payload for EMV-like content
-  function produceFinalEmvPayloadIfNeeded(rawPayload, amountDecimalStr){
-    if (!rawPayload || typeof rawPayload !== 'string') return rawPayload;
-    // detect EMV-like TLV: usually starts with '00' tag and contains numeric tags.
-    // Remove trailing CRC if present (6304 + 4 hex)
-    const crcRegexp = /6304[0-9A-Fa-f]{4}$/;
-    let core = rawPayload;
-    if (crcRegexp.test(core)) {
-      core = core.replace(crcRegexp, '');
-    } else if (core.endsWith('6304')) {
-      core = core.slice(0, -4);
-    }
-    // If core looks like TLV (starts with two digits tag), try to insert tag 54
-    if (/^\d{2}/.test(core)) {
-      try {
-        const withAmount = setAmountInPayloadCore_ASCII(core, amountDecimalStr);
-        const toCrc = withAmount + '6304';
-        const crcHex = crc16ccitt_ascii(toCrc);
-        return toCrc + crcHex;
-      } catch (e) {
-        console.warn('EMV attach amount failed', e);
-        return rawPayload;
-      }
-    }
-    return rawPayload;
-  }
-
-  // Virtual Account branch (kept similar)
+  // Virtual Account branch
   if (pm && pm.startsWith('VA')) {
     const bankName = pd.bank || pm;
     const vaNumber = pd.va_number || vars.va || '';
@@ -341,7 +436,6 @@ function renderOrder(d){
       <p class="muted">Jumlah yang harus dibayar: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>`;
 
     if (payload) {
-      // try attach amount if payload is EMV-like
       let payloadToUse = payload;
       if ((pm.includes('QR') || pm === 'QRIS') || (/^\d{2}/.test(payload))) {
         payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
@@ -350,7 +444,7 @@ function renderOrder(d){
       html += `<div style="margin-top:8px">${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
         <div class="payload-row">${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}</div>
         <img id="qrImg" src="${qrUrl}" alt="QR VA" class="qr" /></div>`;
-      paymentUI.innerHTML = html;
+      if (paymentUI) paymentUI.innerHTML = html;
       document.getElementById('copyVa')?.addEventListener('click', () => {
         if (!vaNumber) return alert('Nomor VA kosong.');
         navigator.clipboard.writeText(vaNumber).then(() => alert('No. VA disalin'));
@@ -365,17 +459,15 @@ function renderOrder(d){
     }
   }
 
-  // Non-VA handling
+  // Non-VA handling (QR payload or qr_image_url)
   if (payload) {
-    // If looks like EMV / QRIS TLV -> insert amount_decimal and recompute CRC
     let payloadToUse = payload;
     if ((pm === 'QRIS' || pm.includes('QR')) || /^\d{2}/.test(payload)) {
       payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
     }
-
     const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
     let html = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
-      <p class="muted">Scan QR berikut dan bayar Pake semua e-wallet/bank kesayanganmu 😸. Jumlahnya: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
+      <p class="muted">Scan QR berikut dan bayar sejumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
       ${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
       <div class="payload-row">
         ${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}
@@ -383,58 +475,41 @@ function renderOrder(d){
       </div>
       <img id="qrImg" src="${qrUrl}" alt="QR" class="qr" />
       <p class="muted">Pembayaran Ini Akan Kadaluwarsa Dalam: 15 MENIT</p>`;
+    if (paymentUI) paymentUI.innerHTML = html;
 
-    paymentUI.innerHTML = html;
-
-    // show open link if payload is URL scheme-like
     const openBtn = document.getElementById('openPayload');
     if (openBtn && /^https?:\/\//i.test(payloadToUse)) {
       openBtn.style.display = 'inline-block';
       openBtn.href = payloadToUse;
     }
-
     if (!HIDE_PAYLOAD_IN_PROD) {
       document.getElementById('copyPayload')?.addEventListener('click', () => {
         navigator.clipboard.writeText(payloadToUse).then(() => alert('Payload disalin'));
       });
     }
-
-    // store dataset for possible share / pay attempts
     const qrImg = document.getElementById('qrImg');
     if (qrImg) {
       qrImg.dataset.payload = payloadToUse;
       qrImg.dataset.total = String(vars.amount_decimal);
     }
   } else {
-    // fallback to qr_image_url inside payment_data
     const qrUrl = (pd && pd.qr_image_url) || null;
     if (qrUrl) {
-      paymentUI.innerHTML = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
+      if (paymentUI) paymentUI.innerHTML = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
         <p class="muted">Scan QR berikut lalu bayar sejumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
         <img src="${qrUrl}" alt="QRIS" class="qr" />
         <p class="muted">Atau gunakan aplikasi pembayaran sesuai metode.</p>`;
     } else {
-      paymentUI.innerHTML=`
-   <h3>Instruksi Pembayaran ${pm}</h3>
-   <p>Bayar: Rp ${fmtRp(d.amount_total)}</p>
- `;
-
-}
-
+      if (paymentUI) paymentUI.innerHTML = `<h3>Instruksi Pembayaran ${pm}</h3>
+        <p>Bayar: Rp ${fmtRp(d.amount_total)}</p>`;
+    }
   }
 
-  // update share link
+  // update share WA link
   const share = encodeURIComponent(
     `Order #${d.invoice}\nGame:${d.game}\nID:${d.game_id}\nTotal: Rp ${fmtRp(d.amount_total)}\nStatus: ${d.status}\n\nCek: ${location.href}`
   );
-  el('btnShareWA').href = `https://wa.me/6285697747768?text=${share}`;
-}
-
-/* ===== UI HELPERS ===== */
-function setStatusBadge(status) {
-  const b = el('statusBadge');
-  b.className = 'status ' + (status || 'initiated');
-  b.textContent = (status || 'initiated').toUpperCase();
+  if (el('btnShareWA')) el('btnShareWA').href = `https://wa.me/6285697747768?text=${share}`;
 }
 
 /* ===== COPY INVOICE BUTTON ===== */
@@ -442,7 +517,7 @@ el('btnCopyInvoice')?.addEventListener('click', () => {
   navigator.clipboard.writeText(invoice).then(() => alert('Invoice disalin'));
 });
 
-/* ===== CLEANUP (optional) ===== */
+/* ===== CLEANUP ===== */
 window.addEventListener('beforeunload', () => {
   try { unsub(); } catch (e) { /* ignore */ }
 });
