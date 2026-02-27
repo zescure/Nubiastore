@@ -1590,21 +1590,26 @@ window.addEventListener('resize', () => {
      replace teks di #sideBalance. Kalau ga ditemukan,
      akan fallback ke Rp 150.000. -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  /* ===== Firebase Config ===== */
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getFirestore, doc, getDoc, setDoc, serverTimestamp,
+  collection, query, orderBy, limit, onSnapshot, addDoc,
+  runTransaction, where
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-    authDomain: "zestoreid-f9e85.firebaseapp.com",
-    projectId: "zestoreid-f9e85",
-    storageBucket: "zestoreid-f9e85.firebasestorage.app",
-    messagingSenderId: "426093692154",
-    appId: "1:426093692154:web:38c6e9c143af626a623543",
-    measurementId: "G-TS0YB9NYW8"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const firebaseConfig = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
   function fmtRupiah(input){
     // terima number atau string numeric
@@ -1638,7 +1643,7 @@ window.addEventListener('resize', () => {
         if(snap.exists()){
           const data = snap.data();
           // cek field umum
-          const keys = ['nubiapay','balance','saldo','amount','value'];
+          const keys = ['nuBiapayBalance','balance','saldo','amount','value'];
           for(const k of keys){
             if(data[k] !== undefined && data[k] !== null){
               el.textContent = '💰 Saldo NUBIAPAY: ' + fmtRupiah(data[k]);
