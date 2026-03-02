@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -22,328 +21,142 @@
       --white-muted: rgba(255,255,255,0.65);
       --border-green: rgba(34,197,94,0.2);
       --border-green-bright: rgba(74,222,128,0.45);
-      --yellow-accent: #facc15;
-      --red-accent: #ef4444;
       --font-display: 'Rajdhani', sans-serif;
       --font-body: 'Exo 2', sans-serif;
     }
 
-```
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--black-deep);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
 
-body {
-  font-family: var(--font-body);
-  background: var(--black-deep);
-  color: var(--white);
-  min-height: 100vh;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-}
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 4px; }
 
-a { text-decoration: none; color: inherit; }
+    /* background glows */
+    .bg-glow { position: fixed; pointer-events: none; z-index: 0; }
+    .bg-glow-1 { top: -120px; left: -120px; width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%); }
+    .bg-glow-2 { bottom: -100px; right: -100px; width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%); }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--black-deep); }
-::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 4px; }
+    /* header */
+    header {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.875rem 1.25rem; background: rgba(4,10,6,0.9);
+      backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-green);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    }
+    .logo {
+      font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; letter-spacing: 3px;
+      background: linear-gradient(135deg, var(--green-bright), var(--green-neon));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 8px var(--green-glow));
+    }
+    .btn-back-header {
+      display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.875rem;
+      background: var(--black-surface); border: 1px solid var(--border-green); border-radius: 7px;
+      color: var(--white-muted); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-back-header:hover { color: var(--green-neon); border-color: var(--green-bright); }
 
-/* ===== BG DECORATION ===== */
-.bg-glow {
-  position: fixed; pointer-events: none; z-index: 0;
-}
-.bg-glow-1 {
-  top: -120px; left: -120px;
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%);
-}
-.bg-glow-2 {
-  bottom: -100px; right: -100px;
-  width: 350px; height: 350px;
-  background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%);
-}
+    /* announce */
+    .announce-bar { background: linear-gradient(90deg, var(--green-dark), var(--green-primary), var(--green-dark));
+      background-size: 200%; animation: gradShift 4s ease infinite; padding: 0.4rem 1rem; position: relative; z-index: 10; }
+    .marquee-text { display: inline-block; animation: marquee 24s linear infinite; white-space: nowrap; font-size: 0.72rem; font-weight: 600; }
+    @keyframes marquee { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+    @keyframes gradShift { 0%,100% { background-position: 0%; } 50% { background-position: 100%; } }
 
-/* ===== HEADER ===== */
-header {
-  position: relative; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0.875rem 1.25rem;
-  background: rgba(4,10,6,0.9);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-green);
-  box-shadow: 0 2px 20px rgba(0,0,0,0.5);
-}
-.logo {
-  font-family: var(--font-display);
-  font-size: 1.35rem; font-weight: 700; letter-spacing: 3px;
-  background: linear-gradient(135deg, var(--green-bright), var(--green-neon));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  filter: drop-shadow(0 0 8px var(--green-glow));
-}
-.btn-back-header {
-  display: flex; align-items: center; gap: 0.4rem;
-  padding: 0.4rem 0.875rem;
-  background: var(--black-surface);
-  border: 1px solid var(--border-green);
-  border-radius: 7px; color: var(--white-muted);
-  font-family: var(--font-body); font-size: 0.8rem; font-weight: 600;
-  cursor: pointer; transition: all 0.2s;
-}
-.btn-back-header:hover { color: var(--green-neon); border-color: var(--green-bright); }
+    /* page wrapper */
+    .page-wrap { flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: clamp(1.25rem, 4vw, 2rem) 1rem; position: relative; z-index: 5; }
+    .auth-container { width: 100%; max-width: 420px; }
 
-/* ===== ANNOUNCE ===== */
-.announce-bar {
-  background: linear-gradient(90deg, var(--green-dark), var(--green-primary), var(--green-dark));
-  background-size: 200%; animation: gradShift 4s ease infinite;
-  padding: 0.4rem 1rem; overflow: hidden; position: relative; z-index: 10;
-}
-.marquee-text {
-  display: inline-block; animation: marquee 24s linear infinite;
-  white-space: nowrap; font-size: 0.72rem; font-weight: 600;
-}
-@keyframes marquee { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
-@keyframes gradShift { 0%,100% { background-position: 0%; } 50% { background-position: 100%; } }
+    /* promo */
+    .promo-banner { background: linear-gradient(135deg, rgba(22,163,74,0.18), rgba(22,163,74,0.06));
+      border: 1px solid var(--border-green); border-radius: 14px; padding: 1.1rem 1.25rem; margin-bottom: 1.1rem; text-align: center; position: relative; overflow: hidden; }
+    .promo-banner::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(74,222,128,0.15) 0%, transparent 70%); pointer-events: none; }
+    .promo-perks { display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap; margin-top:0.75rem; }
+    .promo-perk { font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; background: rgba(34,197,94,0.12); color:var(--green-neon); border:1px solid var(--border-green); }
 
-/* ===== PAGE WRAPPER ===== */
-.page-wrap {
-  flex: 1; display: flex; align-items: center; justify-content: center;
-  padding: clamp(1.25rem, 4vw, 2rem) 1rem;
-  position: relative; z-index: 5;
-}
+    /* auth card */
+    .auth-card { background: var(--black-card); border:1px solid var(--border-green); border-radius:16px; overflow:hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(34,197,94,0.05); }
+    .auth-tabs { display:flex; border-bottom:1px solid var(--border-green); }
+    .auth-tab { flex:1; padding:0.875rem; background:none; border:none; font-family:var(--font-display); font-size:0.95rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--white-muted); cursor:pointer; position:relative; transition:all .2s; }
+    .auth-tab::after { content:''; position:absolute; bottom:0; left:50%; right:50%; height:2px; background:var(--green-neon); transition:all .25s; }
+    .auth-tab.active { color:var(--green-neon); background: rgba(34,197,94,0.05); }
+    .auth-tab.active::after { left:10%; right:10%; }
+    .auth-body { padding:1.5rem 1.25rem; }
+    .auth-title { font-family:var(--font-display); font-size:1.5rem; font-weight:700; margin-bottom:0.3rem; background:linear-gradient(135deg,#fff 60%,var(--green-neon)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .auth-subtitle { font-size:0.78rem; color:var(--white-muted); margin-bottom:1.5rem; line-height:1.4; }
 
-.auth-container {
-  width: 100%; max-width: 420px;
-}
+    /* input */
+    .input-wrap { margin-bottom:1rem; }
+    .input-wrap label { display:block; font-size:0.68rem; font-weight:700; text-transform:uppercase; color:var(--white-muted); margin-bottom:0.35rem; }
+    .input-inner { position:relative; }
+    .input-field { width:100%; padding:0.72rem 2.5rem 0.72rem 2.6rem; background:var(--black-input); border:1px solid var(--border-green); border-radius:9px; color:#fff; font-size:0.9rem; outline:none; transition:all .25s; }
+    .input-field:focus { border-color:var(--green-bright); box-shadow:0 0 0 3px rgba(34,197,94,0.12); }
+    .input-icon-left { position:absolute; left:0.75rem; top:50%; transform:translateY(-50%); width:16px; height:16px; opacity:0.45; pointer-events:none; }
+    .input-icon-right { position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); width:18px; height:18px; opacity:0.45; cursor:pointer; }
 
-/* ===== PROMO BANNER ===== */
-.promo-banner {
-  background: linear-gradient(135deg, rgba(22,163,74,0.18), rgba(22,163,74,0.06));
-  border: 1px solid var(--border-green);
-  border-radius: 14px; padding: 1.1rem 1.25rem;
-  margin-bottom: 1.1rem; text-align: center;
-  position: relative; overflow: hidden;
-}
-.promo-banner::before {
-  content: '';
-  position: absolute; top: -30px; right: -30px;
-  width: 120px; height: 120px;
-  background: radial-gradient(circle, rgba(74,222,128,0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-.promo-banner .pb-tag {
-  font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
-  color: var(--green-neon); margin-bottom: 0.4rem;
-}
-.promo-banner h2 {
-  font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;
-  letter-spacing: 0.5px; margin-bottom: 0.35rem;
-  background: linear-gradient(135deg, #fff, var(--green-neon));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.promo-banner p { font-size: 0.78rem; color: var(--white-muted); line-height: 1.5; }
-.promo-perks {
-  display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;
-  margin-top: 0.75rem;
-}
-.promo-perk {
-  font-size: 0.68rem; font-weight: 700; padding: 3px 10px;
-  border-radius: 20px;
-  background: rgba(34,197,94,0.12); color: var(--green-neon);
-  border: 1px solid var(--border-green);
-}
+    /* alert */
+    .alert-box { min-height:22px; margin-bottom:0.75rem; font-size:0.78rem; text-align:center; border-radius:6px; padding:0 0.5rem; }
+    .alert-box.error { color:#f87171; }
+    .alert-box.success { color:var(--green-neon); }
 
-/* ===== SCREEN TOGGLE ===== */
-.screen { display: none; }
-.screen.active { display: block; }
+    /* primary btn */
+    .btn-primary { display:block; width:100%; padding:0.85rem 1rem; background:linear-gradient(135deg,var(--green-primary),var(--green-dark)); border:none; border-radius:10px; color:#fff; font-family:var(--font-display); font-size:1rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:all .25s; box-shadow:0 4px 20px rgba(22,163,74,0.4); position:relative; overflow:hidden; }
+    .btn-primary::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); transition:left .5s; }
+    .btn-primary:hover::before { left:100%; }
+    .btn-primary:disabled { opacity:0.6; pointer-events:none; }
 
-/* ===== AUTH CARD ===== */
-.auth-card {
-  background: var(--black-card);
-  border: 1px solid var(--border-green);
-  border-radius: 16px; overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(34,197,94,0.05);
-}
+    /* divider */
+    .or-divider { display:flex; align-items:center; gap:0.75rem; margin:1.1rem 0; }
+    .or-divider::before, .or-divider::after { content:''; flex:1; height:1px; background:var(--border-green); }
+    .or-divider span { font-size:0.7rem; color:var(--white-muted); text-transform:uppercase; letter-spacing:1px; }
 
-/* tabs */
-.auth-tabs {
-  display: flex;
-  border-bottom: 1px solid var(--border-green);
-}
-.auth-tab {
-  flex: 1; padding: 0.875rem;
-  background: none; border: none;
-  font-family: var(--font-display); font-size: 0.95rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 1px;
-  color: var(--white-muted); cursor: pointer;
-  transition: all 0.2s; position: relative;
-}
-.auth-tab::after {
-  content: ''; position: absolute;
-  bottom: 0; left: 50%; right: 50%;
-  height: 2px; background: var(--green-neon);
-  transition: all 0.25s;
-}
-.auth-tab.active {
-  color: var(--green-neon);
-  background: rgba(34,197,94,0.05);
-}
-.auth-tab.active::after { left: 10%; right: 10%; }
+    /* social */
+    .social-row { display:flex; gap:0.65rem; margin-top:0.25rem; }
+    .btn-social { flex:1; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.65rem 0.5rem; background:var(--black-surface); border:1px solid var(--border-green); border-radius:9px; cursor:pointer; color:var(--white-muted); transition:all .2s; font-weight:600; }
+    .btn-social:hover { border-color: rgba(255,255,255,0.3); color:#fff; background: rgba(255,255,255,0.05); }
+    .btn-social img { width:18px; height:18px; }
 
-/* card body */
-.auth-body { padding: 1.5rem 1.25rem; }
+    /* phone area small tweaks */
+    .phone-area { margin-top:12px; display:none; }
+    #recaptcha-container, #recaptcha-container-reg { margin-top:8px; }
 
-/* section title */
-.auth-title {
-  font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
-  letter-spacing: 1px; margin-bottom: 0.3rem;
-  background: linear-gradient(135deg, #fff 60%, var(--green-neon));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.auth-subtitle { font-size: 0.78rem; color: var(--white-muted); margin-bottom: 1.5rem; line-height: 1.4; }
+    /* card footer */
+    .auth-card-footer { padding:0.875rem 1.25rem; border-top:1px solid var(--border-green); background:rgba(0,0,0,0.2); text-align:center; font-size:0.8rem; color:var(--white-muted); }
+    .auth-card-footer a { color:var(--green-neon); font-weight:700; cursor:pointer; }
+    .auth-card-footer a:hover { color:var(--green-bright); }
 
-/* ===== INPUT ===== */
-.input-wrap {
-  margin-bottom: 1rem;
-}
-.input-wrap label {
-  display: block; font-size: 0.68rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.8px;
-  color: var(--white-muted); margin-bottom: 0.35rem;
-}
-/* wrapper khusus untuk input + icon, posisi relative di sini */
-.input-inner {
-  position: relative;
-}
-.input-field {
-  width: 100%; padding: 0.72rem 2.5rem 0.72rem 2.6rem;
-  background: var(--black-input);
-  border: 1px solid var(--border-green);
-  border-radius: 9px; color: #fff;
-  font-family: var(--font-body); font-size: 0.9rem;
-  outline: none; transition: all 0.25s;
-}
-.input-field:focus {
-  border-color: var(--green-bright);
-  box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
-}
-.input-field::placeholder { color: rgba(255,255,255,0.28); }
+    /* spinner */
+    .spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
 
-/* icon sekarang relatif ke .input-inner, bukan .input-wrap */
-.input-icon-left {
-  position: absolute; left: 0.75rem;
-  top: 50%; transform: translateY(-50%);
-  width: 16px; height: 16px; opacity: 0.45;
-  pointer-events: none;
-}
-.input-icon-right {
-  position: absolute; right: 0.75rem;
-  top: 50%; transform: translateY(-50%);
-  width: 18px; height: 18px; opacity: 0.45;
-  cursor: pointer; transition: opacity 0.2s;
-}
-.input-icon-right:hover { opacity: 0.9; }
+    /* security row */
+    .security-row { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; margin-top:1.1rem; }
+    .sec-badge { display:flex; align-items:center; gap:0.3rem; font-size:0.68rem; color:var(--white-muted); }
+    .sec-badge .dot { color:var(--green-neon); }
 
-/* ===== ALERT ===== */
-.alert-box {
-  min-height: 22px; margin-bottom: 0.75rem;
-  font-size: 0.78rem; text-align: center;
-  border-radius: 6px; padding: 0 0.5rem;
-}
-.alert-box.error { color: #f87171; }
-.alert-box.success { color: var(--green-neon); }
-
-/* ===== BTN PRIMARY ===== */
-.btn-primary {
-  display: block; width: 100%;
-  padding: 0.85rem 1rem;
-  background: linear-gradient(135deg, var(--green-primary), var(--green-dark));
-  border: none; border-radius: 10px;
-  color: #fff; font-family: var(--font-display);
-  font-size: 1rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  cursor: pointer; transition: all 0.25s;
-  box-shadow: 0 4px 20px rgba(22,163,74,0.4);
-  position: relative; overflow: hidden;
-}
-.btn-primary::before {
-  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-  transition: left 0.5s;
-}
-.btn-primary:hover::before { left: 100%; }
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(22,163,74,0.55);
-}
-.btn-primary:active { transform: translateY(0); }
-.btn-primary:disabled { opacity: 0.6; pointer-events: none; }
-
-/* ===== DIVIDER ===== */
-.or-divider {
-  display: flex; align-items: center; gap: 0.75rem;
-  margin: 1.1rem 0;
-}
-.or-divider::before, .or-divider::after {
-  content: ''; flex: 1; height: 1px; background: var(--border-green);
-}
-.or-divider span {
-  font-size: 0.7rem; color: var(--white-muted); text-transform: uppercase;
-  letter-spacing: 1px; white-space: nowrap;
-}
-
-/* ===== SOCIAL BUTTONS ===== */
-.social-row {
-  display: flex; gap: 0.65rem;
-}
-.btn-social {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-  padding: 0.65rem 0.5rem;
-  background: var(--black-surface);
-  border: 1px solid var(--border-green);
-  border-radius: 9px; cursor: pointer;
-  font-family: var(--font-body); font-size: 0.8rem; font-weight: 600;
-  color: var(--white-muted); transition: all 0.2s;
-}
-.btn-social:hover {
-  border-color: rgba(255,255,255,0.3); color: #fff;
-  background: rgba(255,255,255,0.05);
-}
-.btn-social img { width: 18px; height: 18px; }
-
-/* ===== CARD FOOTER ===== */
-.auth-card-footer {
-  padding: 0.875rem 1.25rem;
-  border-top: 1px solid var(--border-green);
-  background: rgba(0,0,0,0.2);
-  text-align: center; font-size: 0.8rem; color: var(--white-muted);
-}
-.auth-card-footer a {
-  color: var(--green-neon); font-weight: 700; cursor: pointer;
-  transition: color 0.2s;
-}
-.auth-card-footer a:hover { color: var(--green-bright); }
-
-/* ===== LOADING SPINNER ===== */
-.spinner {
-  display: inline-block; width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: #fff;
-  border-radius: 50%; animation: spin 0.7s linear infinite;
-  vertical-align: middle; margin-right: 6px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ===== SECURITY ROW ===== */
-.security-row {
-  display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
-  margin-top: 1.1rem;
-}
-.sec-badge {
-  display: flex; align-items: center; gap: 0.3rem;
-  font-size: 0.68rem; color: var(--white-muted);
-}
-.sec-badge .dot { color: var(--green-neon); }
-```
-
+    /* responsive */
+    @media (max-width:420px) {
+      .auth-container { padding: 0 6px; }
+      .auth-body { padding: 1.25rem; }
+    }
   </style>
 </head>
 <body>
@@ -351,14 +164,10 @@ header {
 <div class="bg-glow bg-glow-1"></div>
 <div class="bg-glow bg-glow-2"></div>
 
-<!-- HEADER -->
-
 <header>
   <div class="logo">NUBIASTORE</div>
   <button class="btn-back-header" id="btnBackHeader">← Kembali</button>
 </header>
-
-<!-- ANNOUNCE -->
 
 <div class="announce-bar">
   <span class="marquee-text">
@@ -366,131 +175,167 @@ header {
   </span>
 </div>
 
-<!-- PAGE -->
-
 <div class="page-wrap">
   <div class="auth-container">
 
-```
-<!-- PROMO BANNER (tampil di register) -->
-<div class="promo-banner" id="promoBanner" style="display:none">
-  <div class="pb-tag">✨ Bergabung Sekarang</div>
-  <h2>NUBIASTORE & NUBIAPAY</h2>
-  <p>Top up game lebih murah, proses instan, dan bayar pakai saldo NUBIAPAY tanpa biaya admin.</p>
-  <div class="promo-perks">
-    <span class="promo-perk">🎁 Bonus Saldo</span>
-    <span class="promo-perk">⚡ Instan</span>
-    <span class="promo-perk">💰 Termurah</span>
-    <span class="promo-perk">🛡 Aman</span>
-  </div>
-</div>
-
-<!-- AUTH CARD -->
-<div class="auth-card">
-
-  <!-- TABS -->
-  <div class="auth-tabs">
-    <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">🔑 Masuk</button>
-    <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">✨ Daftar</button>
-  </div>
-
-  <!-- LOGIN SCREEN -->
-  <div class="screen active" id="loginScreen">
-    <div class="auth-body">
-      <div class="auth-title">Selamat Datang</div>
-      <div class="auth-subtitle">Masuk untuk menikmati top up game termurah & NUBIAPAY.</div>
-
-      <div class="input-wrap">
-        <label>Email</label>
-        <div class="input-inner">
-          <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png">
-          <input class="input-field" type="email" id="email" placeholder="nama@email.com">
-        </div>
-      </div>
-
-      <div class="input-wrap">
-        <label>Password</label>
-        <div class="input-inner">
-          <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png">
-          <input class="input-field" type="password" id="password" placeholder="••••••••">
-          <img class="input-icon-right" id="togglePwd" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png">
-        </div>
-      </div>
-
-      <div class="alert-box error" id="alertLogin"></div>
-
-      <button class="btn-primary" id="submitLogin">⚡ Masuk</button>
-
-      <div class="or-divider"><span>atau masuk dengan</span></div>
-
-      <div class="social-row">
-        <button class="btn-social" id="loginGoogle">
-          <img src="https://img.icons8.com/color/24/google-logo.png"> Google
-        </button>
-        <button class="btn-social" id="loginApple">
-          <img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png"> Apple
-        </button>
+    <div class="promo-banner" id="promoBanner" style="display:none">
+      <div class="pb-tag">✨ Bergabung Sekarang</div>
+      <h2>NUBIASTORE & NUBIAPAY</h2>
+      <p>Top up game lebih murah, proses instan, dan bayar pakai saldo NUBIAPAY tanpa biaya admin.</p>
+      <div class="promo-perks">
+        <span class="promo-perk">🎁 Bonus Saldo</span>
+        <span class="promo-perk">⚡ Instan</span>
+        <span class="promo-perk">💰 Termurah</span>
+        <span class="promo-perk">🛡 Aman</span>
       </div>
     </div>
 
-    <div class="auth-card-footer">
-      Belum punya akun? <a onclick="switchTab('register')">Daftar sekarang →</a>
-    </div>
-  </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">🔑 Masuk</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">✨ Daftar</button>
+      </div>
 
-  <!-- REGISTER SCREEN -->
-  <div class="screen" id="registerScreen">
-    <div class="auth-body">
-      <div class="auth-title">Buat Akun</div>
-      <div class="auth-subtitle">Gratis selamanya. Nikmati semua fitur NUBIASTORE & NUBIAPAY.</div>
+      <!-- LOGIN SCREEN -->
+      <div class="screen active" id="loginScreen">
+        <div class="auth-body">
+          <div class="auth-title">Selamat Datang</div>
+          <div class="auth-subtitle">Masuk untuk menikmati top up game termurah & NUBIAPAY.</div>
 
-      <div class="input-wrap">
-        <label>Email</label>
-        <div class="input-inner">
-          <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png">
-          <input class="input-field" type="email" id="regEmail" placeholder="nama@email.com">
+          <div class="input-wrap">
+            <label>Email</label>
+            <div class="input-inner">
+              <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png" alt="">
+              <input class="input-field" type="email" id="email" placeholder="nama@email.com">
+            </div>
+          </div>
+
+          <div class="input-wrap">
+            <label>Password</label>
+            <div class="input-inner">
+              <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png" alt="">
+              <input class="input-field" type="password" id="password" placeholder="••••••••">
+              <img class="input-icon-right" id="togglePwd" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png" alt="">
+            </div>
+          </div>
+
+          <div class="alert-box error" id="alertLogin"></div>
+
+          <button class="btn-primary" id="submitLogin">⚡ Masuk</button>
+
+          <div class="or-divider"><span>atau masuk dengan</span></div>
+
+          <div class="social-row">
+            <button class="btn-social" id="loginGoogle">
+              <img src="https://img.icons8.com/color/24/google-logo.png" alt=""> Google
+            </button>
+            <button class="btn-social" id="loginApple">
+              <img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png" alt=""> Apple
+            </button>
+            <button class="btn-social" id="loginPhone">
+              📱 Telepon
+            </button>
+          </div>
+
+          <!-- PHONE AREA (login) -->
+          <div class="phone-area" id="phoneAreaLogin">
+            <div class="input-wrap">
+              <label>Nomor HP</label>
+              <div class="input-inner">
+                <input class="input-field" id="phoneNumberLogin" placeholder="+628123456789">
+              </div>
+            </div>
+            <div id="recaptcha-container"></div>
+            <button class="btn-primary" id="sendOTPLogin">Kirim OTP</button>
+
+            <div class="input-wrap" style="margin-top:10px">
+              <label>Kode OTP</label>
+              <div class="input-inner">
+                <input class="input-field" id="otpCodeLogin" placeholder="123456">
+              </div>
+            </div>
+            <button class="btn-primary" id="verifyOTPLogin">Verifikasi OTP</button>
+          </div>
+        </div>
+
+        <div class="auth-card-footer">
+          Belum punya akun? <a onclick="switchTab('register')">Daftar sekarang →</a>
         </div>
       </div>
 
-      <div class="input-wrap">
-        <label>Password <span style="color:var(--white-muted);font-weight:400;font-size:0.65rem;">(min. 6 karakter)</span></label>
-        <div class="input-inner">
-          <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png">
-          <input class="input-field" type="password" id="regPassword" placeholder="••••••••">
-          <img class="input-icon-right" id="togglePwdReg" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png">
+      <!-- REGISTER SCREEN -->
+      <div class="screen" id="registerScreen">
+        <div class="auth-body">
+          <div class="auth-title">Buat Akun</div>
+          <div class="auth-subtitle">Gratis selamanya. Nikmati semua fitur NUBIASTORE & NUBIAPAY.</div>
+
+          <div class="input-wrap">
+            <label>Email</label>
+            <div class="input-inner">
+              <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png" alt="">
+              <input class="input-field" type="email" id="regEmail" placeholder="nama@email.com">
+            </div>
+          </div>
+
+          <div class="input-wrap">
+            <label>Password <span style="color:var(--white-muted);font-weight:400;font-size:0.65rem;">(min. 6 karakter)</span></label>
+            <div class="input-inner">
+              <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png" alt="">
+              <input class="input-field" type="password" id="regPassword" placeholder="••••••••">
+              <img class="input-icon-right" id="togglePwdReg" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png" alt="">
+            </div>
+          </div>
+
+          <div class="alert-box error" id="alertRegister"></div>
+
+          <button class="btn-primary" id="submitRegister">✨ Buat Akun</button>
+
+          <div class="or-divider"><span>atau daftar dengan</span></div>
+
+          <div class="social-row">
+            <button class="btn-social" id="regGoogle">
+              <img src="https://img.icons8.com/color/24/google-logo.png" alt=""> Google
+            </button>
+            <button class="btn-social" id="regApple">
+              <img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png" alt=""> Apple
+            </button>
+            <button class="btn-social" id="regPhone">
+              📱 Telepon
+            </button>
+          </div>
+
+          <!-- PHONE AREA (register) -->
+          <div class="phone-area" id="phoneAreaReg">
+            <div class="input-wrap">
+              <label>Nomor HP</label>
+              <div class="input-inner">
+                <input class="input-field" id="phoneNumberReg" placeholder="+628123456789">
+              </div>
+            </div>
+            <div id="recaptcha-container-reg"></div>
+            <button class="btn-primary" id="sendOTPReg">Kirim OTP</button>
+
+            <div class="input-wrap" style="margin-top:10px">
+              <label>Kode OTP</label>
+              <div class="input-inner">
+                <input class="input-field" id="otpCodeReg" placeholder="123456">
+              </div>
+            </div>
+            <button class="btn-primary" id="verifyOTPReg">Verifikasi OTP</button>
+          </div>
+        </div>
+
+        <div class="auth-card-footer">
+          Sudah punya akun? <a onclick="switchTab('login')">← Masuk</a>
         </div>
       </div>
-
-      <div class="alert-box error" id="alertRegister"></div>
-
-      <button class="btn-primary" id="submitRegister">✨ Buat Akun</button>
-
-      <div class="or-divider"><span>atau daftar dengan</span></div>
-
-      <div class="social-row">
-        <button class="btn-social" id="regGoogle">
-          <img src="https://img.icons8.com/color/24/google-logo.png"> Google
-        </button>
-        <button class="btn-social" id="regApple">
-          <img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png"> Apple
-        </button>
-      </div>
     </div>
 
-    <div class="auth-card-footer">
-      Sudah punya akun? <a onclick="switchTab('login')">← Masuk</a>
+    <div class="security-row">
+      <span class="sec-badge"><span class="dot">🔒</span> SSL Aman</span>
+      <span class="sec-badge"><span class="dot">✓</span> Data Terenkripsi</span>
+      <span class="sec-badge"><span class="dot">🛡</span> Anti-Penipuan</span>
     </div>
-  </div>
-
-</div><!-- /auth-card -->
-
-<!-- SECURITY BADGES -->
-<div class="security-row">
-  <span class="sec-badge"><span class="dot">🔒</span> SSL Aman</span>
-  <span class="sec-badge"><span class="dot">✓</span> Data Terenkripsi</span>
-  <span class="sec-badge"><span class="dot">🛡</span> Anti-Penipuan</span>
-</div>
-```
 
   </div>
 </div>
@@ -510,35 +355,29 @@ header {
 
   /* ===== REDIRECT BACK TO PREVIOUS PAGE ===== */
   function getRedirectTarget() {
-    // 1. Cek sessionStorage (disimpan sebelum redirect ke halaman ini)
     const saved = sessionStorage.getItem('nubiastore_login_redirect');
     if (saved && saved !== window.location.href) {
       sessionStorage.removeItem('nubiastore_login_redirect');
       return saved;
     }
-    // 2. Cek document.referrer
     const ref = document.referrer;
     if (ref && ref !== '' && !ref.includes('login-register')) {
       return ref;
     }
-    // 3. Fallback ke home
     return 'https://nubiastore.netlify.app/';
   }
 
-  /* Tombol kembali */
   document.getElementById('btnBackHeader').onclick = () => {
     const target = getRedirectTarget();
     window.location.href = target;
   };
 
-  /* Juga simpan referrer saat halaman ini dibuka (buat jaga-jaga) */
   if (document.referrer && !document.referrer.includes('login-register')) {
     sessionStorage.setItem('nubiastore_login_redirect', document.referrer);
   }
 </script>
 
-<!-- ===== FIREBASE ===== -->
-
+<!-- ===== FIREBASE + AUTH LOGIC (module) ===== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
@@ -548,12 +387,15 @@ header {
     signInWithPopup,
     GoogleAuthProvider,
     OAuthProvider,
-    onAuthStateChanged
+    onAuthStateChanged,
+    RecaptchaVerifier,
+    signInWithPhoneNumber
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+  /* ========== CONFIG ========== */
   const firebaseConfig = {
     apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
     authDomain: "zestoreid-f9e85.firebaseapp.com",
@@ -568,41 +410,19 @@ header {
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
-  /* ===== REDIRECT TARGET ===== */
-  function getRedirectTarget() {
-    const saved = sessionStorage.getItem('nubiastore_login_redirect');
-    if (saved && saved !== window.location.href && !saved.includes('login-register')) {
-      sessionStorage.removeItem('nubiastore_login_redirect');
-      return saved;
-    }
-    const ref = document.referrer;
-    if (ref && ref !== '' && !ref.includes('login-register')) return ref;
-    return 'https://nubiastore.netlify.app/';
-  }
-
-  /* ===== SIMPAN REDIRECT SEBELUM HALAMAN INI ===== */
-  /* Dipanggil dari halaman lain sebelum redirect ke sini:
-     sessionStorage.setItem('nubiastore_login_redirect', location.href);
-     location.href = 'login-register.html';
-  */
-
-  /* ===== LOADING STATE ===== */
+  /* ===== UI HELPERS ===== */
   function setLoading(btnId, loading, defaultText) {
     const btn = document.getElementById(btnId);
     if (!btn) return;
     btn.disabled = loading;
     btn.innerHTML = loading ? `<span class="spinner"></span>Memproses...` : defaultText;
   }
-
-  /* ===== ALERT ===== */
   function showAlert(id, msg, type = 'error') {
     const el = document.getElementById(id);
     if (!el) return;
     el.textContent = msg;
     el.className = `alert-box ${type}`;
   }
-
-  /* ===== FIREBASE ERROR MAP ===== */
   function firebaseErrorMsg(code) {
     const map = {
       'auth/invalid-email':            'Format email tidak valid.',
@@ -614,6 +434,11 @@ header {
       'auth/popup-closed-by-user':     'Login dibatalkan.',
       'auth/network-request-failed':   'Koneksi bermasalah. Cek internet kamu.',
       'auth/invalid-credential':       'Email atau password salah.',
+      'auth/unauthorized-domain':      'Domain belum diizinkan di Firebase Auth.',
+      'auth/missing-or-invalid-nonce': 'Apple config belum lengkap (nonce).',
+      'auth/captcha-check-failed':     'reCAPTCHA gagal. Muat ulang laman dan coba lagi.',
+      'auth/invalid-phone-number':     'Format nomor telepon tidak valid.',
+      'auth/quota-exceeded':           'Batas pengiriman SMS tercapai. Coba nanti.',
     };
     return map[code] || 'Terjadi kesalahan. Coba lagi.';
   }
@@ -629,6 +454,7 @@ header {
       await setDoc(uRef, {
         displayName:    user.displayName || '',
         email:          user.email || '',
+        phoneNumber:    user.phoneNumber || '',
         nubiPayBalance: 0,
         coinBalance:    0,
         referralCode:   code,
@@ -636,9 +462,9 @@ header {
       });
     } else {
       const updates = {};
-      if (!uSnap.data().referralCode)   updates.referralCode   = code;
-      if (!uSnap.data().nubiPayBalance && uSnap.data().nubiPayBalance !== 0)
-        updates.nubiPayBalance = 0;
+      if (!uSnap.data().referralCode) updates.referralCode = code;
+      if (!uSnap.data().nubiPayBalance && uSnap.data().nubiPayBalance !== 0) updates.nubiPayBalance = 0;
+      if (!uSnap.data().phoneNumber && user.phoneNumber) updates.phoneNumber = user.phoneNumber;
       if (Object.keys(updates).length) await updateDoc(uRef, updates);
     }
 
@@ -649,46 +475,53 @@ header {
     }
   }
 
-  /* ===== AUTH STATE — kalau sudah login langsung redirect ===== */
+  /* ===== AUTH STATE HANDLER ===== */
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       try { await ensureUserDocuments(user); } catch(e) { console.error(e); }
-      window.location.href = getRedirectTarget();
+      // redirect back
+      window.location.href = (function(){
+        const saved = sessionStorage.getItem('nubiastore_login_redirect');
+        if (saved && saved !== window.location.href && !saved.includes('login-register')) { sessionStorage.removeItem('nubiastore_login_redirect'); return saved; }
+        const ref = document.referrer; if (ref && !ref.includes('login-register')) return ref;
+        return 'https://nubiastore.netlify.app/';
+      })();
     }
   });
 
-  /* ===== LOGIN EMAIL ===== */
+  /* ===== EMAIL LOGIN / REGISTER ===== */
   document.getElementById('submitLogin').addEventListener('click', async () => {
-    const email    = document.getElementById('email').value.trim();
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
     showAlert('alertLogin', '');
-    if (!email || !password) { showAlert('alertLogin', 'Isi email dan password terlebih dahulu.'); return; }
+    if (!email || !password) { showAlert('alertLogin','Isi email dan password terlebih dahulu.'); return; }
     setLoading('submitLogin', true, '⚡ Masuk');
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password);
       await ensureUserDocuments(user);
       window.location.href = getRedirectTarget();
-    } catch (err) {
+    } catch(err) {
       showAlert('alertLogin', firebaseErrorMsg(err.code));
       setLoading('submitLogin', false, '⚡ Masuk');
+      console.error(err);
     }
   });
 
-  /* ===== REGISTER EMAIL ===== */
   document.getElementById('submitRegister').addEventListener('click', async () => {
-    const email    = document.getElementById('regEmail').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value.trim();
-    showAlert('alertRegister', '');
-    if (!email || !password) { showAlert('alertRegister', 'Isi email dan password terlebih dahulu.'); return; }
+    showAlert('alertRegister','');
+    if (!email || !password) { showAlert('alertRegister','Isi email dan password terlebih dahulu.'); return; }
     setLoading('submitRegister', true, '✨ Buat Akun');
     try {
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       await ensureUserDocuments(user);
-      showAlert('alertRegister', '🎉 Akun berhasil dibuat! Mengalihkan...', 'success');
-      setTimeout(() => { window.location.href = getRedirectTarget(); }, 800);
-    } catch (err) {
+      showAlert('alertRegister','🎉 Akun berhasil dibuat! Mengalihkan...','success');
+      setTimeout(()=>{ window.location.href = getRedirectTarget(); }, 800);
+    } catch(err) {
       showAlert('alertRegister', firebaseErrorMsg(err.code));
       setLoading('submitRegister', false, '✨ Buat Akun');
+      console.error(err);
     }
   });
 
@@ -696,41 +529,165 @@ header {
   async function loginWithGoogle(alertId) {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
-    showAlert(alertId, '');
+    showAlert(alertId,'');
     try {
       const { user } = await signInWithPopup(auth, provider);
       await ensureUserDocuments(user);
       window.location.href = getRedirectTarget();
-    } catch (err) {
-      if (err.code !== 'auth/popup-closed-by-user') {
-        showAlert(alertId, firebaseErrorMsg(err.code));
-      }
+    } catch(err) {
+      if (err.code !== 'auth/popup-closed-by-user') showAlert(alertId, firebaseErrorMsg(err.code));
+      console.error(err);
     }
   }
 
-  /* ===== APPLE LOGIN ===== */
+  /* ===== APPLE LOGIN =====
+     Note: Apple needs additional setup in Apple Developer + Firebase (Services ID, Key ID, Team ID, private key).
+     If you get errors like 'missing-or-invalid-nonce' or 'unauthorized-domain' check Firebase Apple config.
+  */
   async function loginWithApple(alertId) {
     const provider = new OAuthProvider('apple.com');
     provider.addScope('email');
     provider.addScope('name');
-    showAlert(alertId, '');
+    showAlert(alertId,'');
     try {
       const { user } = await signInWithPopup(auth, provider);
       await ensureUserDocuments(user);
       window.location.href = getRedirectTarget();
-    } catch (err) {
-      if (err.code !== 'auth/popup-closed-by-user') {
-        showAlert(alertId, firebaseErrorMsg(err.code));
-      }
+    } catch(err) {
+      if (err.code !== 'auth/popup-closed-by-user') showAlert(alertId, firebaseErrorMsg(err.code));
+      console.error(err);
     }
   }
 
-  document.getElementById('loginGoogle').addEventListener('click', () => loginWithGoogle('alertLogin'));
-  document.getElementById('regGoogle').addEventListener('click',   () => loginWithGoogle('alertRegister'));
-  document.getElementById('loginApple').addEventListener('click', () => loginWithApple('alertLogin'));
-  document.getElementById('regApple').addEventListener('click',   () => loginWithApple('alertRegister'));
+  document.getElementById('loginGoogle').addEventListener('click', ()=>loginWithGoogle('alertLogin'));
+  document.getElementById('regGoogle').addEventListener('click', ()=>loginWithGoogle('alertRegister'));
+  document.getElementById('loginApple').addEventListener('click', ()=>loginWithApple('alertLogin'));
+  document.getElementById('regApple').addEventListener('click', ()=>loginWithApple('alertRegister'));
 
-  /* ===== TOGGLE PASSWORD ===== */
+  /* ===== PHONE AUTH (reCAPTCHA + OTP) ===== */
+
+  // helper to normalize Indonesian numbers input by users
+  function normalizePhoneNumber(input) {
+    if (!input) return '';
+    input = input.trim();
+    // if starts with 0 (e.g. 0812...), convert to +62...
+    if (/^0\d+/.test(input)) {
+      return '+62' + input.slice(1).replace(/\s+/g,'');
+    }
+    // if starts with 62 without plus -> add plus
+    if (/^62\d+/.test(input)) return '+' + input.replace(/\s+/g,'');
+    // if already +62... or international, keep
+    return input.replace(/\s+/g,'');
+  }
+
+  // initialize reCAPTCHA widgets once (two widgets for login/register areas)
+  let recaptchaLoginWidget = null;
+  let recaptchaRegWidget = null;
+
+  function initRecaptchas() {
+    try {
+      if (!recaptchaLoginWidget) {
+        recaptchaLoginWidget = new RecaptchaVerifier('recaptcha-container', { size: 'normal' }, auth);
+        recaptchaLoginWidget.render().catch(()=>{});
+      }
+    } catch(e){ console.warn('recap init login', e); }
+    try {
+      if (!recaptchaRegWidget) {
+        recaptchaRegWidget = new RecaptchaVerifier('recaptcha-container-reg', { size: 'normal' }, auth);
+        recaptchaRegWidget.render().catch(()=>{});
+      }
+    } catch(e){ console.warn('recap init reg', e); }
+  }
+
+  // show/hide phone areas when clicking social phone buttons
+  document.getElementById('loginPhone').addEventListener('click', () => {
+    document.getElementById('phoneAreaLogin').style.display = 'block';
+    initRecaptchas();
+    window.scrollTo({ top: document.getElementById('phoneAreaLogin').offsetTop - 60, behavior: 'smooth' });
+  });
+  document.getElementById('regPhone').addEventListener('click', () => {
+    document.getElementById('phoneAreaReg').style.display = 'block';
+    initRecaptchas();
+    window.scrollTo({ top: document.getElementById('phoneAreaReg').offsetTop - 60, behavior: 'smooth' });
+  });
+
+  // send OTP (login)
+  document.getElementById('sendOTPLogin').addEventListener('click', async () => {
+    const raw = document.getElementById('phoneNumberLogin').value.trim();
+    const phone = normalizePhoneNumber(raw);
+    showAlert('alertLogin','');
+    if (!phone) { showAlert('alertLogin','Masukkan nomor telepon.'); return; }
+    setLoading('sendOTPLogin', true, 'Mengirim OTP...');
+    try {
+      const appVerifier = recaptchaLoginWidget || new RecaptchaVerifier('recaptcha-container', { size: 'normal' }, auth);
+      const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
+      window.confirmationResultLogin = confirmationResult;
+      alert('OTP terkirim ke ' + phone);
+    } catch(err) {
+      showAlert('alertLogin', firebaseErrorMsg(err.code));
+      console.error('sendOTPLogin', err);
+    } finally {
+      setLoading('sendOTPLogin', false, 'Kirim OTP');
+    }
+  });
+
+  // verify OTP (login)
+  document.getElementById('verifyOTPLogin').addEventListener('click', async () => {
+    const code = document.getElementById('otpCodeLogin').value.trim();
+    showAlert('alertLogin','');
+    if (!code) { showAlert('alertLogin','Masukkan kode OTP.'); return; }
+    setLoading('verifyOTPLogin', true, 'Verifikasi...');
+    try {
+      const result = await window.confirmationResultLogin.confirm(code);
+      const user = result.user;
+      await ensureUserDocuments(user);
+      window.location.href = getRedirectTarget();
+    } catch(err) {
+      showAlert('alertLogin', firebaseErrorMsg(err.code));
+      console.error('verifyOTPLogin', err);
+      setLoading('verifyOTPLogin', false, 'Verifikasi OTP');
+    }
+  });
+
+  // send OTP (register)
+  document.getElementById('sendOTPReg').addEventListener('click', async () => {
+    const raw = document.getElementById('phoneNumberReg').value.trim();
+    const phone = normalizePhoneNumber(raw);
+    showAlert('alertRegister','');
+    if (!phone) { showAlert('alertRegister','Masukkan nomor telepon.'); return; }
+    setLoading('sendOTPReg', true, 'Mengirim OTP...');
+    try {
+      const appVerifier = recaptchaRegWidget || new RecaptchaVerifier('recaptcha-container-reg', { size: 'normal' }, auth);
+      const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
+      window.confirmationResultReg = confirmationResult;
+      alert('OTP terkirim ke ' + phone);
+    } catch(err) {
+      showAlert('alertRegister', firebaseErrorMsg(err.code));
+      console.error('sendOTPReg', err);
+    } finally {
+      setLoading('sendOTPReg', false, 'Kirim OTP');
+    }
+  });
+
+  // verify OTP (register)
+  document.getElementById('verifyOTPReg').addEventListener('click', async () => {
+    const code = document.getElementById('otpCodeReg').value.trim();
+    showAlert('alertRegister','');
+    if (!code) { showAlert('alertRegister','Masukkan kode OTP.'); return; }
+    setLoading('verifyOTPReg', true, 'Verifikasi...');
+    try {
+      const result = await window.confirmationResultReg.confirm(code);
+      const user = result.user;
+      await ensureUserDocuments(user);
+      window.location.href = getRedirectTarget();
+    } catch(err) {
+      showAlert('alertRegister', firebaseErrorMsg(err.code));
+      console.error('verifyOTPReg', err);
+      setLoading('verifyOTPReg', false, 'Verifikasi OTP');
+    }
+  });
+
+  /* ===== PASSWORD TOGGLE ===== */
   function togglePassword(inputId, iconId) {
     const inp = document.getElementById(inputId);
     const ico = document.getElementById(iconId);
@@ -742,6 +699,11 @@ header {
   }
   document.getElementById('togglePwd').onclick    = () => togglePassword('password', 'togglePwd');
   document.getElementById('togglePwdReg').onclick = () => togglePassword('regPassword', 'togglePwdReg');
+
+  /* ===== QUICK: init recaptchas on page load (invisible until needed) ===== */
+  // We initialize lazily when the phone area is shown (initRecaptchas).
+  // But run a safe attempt to render invisible recaptcha to reserve quota (optional).
+  // initRecaptchas();  // Uncomment if you want immediate render
 </script>
 
 </body>
