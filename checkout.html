@@ -1,722 +1,107 @@
 <!doctype html>
-
 <html lang="id">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Checkout — NUBIASTORE</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --g1: #00ff6a;
-  --g2: #22c55e;
-  --g3: #16a34a;
-  --g4: #0d6b33;
-  --glow: rgba(0,255,106,0.4);
-  --glow2: rgba(0,255,106,0.15);
-  --bg: #050a06;
-  --bg2: #080f09;
-  --card: #0b160d;
-  --card2: #0e1c10;
-  --surface: #111f14;
-  --input: #0a1409;
-  --white: #f0fff4;
-  --muted: rgba(240,255,244,0.5);
-  --dim: rgba(240,255,244,0.25);
-  --border: rgba(0,255,106,0.18);
-  --border2: rgba(0,255,106,0.4);
-  --yellow: #ffd700;
-  --red: #ff4444;
-  --font-hud: 'Orbitron', monospace;
-  --font-display: 'Rajdhani', sans-serif;
-  --font-body: 'Exo 2', sans-serif;
-}
+  body{font-family:Inter,Segoe UI,system-ui; background:#f6f7f9; color:#111; padding:16px;}
+  .card{max-width:720px;margin:24px auto;background:#fff;border-radius:8px;padding:18px;box-shadow:0 6px 18px rgba(0,0,0,0.06);}
+  h1{color:#16a34a;margin-bottom:6px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .col{flex:1;min-width:220px}
+  .field{margin:.6rem 0}
+  .muted{color:#666;font-size:.95rem}
+  .amount{font-weight:700;font-size:1.2rem;color:#0f172a}
+  .qr{max-width:320px;width:100%;display:block;margin:12px auto;border:1px solid #eee;padding:8px;border-radius:8px;background:#fff}
+  .btn{display:inline-block;padding:.6rem 1rem;background:#16a34a;color:#fff;border-radius:6px;text-decoration:none}
+  .copy{margin-left:8px;padding:.3rem .6rem;background:#111;color:#fff;border-radius:6px;cursor:pointer;border:none}
+  .status{display:inline-block;padding:.25rem .6rem;border-radius:6px;font-weight:600}
+  .status.initiated{background:#fef3c7;color:#92400e}
+  .status.pending{background:#e0f2fe;color:#0369a1}
+  .status.completed{background:#dcfce7;color:#166534}
+  .status.cancelled{background:#fee2e2;color:#7f1d1d}
+  .note{background:#fff7ed;padding:8px;border-left:4px solid #f59e0b;color:#92400e;margin-top:12px}
+  textarea.payload { width:100%; min-height:90px; padding:8px; font-family:monospace; margin-top:8px; border-radius:6px; border:1px solid #e5e7eb; }
+  .payload-row { display:flex; gap:8px; align-items:center; margin-top:8px; }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+  /* === ADDED: resultBox styling === */
+  .result-box {
+    text-align:center;
+    margin-top:12px;
+    padding:12px;
+    border-radius:8px;
+    background: linear-gradient(180deg,#f8fff2,#ffffff);
+    box-shadow:0 6px 18px rgba(0,0,0,0.04);
+  }
+  .result-box img { width:96px; height:96px; object-fit:contain; display:block; margin:0 auto 8px; }
+  .result-box p { font-weight:700; color:#111; margin:0; line-height:1.3; }
+  .result-box.cancel { background: linear-gradient(180deg,#fff5f5,#ffffff); }
 
-body {
-font-family: var(–font-body);
-background: var(–bg);
-color: var(–white);
-min-height: 100vh;
-overflow-x: hidden;
-position: relative;
-}
-
-/* ── BG GRID ── */
-body::before {
-content: ‘’;
-position: fixed; inset: 0; z-index: 0;
-background-image:
-linear-gradient(rgba(0,255,106,0.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0,255,106,0.03) 1px, transparent 1px);
-background-size: 40px 40px;
-pointer-events: none;
-}
-
-/* ── BG RADIAL GLOW ── */
-body::after {
-content: ‘’;
-position: fixed;
-top: -20%; left: 50%; transform: translateX(-50%);
-width: 80vw; height: 60vh;
-background: radial-gradient(ellipse, rgba(0,255,106,0.07) 0%, transparent 70%);
-pointer-events: none; z-index: 0;
-}
-
-a { text-decoration: none; color: inherit; }
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(–bg); }
-::-webkit-scrollbar-thumb { background: var(–g3); border-radius: 4px; }
-
-/* ══════════ HEADER ══════════ */
-header {
-position: sticky; top: 0; z-index: 100;
-display: flex; align-items: center; justify-content: space-between;
-padding: 0 1.5rem;
-height: 58px;
-background: rgba(5,10,6,0.96);
-backdrop-filter: blur(20px);
-border-bottom: 1px solid var(–border);
-box-shadow: 0 0 30px rgba(0,0,0,0.8), 0 1px 0 rgba(0,255,106,0.1);
-}
-
-.logo-wrap { display: flex; align-items: center; gap: 10px; }
-.logo-icon {
-width: 32px; height: 32px;
-background: linear-gradient(135deg, var(–g1), var(–g3));
-border-radius: 6px;
-display: flex; align-items: center; justify-content: center;
-font-size: 14px;
-box-shadow: 0 0 12px var(–glow);
-flex-shrink: 0;
-}
-.logo {
-font-family: var(–font-hud);
-font-size: 1rem; font-weight: 700; letter-spacing: 3px;
-color: var(–g1);
-text-shadow: 0 0 20px var(–glow), 0 0 40px rgba(0,255,106,0.2);
-}
-
-.header-right { display: flex; align-items: center; gap: 0.75rem; }
-
-.btn-home {
-display: flex; align-items: center; gap: 0.4rem;
-padding: 0.35rem 0.875rem;
-background: transparent;
-border: 1px solid var(–border);
-border-radius: 6px; color: var(–muted);
-font-family: var(–font-body); font-size: 0.78rem; font-weight: 600;
-cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
-}
-.btn-home:hover {
-color: var(–g1); border-color: var(–g1);
-background: rgba(0,255,106,0.06);
-box-shadow: 0 0 12px var(–glow2);
-}
-
-/* ══════════ ANNOUNCE ══════════ */
-.announce-bar {
-position: relative; overflow: hidden;
-background: linear-gradient(90deg, var(–bg2), rgba(0,255,106,0.08), var(–bg2));
-border-bottom: 1px solid var(–border);
-padding: 0.35rem 0;
-}
-.announce-bar::before, .announce-bar::after {
-content: ‘’;
-position: absolute; top: 0; width: 80px; height: 100%; z-index: 2;
-}
-.announce-bar::before { left: 0; background: linear-gradient(90deg, var(–bg2), transparent); }
-.announce-bar::after  { right: 0; background: linear-gradient(-90deg, var(–bg2), transparent); }
-
-.marquee-text {
-display: inline-block;
-animation: marquee 22s linear infinite;
-white-space: nowrap;
-font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
-color: var(–g2);
-}
-@keyframes marquee { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
-
-/* ══════════ PAGE WRAP ══════════ */
-.page-wrap {
-position: relative; z-index: 1;
-max-width: 760px; margin: 0 auto;
-padding: clamp(1rem, 3vw, 1.75rem);
-}
-
-/* ── PAGE TITLE ── */
-.page-title {
-display: flex; align-items: center; gap: 0.875rem;
-margin-bottom: 1.5rem; padding-bottom: 1rem;
-border-bottom: 1px solid var(–border);
-}
-.page-title-icon {
-width: 44px; height: 44px;
-background: linear-gradient(135deg, rgba(0,255,106,0.2), rgba(0,255,106,0.05));
-border: 1px solid var(–border2);
-border-radius: 10px;
-display: flex; align-items: center; justify-content: center;
-font-size: 1.2rem;
-box-shadow: 0 0 16px var(–glow2), inset 0 1px 0 rgba(0,255,106,0.2);
-}
-.page-title h1 {
-font-family: var(–font-hud);
-font-size: clamp(1.1rem, 4vw, 1.4rem);
-font-weight: 700; letter-spacing: 2px;
-color: var(–white);
-}
-.page-title h1 span { color: var(–g1); }
-.page-title .badge {
-font-family: var(–font-hud);
-font-size: 0.6rem; font-weight: 700; padding: 3px 8px;
-border-radius: 3px; text-transform: uppercase; letter-spacing: 1.5px;
-background: rgba(0,255,106,0.12); color: var(–g1);
-border: 1px solid rgba(0,255,106,0.3);
-}
-
-/* ── STATE BOXES ── */
-.state-box {
-background: var(–card);
-border: 1px solid var(–border);
-border-radius: 12px; padding: 2.5rem 2rem;
-text-align: center; color: var(–muted);
-font-size: 0.88rem;
-box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
-.state-box code {
-background: var(–surface); color: var(–g1);
-padding: 2px 7px; border-radius: 4px; font-size: 0.82rem;
-font-family: var(–font-hud);
-}
-
-/* ══════════ ORDER CARD ══════════ */
-.order-card {
-background: var(–card);
-border: 1px solid var(–border);
-border-radius: 16px; overflow: hidden;
-box-shadow: 0 8px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,255,106,0.05);
-margin-bottom: 1.5rem;
-position: relative;
-}
-.order-card::before {
-content: ‘’;
-position: absolute; top: 0; left: 0; right: 0;
-height: 2px;
-background: linear-gradient(90deg, transparent, var(–g1), var(–g2), var(–g1), transparent);
-opacity: 0.7;
-}
-
-/* ── CARD HEAD ── */
-.order-card-head {
-display: flex; align-items: center; justify-content: space-between;
-padding: 1rem 1.375rem;
-background: linear-gradient(90deg, rgba(0,255,106,0.08), rgba(0,255,106,0.02), transparent);
-border-bottom: 1px solid var(–border);
-flex-wrap: wrap; gap: 0.625rem;
-}
-.head-left { display: flex; align-items: center; gap: 0.625rem; }
-.head-dot {
-width: 8px; height: 8px; border-radius: 50%;
-background: var(–g1);
-box-shadow: 0 0 8px var(–glow);
-animation: blink 2s ease-in-out infinite;
-}
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-.order-card-head h2 {
-font-family: var(–font-hud);
-font-size: 0.72rem; font-weight: 700;
-text-transform: uppercase; letter-spacing: 2px;
-color: var(–g1);
-}
-.invoice-id {
-font-family: var(–font-hud); font-size: 0.72rem;
-color: var(–muted);
-background: var(–surface); padding: 3px 10px; border-radius: 4px;
-border: 1px solid var(–border);
-letter-spacing: 1px;
-}
-
-/* ── DETAILS GRID ── */
-.details-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-gap: 0; padding: 1.25rem 1.375rem;
-}
-.detail-col { padding: 0 0.625rem; }
-.detail-col:first-child { padding-left: 0; }
-.detail-col:last-child { padding-right: 0; }
-
-.field-row {
-display: flex; flex-direction: column;
-padding: 0.5rem 0;
-border-bottom: 1px solid rgba(0,255,106,0.05);
-}
-.field-row:last-child { border-bottom: none; }
-
-.field-label {
-font-family: var(–font-hud);
-font-size: 0.6rem; font-weight: 600; text-transform: uppercase;
-letter-spacing: 1.2px; color: var(–dim); margin-bottom: 4px;
-}
-.field-value {
-font-size: 0.875rem; font-weight: 600; color: var(–white);
-font-family: var(–font-display);
-}
-.field-value.amount-big {
-font-family: var(–font-hud);
-font-size: 1.25rem; font-weight: 700;
-color: var(–yellow);
-text-shadow: 0 0 20px rgba(255,215,0,0.4);
-}
-
-/* ── STATUS ── */
-.status {
-display: inline-flex; align-items: center; gap: 5px;
-padding: 3px 10px; border-radius: 4px;
-font-family: var(–font-hud);
-font-size: 0.6rem; font-weight: 700; letter-spacing: 1px;
-text-transform: uppercase;
-}
-.status-dot {
-width: 6px; height: 6px; border-radius: 50; background: currentColor;
-animation: blink 1.5s ease-in-out infinite;
-}
-.status.initiated  { background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid rgba(255,215,0,0.3); }
-.status.pending    { background: rgba(56,189,248,0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); }
-.status.completed  { background: rgba(0,255,106,0.1); color: var(–g1); border: 1px solid rgba(0,255,106,0.3); }
-.status.cancelled  { background: rgba(255,68,68,0.1); color: #ff6b6b; border: 1px solid rgba(255,68,68,0.3); }
-
-/* ── DIVIDER ── */
-.divider { height: 1px; background: var(–border); margin: 0 1.375rem; }
-
-/* ══════════ PAYMENT SECTION ══════════ */
-.payment-section { padding: 1.375rem; }
-.payment-section h3 {
-font-family: var(–font-hud);
-font-size: 0.78rem; font-weight: 700;
-text-transform: uppercase; letter-spacing: 2px;
-color: var(–g1); margin-bottom: 0.875rem;
-display: flex; align-items: center; gap: 0.5rem;
-}
-.payment-section h3::after {
-content: ‘’;
-flex: 1; height: 1px;
-background: linear-gradient(90deg, var(–border), transparent);
-}
-.payment-section p {
-font-size: 0.84rem; color: var(–muted);
-margin-bottom: 0.875rem; line-height: 1.6;
-}
-.payment-section p strong { color: var(–white); }
-
-/* QR */
-.qr {
-max-width: 220px; width: 100%; display: block; margin: 1.25rem auto;
-border: 2px solid var(–border2);
-padding: 10px; border-radius: 12px;
-background: #fff;
-box-shadow: 0 0 30px var(–glow), 0 0 60px rgba(0,255,106,0.1);
-}
-.expiry-note {
-text-align: center; font-size: 0.72rem;
-font-family: var(–font-hud); letter-spacing: 0.5px;
-color: #ff6b6b; margin-top: 0.625rem;
-}
-
-/* VA BOX */
-.va-box {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 10px; padding: 1rem; margin-bottom: 0.875rem;
-position: relative; overflow: hidden;
-}
-.va-box::before {
-content: ‘’;
-position: absolute; left: 0; top: 0; bottom: 0;
-width: 3px;
-background: linear-gradient(180deg, var(–g1), var(–g3));
-}
-.va-box .va-label {
-font-family: var(–font-hud);
-font-size: 0.6rem; color: var(–dim);
-text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px;
-}
-.va-box .va-number {
-font-family: var(–font-hud);
-font-size: 1.25rem; font-weight: 700;
-color: var(–g1); letter-spacing: 3px;
-text-shadow: 0 0 16px var(–glow);
-}
-
-/* Payload */
-textarea.payload {
-width: 100%; min-height: 80px; padding: 10px;
-font-family: var(–font-hud); font-size: 0.7rem;
-background: var(–surface); border: 1px solid var(–border);
-border-radius: 8px; color: var(–muted);
-margin-top: 0.875rem; resize: vertical; outline: none;
-letter-spacing: 0.5px; line-height: 1.5;
-}
-.payload-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
-
-/* ── NUBIAPAY CARD ── */
-.nubia-card {
-border: 1px solid var(–border2);
-border-radius: 14px; padding: 1.5rem;
-text-align: center;
-background: linear-gradient(135deg, var(–surface), var(–card2));
-position: relative; overflow: hidden;
-}
-.nubia-card::before {
-content: ‘NUBIAPAY’;
-position: absolute; top: -8px; right: -5px;
-font-family: var(–font-hud); font-size: 3rem; font-weight: 900;
-color: rgba(0,255,106,0.04); letter-spacing: 2px;
-user-select: none;
-}
-.nubia-card img {
-width: 120px; margin: 0 auto 1rem; display: block;
-filter: brightness(0.9);
-}
-.nubia-card p { font-size: 0.875rem; line-height: 1.6; color: var(–white); font-weight: 600; }
-.nubia-tagline {
-margin-top: 1rem;
-background: rgba(0,255,106,0.08);
-color: var(–g2);
-padding: 0.625rem 0.875rem; border-radius: 8px;
-font-size: 0.78rem; border: 1px solid var(–border);
-font-family: var(–font-display);
-}
-.nubia-balance-card {
-margin-top: 1rem;
-border: 1px dashed var(–border2);
-border-radius: 10px; padding: 0.875rem;
-background: rgba(0,255,106,0.04);
-}
-.nubia-balance-card .nb-label {
-font-family: var(–font-hud);
-font-size: 0.62rem; color: var(–dim);
-text-transform: uppercase; letter-spacing: 1.2px;
-}
-.nubia-balance-card .nb-amount {
-font-family: var(–font-hud);
-font-size: 1.3rem; font-weight: 700;
-color: var(–g1); margin-top: 4px;
-text-shadow: 0 0 16px var(–glow);
-}
-
-/* ── RESULT BOXES ── */
-.result-box {
-text-align: center; padding: 2.5rem 1.5rem;
-background: linear-gradient(135deg, rgba(0,255,106,0.06), rgba(0,255,106,0.01));
-border: 1px solid rgba(0,255,106,0.25);
-border-radius: 14px; position: relative; overflow: hidden;
-}
-.result-box::before {
-content: ‘’;
-position: absolute; top: 0; left: 0; right: 0; height: 2px;
-background: linear-gradient(90deg, transparent, var(–g1), transparent);
-}
-.result-box img {
-width: 88px; height: 88px; object-fit: contain;
-display: block; margin: 0 auto 1rem;
-}
-.result-box .r-title {
-font-family: var(–font-hud);
-font-size: 1.1rem; font-weight: 700;
-color: var(–g1); margin-bottom: 0.625rem;
-text-shadow: 0 0 20px var(–glow);
-letter-spacing: 1px;
-}
-.result-box p { font-size: 0.875rem; color: var(–muted); line-height: 1.6; }
-.result-box.cancel {
-background: linear-gradient(135deg, rgba(255,68,68,0.06), rgba(255,68,68,0.01));
-border-color: rgba(255,68,68,0.25);
-}
-.result-box.cancel::before {
-background: linear-gradient(90deg, transparent, #ff4444, transparent);
-}
-.result-box.cancel .r-title { color: #ff6b6b; text-shadow: 0 0 20px rgba(255,68,68,0.4); }
-
-/* ══════════ ACTIONS ══════════ */
-.actions-row {
-display: flex; gap: 0.75rem; flex-wrap: wrap;
-padding: 1rem 1.375rem;
-border-top: 1px solid var(–border);
-background: rgba(0,0,0,0.25);
-}
-
-.btn-copy {
-display: inline-flex; align-items: center; gap: 0.4rem;
-padding: 0.55rem 1rem;
-background: transparent;
-border: 1px solid var(–border);
-border-radius: 7px; color: var(–muted);
-font-family: var(–font-body); font-size: 0.8rem; font-weight: 600;
-cursor: pointer; transition: all 0.2s;
-}
-.btn-copy:hover {
-color: var(–g1); border-color: var(–g1);
-background: rgba(0,255,106,0.06);
-box-shadow: 0 0 12px var(–glow2);
-}
-
-.btn-wa {
-display: inline-flex; align-items: center; gap: 0.5rem;
-padding: 0.55rem 1.25rem;
-background: linear-gradient(135deg, var(–g3), var(–g4));
-border: 1px solid rgba(0,255,106,0.3);
-border-radius: 7px; color: #fff;
-font-family: var(–font-body); font-size: 0.8rem; font-weight: 700;
-text-decoration: none; transition: all 0.2s;
-box-shadow: 0 4px 20px rgba(0,255,106,0.25);
-letter-spacing: 0.3px;
-}
-.btn-wa:hover {
-transform: translateY(-1px);
-background: linear-gradient(135deg, var(–g2), var(–g3));
-box-shadow: 0 6px 24px rgba(0,255,106,0.4);
-}
-
-.btn-action {
-display: inline-flex; align-items: center; gap: 0.4rem;
-padding: 0.55rem 1rem;
-background: transparent;
-border: 1px solid var(–border);
-border-radius: 7px; color: var(–muted);
-font-family: var(–font-body); font-size: 0.8rem; font-weight: 600;
-cursor: pointer; text-decoration: none; transition: all 0.2s;
-}
-.btn-action:hover { color: var(–g1); border-color: var(–g1); background: rgba(0,255,106,0.06); }
-
-/* ── ORDER NOTE ── */
-.order-note {
-margin: 0 1.375rem 1.375rem;
-padding: 0.875rem 1rem;
-background: rgba(255,215,0,0.05);
-border-left: 2px solid var(–yellow);
-border-radius: 0 8px 8px 0;
-font-size: 0.8rem; color: rgba(255,215,0,0.85); line-height: 1.6;
-font-family: var(–font-display);
-}
-
-/* ── WARN / ERR ── */
-.warn-box {
-border: 1px solid rgba(255,215,0,0.3);
-border-radius: 10px; padding: 0.875rem;
-background: rgba(255,215,0,0.05);
-font-size: 0.82rem; color: #ffd700; line-height: 1.5;
-font-family: var(–font-display);
-}
-.warn-box strong { color: #ffe44d; }
-.err-box {
-border: 1px solid rgba(255,68,68,0.3);
-border-radius: 10px; padding: 0.875rem;
-background: rgba(255,68,68,0.05);
-font-size: 0.82rem; color: #ff6b6b;
-font-family: var(–font-display);
-}
-
-/* ── PAYMENT AMOUNT HIGHLIGHT ── */
-.pay-amount-box {
-display: flex; align-items: center; justify-content: space-between;
-background: var(–surface);
-border: 1px solid var(–border2);
-border-radius: 10px; padding: 0.875rem 1rem;
-margin-bottom: 1rem;
-}
-.pay-amount-box .pal { font-family: var(–font-hud); font-size: 0.62rem; color: var(–dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-.pay-amount-box .pav { font-family: var(–font-hud); font-size: 1.2rem; font-weight: 700; color: var(–yellow); text-shadow: 0 0 16px rgba(255,215,0,0.4); }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 540px) {
-.details-grid { grid-template-columns: 1fr; }
-.detail-col { padding: 0; }
-.actions-row { flex-direction: column; }
-.btn-wa, .btn-copy, .btn-action { width: 100%; justify-content: center; }
-.logo { font-size: 0.88rem; letter-spacing: 2px; }
-}
-
-/* ── SCANLINE overlay ── */
-.scanline {
-position: fixed; inset: 0; z-index: 0;
-background: repeating-linear-gradient(
-0deg,
-transparent,
-transparent 2px,
-rgba(0,0,0,0.04) 2px,
-rgba(0,0,0,0.04) 4px
-);
-pointer-events: none;
-}
-
-/* ── CORNER DECOR on card ── */
-.corner-tl, .corner-br {
-position: absolute; width: 16px; height: 16px;
-border-color: var(–g1); border-style: solid;
-opacity: 0.6;
-}
-.corner-tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
-.corner-br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
-
-/* ── SECTION LABEL ── */
-.section-label {
-display: flex; align-items: center; gap: 0.625rem;
-font-family: var(–font-hud); font-size: 0.6rem; font-weight: 700;
-text-transform: uppercase; letter-spacing: 2px; color: var(–dim);
-margin-bottom: 0.625rem;
-}
-.section-label::before { content: ‘//’; color: var(–g3); }
+  /* small responsive tweak */
+  @media (max-width:540px){
+    .row{flex-direction:column}
+  }
 </style>
-
 </head>
 <body>
+  <div class="card">
+    <h1>Checkout</h1>
+    <div id="loading" class="muted">Mencari invoice...</div>
 
-<div class="scanline"></div>
-
-<!-- HEADER -->
-
-<header>
-  <div class="logo-wrap">
-    <div class="logo-icon">⚡</div>
-    <div class="logo">NUBIASTORE</div>
-  </div>
-  <div class="header-right">
-    <a href="https://nubiastore.netlify.app" class="btn-home">← HOME</a>
-  </div>
-</header>
-
-<!-- ANNOUNCE -->
-
-<div class="announce-bar">
-  <span class="marquee-text">
-    🔒 Pembayaran Aman &amp; Terenkripsi &nbsp;|&nbsp; ⚡ Proses Otomatis 24 Jam &nbsp;|&nbsp; 💎 Top Up Langsung Masuk &nbsp;|&nbsp; 📞 CS Siap Membantu Kamu &nbsp;|&nbsp; 🎮 Support 100+ Game &nbsp;|&nbsp; ✅ Trusted &amp; Verified
-  </span>
-</div>
-
-<!-- PAGE -->
-
-<div class="page-wrap">
-
-  <div class="page-title">
-    <div class="page-title-icon">🧾</div>
-    <div>
-      <div class="section-label">NUBIASTORE PAYMENT</div>
-      <h1><span>CHECK</span>OUT</h1>
+    <div id="notfound" style="display:none;">
+      <p>Invoice tidak ditemukan. Pastikan URL berformat <code>?invoice=INVC-... </code></p>
     </div>
-    <span class="badge">SECURE</span>
-  </div>
 
-  <!-- LOADING -->
+    <div id="orderBox" style="display:none;">
+      <div class="row">
+        <div class="col">
+          <div class="field"><span class="muted">Invoice</span><div id="invoiceTxt" style="font-weight:700"></div></div>
+          <div class="field"><span class="muted">Game</span><div id="gameTxt">—</div></div>
+          <div class="field"><span class="muted">ID Akun</span><div id="idTxt">—</div></div>
+          <div class="field"><span class="muted">Server</span><div id="srvTxt">—</div></div>
+          <div class="field"><span class="muted">No. WA</span><div id="waTxt">—</div></div>
+        </div>
 
-  <div id="loading" class="state-box">
-    <div style="font-family:var(--font-hud);font-size:0.8rem;letter-spacing:2px;color:var(--g2);margin-bottom:0.5rem">⏳ LOADING...</div>
-    <div style="font-size:0.82rem">Mencari invoice...</div>
-  </div>
+        <div class="col">
+          <div class="field"><span class="muted">Nominal</span><div id="nominalTxt">—</div></div>
+          <div class="field"><span class="muted">Harga</span><div id="priceTxt">—</div></div>
+          <div class="field"><span class="muted">Admin fee</span><div id="adminTxt">—</div></div>
+          <div class="field"><span class="muted">Total bayar</span><div class="amount" id="totalTxt">—</div></div>
+          <div class="field"><span class="muted">Metode</span><div id="methodTxt">—</div></div>
+          <div class="field">Status: <span id="statusBadge" class="status initiated">—</span></div>
+        </div>
+      </div>
 
-  <!-- NOT FOUND -->
+      <hr style="margin:14px 0">
 
-  <div id="notfound" style="display:none;" class="state-box">
-    <div style="font-size:2.5rem;margin-bottom:0.875rem">🔍</div>
-    <p style="font-family:var(--font-hud);font-size:0.9rem;font-weight:700;color:var(--white);margin-bottom:0.5rem;letter-spacing:1px">INVOICE NOT FOUND</p>
-    <p style="font-size:0.82rem;margin-top:0.5rem">Pastikan URL berformat <code>?invoice=INVC-...</code></p>
-  </div>
+      <div id="paymentUI">
+        <!-- will be rendered here: QR (dynamic) or VA -->
+      </div>
 
-  <!-- ORDER BOX -->
+      <!-- === ADDED: resultBox element (hidden by default) === -->
+      <div id="resultBox" style="display:none"></div>
 
-  <div id="orderBox" style="display:none;" class="order-card">
-    <div class="corner-tl"></div>
-    <div class="corner-br"></div>
+      <div id="actions" style="margin-top:16px;">
+        <button id="btnCopyInvoice" class="copy">Salin Invoice</button>
+        <a id="btnShareWA" class="btn" href="#" target="_blank">Chat Costumer Service</a>
+      </div>
 
-```
-<!-- CARD HEAD -->
-<div class="order-card-head">
-  <div class="head-left">
-    <div class="head-dot"></div>
-    <h2>ORDER DETAIL</h2>
-  </div>
-  <div class="invoice-id" id="invoiceIdHead">—</div>
-</div>
-
-<!-- DETAILS -->
-<div class="details-grid">
-  <div class="detail-col">
-    <div class="field-row">
-      <span class="field-label">Invoice</span>
-      <span class="field-value" id="invoiceTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">Game</span>
-      <span class="field-value" id="gameTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">ID Akun</span>
-      <span class="field-value" id="idTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">Server</span>
-      <span class="field-value" id="srvTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">No. WhatsApp</span>
-      <span class="field-value" id="waTxt">—</span>
+      <div id="adminNote" class="note" style="display:none;">
+        Kalo Kamu Sudah Melakukan Proses Pembayaran Tunggu Sampai Status Order (INITIATED) Menjadi (COMPLETED) Lalu Buka In Game Kamu Dan Orderan Kamu Selesai Deh 😉👍.
+      </div>
     </div>
   </div>
-  <div class="detail-col">
-    <div class="field-row">
-      <span class="field-label">Nominal</span>
-      <span class="field-value" id="nominalTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">Harga</span>
-      <span class="field-value" id="priceTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">Biaya Admin</span>
-      <span class="field-value" id="adminTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">Total Bayar</span>
-      <span class="field-value amount-big" id="totalTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">Metode</span>
-      <span class="field-value" id="methodTxt">—</span>
-    </div>
-    <div class="field-row">
-      <span class="field-label">Status</span>
-      <span id="statusBadge" class="status initiated"><span class="status-dot"></span>—</span>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- PAYMENT UI -->
-<div class="payment-section" id="paymentUI"></div>
-
-<!-- RESULT BOX -->
-<div id="resultBox" style="display:none; padding: 1.375rem;"></div>
-
-<!-- ORDER NOTE -->
-<div id="adminNote" class="order-note" style="display:none;">
-  ⚠️ Kalau kamu sudah melakukan pembayaran, tunggu sampai status order berubah dari <strong>INITIATED</strong> menjadi <strong>COMPLETED</strong>, lalu cek in-game kamu. Orderan selesai deh! 😉👍
-</div>
-
-<!-- ACTIONS -->
-<div class="actions-row" id="actions">
-  <button id="btnCopyInvoice" class="btn-copy">📋 Salin Invoice</button>
-  <a id="btnShareWA" class="btn-wa" href="#" target="_blank">💬 Chat Customer Service</a>
-</div>
-```
-
-  </div><!-- /order-card -->
-</div><!-- /page-wrap -->
 
 <script type="module">
+/*
+  checkout-merged-nubia-v1.js
+  - Gabungan fitur dari checkout-dynamic-payload-fixed.js + checkout-dynamic-payload-fixed-v3.js
+  - 1x initializeApp, 1x getAuth, 1x getFirestore
+  - NUBIAPAY auto-retry saat login, listener saldo realtime, transaction potong saldo
+  - QR/VA logic & EMV helpers tetap ada
+*/
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, doc, onSnapshot,
@@ -737,21 +122,22 @@ const firebaseConfig = {
   appId: "1:426093692154:web:38c6e9c143af626a623543",
   measurementId: "G-TS0YB9NYW8"
 };
-const app  = initializeApp(firebaseConfig);
-const db   = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
 const auth = getAuth(app);
 
 /* ===== STATE ===== */
-let currentUser          = null;
-let pendingNubiaInvoice  = null;
-let userBalanceUnsub     = null;
-let unsub                = null;
+let currentUser = null;
+let pendingNubiaInvoice = null; // invoice to retry when user logs in
+let userBalanceUnsub = null;    // unsub for user balance listener
+let unsub = null;               // unsub for order listener
 
 onAuthStateChanged(auth, async (u) => {
   currentUser = u;
+  // retry pending nubia invoice if any
   if (currentUser && pendingNubiaInvoice) {
     try {
-      const od = await getDoc(doc(db, 'orders', pendingNubiaInvoice));
+      const od = await getDoc(doc(db,'orders', pendingNubiaInvoice));
       if (od.exists()) {
         const d = od.data();
         if (d.status === 'initiated' && String((d.payment_method||'')).toUpperCase() === 'NUBIAPAY' && d.userId === currentUser.uid) {
@@ -759,95 +145,104 @@ onAuthStateChanged(auth, async (u) => {
           pendingNubiaInvoice = null;
         }
       }
-    } catch(e) { console.error('retry pendingNubia err', e); }
+    } catch(e){
+      console.error('retry pendingNubia err', e);
+    }
   }
 });
 
 /* ===== CONFIG / TEMPLATES ===== */
 const HIDE_PAYLOAD_IN_PROD = true;
 const UNIFIED_PAYLOAD_TEMPLATES = {
-  "QRIS":      "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "DANA":      "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "GOPAY":     "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "OVO":       "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SEABANK":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "BANKJAGO":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SUPERBANK": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SHOPEE":    "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657"
+  "QRIS":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "DANA":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "GOPAY": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "OVO":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SEABANK":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "BANKJAGO":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SUPERBANK":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SHOPEE":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657"
 };
 
 /* ===== HELPERS ===== */
-const el     = id => document.getElementById(id);
-const fmtRp  = n  => (typeof n === 'number' ? n.toLocaleString('id') : n);
+const el = id => document.getElementById(id);
+const fmtRp = n => (typeof n === 'number' ? n.toLocaleString('id') : n);
 function fmtAmountNumber(n) { const num = Number(n); if (!isFinite(num)) return 0; return Math.round(num); }
 function fillTemplate(template, vars) {
   return String(template).replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
 }
-function qrImageUrlFromPayload(payload, size = 300) {
+function qrImageUrlFromPayload(payload, size = 360) {
   return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(String(payload))}`;
 }
 
-/* ===== TLV/EMV helpers ===== */
+/* ===== TLV/EMV helpers (parse/build & CRC) ===== */
 function parseTLV_ASCII(s){
   let i=0, out=[];
   while(i < s.length){
-    const tag=s.substr(i,2); i+=2;
-    const len=parseInt(s.substr(i,2),10); i+=2;
-    const value=s.substr(i,len); i+=len;
-    out.push({tag,len,value});
+    const tag = s.substr(i,2); i += 2;
+    const len = parseInt(s.substr(i,2),10); i += 2;
+    const value = s.substr(i, len); i += len;
+    out.push({tag, len, value});
   }
   return out;
 }
 function buildTLV_ASCII(arr){
-  return arr.map(o=>{ const v=String(o.value); const l=String(v.length).padStart(2,'0'); return o.tag+l+v; }).join('');
+  return arr.map(o => {
+    const v = String(o.value);
+    const l = String(v.length).padStart(2,'0');
+    return o.tag + l + v;
+  }).join('');
 }
 function setAmountInPayloadCore_ASCII(corePayload, amountStr){
-  const parsed=parseTLV_ASCII(corePayload);
-  const filtered=parsed.filter(o=>o.tag!=='54');
-  const idx58=filtered.findIndex(o=>o.tag==='58');
-  const amountObj={tag:'54',value:String(amountStr)};
-  if(idx58>=0) filtered.splice(idx58,0,amountObj);
+  const parsed = parseTLV_ASCII(corePayload);
+  const filtered = parsed.filter(o => o.tag !== '54');
+  const idx58 = filtered.findIndex(o => o.tag === '58');
+  const amountObj = {tag: '54', value: String(amountStr)};
+  if(idx58 >= 0) filtered.splice(idx58, 0, amountObj);
   else filtered.push(amountObj);
   return buildTLV_ASCII(filtered);
 }
 function crc16ccitt_ascii(str){
-  let crc=0xFFFF;
-  for(let i=0;i<str.length;i++){
-    crc^=(str.charCodeAt(i)&0xFF)<<8;
-    for(let j=0;j<8;j++){
-      if((crc&0x8000)!==0) crc=((crc<<1)^0x1021)&0xFFFF;
-      else crc=(crc<<1)&0xFFFF;
+  let crc = 0xFFFF;
+  for (let i = 0; i < str.length; i++) {
+    crc ^= (str.charCodeAt(i) & 0xFF) << 8;
+    for (let j = 0; j < 8; j++) {
+      if ((crc & 0x8000) !== 0) crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+      else crc = (crc << 1) & 0xFFFF;
     }
   }
   return crc.toString(16).toUpperCase().padStart(4,'0');
 }
 function produceFinalEmvPayloadIfNeeded(rawPayload, amountDecimalStr){
-  if(!rawPayload||typeof rawPayload!=='string') return rawPayload;
-  const crcRegexp=/6304[0-9A-Fa-f]{4}$/;
-  let core=rawPayload;
-  if(crcRegexp.test(core)) core=core.replace(crcRegexp,'');
-  else if(core.endsWith('6304')) core=core.slice(0,-4);
-  if(/^\d{2}/.test(core)){
-    try{
-      const withAmount=setAmountInPayloadCore_ASCII(core,amountDecimalStr);
-      const toCrc=withAmount+'6304';
-      const crcHex=crc16ccitt_ascii(toCrc);
-      return toCrc+crcHex;
-    }catch(e){ console.warn('EMV attach amount failed',e); return rawPayload; }
+  if (!rawPayload || typeof rawPayload !== 'string') return rawPayload;
+  const crcRegexp = /6304[0-9A-Fa-f]{4}$/;
+  let core = rawPayload;
+  if (crcRegexp.test(core)) core = core.replace(crcRegexp, '');
+  else if (core.endsWith('6304')) core = core.slice(0, -4);
+  if (/^\d{2}/.test(core)) {
+    try {
+      const withAmount = setAmountInPayloadCore_ASCII(core, amountDecimalStr);
+      const toCrc = withAmount + '6304';
+      const crcHex = crc16ccitt_ascii(toCrc);
+      return toCrc + crcHex;
+    } catch (e) {
+      console.warn('EMV attach amount failed', e);
+      return rawPayload;
+    }
   }
   return rawPayload;
 }
 
-/* ===== INVOICE PARAM ===== */
-const params  = new URLSearchParams(location.search);
+/* ===== GET INVOICE PARAM ===== */
+const params = new URLSearchParams(location.search);
 const invoice = params.get('invoice');
 if (!invoice) {
-  if (el('loading')) el('loading').innerHTML = '<div style="font-family:var(--font-hud);font-size:0.8rem;letter-spacing:2px;color:#ff6b6b;margin-bottom:0.5rem">⚠️ ERROR</div><div style="font-size:0.82rem">Invoice kosong. Contoh: /checkout?invoice=INVC-...</div>';
+  if (el('loading')) el('loading').textContent = 'Invoice kosong. Contoh: /checkout?invoice=INVC-...';
   throw new Error('no-invoice');
 }
-if (el('loading')) el('loading').innerHTML = `<div style="font-family:var(--font-hud);font-size:0.8rem;letter-spacing:2px;color:var(--g2);margin-bottom:0.5rem">⏳ LOADING...</div><div style="font-size:0.82rem">Menunggu data order ${invoice}...</div>`;
+if (el('loading')) el('loading').textContent = `Menunggu data order ${invoice}...`;
 
-/* ===== FIRESTORE LISTENER ===== */
+/* ===== FIRESTORE ORDER LISTENER ===== */
 const orderDocRef = doc(db, 'orders', invoice);
 unsub = onSnapshot(orderDocRef, snap => {
   if (!snap.exists()) {
@@ -859,128 +254,172 @@ unsub = onSnapshot(orderDocRef, snap => {
   if (el('notfound')) el('notfound').style.display = 'none';
   if (el('orderBox')) el('orderBox').style.display = 'block';
   const d = snap.data();
-  try { renderOrder(d); } catch(err) { console.error('renderOrder error', err); }
+  try { renderOrder(d); } catch (err) { console.error('renderOrder error', err); }
 }, err => {
   console.error('snapshot error', err);
-  if (el('loading')) el('loading').innerHTML = '<div style="color:#ff6b6b;font-family:var(--font-hud);font-size:0.8rem">❌ GAGAL MENGAMBIL DATA ORDER</div>';
+  if (el('loading')) el('loading').textContent = 'Gagal mengambil data order.';
 });
 
-/* ===== NUBIAPAY PAYMENT ===== */
-async function payWithNubia(orderData) {
+/* =========================
+   NUBIAPAY payment (transaction) - robust v3
+   ========================= */
+async function payWithNubia(orderData){
+  // require currentUser to be present and match order userId
   if (!currentUser) {
     console.warn('payWithNubia: no currentUser -> will retry after login');
     pendingNubiaInvoice = orderData.invoice;
     return { ok:false, reason:'no_current_user' };
   }
-  if (!orderData.userId) { console.warn('payWithNubia: orderData.userId missing'); return { ok:false, reason:'order_missing_userId' }; }
-  if (String(currentUser.uid) !== String(orderData.userId)) { console.warn('payWithNubia: not owner'); return { ok:false, reason:'not_owner' }; }
+  if (!orderData.userId) {
+    console.warn('payWithNubia: orderData.userId missing');
+    return { ok:false, reason:'order_missing_userId' };
+  }
+  if (String(currentUser.uid) !== String(orderData.userId)) {
+    console.warn('payWithNubia: current user does not match order owner');
+    return { ok:false, reason:'not_owner' };
+  }
 
   const orderRefLocal = doc(db,'orders',orderData.invoice);
-  const userRef       = doc(db,'users',currentUser.uid);
+  const userRef = doc(db,'users',currentUser.uid);
+
   try {
     await runTransaction(db, async (t) => {
       const oSnap = await t.get(orderRefLocal);
       if (!oSnap.exists()) throw new Error('order missing');
       const o = oSnap.data();
+
+      // double-check
       if (o.status !== 'initiated') return;
       if (o.__nubiaPaid === true) return;
+
       const uSnap = await t.get(userRef);
       if (!uSnap.exists()) throw new Error('user missing');
+
       const saldo = Number(uSnap.data().nubiPayBalance || 0);
       const total = Number(o.amount_total || 0);
-      if (saldo < total) { alert('Saldo NUBIAPAY tidak cukup.'); throw new Error('saldo_kurang'); }
-      t.update(userRef, { nubiPayBalance: saldo - total, updatedAt: serverTimestamp() });
+
+      if (saldo < total) {
+        alert('Saldo NUBIAPAY tidak cukup.');
+        throw new Error('saldo_kurang');
+      }
+
+      // potong saldo
+      t.update(userRef, {
+        nubiPayBalance: saldo - total,
+        updatedAt: serverTimestamp()
+      });
+
+      // add tx
       const txRef = doc(collection(db, `users/${currentUser.uid}/transactions`));
-      t.set(txRef, { amount: -total, type: 'PAY_ORDER', note: o.invoice || '', timestamp: serverTimestamp() });
-      t.update(orderRefLocal, { status: 'completed', __nubiaPaid: true, paidAt: serverTimestamp() });
+      t.set(txRef, {
+        amount: -total,
+        type: 'PAY_ORDER',
+        note: o.invoice || '',
+        timestamp: serverTimestamp()
+      });
+
+      // complete order
+      t.update(orderRefLocal, {
+        status: 'completed',
+        __nubiaPaid: true,
+        paidAt: serverTimestamp()
+      });
     });
+
+    // after success: fetch fresh user balance and render
     try {
       const freshUser = await getDoc(userRef);
       const newBal = freshUser.exists() ? Number(freshUser.data().nubiPayBalance || 0) : 0;
       renderUserBalanceCard(newBal);
-    } catch(e) { console.warn('post-tx get user failed', e); }
+      console.log('payWithNubia: transaksi selesai, new balance:', newBal);
+    } catch(e) {
+      console.warn('post-tx get user failed', e);
+    }
+
     return { ok:true };
-  } catch(e) {
+  } catch (e) {
     console.error('payWithNubia transaction error', e);
     return { ok:false, reason: (e && e.message) ? e.message : String(e) };
   }
 }
 
-/* ===== USER BALANCE LISTENER ===== */
+/* =========================
+   listen & show user nubia balance (realtime)
+   - show card under the green card when method NUBIAPAY is used
+   ========================= */
 function attachUserBalanceListener(userId) {
+  // cleanup previous
   if (userBalanceUnsub) try { userBalanceUnsub(); } catch(e){}
   if (!userId) return;
+
   const userRef = doc(db, 'users', userId);
   userBalanceUnsub = onSnapshot(userRef, snap => {
     const bal = snap.exists() ? Number(snap.data().nubiPayBalance || 0) : 0;
     renderUserBalanceCard(bal);
-  }, err => console.error('user balance snap err', err));
+  }, err => {
+    console.error('user balance snap err', err);
+  });
 }
 
-function renderUserBalanceCard(balanceNumber) {
-  const parent = el('paymentUI');
+function renderUserBalanceCard(balanceNumber){
+  // create or update element with id 'nubiaBalanceCard' under paymentUI
+  let parent = el('paymentUI');
   if (!parent) return;
-  const existing = el('nubiaBalanceCard');
+  let existing = el('nubiaBalanceCard');
   const html = `
-    <div id="nubiaBalanceCard" class="nubia-balance-card" style="margin-top:1rem;">
-      <div class="nb-label">Sisa Saldo NUBIAPAY</div>
-      <div class="nb-amount">Rp ${fmtRp(balanceNumber)}</div>
-    </div>`;
-  if (existing) existing.outerHTML = html;
-  else parent.insertAdjacentHTML('beforeend', html);
+    <div id="nubiaBalanceCard" style="margin-top:12px;border-radius:10px;padding:12px;border:1px dashed #d1fae5;background:#f0fdf4;color:#065f46">
+      <div style="font-size:13px;font-weight:600">Sisa Saldo NUBIAPAY</div>
+      <div style="font-size:18px;margin-top:6px">Rp ${fmtRp(balanceNumber)}</div>
+    </div>
+  `;
+  if (existing) {
+    existing.outerHTML = html;
+  } else {
+    parent.insertAdjacentHTML('beforeend', html);
+  }
 }
 
-/* ===== SET STATUS BADGE ===== */
+/* =========================
+   Render order + payment UI (merged)
+   ========================= */
 function setStatusBadge(status) {
   const b = el('statusBadge');
-  if (!b) return;
+  if(!b) return;
   b.className = 'status ' + (status || 'initiated');
-  b.innerHTML = `<span class="status-dot"></span>${(status || 'initiated').toUpperCase()}`;
+  b.textContent = (status || 'initiated').toUpperCase();
 }
 
-/* ===== NUBIAPAY UI helpers ===== */
-function nubiCardHTML(imgSrc, bodyText, tagline) {
-  return `<div class="nubia-card">
-    <img src="${imgSrc}" alt="NUBIAPAY">
-    <p>${bodyText}</p>
-    <div class="nubia-tagline">${tagline}</div>
-  </div>`;
-}
-
-/* ===== RENDER ORDER ===== */
 function renderOrder(d) {
-  if (el('invoiceTxt'))  el('invoiceTxt').textContent  = d.invoice || invoice;
-  if (el('invoiceIdHead')) el('invoiceIdHead').textContent = d.invoice || invoice;
-  if (el('gameTxt'))     el('gameTxt').textContent     = d.game    || '-';
-  if (el('idTxt'))       el('idTxt').textContent       = d.game_id || '-';
-  if (el('srvTxt'))      el('srvTxt').textContent      = d.server  || '-';
-  if (el('waTxt'))       el('waTxt').textContent       = d.noWA    || '-';
-  if (el('nominalTxt'))  el('nominalTxt').textContent  = (d.nominalValue ?? '-') + (d.nominalValue && typeof d.nominalValue !== 'string' ? ' 💎' : '');
-  if (el('priceTxt'))    el('priceTxt').textContent    = 'Rp ' + fmtRp(d.price   || '-');
-  if (el('adminTxt'))    el('adminTxt').textContent    = 'Rp ' + fmtRp(d.adminFee || 0);
-  if (el('totalTxt'))    el('totalTxt').textContent    = 'Rp ' + fmtRp(d.amount_total || '-');
-  if (el('methodTxt'))   el('methodTxt').textContent   = (d.payment_method || '-').replace('_', ' ');
+  // fill basic fields (safe guards if element missing)
+  if (el('invoiceTxt')) el('invoiceTxt').textContent = d.invoice || invoice;
+  if (el('gameTxt')) el('gameTxt').textContent = d.game || '-';
+  if (el('idTxt')) el('idTxt').textContent = d.game_id || '-';
+  if (el('srvTxt')) el('srvTxt').textContent = d.server || '-';
+  if (el('waTxt')) el('waTxt').textContent = d.noWA || '-';
+  if (el('nominalTxt')) el('nominalTxt').textContent = (d.nominalValue ?? '-') + (d.nominalValue && typeof d.nominalValue !== 'string' ? ' 💎' : '');
+  if (el('priceTxt')) el('priceTxt').textContent = 'Rp ' + fmtRp(d.price || '-');
+  if (el('adminTxt')) el('adminTxt').textContent = 'Rp ' + fmtRp(d.adminFee || 0);
+  if (el('totalTxt')) el('totalTxt').textContent = 'Rp ' + fmtRp(d.amount_total || '-');
+  if (el('methodTxt')) el('methodTxt').textContent = (d.payment_method || '-').replace('_', ' ');
   setStatusBadge(d.status || 'initiated');
   if (el('adminNote')) el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
 
   const paymentUI = el('paymentUI');
   const resultBox = el('resultBox');
-  const actions   = el('actions');
+  const actions = el('actions');
 
-  const statusNorm  = String(d.status || '').trim().toLowerCase();
+  const statusNorm = String(d.status || '').trim().toLowerCase();
   const successStates = ['completed','complete','paid','success'];
   const cancelStates  = ['cancelled','canceled','failed','expired','rejected'];
 
-  /* ---- SUCCESS ---- */
   if (successStates.includes(statusNorm)) {
     if (paymentUI) paymentUI.style.display = 'none';
-    if (actions)   actions.style.display   = 'none';
+    if (actions) actions.style.display = 'none';
     if (el('adminNote')) el('adminNote').style.display = 'none';
     if (resultBox) {
       resultBox.innerHTML = `
         <div class="result-box">
-          <img src="https://media.tenor.com/BSY1qTH8g-oAAAAM/check.gif" alt="Berhasil">
-          <div class="r-title">✅ PEMBAYARAN BERHASIL</div>
+          <img src="https://media.tenor.com/BSY1qTH8g-oAAAAM/check.gif" alt="Berhasil" />
           <p>Orderan kamu berhasil diproses — silakan cek in-game kamu.</p>
         </div>`;
       resultBox.style.display = 'block';
@@ -989,182 +428,218 @@ function renderOrder(d) {
       attachUserBalanceListener(d.userId || null);
       if (paymentUI) {
         paymentUI.style.display = 'block';
-        paymentUI.innerHTML = `<div class="warn-box"><strong>⚠️ Perhatian:</strong> Order sudah <em>completed</em> tetapi sistem NUBIAPAY tidak menandai saldo terpotong. Jika saldo kamu belum berubah, hubungi admin untuk cek/rollback.</div>`;
+        paymentUI.innerHTML = `<div style="border:1px solid #fde68a;padding:12px;border-radius:10px;background:#fff7ed">
+          <strong>Perhatian:</strong> Order sudah <em>completed</em> tetapi sistem NUBIAPAY tidak menandai saldo terpotong. Jika saldo kamu belum berubah, hubungi admin untuk cek/rollback.
+        </div>`;
       }
     }
     return;
   }
 
-  /* ---- CANCELLED ---- */
   if (cancelStates.includes(statusNorm)) {
     if (paymentUI) paymentUI.style.display = 'none';
-    if (actions)   actions.style.display   = 'none';
+    if (actions) actions.style.display = 'none';
     if (el('adminNote')) el('adminNote').style.display = 'none';
     if (resultBox) {
       resultBox.innerHTML = `
         <div class="result-box cancel">
-          <img src="https://www.emojiall.com/images/240/telegram/274c.gif" alt="Dibatalkan">
-          <div class="r-title">❌ ORDER DIBATALKAN</div>
+          <img src="https://www.emojiall.com/images/240/telegram/274c.gif" alt="Dibatalkan" />
           <p>Orderan kamu dibatalkan karena kode pembayaran kedaluwarsa.</p>
-          <p style="margin-top:0.5rem;font-weight:600;color:var(--muted)">Silakan buat order baru atau hubungi customer service.</p>
+          <p style="font-weight:600;font-size:0.9rem;margin-top:8px;color:#6b7280;">Silakan buat order baru atau hubungi customer service untuk bantuan.</p>
         </div>`;
       resultBox.style.display = 'block';
     }
     return;
   }
 
-  /* ---- ACTIVE ---- */
+  // non-terminal -> ensure payment UI visible, hide resultBox
   if (paymentUI) paymentUI.style.display = 'block';
-  if (actions)   actions.style.display   = 'block';
+  if (actions) actions.style.display = 'block';
   if (resultBox) resultBox.style.display = 'none';
 
+  // build vars (two amount formats)
   const amountNumber = Number(d.amount_total) || 0;
   const vars = {
     amount: fmtAmountNumber(amountNumber),
-    amount_decimal: amountNumber.toFixed(2),
+    amount_decimal: (typeof amountNumber === 'number') ? amountNumber.toFixed(2) : String(d.amount_total || '0.00'),
     invoice: d.invoice || invoice,
     phone: d.noWA || '',
     va: (d.payment_data && (d.payment_data.va_number || (d.payment_data.va && d.payment_data.va.number))) || '',
     note: `NUBIA-${d.invoice || invoice}`
   };
 
+  // pm must be defined BEFORE using payload logic
   const pm = (d.payment_method || '').toUpperCase();
   const pd = d.payment_data || {};
 
-  /* ---- NUBIAPAY BRANCH ---- */
+  // === NUBIAPAY branch (v3 behavior) ===
   if (pm === 'NUBIAPAY') {
+    // attach balance listener (so user sees real-time balance)
     attachUserBalanceListener(d.userId || null);
 
+    // If order already marked completed and __nubiaPaid true, just show card and balance
     if (d.status === 'completed' && d.__nubiaPaid) {
-      if (paymentUI) paymentUI.innerHTML = nubiCardHTML(
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png',
-        'Saldo kamu sudah dipotong. Terima kasih! Tunggu proses top-up dan cek in-game ya.',
-        '💚 Makasih udah pakai NUBIAPAY, semoga harimu ceria selalu!'
-      );
+      if (paymentUI) paymentUI.innerHTML = `
+        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;text-align:center;background:#fff;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png"
+               style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
+          <p style="font-weight:600">Saldo kamu sudah dipotong. Terima kasih! Tunggu proses top-up dan cek in gamenya ya.</p>
+          <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
+            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+          </div>
+        </div>`;
       return;
     }
 
+    // If user not logged in -> set pending and ask to login
     if (!currentUser) {
       pendingNubiaInvoice = d.invoice;
-      if (paymentUI) paymentUI.innerHTML = nubiCardHTML(
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png',
-        'Untuk menyelesaikan pembayaran NUBIAPAY, silakan <strong style="color:var(--g1)">login</strong> dengan akun yang memiliki order ini.',
-        '💚 Makasih udah pakai NUBIAPAY, semoga harimu ceria selalu!'
-      );
+      if (paymentUI) paymentUI.innerHTML = `
+        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;text-align:center;background:#fff;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_bank_card.svg/512px-Generic_bank_card.svg.png"
+               style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
+          <p style="font-weight:600">Untuk menyelesaikan pembayaran NUBIAPAY, silakan <strong>login</strong> dengan akun yang memilki order ini.</p>
+          <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
+            makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+          </div>
+        </div>`;
       return;
     }
 
+    // If logged in but not owner -> inform
     if (String(currentUser.uid) !== String(d.userId)) {
-      if (paymentUI) paymentUI.innerHTML = `<div class="err-box">⚠️ Kamu bukan pemilik order ini. Silakan login dengan akun pemilik order untuk membayar dengan NUBIAPAY.</div>`;
+      if (paymentUI) paymentUI.innerHTML = `
+        <div style="border:1px solid #fee2e2;border-radius:14px;padding:18px;text-align:center;background:#fff;">
+          <p style="font-weight:600;color:#991b1b">Kamu bukan pemilik order ini. Silakan login dengan akun pemilik order untuk membayar dengan NUBIAPAY.</p>
+        </div>`;
       return;
     }
 
+    // Otherwise: attempt auto-pay (user logged in and is owner)
     payWithNubia(d);
 
-    if (paymentUI) paymentUI.innerHTML = nubiCardHTML(
-      'https://cdn.dribbble.com/userupload/24524439/file/original-4b82316a71d7182998ff7b59d5332331.gif',
-      'Sedang memproses potongan saldo NUBIAPAY... Tunggu sebentar ya.',
-      '💚 Makasih udah pakai NUBIAPAY, semoga harimu ceria selalu!'
-    );
+    // show processing UI (balance card will appear via attachUserBalanceListener)
+    if (paymentUI) paymentUI.innerHTML = `
+      <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;text-align:center;background:#fff;">
+        <img src="https://cdn.dribbble.com/userupload/24524439/file/original-4b82316a71d7182998ff7b59d5332331.gif"
+             style="width:160px;filter:grayscale(1);margin-bottom:12px" alt="card">
+        <p style="font-weight:600">Sedang memproses potongan saldo NUBIAPAY jika saldo mencukupi. Tunggu sebentar...</p>
+        <div style="margin-top:12px;background:#ecfdf5;color:#047857;padding:10px;border-radius:10px;font-size:13px;">
+          makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu
+        </div>
+      </div>
+    `;
     return;
   }
 
-  /* ---- QR / VA BRANCH ---- */
+  /* ===== QR/VA handling (original behavior preserved) ===== */
+
+  // priority: server-provided payload OR pd.qr_image_url
   let payload = pd.qr_payload || null;
   if (!payload && UNIFIED_PAYLOAD_TEMPLATES[pm]) {
     const amtForTemplate = (pm === 'QRIS' || pm.includes('QR')) ? vars.amount_decimal : vars.amount;
     payload = fillTemplate(UNIFIED_PAYLOAD_TEMPLATES[pm], {...vars, amount: amtForTemplate});
   }
 
-  /* VA */
+  // Virtual Account branch
   if (pm && pm.startsWith('VA')) {
     const bankName = pd.bank || pm;
     const vaNumber = pd.va_number || vars.va || '';
-    let html = `
-      <h3>Virtual Account</h3>
-      <div class="pay-amount-box">
-        <div><div class="pal">Total Pembayaran</div><div class="pav">Rp ${fmtRp(d.amount_total)}</div></div>
-        <div style="font-size:1.5rem">🏦</div>
-      </div>
-      <div class="va-box">
-        <div class="va-label">Bank</div>
-        <div class="field-value" style="color:var(--white);font-size:0.95rem;margin-bottom:0.875rem;font-family:var(--font-display)">${bankName}</div>
-        <div class="va-label">Nomor Virtual Account</div>
-        <div class="va-number" id="vaNumber">${vaNumber || '—'}</div>
-      </div>`;
+    let html = `<h3>Pembayaran via Virtual Account</h3>
+      <p class="muted">Bank: <strong>${bankName}</strong></p>
+      <p class="muted">No. VA: <strong id="vaNumber">${vaNumber}</strong>
+        <button id="copyVa" class="copy">Salin</button></p>
+      <p class="muted">Jumlah yang harus dibayar: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>`;
 
     if (payload) {
       let payloadToUse = payload;
-      if ((pm.includes('QR') || pm === 'QRIS') || /^\d{2}/.test(payload)) payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
-      const qrUrl = qrImageUrlFromPayload(payloadToUse, 300);
-      html += `${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+      if ((pm.includes('QR') || pm === 'QRIS') || (/^\d{2}/.test(payload))) {
+        payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
+      }
+      const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
+      html += `<div style="margin-top:8px">${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+        <div class="payload-row">${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}</div>
+        <img id="qrImg" src="${qrUrl}" alt="QR VA" class="qr" /></div>`;
+      if (paymentUI) paymentUI.innerHTML = html;
+      document.getElementById('copyVa')?.addEventListener('click', () => {
+        if (!vaNumber) return alert('Nomor VA kosong.');
+        navigator.clipboard.writeText(vaNumber).then(() => alert('No. VA disalin'));
+      });
+      if (!HIDE_PAYLOAD_IN_PROD) {
+        document.getElementById('copyPayload')?.addEventListener('click', () => {
+          const txt = document.getElementById('payloadArea').value;
+          navigator.clipboard.writeText(txt).then(() => alert('Payload disalin'));
+        });
+      }
+      return;
+    }
+  }
 
-```
-    <div class="payload-row">${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="btn-copy">Salin Payload</button>'}</div>
-    <img id="qrImg" src="${qrUrl}" alt="QR VA" class="qr">`;
+  // Non-VA handling
+  if (payload) {
+    let payloadToUse = payload;
+    if ((pm === 'QRIS' || pm.includes('QR')) || /^\d{2}/.test(payload)) {
+      payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
+    }
+    const qrUrl = qrImageUrlFromPayload(payloadToUse, 360);
+    let html = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
+      <p class="muted">Scan QR berikut dan bayar Pake semua e-wallet/bank kesayanganmu 😸. Jumlahnya: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
+      ${HIDE_PAYLOAD_IN_PROD ? '' : `<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`}
+      <div class="payload-row">
+        ${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="copy">Salin Payload</button>'}
+        <a id="openPayload" class="btn" href="#" target="_blank" style="display:none">Buka/Link</a>
+      </div>
+      <img id="qrImg" src="${qrUrl}" alt="QR" class="qr" />
+      <p class="muted">Pembayaran Ini Akan Kadaluwarsa Dalam: 15 MENIT</p>`;
+
+    if (paymentUI) paymentUI.innerHTML = html;
+
+    const openBtn = document.getElementById('openPayload');
+    if (openBtn && /^https?:\/\//i.test(payloadToUse)) {
+      openBtn.style.display = 'inline-block';
+      openBtn.href = payloadToUse;
+    }
+
+    if (!HIDE_PAYLOAD_IN_PROD) {
+      document.getElementById('copyPayload')?.addEventListener('click', () => {
+        navigator.clipboard.writeText(payloadToUse).then(() => alert('Payload disalin'));
+      });
+    }
+
+    const qrImg = document.getElementById('qrImg');
+    if (qrImg) {
+      qrImg.dataset.payload = payloadToUse;
+      qrImg.dataset.total = String(vars.amount_decimal);
+    }
+  } else {
+    const qrUrl = (pd && pd.qr_image_url) || null;
+    if (qrUrl) {
+      if (paymentUI) paymentUI.innerHTML = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3>
+        <p class="muted">Scan QR berikut lalu bayar sejumlah: <strong>Rp ${fmtRp(d.amount_total)}</strong></p>
+        <img src="${qrUrl}" alt="QRIS" class="qr" />
+        <p class="muted">Atau gunakan aplikasi pembayaran sesuai metode.</p>`;
+    } else {
+      if (paymentUI) paymentUI.innerHTML = `<h3>Instruksi Pembayaran</h3>
+        <p class="muted">Instruksi pembayaran belum tersedia. Tunggu beberapa saat atau hubungi admin via WA.</p>`;
+    }
+  }
+
+  // update share WA link
+  const share = encodeURIComponent(
+    `Order #${d.invoice}\nGame:${d.game}\nID:${d.game_id}\nTotal: Rp ${fmtRp(d.amount_total)}\nStatus: ${d.status}\n\nCek: ${location.href}`
+  );
+  if (el('btnShareWA')) el('btnShareWA').href = `https://wa.me/6285697747768?text=${share}`;
 }
-if (vaNumber) html += `<div style="margin-top:0.875rem"><button id="copyVa" class="btn-copy">📋 Salin Nomor VA</button></div>`;
-if (paymentUI) paymentUI.innerHTML = html;
 
-document.getElementById('copyVa')?.addEventListener('click', () => {
-  if (!vaNumber) return alert('Nomor VA kosong.');
-  navigator.clipboard.writeText(vaNumber).then(() => alert('No. VA disalin'));
-});
-if (!HIDE_PAYLOAD_IN_PROD) {
-  document.getElementById('copyPayload')?.addEventListener('click', () => {
-    navigator.clipboard.writeText(document.getElementById('payloadArea').value).then(() => alert('Payload disalin'));
-  });
-}
-return;
-```
-
-}
-
-/* Non-VA QR */
-if (payload) {
-let payloadToUse = payload;
-if ((pm === ‘QRIS’ || pm.includes(‘QR’)) || /^\d{2}/.test(payload)) payloadToUse = produceFinalEmvPayloadIfNeeded(payloadToUse, vars.amount_decimal);
-const qrUrl = qrImageUrlFromPayload(payloadToUse, 300);
-let html = `<h3>⚡ Scan &amp; Bayar (${pm || 'QR'})</h3> <div class="pay-amount-box"> <div><div class="pal">Total Pembayaran</div><div class="pav">Rp ${fmtRp(d.amount_total)}</div></div> <div style="font-size:1.5rem">📱</div> </div> <p>Scan QR berikut pakai e-wallet atau mobile banking kesayanganmu 😸</p> ${HIDE_PAYLOAD_IN_PROD ? '' :`<textarea id="payloadArea" class="payload">${payloadToUse}</textarea>`} <div class="payload-row"> ${HIDE_PAYLOAD_IN_PROD ? '' : '<button id="copyPayload" class="btn-copy">Salin Payload</button>'} <a id="openPayload" class="btn-action" href="#" target="_blank" style="display:none">🔗 Buka Link</a> </div> <img id="qrImg" src="${qrUrl}" alt="QR Code" class="qr"> <div class="expiry-note">⏳ Pembayaran ini akan kadaluwarsa dalam 15 menit</div>`;
-
-```
-if (paymentUI) paymentUI.innerHTML = html;
-
-const openBtn = document.getElementById('openPayload');
-if (openBtn && /^https?:\/\//i.test(payloadToUse)) { openBtn.style.display = 'inline-flex'; openBtn.href = payloadToUse; }
-if (!HIDE_PAYLOAD_IN_PROD) {
-  document.getElementById('copyPayload')?.addEventListener('click', () => {
-    navigator.clipboard.writeText(payloadToUse).then(() => alert('Payload disalin'));
-  });
-}
-const qrImg = document.getElementById('qrImg');
-if (qrImg) { qrImg.dataset.payload = payloadToUse; qrImg.dataset.total = String(vars.amount_decimal); }
-```
-
-} else {
-const qrUrl = (pd && pd.qr_image_url) || null;
-if (qrUrl) {
-if (paymentUI) paymentUI.innerHTML = ` <h3>Instruksi Pembayaran (${pm || 'QR'})</h3> <div class="pay-amount-box"> <div><div class="pal">Total Pembayaran</div><div class="pav">Rp ${fmtRp(d.amount_total)}</div></div> <div style="font-size:1.5rem">📱</div> </div> <img src="${qrUrl}" alt="QRIS" class="qr">`;
-} else {
-if (paymentUI) paymentUI.innerHTML = ` <h3>Instruksi Pembayaran</h3> <p>Instruksi pembayaran belum tersedia. Tunggu beberapa saat atau hubungi admin via WhatsApp.</p>`;
-}
-}
-
-/* WA share link */
-const share = encodeURIComponent(`Order #${d.invoice}\nGame: ${d.game}\nID: ${d.game_id}\nTotal: Rp ${fmtRp(d.amount_total)}\nStatus: ${d.status}\n\nCek: ${location.href}`);
-if (el(‘btnShareWA’)) el(‘btnShareWA’).href = `https://wa.me/6285697747768?text=${share}`;
-}
-
-/* ===== COPY INVOICE ===== */
-el(‘btnCopyInvoice’)?.addEventListener(‘click’, () => {
-navigator.clipboard.writeText(invoice).then(() => alert(‘Invoice disalin!’));
+/* ===== COPY INVOICE BUTTON ===== */
+el('btnCopyInvoice')?.addEventListener('click', () => {
+  navigator.clipboard.writeText(invoice).then(() => alert('Invoice disalin'));
 });
 
 /* ===== CLEANUP ===== */
-window.addEventListener(‘beforeunload’, () => {
-try { if (unsub) unsub(); if (userBalanceUnsub) userBalanceUnsub(); } catch(e) {}
+window.addEventListener('beforeunload', () => {
+  try { if (unsub) unsub(); if (userBalanceUnsub) userBalanceUnsub(); } catch (e) { /* ignore */ }
 });
 </script>
-
 </body>
 </html>
