@@ -32,7 +32,6 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
-/* ── Page ── */
 body {
 font-family: ‘Rajdhani’, ‘Segoe UI’, system-ui, sans-serif;
 background: var(–bg);
@@ -42,7 +41,6 @@ padding: 0 0 60px;
 overflow-x: hidden;
 position: relative;
 }
-/* Grid lines */
 body::before {
 content: ‘’;
 position: fixed; inset: 0;
@@ -52,7 +50,6 @@ linear-gradient(90deg, rgba(0,255,136,0.035) 1px, transparent 1px);
 background-size: 44px 44px;
 pointer-events: none; z-index: 0;
 }
-/* Glow blob */
 body::after {
 content: ‘’;
 position: fixed; top: -15%; left: 50%; transform: translateX(-50%);
@@ -61,7 +58,6 @@ background: radial-gradient(ellipse, rgba(0,255,136,0.06) 0%, transparent 68%);
 pointer-events: none; z-index: 0;
 }
 
-/* ── Layout wrapper ── */
 .page {
 position: relative; z-index: 1;
 max-width: 740px; margin: 0 auto;
@@ -82,10 +78,9 @@ display: flex; align-items: center; justify-content: center;
 font-family: ‘Orbitron’, monospace; font-size: 17px; font-weight: 900; color: #000;
 box-shadow: 0 0 22px rgba(0,255,136,0.38);
 }
-.logo-text { line-height: 1; }
 .logo-name {
 font-family: ‘Orbitron’, monospace; font-weight: 900; font-size: 18px;
-letter-spacing: 2.5px; color: var(–white);
+letter-spacing: 2.5px; color: var(–white); line-height: 1;
 }
 .logo-sub {
 font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
@@ -102,7 +97,7 @@ position: relative; overflow: hidden;
 animation: fadeUp .45s ease both;
 box-shadow: 0 12px 40px rgba(0,0,0,0.4);
 }
-.card::before { /* top accent line */
+.card::before {
 content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 2px;
 background: linear-gradient(90deg, transparent 0%, var(–green) 40%, var(–green-dim) 60%, transparent 100%);
 }
@@ -116,16 +111,15 @@ margin-bottom: 18px;
 }
 .sec-label::after { content: ‘’; flex: 1; height: 1px; background: var(–bdr); }
 
-/* ── Row / col (mirrors original .row .col) ── */
+/* ── Row / col ── */
 .row { display: flex; gap: 14px; flex-wrap: wrap; }
 .col { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 14px; }
 @media (max-width:540px){ .row { flex-direction: column; } }
 
-/* ── Field ── */
+/* ── Fields ── */
 .field { display: flex; flex-direction: column; gap: 2px; }
 .muted { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(–muted); font-weight: 600; }
-.field > div,
-.field-val { font-size: 15px; font-weight: 600; color: var(–white); line-height: 1.3; }
+.field > div, .field-val { font-size: 15px; font-weight: 600; color: var(–white); line-height: 1.3; }
 .amount {
 font-family: ‘Orbitron’, monospace; font-size: 18px; font-weight: 700;
 color: var(–green); text-shadow: 0 0 14px rgba(0,255,136,0.4);
@@ -147,23 +141,12 @@ content: ‘’; width: 6px; height: 6px; border-radius: 50%; background: curren
 .status.cancelled { background: rgba(255,69,69,0.10);  color: var(–red);  border: 1px solid rgba(255,69,69,0.22); }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-/* ── Divider ── */
 hr { border: none; border-top: 1px solid var(–bdr); margin: 20px 0; }
 
-/* ── Payment UI container ── */
 #paymentUI { animation: fadeIn .4s ease both; }
 
-/* inner payment card */
-.pay-card {
-background: var(–bg2); border: 1px solid var(–bdr); border-radius: 12px; padding: 20px;
-}
-.pay-title {
-font-family: ‘Orbitron’, monospace; font-size: 11px; letter-spacing: 2px;
-text-transform: uppercase; color: var(–green); margin-bottom: 12px;
-}
 h3 { font-family: ‘Orbitron’, monospace; font-size: 13px; letter-spacing: 1.5px; color: var(–green); margin-bottom: 10px; }
 
-/* QR image */
 .qr {
 max-width: 280px; width: 100%; display: block; margin: 14px auto;
 border: 2px solid var(–bdr-hi); padding: 10px; border-radius: 12px;
@@ -171,7 +154,6 @@ background: #fff;
 box-shadow: 0 0 28px rgba(0,255,136,0.14);
 }
 
-/* VA number box */
 .va-box {
 display: flex; align-items: center; justify-content: space-between; gap: 12px;
 background: var(–bg3); border: 1px solid var(–bdr); border-radius: 10px;
@@ -182,7 +164,6 @@ font-family: ‘Orbitron’, monospace; font-size: 15px;
 color: var(–green); letter-spacing: 2px;
 }
 
-/* textarea payload */
 textarea.payload {
 width: 100%; min-height: 90px; padding: 10px;
 font-family: monospace; font-size: 12px;
@@ -195,7 +176,7 @@ margin-top: 10px; resize: vertical;
 /* ── Buttons ── */
 .btn {
 display: inline-flex; align-items: center; gap: 6px;
-padding: 9px 16px; border-radius: 8px; cursor: pointer;
+padding: 9px 18px; border-radius: 8px; cursor: pointer;
 font-family: ‘Rajdhani’, sans-serif; font-size: 14px; font-weight: 700;
 letter-spacing: .8px; text-transform: uppercase; text-decoration: none;
 border: none; transition: transform .15s, box-shadow .15s;
@@ -213,10 +194,8 @@ transition: border-color .15s, background .15s;
 }
 .copy:hover { background: var(–bg2); border-color: var(–bdr-hi); }
 
-/* ── Actions row ── */
 #actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
-/* ── Note bar ── */
 .note {
 background: rgba(251,191,36,0.06); border-left: 3px solid var(–amber);
 border-radius: 0 8px 8px 0; padding: 12px 16px; margin-top: 14px;
@@ -240,7 +219,7 @@ background: linear-gradient(135deg, rgba(255,69,69,0.06), rgba(60,0,0,0.14));
 border-color: rgba(255,69,69,0.28);
 }
 
-/* ── NUBIAPAY UI cards ── */
+/* ── NUBIAPAY UI ── */
 .nubia-ui {
 border: 1px solid var(–bdr); border-radius: 14px;
 padding: 22px 18px; text-align: center; background: var(–bg2);
@@ -253,7 +232,6 @@ color: var(–green-dim); padding: 10px 14px; border-radius: 10px;
 font-size: 13px; border: 1px solid var(–bdr);
 }
 
-/* balance card */
 #nubiaBalanceCard {
 margin-top: 12px; border-radius: 10px; padding: 12px 16px;
 border: 1px dashed var(–bdr-hi); background: rgba(0,255,136,0.05); color: var(–green);
@@ -261,34 +239,31 @@ border: 1px dashed var(–bdr-hi); background: rgba(0,255,136,0.05); color: var(
 #nubiaBalanceCard div:first-child  { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: var(–muted); text-transform: uppercase; }
 #nubiaBalanceCard div:last-child   { font-family: ‘Orbitron’, monospace; font-size: 20px; margin-top: 5px; }
 
-/* warn / err inline */
 .warn-inline { border: 1px solid rgba(251,191,36,0.25); border-radius: 10px; padding: 12px 16px; background: rgba(251,191,36,0.05); color: var(–amber); }
 .err-inline  { border: 1px solid rgba(255,69,69,0.22);  border-radius: 10px; padding: 12px 16px; background: rgba(255,69,69,0.05);  color: #fca5a5; }
 
 /* ── Loading ── */
-#loading { text-align: center; padding: 44px 20px; color: var(–muted); font-size: 15px; }
+#loading { padding: 44px 20px; color: var(–muted); font-size: 15px; text-align: center; }
 .spinner {
-width: 36px; height: 36px; border: 3px solid var(–bdr); border-top-color: var(–green);
+width: 38px; height: 38px; border: 3px solid var(–bdr); border-top-color: var(–green);
 border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 14px;
 }
+.load-txt { font-size: 14px; margin-top: 6px; }
+.load-debug { font-size: 11px; color: rgba(90,158,116,0.5); margin-top: 4px; font-family: monospace; letter-spacing: .5px; }
 
-/* ── Not found ── */
 #notfound { text-align: center; padding: 44px 20px; }
 #notfound p { color: var(–muted); font-size: 15px; line-height: 1.6; }
 #notfound code { background: var(–bg3); padding: 2px 8px; border-radius: 4px; color: var(–green-dim); font-family: monospace; }
 
-/* ── Footer ── */
+.timer-txt { font-size: 13px; color: var(–muted); text-align: center; margin-top: 6px; }
+.timer-txt strong { color: var(–green); }
+
 .footer {
 text-align: center; margin-top: 26px;
 font-size: 12px; color: rgba(90,158,116,0.45); letter-spacing: 1px;
 animation: fadeIn .8s ease .5s both;
 }
 
-/* ── Timer text ── */
-.timer-txt { font-size: 13px; color: var(–muted); text-align: center; margin-top: 6px; letter-spacing: .5px; }
-.timer-txt strong { color: var(–green); }
-
-/* ── Animations ── */
 @keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
 @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
@@ -299,41 +274,34 @@ animation: fadeIn .8s ease .5s both;
 <body>
 <div class="page">
 
-  <!-- Header -->
-
   <header class="site-header">
     <div class="logo-mark">N</div>
-    <div class="logo-text">
+    <div>
       <div class="logo-name">NUBIASTORE</div>
       <div class="logo-sub">Top Up Gaming Center</div>
     </div>
   </header>
 
-  <!-- Main card -->
-
   <div class="card">
 
 ```
-<!-- Loading -->
-<div id="loading" class="muted">
+<div id="loading">
   <div class="spinner"></div>
-  Mencari invoice...
+  <div class="load-txt">Mencari invoice...</div>
+  <div class="load-debug" id="loadDebug"></div>
 </div>
 
-<!-- Not found -->
 <div id="notfound" style="display:none;">
   <p>Invoice tidak ditemukan. Pastikan URL berformat <code>?invoice=INVC-...</code></p>
 </div>
 
-<!-- Order content -->
 <div id="orderBox" style="display:none;">
 
   <div class="sec-label">Detail Order</div>
 
-  <!-- Mirrors original .row .col exactly -->
   <div class="row">
     <div class="col">
-      <div class="field"><span class="muted">Invoice</span><div id="invoiceTxt" style="font-weight:700;font-family:'Orbitron',monospace;font-size:13px;color:var(--green-dim)"></div></div>
+      <div class="field"><span class="muted">Invoice</span><div id="invoiceTxt" style="font-weight:700;font-family:'Orbitron',monospace;font-size:12px;color:var(--green-dim);letter-spacing:1px"></div></div>
       <div class="field"><span class="muted">Game</span><div id="gameTxt">—</div></div>
       <div class="field"><span class="muted">ID Akun</span><div id="idTxt">—</div></div>
       <div class="field"><span class="muted">Server</span><div id="srvTxt">—</div></div>
@@ -346,61 +314,52 @@ animation: fadeIn .8s ease .5s both;
       <div class="field"><span class="muted">Admin fee</span><div id="adminTxt">—</div></div>
       <div class="field"><span class="muted">Total bayar</span><div class="amount" id="totalTxt">—</div></div>
       <div class="field"><span class="muted">Metode</span><div id="methodTxt">—</div></div>
-      <div class="field"><span class="muted">Status</span> <span id="statusBadge" class="status initiated">—</span></div>
+      <div class="field"><span class="muted">Status</span><span id="statusBadge" class="status initiated">—</span></div>
     </div>
   </div>
 
   <hr>
 
-  <!-- Payment UI -->
   <div id="paymentUI">
     <!-- will be rendered here: QR (dynamic) or VA -->
   </div>
 
-  <!-- Result box (hidden by default) -->
   <div id="resultBox" style="display:none"></div>
 
-  <!-- Actions -->
   <div id="actions" style="margin-top:16px;">
     <button id="btnCopyInvoice" class="copy">Salin Invoice</button>
     <a id="btnShareWA" class="btn" href="#" target="_blank">Chat Customer Service</a>
   </div>
 
-  <!-- Admin note -->
   <div id="adminNote" class="note" style="display:none;">
     Kalo Kamu Sudah Melakukan Proses Pembayaran Tunggu Sampai Status Order (INITIATED) Menjadi (COMPLETED) Lalu Buka In Game Kamu Dan Orderan Kamu Selesai Deh 😉👍.
   </div>
 
-</div><!-- /orderBox -->
+</div>
 ```
 
-  </div><!-- /card -->
+  </div>
 
   <div class="footer">© 2024 NUBIASTORE · Top Up Gaming Terpercaya</div>
-</div><!-- /page -->
-
-<!-- ============================================================
-     JAVASCRIPT — IDENTIK 100% DENGAN KODE ASLI, TIDAK DIUBAH
-     Hanya HTML result-box & nubia UI diupdate gaya visualnya
-     ============================================================ -->
+</div>
 
 <script type="module">
 /*
-  checkout-merged-nubia-v1.js
-  - Gabungan fitur dari checkout-dynamic-payload-fixed.js + checkout-dynamic-payload-fixed-v3.js
-  - 1x initializeApp, 1x getAuth, 1x getFirestore
-  - NUBIAPAY auto-retry saat login, listener saldo realtime, transaction potong saldo
-  - QR/VA logic & EMV helpers tetap ada
+  checkout-merged-nubia-v1.js  [+ signInAnonymously fix]
+  - JS IDENTIK dengan kode asli
+  - TAMBAHAN: signInAnonymously agar Firestore rules tidak block unauthenticated read
+  - TAMBAHAN: debug info di loading state
 */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, doc, onSnapshot,
   runTransaction, serverTimestamp,
   collection, getDoc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
-  getAuth, onAuthStateChanged
+  getAuth, onAuthStateChanged,
+  signInAnonymously           /* ← FIX: pastikan ada auth sebelum Firestore query */
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 /* ===== FIREBASE CONFIG ===== */
@@ -413,51 +372,21 @@ const firebaseConfig = {
   appId: "1:426093692154:web:38c6e9c143af626a623543",
   measurementId: "G-TS0YB9NYW8"
 };
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
 const auth = getAuth(app);
 
 /* ===== STATE ===== */
-let currentUser = null;
-let pendingNubiaInvoice = null; // invoice to retry when user logs in
-let userBalanceUnsub = null;    // unsub for user balance listener
-let unsub = null;               // unsub for order listener
-
-onAuthStateChanged(auth, async (u) => {
-  currentUser = u;
-  // retry pending nubia invoice if any
-  if (currentUser && pendingNubiaInvoice) {
-    try {
-      const od = await getDoc(doc(db,'orders', pendingNubiaInvoice));
-      if (od.exists()) {
-        const d = od.data();
-        if (d.status === 'initiated' && String((d.payment_method||'')).toUpperCase() === 'NUBIAPAY' && d.userId === currentUser.uid) {
-          await payWithNubia(d);
-          pendingNubiaInvoice = null;
-        }
-      }
-    } catch(e){
-      console.error('retry pendingNubia err', e);
-    }
-  }
-});
-
-/* ===== CONFIG / TEMPLATES ===== */
-const HIDE_PAYLOAD_IN_PROD = true;
-const UNIFIED_PAYLOAD_TEMPLATES = {
-  "QRIS":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "DANA":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "GOPAY": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "OVO":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SEABANK":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "BANKJAGO":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SUPERBANK":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
-  "SHOPEE":"00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657"
-};
+let currentUser          = null;
+let pendingNubiaInvoice  = null;
+let userBalanceUnsub     = null;
+let unsub                = null;
 
 /* ===== HELPERS ===== */
-const el = id => document.getElementById(id);
-const fmtRp = n => (typeof n === 'number' ? n.toLocaleString('id') : n);
+const el    = id => document.getElementById(id);
+const fmtRp = n  => (typeof n === 'number' ? n.toLocaleString('id') : n);
+const dbg   = msg => { const d = el('loadDebug'); if (d) d.textContent = msg; };
+
 function fmtAmountNumber(n) { const num = Number(n); if (!isFinite(num)) return 0; return Math.round(num); }
 function fillTemplate(template, vars) {
   return String(template).replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
@@ -466,7 +395,20 @@ function qrImageUrlFromPayload(payload, size = 360) {
   return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(String(payload))}`;
 }
 
-/* ===== TLV/EMV helpers (parse/build & CRC) ===== */
+/* ===== CONFIG / TEMPLATES ===== */
+const HIDE_PAYLOAD_IN_PROD = true;
+const UNIFIED_PAYLOAD_TEMPLATES = {
+  "QRIS":      "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "DANA":      "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "GOPAY":     "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "OVO":       "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SEABANK":   "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "BANKJAGO":  "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SUPERBANK": "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657",
+  "SHOPEE":    "00020101021126610014COM.GO-JEK.WWW01189360091433055874630210G3055874630303UMI51440014ID.CO.QRIS.WWW0215ID10254231099470303UMI5204481453033605802ID5925ZkgamingstoreGoTo, Toko H6007TANGSEL61051522062070703A0163040657"
+};
+
+/* ===== TLV/EMV helpers (identik asli) ===== */
 function parseTLV_ASCII(s){
   let i=0, out=[];
   while(i < s.length){
@@ -485,9 +427,9 @@ function buildTLV_ASCII(arr){
   }).join('');
 }
 function setAmountInPayloadCore_ASCII(corePayload, amountStr){
-  const parsed = parseTLV_ASCII(corePayload);
+  const parsed   = parseTLV_ASCII(corePayload);
   const filtered = parsed.filter(o => o.tag !== '54');
-  const idx58 = filtered.findIndex(o => o.tag === '58');
+  const idx58    = filtered.findIndex(o => o.tag === '58');
   const amountObj = {tag: '54', value: String(amountStr)};
   if(idx58 >= 0) filtered.splice(idx58, 0, amountObj);
   else filtered.push(amountObj);
@@ -525,37 +467,81 @@ function produceFinalEmvPayloadIfNeeded(rawPayload, amountDecimalStr){
 }
 
 /* ===== GET INVOICE PARAM ===== */
-const params = new URLSearchParams(location.search);
+const params  = new URLSearchParams(location.search);
 const invoice = params.get('invoice');
 if (!invoice) {
-  if (el('loading')) el('loading').textContent = 'Invoice kosong. Contoh: /checkout?invoice=INVC-...';
+  const ld = el('loading');
+  if (ld) ld.innerHTML = '<p style="color:var(--red)">Invoice kosong. Contoh: /checkout?invoice=INVC-...</p>';
   throw new Error('no-invoice');
 }
-if (el('loading')) el('loading').textContent = `Menunggu data order ${invoice}...`;
+dbg(`invoice: ${invoice}`);
 
-/* ===== FIRESTORE ORDER LISTENER ===== */
-const orderDocRef = doc(db, 'orders', invoice);
-unsub = onSnapshot(orderDocRef, snap => {
-  if (!snap.exists()) {
+/* =================================================================
+   FIX UTAMA: Sign in anonymously dulu supaya Firestore rules
+   yang butuh request.auth != null bisa terpenuhi.
+   Setelah auth siap → baru jalankan onSnapshot.
+   ================================================================= */
+function startOrderListener() {
+  dbg(`connecting firestore...`);
+  const orderDocRef = doc(db, 'orders', invoice);
+  unsub = onSnapshot(orderDocRef, snap => {
     if (el('loading')) el('loading').style.display = 'none';
-    if (el('notfound')) el('notfound').style.display = 'block';
-    return;
+    if (!snap.exists()) {
+      if (el('notfound')) el('notfound').style.display = 'block';
+      return;
+    }
+    if (el('notfound')) el('notfound').style.display = 'none';
+    if (el('orderBox')) el('orderBox').style.display = 'block';
+    const d = snap.data();
+    try { renderOrder(d); } catch (err) { console.error('renderOrder error', err); }
+  }, err => {
+    console.error('snapshot error', err);
+    const ld = el('loading');
+    if (ld) {
+      ld.innerHTML = `
+        <p style="color:var(--red);font-weight:700">Gagal mengambil data order.</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:6px">${err.code || ''}: ${err.message || ''}</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px">
+          Jika terus gagal, pastikan koneksi internet kamu stabil atau hubungi admin.
+        </p>`;
+    }
+  });
+}
+
+/* onAuthStateChanged: update currentUser + retry NUBIAPAY jika perlu */
+onAuthStateChanged(auth, async (u) => {
+  currentUser = u;
+  dbg(u ? `auth: ${u.isAnonymous ? 'anon' : u.uid.slice(0,8)}` : 'auth: signed out');
+  if (currentUser && pendingNubiaInvoice) {
+    try {
+      const od = await getDoc(doc(db,'orders', pendingNubiaInvoice));
+      if (od.exists()) {
+        const d = od.data();
+        if (d.status === 'initiated' && String((d.payment_method||'')).toUpperCase() === 'NUBIAPAY' && d.userId === currentUser.uid) {
+          await payWithNubia(d);
+          pendingNubiaInvoice = null;
+        }
+      }
+    } catch(e){ console.error('retry pendingNubia err', e); }
   }
-  if (el('loading')) el('loading').style.display = 'none';
-  if (el('notfound')) el('notfound').style.display = 'none';
-  if (el('orderBox')) el('orderBox').style.display = 'block';
-  const d = snap.data();
-  try { renderOrder(d); } catch (err) { console.error('renderOrder error', err); }
-}, err => {
-  console.error('snapshot error', err);
-  if (el('loading')) el('loading').textContent = 'Gagal mengambil data order.';
 });
 
-/* =========================
-   NUBIAPAY payment (transaction) - robust v3
-   ========================= */
+/* Sign in anonymously → then start listener */
+signInAnonymously(auth)
+  .then(() => {
+    dbg('auth ok → loading order...');
+    startOrderListener();
+  })
+  .catch(err => {
+    /* Jika anonymous auth gagal (mis. dinonaktifkan di Firebase console),
+       tetap coba startOrderListener — mungkin rules memang public */
+    console.warn('signInAnonymously failed, trying anyway:', err.message);
+    dbg('anon auth failed, trying direct...');
+    startOrderListener();
+  });
+
+/* ===== NUBIAPAY (identik asli) ===== */
 async function payWithNubia(orderData){
-  // require currentUser to be present and match order userId
   if (!currentUser) {
     console.warn('payWithNubia: no currentUser -> will retry after login');
     pendingNubiaInvoice = orderData.invoice;
@@ -571,62 +557,31 @@ async function payWithNubia(orderData){
   }
 
   const orderRefLocal = doc(db,'orders',orderData.invoice);
-  const userRef = doc(db,'users',currentUser.uid);
+  const userRef       = doc(db,'users',currentUser.uid);
 
   try {
     await runTransaction(db, async (t) => {
       const oSnap = await t.get(orderRefLocal);
       if (!oSnap.exists()) throw new Error('order missing');
       const o = oSnap.data();
-
-      // double-check
       if (o.status !== 'initiated') return;
       if (o.__nubiaPaid === true) return;
-
       const uSnap = await t.get(userRef);
       if (!uSnap.exists()) throw new Error('user missing');
-
       const saldo = Number(uSnap.data().nubiPayBalance || 0);
       const total = Number(o.amount_total || 0);
-
-      if (saldo < total) {
-        alert('Saldo NUBIAPAY tidak cukup.');
-        throw new Error('saldo_kurang');
-      }
-
-      // potong saldo
-      t.update(userRef, {
-        nubiPayBalance: saldo - total,
-        updatedAt: serverTimestamp()
-      });
-
-      // add tx
+      if (saldo < total) { alert('Saldo NUBIAPAY tidak cukup.'); throw new Error('saldo_kurang'); }
+      t.update(userRef, { nubiPayBalance: saldo - total, updatedAt: serverTimestamp() });
       const txRef = doc(collection(db, `users/${currentUser.uid}/transactions`));
-      t.set(txRef, {
-        amount: -total,
-        type: 'PAY_ORDER',
-        note: o.invoice || '',
-        timestamp: serverTimestamp()
-      });
-
-      // complete order
-      t.update(orderRefLocal, {
-        status: 'completed',
-        __nubiaPaid: true,
-        paidAt: serverTimestamp()
-      });
+      t.set(txRef, { amount: -total, type: 'PAY_ORDER', note: o.invoice || '', timestamp: serverTimestamp() });
+      t.update(orderRefLocal, { status: 'completed', __nubiaPaid: true, paidAt: serverTimestamp() });
     });
-
-    // after success: fetch fresh user balance and render
     try {
       const freshUser = await getDoc(userRef);
       const newBal = freshUser.exists() ? Number(freshUser.data().nubiPayBalance || 0) : 0;
       renderUserBalanceCard(newBal);
       console.log('payWithNubia: transaksi selesai, new balance:', newBal);
-    } catch(e) {
-      console.warn('post-tx get user failed', e);
-    }
-
+    } catch(e){ console.warn('post-tx get user failed', e); }
     return { ok:true };
   } catch (e) {
     console.error('payWithNubia transaction error', e);
@@ -634,26 +589,17 @@ async function payWithNubia(orderData){
   }
 }
 
-/* =========================
-   listen & show user nubia balance (realtime)
-   - show card under the green card when method NUBIAPAY is used
-   ========================= */
 function attachUserBalanceListener(userId) {
-  // cleanup previous
   if (userBalanceUnsub) try { userBalanceUnsub(); } catch(e){}
   if (!userId) return;
-
   const userRef = doc(db, 'users', userId);
   userBalanceUnsub = onSnapshot(userRef, snap => {
     const bal = snap.exists() ? Number(snap.data().nubiPayBalance || 0) : 0;
     renderUserBalanceCard(bal);
-  }, err => {
-    console.error('user balance snap err', err);
-  });
+  }, err => { console.error('user balance snap err', err); });
 }
 
 function renderUserBalanceCard(balanceNumber){
-  // create or update element with id 'nubiaBalanceCard' under paymentUI
   let parent = el('paymentUI');
   if (!parent) return;
   let existing = el('nubiaBalanceCard');
@@ -661,18 +607,12 @@ function renderUserBalanceCard(balanceNumber){
     <div id="nubiaBalanceCard">
       <div>Sisa Saldo NUBIAPAY</div>
       <div>Rp ${fmtRp(balanceNumber)}</div>
-    </div>
-  `;
-  if (existing) {
-    existing.outerHTML = html;
-  } else {
-    parent.insertAdjacentHTML('beforeend', html);
-  }
+    </div>`;
+  if (existing) existing.outerHTML = html;
+  else parent.insertAdjacentHTML('beforeend', html);
 }
 
-/* =========================
-   Render order + payment UI (merged)
-   ========================= */
+/* ===== STATUS BADGE ===== */
 function setStatusBadge(status) {
   const b = el('statusBadge');
   if(!b) return;
@@ -680,32 +620,32 @@ function setStatusBadge(status) {
   b.textContent = (status || 'initiated').toUpperCase();
 }
 
+/* ===== RENDER ORDER (identik asli) ===== */
 function renderOrder(d) {
-  // fill basic fields (safe guards if element missing)
   if (el('invoiceTxt')) el('invoiceTxt').textContent = d.invoice || invoice;
-  if (el('gameTxt')) el('gameTxt').textContent = d.game || '-';
-  if (el('idTxt')) el('idTxt').textContent = d.game_id || '-';
-  if (el('srvTxt')) el('srvTxt').textContent = d.server || '-';
-  if (el('waTxt')) el('waTxt').textContent = d.noWA || '-';
+  if (el('gameTxt'))    el('gameTxt').textContent    = d.game || '-';
+  if (el('idTxt'))      el('idTxt').textContent      = d.game_id || '-';
+  if (el('srvTxt'))     el('srvTxt').textContent     = d.server || '-';
+  if (el('waTxt'))      el('waTxt').textContent      = d.noWA || '-';
   if (el('nominalTxt')) el('nominalTxt').textContent = (d.nominalValue ?? '-') + (d.nominalValue && typeof d.nominalValue !== 'string' ? ' 💎' : '');
-  if (el('priceTxt')) el('priceTxt').textContent = 'Rp ' + fmtRp(d.price || '-');
-  if (el('adminTxt')) el('adminTxt').textContent = 'Rp ' + fmtRp(d.adminFee || 0);
-  if (el('totalTxt')) el('totalTxt').textContent = 'Rp ' + fmtRp(d.amount_total || '-');
-  if (el('methodTxt')) el('methodTxt').textContent = (d.payment_method || '-').replace('_', ' ');
+  if (el('priceTxt'))   el('priceTxt').textContent   = 'Rp ' + fmtRp(d.price || '-');
+  if (el('adminTxt'))   el('adminTxt').textContent   = 'Rp ' + fmtRp(d.adminFee || 0);
+  if (el('totalTxt'))   el('totalTxt').textContent   = 'Rp ' + fmtRp(d.amount_total || '-');
+  if (el('methodTxt'))  el('methodTxt').textContent  = (d.payment_method || '-').replace('_', ' ');
   setStatusBadge(d.status || 'initiated');
   if (el('adminNote')) el('adminNote').style.display = (d.status === 'initiated' || d.status === 'pending') ? 'block' : 'none';
 
   const paymentUI = el('paymentUI');
   const resultBox = el('resultBox');
-  const actions = el('actions');
+  const actions   = el('actions');
 
-  const statusNorm = String(d.status || '').trim().toLowerCase();
+  const statusNorm   = String(d.status || '').trim().toLowerCase();
   const successStates = ['completed','complete','paid','success'];
   const cancelStates  = ['cancelled','canceled','failed','expired','rejected'];
 
   if (successStates.includes(statusNorm)) {
     if (paymentUI) paymentUI.style.display = 'none';
-    if (actions) actions.style.display = 'none';
+    if (actions)   actions.style.display   = 'none';
     if (el('adminNote')) el('adminNote').style.display = 'none';
     if (resultBox) {
       resultBox.innerHTML = `
@@ -729,7 +669,7 @@ function renderOrder(d) {
 
   if (cancelStates.includes(statusNorm)) {
     if (paymentUI) paymentUI.style.display = 'none';
-    if (actions) actions.style.display = 'none';
+    if (actions)   actions.style.display   = 'none';
     if (el('adminNote')) el('adminNote').style.display = 'none';
     if (resultBox) {
       resultBox.innerHTML = `
@@ -743,32 +683,26 @@ function renderOrder(d) {
     return;
   }
 
-  // non-terminal -> ensure payment UI visible, hide resultBox
   if (paymentUI) paymentUI.style.display = 'block';
-  if (actions) actions.style.display = 'block';
-  if (resultBox) resultBox.style.display = 'none';
+  if (actions)   actions.style.display   = 'block';
+  if (resultBox) resultBox.style.display  = 'none';
 
-  // build vars (two amount formats)
   const amountNumber = Number(d.amount_total) || 0;
   const vars = {
-    amount: fmtAmountNumber(amountNumber),
+    amount:         fmtAmountNumber(amountNumber),
     amount_decimal: (typeof amountNumber === 'number') ? amountNumber.toFixed(2) : String(d.amount_total || '0.00'),
-    invoice: d.invoice || invoice,
-    phone: d.noWA || '',
-    va: (d.payment_data && (d.payment_data.va_number || (d.payment_data.va && d.payment_data.va.number))) || '',
-    note: `NUBIA-${d.invoice || invoice}`
+    invoice:        d.invoice || invoice,
+    phone:          d.noWA || '',
+    va:             (d.payment_data && (d.payment_data.va_number || (d.payment_data.va && d.payment_data.va.number))) || '',
+    note:           `NUBIA-${d.invoice || invoice}`
   };
 
-  // pm must be defined BEFORE using payload logic
   const pm = (d.payment_method || '').toUpperCase();
   const pd = d.payment_data || {};
 
-  // === NUBIAPAY branch (v3 behavior) ===
+  /* === NUBIAPAY branch === */
   if (pm === 'NUBIAPAY') {
-    // attach balance listener (so user sees real-time balance)
     attachUserBalanceListener(d.userId || null);
-
-    // If order already marked completed and __nubiaPaid true, just show card and balance
     if (d.status === 'completed' && d.__nubiaPaid) {
       if (paymentUI) paymentUI.innerHTML = `
         <div class="nubia-ui">
@@ -779,8 +713,6 @@ function renderOrder(d) {
         </div>`;
       return;
     }
-
-    // If user not logged in -> set pending and ask to login
     if (!currentUser) {
       pendingNubiaInvoice = d.invoice;
       if (paymentUI) paymentUI.innerHTML = `
@@ -792,8 +724,6 @@ function renderOrder(d) {
         </div>`;
       return;
     }
-
-    // If logged in but not owner -> inform
     if (String(currentUser.uid) !== String(d.userId)) {
       if (paymentUI) paymentUI.innerHTML = `
         <div class="err-inline">
@@ -801,32 +731,24 @@ function renderOrder(d) {
         </div>`;
       return;
     }
-
-    // Otherwise: attempt auto-pay (user logged in and is owner)
     payWithNubia(d);
-
-    // show processing UI (balance card will appear via attachUserBalanceListener)
     if (paymentUI) paymentUI.innerHTML = `
       <div class="nubia-ui">
         <img src="https://cdn.dribbble.com/userupload/24524439/file/original-4b82316a71d7182998ff7b59d5332331.gif"
              style="width:160px;border-radius:12px" alt="card">
         <p>Sedang memproses potongan saldo NUBIAPAY jika saldo mencukupi. Tunggu sebentar...</p>
         <div class="n-note">makasih loh udah make metode pembayaran NUBIAPAY, semoga harimu ceria selalu</div>
-      </div>
-    `;
+      </div>`;
     return;
   }
 
-  /* ===== QR/VA handling (original behavior preserved) ===== */
-
-  // priority: server-provided payload OR pd.qr_image_url
+  /* === QR/VA handling (identik asli) === */
   let payload = pd.qr_payload || null;
   if (!payload && UNIFIED_PAYLOAD_TEMPLATES[pm]) {
     const amtForTemplate = (pm === 'QRIS' || pm.includes('QR')) ? vars.amount_decimal : vars.amount;
     payload = fillTemplate(UNIFIED_PAYLOAD_TEMPLATES[pm], {...vars, amount: amtForTemplate});
   }
 
-  // Virtual Account branch
   if (pm && pm.startsWith('VA')) {
     const bankName = pd.bank || pm;
     const vaNumber = pd.va_number || vars.va || '';
@@ -834,7 +756,6 @@ function renderOrder(d) {
       <p class="muted">Bank: <strong style="color:var(--white)">${bankName}</strong></p>
       <div class="va-box"><span id="vaNumber">${vaNumber}</span><button id="copyVa" class="copy">Salin VA</button></div>
       <p class="muted">Jumlah yang harus dibayar: <strong style="color:var(--white)">Rp ${fmtRp(d.amount_total)}</strong></p>`;
-
     if (payload) {
       let payloadToUse = payload;
       if ((pm.includes('QR') || pm === 'QRIS') || (/^\d{2}/.test(payload))) {
@@ -863,7 +784,6 @@ function renderOrder(d) {
 
 }
 
-// Non-VA handling
 if (payload) {
 let payloadToUse = payload;
 if ((pm === ‘QRIS’ || pm.includes(‘QR’)) || /^\d{2}/.test(payload)) {
@@ -876,22 +796,15 @@ let html = `<h3>Instruksi Pembayaran (${(pm || 'QR')})</h3> <p class="muted">Sca
 if (paymentUI) paymentUI.innerHTML = html;
 
 const openBtn = document.getElementById('openPayload');
-if (openBtn && /^https?:\/\//i.test(payloadToUse)) {
-  openBtn.style.display = 'inline-block';
-  openBtn.href = payloadToUse;
-}
+if (openBtn && /^https?:\/\//i.test(payloadToUse)) { openBtn.style.display = 'inline-block'; openBtn.href = payloadToUse; }
 
 if (!HIDE_PAYLOAD_IN_PROD) {
   document.getElementById('copyPayload')?.addEventListener('click', () => {
     navigator.clipboard.writeText(payloadToUse).then(() => alert('Payload disalin'));
   });
 }
-
 const qrImg = document.getElementById('qrImg');
-if (qrImg) {
-  qrImg.dataset.payload = payloadToUse;
-  qrImg.dataset.total = String(vars.amount_decimal);
-}
+if (qrImg) { qrImg.dataset.payload = payloadToUse; qrImg.dataset.total = String(vars.amount_decimal); }
 ```
 
 } else {
@@ -903,14 +816,13 @@ if (paymentUI) paymentUI.innerHTML = `<h3>Instruksi Pembayaran</h3> <p class="mu
 }
 }
 
-// update share WA link
 const share = encodeURIComponent(
 `Order #${d.invoice}\nGame:${d.game}\nID:${d.game_id}\nTotal: Rp ${fmtRp(d.amount_total)}\nStatus: ${d.status}\n\nCek: ${location.href}`
 );
 if (el(‘btnShareWA’)) el(‘btnShareWA’).href = `https://wa.me/6285697747768?text=${share}`;
 }
 
-/* ===== COPY INVOICE BUTTON ===== */
+/* ===== COPY INVOICE ===== */
 el(‘btnCopyInvoice’)?.addEventListener(‘click’, () => {
 navigator.clipboard.writeText(invoice).then(() => alert(‘Invoice disalin’));
 });
