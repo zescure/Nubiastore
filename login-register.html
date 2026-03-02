@@ -1,212 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Masuk / Daftar — NUBIASTORE</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --green-primary: #16a34a;
-      --green-bright: #22c55e;
-      --green-neon: #4ade80;
-      --green-dark: #0d7c3a;
-      --green-glow: rgba(34,197,94,0.35);
-      --black-deep: #040a06;
-      --black-mid: #0a1a0d;
-      --black-card: #0e1f12;
-      --black-surface: #13271a;
-      --black-input: #0c1a0f;
-      --white: #ffffff;
-      --white-muted: rgba(255,255,255,0.65);
-      --border-green: rgba(34,197,94,0.2);
-      --border-green-bright: rgba(74,222,128,0.45);
-      --font-display: 'Rajdhani', sans-serif;
-      --font-body: 'Exo 2', sans-serif;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Masuk / Daftar — NUBIASTORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green-primary:#16a34a; --green-bright:#22c55e; --green-neon:#4ade80;
+  --black-deep:#040a06; --black-card:#0e1f12; --black-surface:#13271a;
+  --black-input:#0c1a0f; --white:#fff; --white-muted:rgba(255,255,255,0.65);
+  --border-green:rgba(34,197,94,0.2); --font-display:'Rajdhani',sans-serif; --font-body:'Exo 2',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body); background:var(--black-deep); color:var(--white);
+  min-height:100vh; display:flex; flex-direction:column; overflow-x:hidden;
+}
 
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font-body);
-      background: var(--black-deep);
-      color: var(--white);
-      min-height: 100vh;
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    a { text-decoration: none; color: inherit; }
+/* header/visual */
+header{display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;background:rgba(4,10,6,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-green)}
+.logo{font-family:var(--font-display);font-weight:700;font-size:1.35rem;background:linear-gradient(135deg,var(--green-bright),var(--green-neon));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.btn-back-header{background:var(--black-surface);border:1px solid var(--border-green);padding:0.4rem 0.85rem;border-radius:7px;color:var(--white-muted);cursor:pointer}
 
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--black-deep); }
-    ::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 4px; }
+/* announce */
+.announce-bar{background:linear-gradient(90deg,#0b6d2f,var(--green-primary),#0b6d2f);padding:0.4rem 1rem;overflow:hidden}
+.marquee-text{display:inline-block;animation:marquee 24s linear infinite;white-space:nowrap;font-size:0.72rem;font-weight:600}
+@keyframes marquee{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
 
-    /* background glows */
-    .bg-glow { position: fixed; pointer-events: none; z-index: 0; }
-    .bg-glow-1 { top: -120px; left: -120px; width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%); }
-    .bg-glow-2 { bottom: -100px; right: -100px; width: 350px; height: 350px;
-      background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%); }
+/* page */
+.page-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(1.25rem,4vw,2rem) 1rem}
+.auth-container{width:100%;max-width:420px}
 
-    /* header */
-    header {
-      position: relative; z-index: 10;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.875rem 1.25rem; background: rgba(4,10,6,0.9);
-      backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-green);
-      box-shadow: 0 2px 20px rgba(0,0,0,0.5);
-    }
-    .logo {
-      font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; letter-spacing: 3px;
-      background: linear-gradient(135deg, var(--green-bright), var(--green-neon));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 8px var(--green-glow));
-    }
-    .btn-back-header {
-      display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.875rem;
-      background: var(--black-surface); border: 1px solid var(--border-green); border-radius: 7px;
-      color: var(--white-muted); font-size: 0.8rem; font-weight: 600; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-back-header:hover { color: var(--green-neon); border-color: var(--green-bright); }
+/* card */
+.auth-card{background:var(--black-card);border:1px solid var(--border-green);border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border-green)}
+.auth-tab{flex:1;padding:0.85rem;font-family:var(--font-display);font-weight:700;cursor:pointer;color:var(--white-muted);background:none;border:none;position:relative}
+.auth-tab.active{color:var(--green-neon);background:rgba(34,197,94,0.04)}
+.auth-body{padding:1.5rem}
+.auth-title{font-family:var(--font-display);font-size:1.5rem;margin-bottom:.35rem;background:linear-gradient(135deg,#fff 60%,var(--green-neon));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-subtitle{color:var(--white-muted);font-size:.78rem;margin-bottom:1rem}
 
-    /* announce */
-    .announce-bar { background: linear-gradient(90deg, var(--green-dark), var(--green-primary), var(--green-dark));
-      background-size: 200%; animation: gradShift 4s ease infinite; padding: 0.4rem 1rem; position: relative; z-index: 10; }
-    .marquee-text { display: inline-block; animation: marquee 24s linear infinite; white-space: nowrap; font-size: 0.72rem; font-weight: 600; }
-    @keyframes marquee { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
-    @keyframes gradShift { 0%,100% { background-position: 0%; } 50% { background-position: 100%; } }
+/* input */
+.input-wrap{margin-bottom:1rem}
+.input-wrap label{display:block;font-size:.68rem;color:var(--white-muted);margin-bottom:.35rem;font-weight:700}
+.input-inner{position:relative}
+.input-field{width:100%;padding:.72rem 2.6rem .72rem 2.6rem;background:var(--black-input);border:1px solid var(--border-green);border-radius:9px;color:#fff}
+.input-field:focus{outline:none;border-color:var(--green-bright);box-shadow:0 0 0 3px rgba(34,197,94,0.08)}
+.input-icon-left{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);opacity:.6;width:16px;height:16px}
+.input-icon-right{position:absolute;right:.75rem;top:50%;transform:translateY(-50%);opacity:.6;width:18px;height:18px;cursor:pointer}
 
-    /* page wrapper */
-    .page-wrap { flex: 1; display: flex; align-items: center; justify-content: center;
-      padding: clamp(1.25rem, 4vw, 2rem) 1rem; position: relative; z-index: 5; }
-    .auth-container { width: 100%; max-width: 420px; }
+/* alerts / buttons */
+.alert-box{min-height:22px;margin-bottom:.75rem;text-align:center}
+.alert-box.error{color:#f87171}
+.alert-box.success{color:var(--green-neon)}
+.btn-primary{display:block;width:100%;padding:.85rem;border-radius:10px;border:none;background:linear-gradient(135deg,var(--green-primary),#0d7c3a);font-weight:700;cursor:pointer;color:#fff;position:relative;overflow:hidden}
+.btn-primary:disabled{opacity:.6;pointer-events:none}
+.or-divider{display:flex;align-items:center;gap:.75rem;margin:1.1rem 0}
+.or-divider::before,.or-divider::after{content:"";flex:1;height:1px;background:var(--border-green)}
+.or-divider span{font-size:.7rem;color:var(--white-muted);text-transform:uppercase}
 
-    /* promo */
-    .promo-banner { background: linear-gradient(135deg, rgba(22,163,74,0.18), rgba(22,163,74,0.06));
-      border: 1px solid var(--border-green); border-radius: 14px; padding: 1.1rem 1.25rem; margin-bottom: 1.1rem; text-align: center; position: relative; overflow: hidden; }
-    .promo-banner::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
-      background: radial-gradient(circle, rgba(74,222,128,0.15) 0%, transparent 70%); pointer-events: none; }
-    .promo-perks { display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap; margin-top:0.75rem; }
-    .promo-perk { font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:20px; background: rgba(34,197,94,0.12); color:var(--green-neon); border:1px solid var(--border-green); }
+/* social */
+.social-row{display:flex;gap:.6rem}
+.btn-social{flex:1;padding:.65rem;border-radius:9px;border:1px solid var(--border-green);background:var(--black-surface);cursor:pointer;color:var(--white-muted);display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn-social img{width:18px;height:18px}
 
-    /* auth card */
-    .auth-card { background: var(--black-card); border:1px solid var(--border-green); border-radius:16px; overflow:hidden;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(34,197,94,0.05); }
-    .auth-tabs { display:flex; border-bottom:1px solid var(--border-green); }
-    .auth-tab { flex:1; padding:0.875rem; background:none; border:none; font-family:var(--font-display); font-size:0.95rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--white-muted); cursor:pointer; position:relative; transition:all .2s; }
-    .auth-tab::after { content:''; position:absolute; bottom:0; left:50%; right:50%; height:2px; background:var(--green-neon); transition:all .25s; }
-    .auth-tab.active { color:var(--green-neon); background: rgba(34,197,94,0.05); }
-    .auth-tab.active::after { left:10%; right:10%; }
-    .auth-body { padding:1.5rem 1.25rem; }
-    .auth-title { font-family:var(--font-display); font-size:1.5rem; font-weight:700; margin-bottom:0.3rem; background:linear-gradient(135deg,#fff 60%,var(--green-neon)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .auth-subtitle { font-size:0.78rem; color:var(--white-muted); margin-bottom:1.5rem; line-height:1.4; }
+/* phone area */
+.phone-area{margin-top:12px;display:none}
+#recaptcha-container, #recaptcha-container-reg{margin-top:8px}
 
-    /* input */
-    .input-wrap { margin-bottom:1rem; }
-    .input-wrap label { display:block; font-size:0.68rem; font-weight:700; text-transform:uppercase; color:var(--white-muted); margin-bottom:0.35rem; }
-    .input-inner { position:relative; }
-    .input-field { width:100%; padding:0.72rem 2.5rem 0.72rem 2.6rem; background:var(--black-input); border:1px solid var(--border-green); border-radius:9px; color:#fff; font-size:0.9rem; outline:none; transition:all .25s; }
-    .input-field:focus { border-color:var(--green-bright); box-shadow:0 0 0 3px rgba(34,197,94,0.12); }
-    .input-icon-left { position:absolute; left:0.75rem; top:50%; transform:translateY(-50%); width:16px; height:16px; opacity:0.45; pointer-events:none; }
-    .input-icon-right { position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); width:18px; height:18px; opacity:0.45; cursor:pointer; }
+/* footer */
+.auth-card-footer{padding:.75rem 1rem;border-top:1px solid var(--border-green);background:rgba(0,0,0,0.12);text-align:center;color:var(--white-muted)}
+.security-row{display:flex;justify-content:center;gap:1rem;margin-top:1rem}
+.sec-badge{display:flex;align-items:center;gap:.3rem;color:var(--white-muted);font-size:.68rem}
 
-    /* alert */
-    .alert-box { min-height:22px; margin-bottom:0.75rem; font-size:0.78rem; text-align:center; border-radius:6px; padding:0 0.5rem; }
-    .alert-box.error { color:#f87171; }
-    .alert-box.success { color:var(--green-neon); }
-
-    /* primary btn */
-    .btn-primary { display:block; width:100%; padding:0.85rem 1rem; background:linear-gradient(135deg,var(--green-primary),var(--green-dark)); border:none; border-radius:10px; color:#fff; font-family:var(--font-display); font-size:1rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:all .25s; box-shadow:0 4px 20px rgba(22,163,74,0.4); position:relative; overflow:hidden; }
-    .btn-primary::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); transition:left .5s; }
-    .btn-primary:hover::before { left:100%; }
-    .btn-primary:disabled { opacity:0.6; pointer-events:none; }
-
-    /* divider */
-    .or-divider { display:flex; align-items:center; gap:0.75rem; margin:1.1rem 0; }
-    .or-divider::before, .or-divider::after { content:''; flex:1; height:1px; background:var(--border-green); }
-    .or-divider span { font-size:0.7rem; color:var(--white-muted); text-transform:uppercase; letter-spacing:1px; }
-
-    /* social */
-    .social-row { display:flex; gap:0.65rem; margin-top:0.25rem; }
-    .btn-social { flex:1; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.65rem 0.5rem; background:var(--black-surface); border:1px solid var(--border-green); border-radius:9px; cursor:pointer; color:var(--white-muted); transition:all .2s; font-weight:600; }
-    .btn-social:hover { border-color: rgba(255,255,255,0.3); color:#fff; background: rgba(255,255,255,0.05); }
-    .btn-social img { width:18px; height:18px; }
-
-    /* phone area small tweaks */
-    .phone-area { margin-top:12px; display:none; }
-    #recaptcha-container, #recaptcha-container-reg { margin-top:8px; }
-
-    /* card footer */
-    .auth-card-footer { padding:0.875rem 1.25rem; border-top:1px solid var(--border-green); background:rgba(0,0,0,0.2); text-align:center; font-size:0.8rem; color:var(--white-muted); }
-    .auth-card-footer a { color:var(--green-neon); font-weight:700; cursor:pointer; }
-    .auth-card-footer a:hover { color:var(--green-bright); }
-
-    /* spinner */
-    .spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-
-    /* security row */
-    .security-row { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; margin-top:1.1rem; }
-    .sec-badge { display:flex; align-items:center; gap:0.3rem; font-size:0.68rem; color:var(--white-muted); }
-    .sec-badge .dot { color:var(--green-neon); }
-
-    /* responsive */
-    @media (max-width:420px) {
-      .auth-container { padding: 0 6px; }
-      .auth-body { padding: 1.25rem; }
-    }
-  </style>
+/* responsive */
+@media (max-width:420px){.auth-container{padding:0 6px}}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-
-<div class="bg-glow bg-glow-1"></div>
-<div class="bg-glow bg-glow-2"></div>
 
 <header>
   <div class="logo">NUBIASTORE</div>
   <button class="btn-back-header" id="btnBackHeader">← Kembali</button>
 </header>
 
-<div class="announce-bar">
-  <span class="marquee-text">
-    🎁 Daftar Sekarang & Dapatkan Bonus Saldo &nbsp;|&nbsp; 💎 Top Up Lebih Murah dengan NUBIAPAY &nbsp;|&nbsp; 🔒 Akun Aman & Terenkripsi &nbsp;|&nbsp; ⚡ Proses Otomatis 24 Jam
-  </span>
-</div>
+<div class="announce-bar"><span class="marquee-text">🎁 Daftar Sekarang & Dapatkan Bonus Saldo &nbsp;|&nbsp; 💎 Top Up Lebih Murah dengan NUBIAPAY</span></div>
 
 <div class="page-wrap">
   <div class="auth-container">
 
-    <div class="promo-banner" id="promoBanner" style="display:none">
-      <div class="pb-tag">✨ Bergabung Sekarang</div>
-      <h2>NUBIASTORE & NUBIAPAY</h2>
-      <p>Top up game lebih murah, proses instan, dan bayar pakai saldo NUBIAPAY tanpa biaya admin.</p>
-      <div class="promo-perks">
-        <span class="promo-perk">🎁 Bonus Saldo</span>
-        <span class="promo-perk">⚡ Instan</span>
-        <span class="promo-perk">💰 Termurah</span>
-        <span class="promo-perk">🛡 Aman</span>
-      </div>
-    </div>
-
     <div class="auth-card">
       <div class="auth-tabs">
-        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">🔑 Masuk</button>
-        <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">✨ Daftar</button>
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Masuk</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Daftar</button>
       </div>
 
-      <!-- LOGIN SCREEN -->
+      <!-- LOGIN -->
       <div class="screen active" id="loginScreen">
         <div class="auth-body">
           <div class="auth-title">Selamat Datang</div>
-          <div class="auth-subtitle">Masuk untuk menikmati top up game termurah & NUBIAPAY.</div>
+          <div class="auth-subtitle">Masuk untuk menikmati top up & NUBIAPAY.</div>
 
           <div class="input-wrap">
             <label>Email</label>
             <div class="input-inner">
               <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png" alt="">
-              <input class="input-field" type="email" id="email" placeholder="nama@email.com">
+              <input class="input-field" id="email" type="email" placeholder="nama@email.com">
             </div>
           </div>
 
@@ -214,37 +117,32 @@
             <label>Password</label>
             <div class="input-inner">
               <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png" alt="">
-              <input class="input-field" type="password" id="password" placeholder="••••••••">
+              <input class="input-field" id="password" type="password" placeholder="••••••••">
               <img class="input-icon-right" id="togglePwd" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png" alt="">
             </div>
           </div>
 
-          <div class="alert-box error" id="alertLogin"></div>
+          <div id="alertLogin" class="alert-box error"></div>
 
           <button class="btn-primary" id="submitLogin">⚡ Masuk</button>
 
           <div class="or-divider"><span>atau masuk dengan</span></div>
 
           <div class="social-row">
-            <button class="btn-social" id="loginGoogle">
-              <img src="https://img.icons8.com/color/24/google-logo.png" alt=""> Google
-            </button>
-            <button class="btn-social" id="loginApple">
-              <img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png" alt=""> Apple
-            </button>
-            <button class="btn-social" id="loginPhone">
-              📱 Telepon
-            </button>
+            <button class="btn-social" id="loginGoogle"><img src="https://img.icons8.com/color/24/google-logo.png" alt=""> Google</button>
+            <button class="btn-social" id="loginApple"><img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png" alt=""> Apple</button>
+            <button class="btn-social" id="loginPhone">📱 Telepon</button>
           </div>
 
-          <!-- PHONE AREA (login) -->
+          <!-- phone login area -->
           <div class="phone-area" id="phoneAreaLogin">
             <div class="input-wrap">
               <label>Nomor HP</label>
               <div class="input-inner">
-                <input class="input-field" id="phoneNumberLogin" placeholder="+628123456789">
+                <input class="input-field" id="phoneNumberLogin" placeholder="8381609xxx / 08381609xxx / +628381609xxx">
               </div>
             </div>
+
             <div id="recaptcha-container"></div>
             <button class="btn-primary" id="sendOTPLogin">Kirim OTP</button>
 
@@ -256,62 +154,55 @@
             </div>
             <button class="btn-primary" id="verifyOTPLogin">Verifikasi OTP</button>
           </div>
-        </div>
 
-        <div class="auth-card-footer">
-          Belum punya akun? <a onclick="switchTab('register')">Daftar sekarang →</a>
         </div>
+        <div class="auth-card-footer">Belum punya akun? <a onclick="switchTab('register')">Daftar sekarang →</a></div>
       </div>
 
-      <!-- REGISTER SCREEN -->
+      <!-- REGISTER -->
       <div class="screen" id="registerScreen">
         <div class="auth-body">
           <div class="auth-title">Buat Akun</div>
-          <div class="auth-subtitle">Gratis selamanya. Nikmati semua fitur NUBIASTORE & NUBIAPAY.</div>
+          <div class="auth-subtitle">Gratis — nikmati fitur NUBIAPAY.</div>
 
           <div class="input-wrap">
             <label>Email</label>
             <div class="input-inner">
               <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png" alt="">
-              <input class="input-field" type="email" id="regEmail" placeholder="nama@email.com">
+              <input class="input-field" id="regEmail" type="email" placeholder="nama@email.com">
             </div>
           </div>
 
           <div class="input-wrap">
-            <label>Password <span style="color:var(--white-muted);font-weight:400;font-size:0.65rem;">(min. 6 karakter)</span></label>
+            <label>Password <span style="color:var(--white-muted);font-size:.65rem;font-weight:400;">(min. 6)</span></label>
             <div class="input-inner">
               <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png" alt="">
-              <input class="input-field" type="password" id="regPassword" placeholder="••••••••">
+              <input class="input-field" id="regPassword" type="password" placeholder="••••••••">
               <img class="input-icon-right" id="togglePwdReg" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png" alt="">
             </div>
           </div>
 
-          <div class="alert-box error" id="alertRegister"></div>
+          <div id="alertRegister" class="alert-box error"></div>
 
           <button class="btn-primary" id="submitRegister">✨ Buat Akun</button>
 
           <div class="or-divider"><span>atau daftar dengan</span></div>
 
           <div class="social-row">
-            <button class="btn-social" id="regGoogle">
-              <img src="https://img.icons8.com/color/24/google-logo.png" alt=""> Google
-            </button>
-            <button class="btn-social" id="regApple">
-              <img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png" alt=""> Apple
-            </button>
-            <button class="btn-social" id="regPhone">
-              📱 Telepon
-            </button>
+            <button class="btn-social" id="regGoogle"><img src="https://img.icons8.com/color/24/google-logo.png" alt=""> Google</button>
+            <button class="btn-social" id="regApple"><img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png" alt=""> Apple</button>
+            <button class="btn-social" id="regPhone">📱 Telepon</button>
           </div>
 
-          <!-- PHONE AREA (register) -->
+          <!-- phone register area -->
           <div class="phone-area" id="phoneAreaReg">
             <div class="input-wrap">
               <label>Nomor HP</label>
               <div class="input-inner">
-                <input class="input-field" id="phoneNumberReg" placeholder="+628123456789">
+                <input class="input-field" id="phoneNumberReg" placeholder="8381609xxx / 08381609xxx / +628381609xxx">
               </div>
             </div>
+
             <div id="recaptcha-container-reg"></div>
             <button class="btn-primary" id="sendOTPReg">Kirim OTP</button>
 
@@ -323,388 +214,394 @@
             </div>
             <button class="btn-primary" id="verifyOTPReg">Verifikasi OTP</button>
           </div>
-        </div>
 
-        <div class="auth-card-footer">
-          Sudah punya akun? <a onclick="switchTab('login')">← Masuk</a>
         </div>
+        <div class="auth-card-footer">Sudah punya akun? <a onclick="switchTab('login')">← Masuk</a></div>
       </div>
     </div>
 
     <div class="security-row">
-      <span class="sec-badge"><span class="dot">🔒</span> SSL Aman</span>
-      <span class="sec-badge"><span class="dot">✓</span> Data Terenkripsi</span>
-      <span class="sec-badge"><span class="dot">🛡</span> Anti-Penipuan</span>
+      <span class="sec-badge">🔒 SSL Aman</span>
+      <span class="sec-badge">✓ Data Terenkripsi</span>
+      <span class="sec-badge">🛡 Anti-Penipuan</span>
     </div>
 
   </div>
 </div>
 
 <script>
-  /* ===== TAB SWITCH ===== */
-  function switchTab(tab) {
-    const isLogin = tab === 'login';
-    document.getElementById('tabLogin').classList.toggle('active', isLogin);
-    document.getElementById('tabRegister').classList.toggle('active', !isLogin);
-    document.getElementById('loginScreen').classList.toggle('active', isLogin);
-    document.getElementById('registerScreen').classList.toggle('active', !isLogin);
-    document.getElementById('promoBanner').style.display = isLogin ? 'none' : 'block';
-    document.getElementById('alertLogin').textContent = '';
-    document.getElementById('alertRegister').textContent = '';
-  }
-
-  /* ===== REDIRECT BACK TO PREVIOUS PAGE ===== */
-  function getRedirectTarget() {
-    const saved = sessionStorage.getItem('nubiastore_login_redirect');
-    if (saved && saved !== window.location.href) {
-      sessionStorage.removeItem('nubiastore_login_redirect');
-      return saved;
-    }
-    const ref = document.referrer;
-    if (ref && ref !== '' && !ref.includes('login-register')) {
-      return ref;
-    }
-    return 'https://nubiastore.netlify.app/';
-  }
-
-  document.getElementById('btnBackHeader').onclick = () => {
-    const target = getRedirectTarget();
-    window.location.href = target;
-  };
-
-  if (document.referrer && !document.referrer.includes('login-register')) {
-    sessionStorage.setItem('nubiastore_login_redirect', document.referrer);
-  }
+/* tab + redirect helpers */
+function switchTab(tab){
+  const isLogin = tab === 'login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('loginScreen').classList.toggle('active', isLogin);
+  document.getElementById('registerScreen').classList.toggle('active', !isLogin);
+  // reset alerts
+  document.getElementById('alertLogin').textContent = '';
+  document.getElementById('alertRegister').textContent = '';
+}
+function getRedirectTarget(){
+  const saved = sessionStorage.getItem('nubiastore_login_redirect');
+  if(saved && saved !== window.location.href){ sessionStorage.removeItem('nubiastore_login_redirect'); return saved; }
+  const ref = document.referrer; if(ref && !ref.includes('login-register')) return ref;
+  return 'https://nubiastore.netlify.app/';
+}
+document.getElementById('btnBackHeader').onclick = ()=>{ location.href = getRedirectTarget(); }
+if(document.referrer && !document.referrer.includes('login-register')) sessionStorage.setItem('nubiastore_login_redirect', document.referrer);
 </script>
 
-<!-- ===== FIREBASE + AUTH LOGIC (module) ===== -->
+<!-- Firebase + Auth (module) -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signInWithPopup,
-    GoogleAuthProvider,
-    OAuthProvider,
-    onAuthStateChanged,
-    RecaptchaVerifier,
-    signInWithPhoneNumber
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  OAuthProvider,
+  onAuthStateChanged,
+  RecaptchaVerifier,
+  signInWithPhoneNumber
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  /* ========== CONFIG ========== */
-  const firebaseConfig = {
-    apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-    authDomain: "zestoreid-f9e85.firebaseapp.com",
-    projectId: "zestoreid-f9e85",
-    storageBucket: "zestoreid-f9e85.firebasestorage.app",
-    messagingSenderId: "426093692154",
-    appId: "1:426093692154:web:38c6e9c143af626a623543",
-    measurementId: "G-TS0YB9NYW8"
+/* ============ CONFIG ============ */
+const firebaseConfig = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543",
+  measurementId: "G-TS0YB9NYW8"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ============ UI HELPERS ============ */
+function setLoading(btnId, loading, defaultText){
+  const btn = document.getElementById(btnId); if(!btn) return;
+  btn.disabled = loading; btn.innerHTML = loading ? `<span class="spinner"></span>Memproses...` : defaultText;
+}
+function showAlert(id, msg, type='error'){
+  const el = document.getElementById(id); if(!el) return;
+  el.textContent = msg; el.className = `alert-box ${type}`;
+}
+function firebaseErrorMsg(code){
+  const map = {
+    'auth/invalid-email':'Format email tidak valid.',
+    'auth/user-not-found':'Akun tidak ditemukan. Coba daftar.',
+    'auth/wrong-password':'Password salah.',
+    'auth/email-already-in-use':'Email sudah terdaftar.',
+    'auth/weak-password':'Password minimal 6 karakter.',
+    'auth/too-many-requests':'Terlalu banyak percobaan. Coba nanti.',
+    'auth/popup-closed-by-user':'Login dibatalkan.',
+    'auth/network-request-failed':'Koneksi bermasalah.',
+    'auth/invalid-credential':'Kredensial tidak valid.',
+    'auth/unauthorized-domain':'Domain belum diizinkan di Firebase Auth.',
+    'auth/missing-or-invalid-nonce':'Apple config belum lengkap.',
+    'auth/captcha-check-failed':'reCAPTCHA gagal.',
+    'auth/invalid-phone-number':'Format nomor telepon tidak valid.',
+    'auth/quota-exceeded':'Batas SMS tercapai.'
   };
+  return map[code] || 'Terjadi kesalahan. Coba lagi.';
+}
 
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-
-  /* ===== UI HELPERS ===== */
-  function setLoading(btnId, loading, defaultText) {
-    const btn = document.getElementById(btnId);
-    if (!btn) return;
-    btn.disabled = loading;
-    btn.innerHTML = loading ? `<span class="spinner"></span>Memproses...` : defaultText;
+/* ============ ensureUserDocuments ============ */
+async function ensureUserDocuments(user){
+  const uid = user.uid;
+  const code = uid.slice(0,6).toUpperCase();
+  const uRef = doc(db,'users',uid);
+  const uSnap = await getDoc(uRef);
+  if(!uSnap.exists()){
+    await setDoc(uRef,{
+      displayName: user.displayName || '',
+      email: user.email || '',
+      phoneNumber: user.phoneNumber || '',
+      nubiPayBalance: 0,
+      coinBalance: 0,
+      referralCode: code,
+      createdAt: serverTimestamp()
+    });
+  } else {
+    const updates = {};
+    if(!uSnap.data().referralCode) updates.referralCode = code;
+    if(!uSnap.data().nubiPayBalance && uSnap.data().nubiPayBalance !== 0) updates.nubiPayBalance = 0;
+    if(!uSnap.data().phoneNumber && user.phoneNumber) updates.phoneNumber = user.phoneNumber;
+    if(Object.keys(updates).length) await updateDoc(uRef, updates);
   }
-  function showAlert(id, msg, type = 'error') {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = msg;
-    el.className = `alert-box ${type}`;
+  const rRef = doc(db,'referralCodes',code);
+  const rSnap = await getDoc(rRef);
+  if(!rSnap.exists()) await setDoc(rRef,{owner:uid,count:0,createdAt:serverTimestamp()});
+}
+
+/* ============ AUTH STATE ============ */
+onAuthStateChanged(auth, async (user)=>{
+  if(user){
+    try{ await ensureUserDocuments(user); } catch(e){ console.error(e); }
+    location.href = (function(){
+      const saved = sessionStorage.getItem('nubiastore_login_redirect');
+      if(saved && saved !== window.location.href){ sessionStorage.removeItem('nubiastore_login_redirect'); return saved; }
+      const ref = document.referrer; if(ref && !ref.includes('login-register')) return ref;
+      return 'https://nubiastore.netlify.app/';
+    })();
   }
-  function firebaseErrorMsg(code) {
-    const map = {
-      'auth/invalid-email':            'Format email tidak valid.',
-      'auth/user-not-found':           'Akun tidak ditemukan. Coba daftar dulu.',
-      'auth/wrong-password':           'Password salah. Coba lagi.',
-      'auth/email-already-in-use':     'Email sudah terdaftar. Coba masuk.',
-      'auth/weak-password':            'Password minimal 6 karakter.',
-      'auth/too-many-requests':        'Terlalu banyak percobaan. Coba lagi nanti.',
-      'auth/popup-closed-by-user':     'Login dibatalkan.',
-      'auth/network-request-failed':   'Koneksi bermasalah. Cek internet kamu.',
-      'auth/invalid-credential':       'Email atau password salah.',
-      'auth/unauthorized-domain':      'Domain belum diizinkan di Firebase Auth.',
-      'auth/missing-or-invalid-nonce': 'Apple config belum lengkap (nonce).',
-      'auth/captcha-check-failed':     'reCAPTCHA gagal. Muat ulang laman dan coba lagi.',
-      'auth/invalid-phone-number':     'Format nomor telepon tidak valid.',
-      'auth/quota-exceeded':           'Batas pengiriman SMS tercapai. Coba nanti.',
-    };
-    return map[code] || 'Terjadi kesalahan. Coba lagi.';
+});
+
+/* ============ EMAIL AUTH ============ */
+document.getElementById('submitLogin').addEventListener('click', async ()=>{
+  const email = document.getElementById('email').value.trim();
+  const pw = document.getElementById('password').value.trim();
+  showAlert('alertLogin','');
+  if(!email || !pw){ showAlert('alertLogin','Isi email & password.'); return; }
+  setLoading('submitLogin', true, '⚡ Masuk');
+  try{
+    const { user } = await signInWithEmailAndPassword(auth,email,pw);
+    await ensureUserDocuments(user);
+    location.href = getRedirectTarget();
+  }catch(err){
+    showAlert('alertLogin', firebaseErrorMsg(err.code));
+    console.error(err);
+    setLoading('submitLogin', false, '⚡ Masuk');
   }
+});
 
-  /* ===== ENSURE USER DOC ===== */
-  async function ensureUserDocuments(user) {
-    const uid  = user.uid;
-    const code = uid.slice(0, 6).toUpperCase();
-    const uRef  = doc(db, 'users', uid);
-    const uSnap = await getDoc(uRef);
-
-    if (!uSnap.exists()) {
-      await setDoc(uRef, {
-        displayName:    user.displayName || '',
-        email:          user.email || '',
-        phoneNumber:    user.phoneNumber || '',
-        nubiPayBalance: 0,
-        coinBalance:    0,
-        referralCode:   code,
-        createdAt:      serverTimestamp()
-      });
-    } else {
-      const updates = {};
-      if (!uSnap.data().referralCode) updates.referralCode = code;
-      if (!uSnap.data().nubiPayBalance && uSnap.data().nubiPayBalance !== 0) updates.nubiPayBalance = 0;
-      if (!uSnap.data().phoneNumber && user.phoneNumber) updates.phoneNumber = user.phoneNumber;
-      if (Object.keys(updates).length) await updateDoc(uRef, updates);
-    }
-
-    const rRef  = doc(db, 'referralCodes', code);
-    const rSnap = await getDoc(rRef);
-    if (!rSnap.exists()) {
-      await setDoc(rRef, { owner: uid, count: 0, createdAt: serverTimestamp() });
-    }
+document.getElementById('submitRegister').addEventListener('click', async ()=>{
+  const email = document.getElementById('regEmail').value.trim();
+  const pw = document.getElementById('regPassword').value.trim();
+  showAlert('alertRegister','');
+  if(!email || !pw){ showAlert('alertRegister','Isi email & password.'); return; }
+  setLoading('submitRegister', true, '✨ Buat Akun');
+  try{
+    const { user } = await createUserWithEmailAndPassword(auth,email,pw);
+    await ensureUserDocuments(user);
+    showAlert('alertRegister','🎉 Akun dibuat!','success');
+    setTimeout(()=>{ location.href = getRedirectTarget(); }, 700);
+  }catch(err){
+    showAlert('alertRegister', firebaseErrorMsg(err.code));
+    console.error(err);
+    setLoading('submitRegister', false, '✨ Buat Akun');
   }
+});
 
-  /* ===== AUTH STATE HANDLER ===== */
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      try { await ensureUserDocuments(user); } catch(e) { console.error(e); }
-      // redirect back
-      window.location.href = (function(){
-        const saved = sessionStorage.getItem('nubiastore_login_redirect');
-        if (saved && saved !== window.location.href && !saved.includes('login-register')) { sessionStorage.removeItem('nubiastore_login_redirect'); return saved; }
-        const ref = document.referrer; if (ref && !ref.includes('login-register')) return ref;
-        return 'https://nubiastore.netlify.app/';
-      })();
+/* ============ GOOGLE / APPLE ============ */
+async function loginWithGoogle(alertId){
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  showAlert(alertId,'');
+  try{
+    const { user } = await signInWithPopup(auth, provider);
+    await ensureUserDocuments(user);
+    location.href = getRedirectTarget();
+  }catch(err){
+    if(err.code !== 'auth/popup-closed-by-user') showAlert(alertId, firebaseErrorMsg(err.code));
+    console.error(err);
+  }
+}
+async function loginWithApple(alertId){
+  const provider = new OAuthProvider('apple.com');
+  provider.addScope('email'); provider.addScope('name');
+  showAlert(alertId,'');
+  try{
+    const { user } = await signInWithPopup(auth, provider);
+    await ensureUserDocuments(user);
+    location.href = getRedirectTarget();
+  }catch(err){
+    if(err.code !== 'auth/popup-closed-by-user') showAlert(alertId, firebaseErrorMsg(err.code));
+    console.error(err);
+  }
+}
+document.getElementById('loginGoogle').addEventListener('click', ()=>loginWithGoogle('alertLogin'));
+document.getElementById('regGoogle').addEventListener('click', ()=>loginWithGoogle('alertRegister'));
+document.getElementById('loginApple').addEventListener('click', ()=>loginWithApple('alertLogin'));
+document.getElementById('regApple').addEventListener('click', ()=>loginWithApple('alertRegister'));
+
+/* ============ PHONE AUTH HELPERS (auto +62) ============ */
+/*
+  normalizePhoneNumberForAuth:
+   - input: arbitrary user string (e.g. "8381609xxx", "08381609xxx", "+628381609xxx")
+   - output: normalized international string for Firebase: "+628381609xxx" or "" if invalid
+*/
+function normalizePhoneNumberForAuth(input){
+  if(!input) return '';
+  // remove non-digit and plus
+  const cleaned = input.replace(/[^\d\+]/g,'');
+  if(cleaned.startsWith('+')){
+    // ensure +62 or other country code
+    if(/^(\+62)\d{5,}$/.test(cleaned)) return cleaned;
+    return cleaned; // still return, firebase may reject invalid length
+  }
+  if(/^0\d+/.test(cleaned)) {
+    // 08123... -> +628123...
+    return '+62' + cleaned.slice(1);
+  }
+  if(/^62\d+/.test(cleaned)){
+    return '+' + cleaned;
+  }
+  if(/^[89]\d+/.test(cleaned)){
+    // starts with 8 (no leading 0) -> assume Indonesian mobile
+    return '+62' + cleaned;
+  }
+  return '';
+}
+function formatPhoneForDisplay(intPhone){
+  if(!intPhone) return '';
+  const p = intPhone.replace(/[^\d\+]/g,'');
+  if(p.startsWith('+62')) return `(+62) ${p.slice(3)}`;
+  if(p.startsWith('+')) return p;
+  return p;
+}
+
+/* attach auto-format behaviour to inputs */
+function attachAutoFormat(inputEl){
+  // on focus: show raw digits (without (+62) label) for easy editing
+  inputEl.addEventListener('focus', (e)=>{
+    const cur = inputEl.dataset.normalized || inputEl.value;
+    if(cur && cur.startsWith('+62')){
+      inputEl.value = cur.slice(3); // show without +62
+    } else if(cur && cur.startsWith('+')){
+      inputEl.value = cur;
     }
   });
-
-  /* ===== EMAIL LOGIN / REGISTER ===== */
-  document.getElementById('submitLogin').addEventListener('click', async () => {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-    showAlert('alertLogin', '');
-    if (!email || !password) { showAlert('alertLogin','Isi email dan password terlebih dahulu.'); return; }
-    setLoading('submitLogin', true, '⚡ Masuk');
-    try {
-      const { user } = await signInWithEmailAndPassword(auth, email, password);
-      await ensureUserDocuments(user);
-      window.location.href = getRedirectTarget();
-    } catch(err) {
-      showAlert('alertLogin', firebaseErrorMsg(err.code));
-      setLoading('submitLogin', false, '⚡ Masuk');
-      console.error(err);
-    }
+  // on blur: normalize & display nicely
+  inputEl.addEventListener('blur', (e)=>{
+    const raw = inputEl.value || '';
+    const normalized = normalizePhoneNumberForAuth(raw);
+    inputEl.dataset.normalized = normalized;
+    inputEl.value = normalized ? formatPhoneForDisplay(normalized) : raw;
   });
-
-  document.getElementById('submitRegister').addEventListener('click', async () => {
-    const email = document.getElementById('regEmail').value.trim();
-    const password = document.getElementById('regPassword').value.trim();
-    showAlert('alertRegister','');
-    if (!email || !password) { showAlert('alertRegister','Isi email dan password terlebih dahulu.'); return; }
-    setLoading('submitRegister', true, '✨ Buat Akun');
-    try {
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      await ensureUserDocuments(user);
-      showAlert('alertRegister','🎉 Akun berhasil dibuat! Mengalihkan...','success');
-      setTimeout(()=>{ window.location.href = getRedirectTarget(); }, 800);
-    } catch(err) {
-      showAlert('alertRegister', firebaseErrorMsg(err.code));
-      setLoading('submitRegister', false, '✨ Buat Akun');
-      console.error(err);
-    }
+  // optional: while typing, keep only digits and plus
+  inputEl.addEventListener('input', ()=>{
+    inputEl.value = inputEl.value.replace(/[^\d\+\s\-\(\)]/g,'');
   });
+}
 
-  /* ===== GOOGLE LOGIN ===== */
-  async function loginWithGoogle(alertId) {
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    showAlert(alertId,'');
-    try {
-      const { user } = await signInWithPopup(auth, provider);
-      await ensureUserDocuments(user);
-      window.location.href = getRedirectTarget();
-    } catch(err) {
-      if (err.code !== 'auth/popup-closed-by-user') showAlert(alertId, firebaseErrorMsg(err.code));
-      console.error(err);
+/* init attach for both login & reg inputs */
+const phoneLoginInput = document.getElementById('phoneNumberLogin');
+const phoneRegInput = document.getElementById('phoneNumberReg');
+attachAutoFormat(phoneLoginInput);
+attachAutoFormat(phoneRegInput);
+
+/* ============ reCAPTCHA widgets (invisible) ============ */
+let recaptchaLoginWidget = null;
+let recaptchaRegWidget = null;
+function initRecaptchas(){
+  try{
+    if(!recaptchaLoginWidget){
+      recaptchaLoginWidget = new RecaptchaVerifier('recaptcha-container', { size: 'invisible' }, auth);
+      recaptchaLoginWidget.render().catch(()=>{});
     }
+  }catch(e){ console.warn('recap login init', e) }
+  try{
+    if(!recaptchaRegWidget){
+      recaptchaRegWidget = new RecaptchaVerifier('recaptcha-container-reg', { size: 'invisible' }, auth);
+      recaptchaRegWidget.render().catch(()=>{});
+    }
+  }catch(e){ console.warn('recap reg init', e) }
+}
+
+/* Show/hide phone areas */
+document.getElementById('loginPhone').addEventListener('click', ()=>{
+  document.getElementById('phoneAreaLogin').style.display = 'block';
+  initRecaptchas();
+  setTimeout(()=>phoneLoginInput.focus(), 200);
+});
+document.getElementById('regPhone').addEventListener('click', ()=>{
+  document.getElementById('phoneAreaReg').style.display = 'block';
+  initRecaptchas();
+  setTimeout(()=>phoneRegInput.focus(), 200);
+});
+
+/* ============ PHONE OTP: send & verify ============ */
+
+// LOGIN: send OTP
+document.getElementById('sendOTPLogin').addEventListener('click', async ()=>{
+  const displayAlertId = 'alertLogin';
+  showAlert(displayAlertId,'');
+  // compute normalized (if dataset exists use it)
+  const raw = document.getElementById('phoneNumberLogin').value;
+  const normalized = document.getElementById('phoneNumberLogin').dataset.normalized || normalizePhoneNumberForAuth(raw);
+  if(!normalized){ showAlert(displayAlertId, 'Nomor telepon tidak valid.'); return; }
+  setLoading('sendOTPLogin', true, 'Mengirim OTP...');
+  try{
+    const appVerifier = recaptchaLoginWidget || new RecaptchaVerifier('recaptcha-container', { size: 'invisible' }, auth);
+    const confirmationResult = await signInWithPhoneNumber(auth, normalized, appVerifier);
+    window.confirmationResultLogin = confirmationResult;
+    alert('OTP terkirim ke ' + formatPhoneForDisplay(normalized));
+  }catch(err){
+    console.error('sendOTPLogin', err);
+    showAlert(displayAlertId, firebaseErrorMsg(err.code));
+  }finally{ setLoading('sendOTPLogin', false, 'Kirim OTP'); }
+});
+
+// LOGIN: verify OTP
+document.getElementById('verifyOTPLogin').addEventListener('click', async ()=>{
+  const displayAlertId = 'alertLogin';
+  showAlert(displayAlertId,'');
+  const code = document.getElementById('otpCodeLogin').value.trim();
+  if(!code){ showAlert(displayAlertId,'Masukkan kode OTP.'); return; }
+  setLoading('verifyOTPLogin', true, 'Verifikasi...');
+  try{
+    if(!window.confirmationResultLogin){ showAlert(displayAlertId,'OTP belum dikirim.'); setLoading('verifyOTPLogin', false, 'Verifikasi OTP'); return; }
+    const result = await window.confirmationResultLogin.confirm(code);
+    const user = result.user;
+    await ensureUserDocuments(user);
+    location.href = getRedirectTarget();
+  }catch(err){
+    console.error('verifyOTPLogin', err);
+    showAlert(displayAlertId, firebaseErrorMsg(err.code));
+    setLoading('verifyOTPLogin', false, 'Verifikasi OTP');
   }
+});
 
-  /* ===== APPLE LOGIN =====
-     Note: Apple needs additional setup in Apple Developer + Firebase (Services ID, Key ID, Team ID, private key).
-     If you get errors like 'missing-or-invalid-nonce' or 'unauthorized-domain' check Firebase Apple config.
-  */
-  async function loginWithApple(alertId) {
-    const provider = new OAuthProvider('apple.com');
-    provider.addScope('email');
-    provider.addScope('name');
-    showAlert(alertId,'');
-    try {
-      const { user } = await signInWithPopup(auth, provider);
-      await ensureUserDocuments(user);
-      window.location.href = getRedirectTarget();
-    } catch(err) {
-      if (err.code !== 'auth/popup-closed-by-user') showAlert(alertId, firebaseErrorMsg(err.code));
-      console.error(err);
-    }
+// REGISTER: send OTP
+document.getElementById('sendOTPReg').addEventListener('click', async ()=>{
+  const displayAlertId = 'alertRegister';
+  showAlert(displayAlertId,'');
+  const raw = document.getElementById('phoneNumberReg').value;
+  const normalized = document.getElementById('phoneNumberReg').dataset.normalized || normalizePhoneNumberForAuth(raw);
+  if(!normalized){ showAlert(displayAlertId,'Nomor telepon tidak valid.'); return; }
+  setLoading('sendOTPReg', true, 'Mengirim OTP...');
+  try{
+    const appVerifier = recaptchaRegWidget || new RecaptchaVerifier('recaptcha-container-reg', { size: 'invisible' }, auth);
+    const confirmationResult = await signInWithPhoneNumber(auth, normalized, appVerifier);
+    window.confirmationResultReg = confirmationResult;
+    alert('OTP terkirim ke ' + formatPhoneForDisplay(normalized));
+  }catch(err){
+    console.error('sendOTPReg', err);
+    showAlert(displayAlertId, firebaseErrorMsg(err.code));
+  }finally{ setLoading('sendOTPReg', false, 'Kirim OTP'); }
+});
+
+// REGISTER: verify OTP
+document.getElementById('verifyOTPReg').addEventListener('click', async ()=>{
+  const displayAlertId = 'alertRegister';
+  showAlert(displayAlertId,'');
+  const code = document.getElementById('otpCodeReg').value.trim();
+  if(!code){ showAlert(displayAlertId,'Masukkan kode OTP.'); return; }
+  setLoading('verifyOTPReg', true, 'Verifikasi...');
+  try{
+    if(!window.confirmationResultReg){ showAlert(displayAlertId,'OTP belum dikirim.'); setLoading('verifyOTPReg', false, 'Verifikasi OTP'); return; }
+    const result = await window.confirmationResultReg.confirm(code);
+    const user = result.user;
+    await ensureUserDocuments(user);
+    location.href = getRedirectTarget();
+  }catch(err){
+    console.error('verifyOTPReg', err);
+    showAlert(displayAlertId, firebaseErrorMsg(err.code));
+    setLoading('verifyOTPReg', false, 'Verifikasi OTP');
   }
+});
 
-  document.getElementById('loginGoogle').addEventListener('click', ()=>loginWithGoogle('alertLogin'));
-  document.getElementById('regGoogle').addEventListener('click', ()=>loginWithGoogle('alertRegister'));
-  document.getElementById('loginApple').addEventListener('click', ()=>loginWithApple('alertLogin'));
-  document.getElementById('regApple').addEventListener('click', ()=>loginWithApple('alertRegister'));
-
-  /* ===== PHONE AUTH (reCAPTCHA + OTP) ===== */
-
-  // helper to normalize Indonesian numbers input by users
-  function normalizePhoneNumber(input) {
-    if (!input) return '';
-    input = input.trim();
-    // if starts with 0 (e.g. 0812...), convert to +62...
-    if (/^0\d+/.test(input)) {
-      return '+62' + input.slice(1).replace(/\s+/g,'');
-    }
-    // if starts with 62 without plus -> add plus
-    if (/^62\d+/.test(input)) return '+' + input.replace(/\s+/g,'');
-    // if already +62... or international, keep
-    return input.replace(/\s+/g,'');
-  }
-
-  // initialize reCAPTCHA widgets once (two widgets for login/register areas)
-  let recaptchaLoginWidget = null;
-  let recaptchaRegWidget = null;
-
-  function initRecaptchas() {
-    try {
-      if (!recaptchaLoginWidget) {
-        recaptchaLoginWidget = new RecaptchaVerifier('recaptcha-container', { size: 'normal' }, auth);
-        recaptchaLoginWidget.render().catch(()=>{});
-      }
-    } catch(e){ console.warn('recap init login', e); }
-    try {
-      if (!recaptchaRegWidget) {
-        recaptchaRegWidget = new RecaptchaVerifier('recaptcha-container-reg', { size: 'normal' }, auth);
-        recaptchaRegWidget.render().catch(()=>{});
-      }
-    } catch(e){ console.warn('recap init reg', e); }
-  }
-
-  // show/hide phone areas when clicking social phone buttons
-  document.getElementById('loginPhone').addEventListener('click', () => {
-    document.getElementById('phoneAreaLogin').style.display = 'block';
-    initRecaptchas();
-    window.scrollTo({ top: document.getElementById('phoneAreaLogin').offsetTop - 60, behavior: 'smooth' });
-  });
-  document.getElementById('regPhone').addEventListener('click', () => {
-    document.getElementById('phoneAreaReg').style.display = 'block';
-    initRecaptchas();
-    window.scrollTo({ top: document.getElementById('phoneAreaReg').offsetTop - 60, behavior: 'smooth' });
-  });
-
-  // send OTP (login)
-  document.getElementById('sendOTPLogin').addEventListener('click', async () => {
-    const raw = document.getElementById('phoneNumberLogin').value.trim();
-    const phone = normalizePhoneNumber(raw);
-    showAlert('alertLogin','');
-    if (!phone) { showAlert('alertLogin','Masukkan nomor telepon.'); return; }
-    setLoading('sendOTPLogin', true, 'Mengirim OTP...');
-    try {
-      const appVerifier = recaptchaLoginWidget || new RecaptchaVerifier('recaptcha-container', { size: 'normal' }, auth);
-      const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
-      window.confirmationResultLogin = confirmationResult;
-      alert('OTP terkirim ke ' + phone);
-    } catch(err) {
-      showAlert('alertLogin', firebaseErrorMsg(err.code));
-      console.error('sendOTPLogin', err);
-    } finally {
-      setLoading('sendOTPLogin', false, 'Kirim OTP');
-    }
-  });
-
-  // verify OTP (login)
-  document.getElementById('verifyOTPLogin').addEventListener('click', async () => {
-    const code = document.getElementById('otpCodeLogin').value.trim();
-    showAlert('alertLogin','');
-    if (!code) { showAlert('alertLogin','Masukkan kode OTP.'); return; }
-    setLoading('verifyOTPLogin', true, 'Verifikasi...');
-    try {
-      const result = await window.confirmationResultLogin.confirm(code);
-      const user = result.user;
-      await ensureUserDocuments(user);
-      window.location.href = getRedirectTarget();
-    } catch(err) {
-      showAlert('alertLogin', firebaseErrorMsg(err.code));
-      console.error('verifyOTPLogin', err);
-      setLoading('verifyOTPLogin', false, 'Verifikasi OTP');
-    }
-  });
-
-  // send OTP (register)
-  document.getElementById('sendOTPReg').addEventListener('click', async () => {
-    const raw = document.getElementById('phoneNumberReg').value.trim();
-    const phone = normalizePhoneNumber(raw);
-    showAlert('alertRegister','');
-    if (!phone) { showAlert('alertRegister','Masukkan nomor telepon.'); return; }
-    setLoading('sendOTPReg', true, 'Mengirim OTP...');
-    try {
-      const appVerifier = recaptchaRegWidget || new RecaptchaVerifier('recaptcha-container-reg', { size: 'normal' }, auth);
-      const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
-      window.confirmationResultReg = confirmationResult;
-      alert('OTP terkirim ke ' + phone);
-    } catch(err) {
-      showAlert('alertRegister', firebaseErrorMsg(err.code));
-      console.error('sendOTPReg', err);
-    } finally {
-      setLoading('sendOTPReg', false, 'Kirim OTP');
-    }
-  });
-
-  // verify OTP (register)
-  document.getElementById('verifyOTPReg').addEventListener('click', async () => {
-    const code = document.getElementById('otpCodeReg').value.trim();
-    showAlert('alertRegister','');
-    if (!code) { showAlert('alertRegister','Masukkan kode OTP.'); return; }
-    setLoading('verifyOTPReg', true, 'Verifikasi...');
-    try {
-      const result = await window.confirmationResultReg.confirm(code);
-      const user = result.user;
-      await ensureUserDocuments(user);
-      window.location.href = getRedirectTarget();
-    } catch(err) {
-      showAlert('alertRegister', firebaseErrorMsg(err.code));
-      console.error('verifyOTPReg', err);
-      setLoading('verifyOTPReg', false, 'Verifikasi OTP');
-    }
-  });
-
-  /* ===== PASSWORD TOGGLE ===== */
-  function togglePassword(inputId, iconId) {
-    const inp = document.getElementById(inputId);
-    const ico = document.getElementById(iconId);
-    const isPass = inp.type === 'password';
-    inp.type = isPass ? 'text' : 'password';
-    ico.src  = isPass
-      ? 'https://img.icons8.com/ios-glyphs/30/ffffff/hide.png'
-      : 'https://img.icons8.com/ios-glyphs/30/ffffff/visible.png';
-  }
-  document.getElementById('togglePwd').onclick    = () => togglePassword('password', 'togglePwd');
-  document.getElementById('togglePwdReg').onclick = () => togglePassword('regPassword', 'togglePwdReg');
-
-  /* ===== QUICK: init recaptchas on page load (invisible until needed) ===== */
-  // We initialize lazily when the phone area is shown (initRecaptchas).
-  // But run a safe attempt to render invisible recaptcha to reserve quota (optional).
-  // initRecaptchas();  // Uncomment if you want immediate render
+/* optional: initialize invisible recaptchas quietly to avoid first-click delay
+   but keep commented until domain confirmed on Firebase console.
+   initRecaptchas();
+*/
 </script>
-
 </body>
 </html>
