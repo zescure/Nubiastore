@@ -529,6 +529,132 @@ counter-reset: step;
     position: fixed; bottom: 0; left: 0; max-height: 92vh; overflow-y: auto; }
   .modal-overlay { align-items: flex-end; padding: 0; }
 }
+
+
+/* ================================================
+   MENU SALDO CARD — tambahan CSS
+   Tidak override class apapun yang sudah ada
+   ================================================ */
+
+.msc-wrap {
+  margin: 0.875rem 1rem 0.5rem;
+  padding: 0.875rem 1rem;
+  background: linear-gradient(135deg,
+    rgba(22,163,74,0.1) 0%,
+    rgba(22,163,74,0.04) 100%);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* sudut glow dekoratif */
+.msc-wrap::after {
+  content: '';
+  position: absolute;
+  top: -18px; right: -18px;
+  width: 72px; height: 72px;
+  background: radial-gradient(circle,
+    rgba(74,222,128,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ---- shared ---- */
+.msc-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 6px rgba(74,222,128,0.45));
+  flex-shrink: 0;
+}
+.msc-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: rgba(74,222,128,0.9);
+}
+
+/* ---- guest state ---- */
+.msc-guest {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.msc-sub {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.4);
+  margin-top: 2px;
+}
+
+/* ---- loggedin state ---- */
+.msc-user {
+  display: flex;
+  flex-direction: column;
+}
+.msc-user-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.msc-uid {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.3);
+  font-family: monospace;
+  margin-top: 2px;
+  max-width: 155px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.msc-divider {
+  height: 1px;
+  background: rgba(34,197,94,0.2);
+  margin: 0.6rem 0 0.45rem;
+}
+.msc-bal-label {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.msc-amount {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.3rem; font-weight: 800;
+  color: #4ade80;
+  filter: drop-shadow(0 0 8px rgba(74,222,128,0.3));
+  margin-top: 3px; letter-spacing: 0.5px;
+  min-height: 1.6rem;
+}
+.msc-dots {
+  animation: mscPulse 1.2s ease infinite;
+  color: rgba(74,222,128,0.5);
+  font-size: 1rem;
+}
+@keyframes mscPulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.25; }
+}
+.msc-topup-btn {
+  display: block;
+  margin-top: 0.75rem;
+  padding: 0.45rem 0;
+  background: linear-gradient(135deg, #16a34a, #0d7c3a);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.78rem; font-weight: 700;
+  text-align: center; text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(22,163,74,0.3);
+}
+.msc-topup-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(22,163,74,0.5);
+}
+
+/* ================================================
+   END MENU SALDO CARD CSS
+   ================================================ */
+
 ```
 
   </style>
@@ -546,6 +672,38 @@ counter-reset: step;
     <div class="menu-logo">NUBIASTORE</div>
     <button class="menu-close" id="menuClose">✕</button>
   </div>
+  <!-- ===== SALDO CARD (tempel setelah .menu-header) ===== -->
+<div class="msc-wrap" id="mscWrap">
+
+  <!-- Belum login -->
+  <div id="mscGuest" class="msc-guest">
+    <span class="msc-icon">💳</span>
+    <div>
+      <div class="msc-title">NUBIAPAY</div>
+      <div class="msc-sub">Login untuk lihat saldo</div>
+    </div>
+  </div>
+
+  <!-- Sudah login -->
+  <div id="mscUser" class="msc-user" style="display:none">
+    <div class="msc-user-top">
+      <div>
+        <div class="msc-title">NUBIAPAY</div>
+        <div class="msc-uid" id="mscUid">—</div>
+      </div>
+      <span class="msc-icon">💳</span>
+    </div>
+    <div class="msc-divider"></div>
+    <div class="msc-bal-label">Saldo Kamu</div>
+    <div class="msc-amount" id="mscAmount">
+      <span class="msc-dots">•••</span>
+    </div>
+    <a href="akun.html" class="msc-topup-btn">＋ Isi Saldo</a>
+  </div>
+
+</div>
+<!-- ===== END SALDO CARD ===== -->
+
   <ul>
     <li><a href="https://nubiastore.netlify.app">🏠 Home</a></li>
     <li><a href="TentangNUBIASTORE.html">ℹ️ Tentang Kami</a></li>
@@ -1415,6 +1573,72 @@ function startCountdown() {
   tick();
   countdownInterval = setInterval(tick, 1000);
 }
+</script>
+
+
+<script type="module">
+/*
+  MENU SALDO CARD — script terpisah
+  Menggunakan getApps()[0] agar tidak double-init Firebase.
+  Tidak menyentuh variabel apapun dari script utama.
+*/
+import { getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* ambil instance Firebase yang sudah diinit di script utama */
+const _app  = getApps()[0];
+const _auth = getAuth(_app);
+const _db   = getFirestore(_app);
+
+/* refs */
+const mscGuest  = document.getElementById('mscGuest');
+const mscUser   = document.getElementById('mscUser');
+const mscUid    = document.getElementById('mscUid');
+const mscAmount = document.getElementById('mscAmount');
+
+let _unsubSaldo = null;
+
+function fmtSaldo(n) {
+  return 'Rp ' + Number(n).toLocaleString('id');
+}
+function shortUid(uid) {
+  return uid ? uid.slice(0,6) + '...' + uid.slice(-4) : '—';
+}
+
+function showGuest() {
+  if (mscGuest) mscGuest.style.display = 'flex';
+  if (mscUser)  mscUser.style.display  = 'none';
+  if (_unsubSaldo) { try { _unsubSaldo(); } catch(e){} _unsubSaldo = null; }
+}
+
+function showUser(uid) {
+  if (mscGuest) mscGuest.style.display = 'none';
+  if (mscUser)  mscUser.style.display  = 'flex';
+  if (mscUid)   mscUid.textContent     = shortUid(uid);
+  /* reset ke loading dots */
+  if (mscAmount) mscAmount.innerHTML = '<span class="msc-dots">•••</span>';
+
+  /* cleanup listener lama */
+  if (_unsubSaldo) { try { _unsubSaldo(); } catch(e){} }
+
+  /* realtime listener saldo */
+  _unsubSaldo = onSnapshot(
+    doc(_db, 'users', uid),
+    (snap) => {
+      const bal = snap.exists() ? Number(snap.data().nubiPayBalance || 0) : 0;
+      if (mscAmount) mscAmount.textContent = fmtSaldo(bal);
+    },
+    (err) => {
+      console.warn('[MenuSaldo] err:', err);
+      if (mscAmount) mscAmount.textContent = 'Rp —';
+    }
+  );
+}
+
+onAuthStateChanged(_auth, (user) => {
+  user ? showUser(user.uid) : showGuest();
+});
 </script>
 
 </body>
