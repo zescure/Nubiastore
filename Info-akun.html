@@ -672,7 +672,7 @@ async function createDepositOrder(amount) {
   const total    = amount + adminFee;
 
   const ok = confirm(
-    `Konfirmasi Deposit NUBIAPAY\n\nUID: ${currentUser.uid}\nNominal: Rp ${amount.toLocaleString('id')}\nBiaya Admin (1.6%): Rp ${adminFee.toLocaleString('id')}\nTotal Tagihan: Rp ${total.toLocaleString('id')}\n\nLanjutkan ke halaman pembayaran?`
+    `Konfirmasi Deposit NUBIAPAY\n\nUID: ${currentUser.uid}\nNominal: Rp ${amount.toLocaleString('id')}\nBiaya Admin (1%): Rp ${adminFee.toLocaleString('id')}\nTotal Tagihan: Rp ${total.toLocaleString('id')}\n\nLanjutkan ke halaman pembayaran?`
   );
   if (!ok) return;
 
