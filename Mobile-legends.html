@@ -655,6 +655,168 @@ counter-reset: step;
    END MENU SALDO CARD CSS
    ================================================ */
 
+
+
+/* ================================================
+   AUTH HEADER WIDGET
+   Tidak override class apapun yang sudah ada
+   ================================================ */
+
+.auth-widget { position: relative; }
+
+/* --- tombol login (guest) --- */
+.auth-login-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 0.875rem;
+  background: linear-gradient(135deg, #16a34a, #0d7c3a);
+  border: none; border-radius: 7px;
+  color: #fff; font-family: 'Exo 2', sans-serif;
+  font-size: 0.82rem; font-weight: 700;
+  cursor: pointer; text-decoration: none;
+  letter-spacing: 0.5px; transition: all 0.2s;
+  box-shadow: 0 0 12px rgba(22,163,74,0.4);
+  white-space: nowrap;
+}
+.auth-login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(22,163,74,0.6);
+}
+
+/* --- trigger button (logged in) --- */
+.auth-trigger {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.35rem 0.7rem 0.35rem 0.45rem;
+  background: rgba(22,163,74,0.1);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 8px; cursor: pointer;
+  transition: all 0.2s; position: relative;
+}
+.auth-trigger:hover {
+  background: rgba(22,163,74,0.18);
+  border-color: rgba(74,222,128,0.4);
+}
+.auth-trigger[aria-expanded="true"] {
+  background: rgba(22,163,74,0.2);
+  border-color: rgba(74,222,128,0.5);
+}
+
+.auth-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a, #0d7c3a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+  border: 1px solid rgba(74,222,128,0.4);
+  overflow: hidden;
+}
+.auth-avatar img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+
+.auth-trigger-text {
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.auth-trigger-name {
+  font-family: 'Exo 2', sans-serif; font-size: 0.78rem; font-weight: 700;
+  color: #fff; max-width: 90px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.auth-trigger-arrow {
+  font-size: 0.65rem; color: rgba(74,222,128,0.8);
+  transition: transform 0.25s;
+}
+.auth-trigger[aria-expanded="true"] .auth-trigger-arrow {
+  transform: rotate(180deg);
+}
+
+/* --- dropdown card --- */
+.auth-dropdown {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  width: 240px;
+  background: linear-gradient(160deg, #0e1f12, #0a1a0d);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 14px; overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.7), 0 0 24px rgba(34,197,94,0.12);
+  z-index: 9000;
+  opacity: 0; transform: translateY(-8px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.auth-dropdown.open {
+  opacity: 1; transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* card head */
+.auth-card-head {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 1rem 0.75rem;
+  background: linear-gradient(90deg, rgba(22,163,74,0.12), rgba(22,163,74,0.03));
+}
+.auth-card-avatar {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #16a34a, #0d7c3a);
+  border: 2px solid rgba(74,222,128,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; overflow: hidden;
+  box-shadow: 0 0 10px rgba(74,222,128,0.25);
+}
+.auth-card-avatar img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+.auth-card-name {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.92rem; font-weight: 700;
+  color: #fff; max-width: 160px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.auth-card-email {
+  font-size: 0.68rem; color: rgba(255,255,255,0.5); margin-top: 2px;
+  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.auth-card-uid {
+  font-size: 0.6rem; color: rgba(74,222,128,0.5);
+  font-family: monospace; margin-top: 3px;
+}
+
+.auth-card-divider {
+  height: 1px; background: rgba(34,197,94,0.15);
+}
+
+/* action buttons */
+.auth-card-actions {
+  display: flex; flex-direction: column; gap: 0.35rem;
+  padding: 0.6rem 0.75rem 0.75rem;
+}
+.auth-btn-info {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 0.875rem;
+  background: rgba(22,163,74,0.1);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 8px; color: rgba(255,255,255,0.85);
+  font-family: 'Exo 2', sans-serif; font-size: 0.82rem; font-weight: 600;
+  text-decoration: none; transition: all 0.2s; cursor: pointer;
+}
+.auth-btn-info:hover {
+  background: rgba(22,163,74,0.2); color: #4ade80;
+  border-color: rgba(34,197,94,0.4);
+}
+.auth-btn-logout {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 0.875rem; width: 100%;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px; color: rgba(248,113,113,0.85);
+  font-family: 'Exo 2', sans-serif; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; text-align: left;
+}
+.auth-btn-logout:hover {
+  background: rgba(239,68,68,0.15); color: #f87171;
+  border-color: rgba(239,68,68,0.35);
+}
+
+/* ================================================
+   END AUTH HEADER WIDGET CSS
+   ================================================ */
+
 ```
 
   </style>
@@ -672,6 +834,47 @@ counter-reset: step;
     <div class="menu-logo">NUBIASTORE</div>
     <button class="menu-close" id="menuClose">✕</button>
   </div>
+  <!-- ===== AUTH HEADER WIDGET ===== -->
+<div id="authWidget" class="auth-widget">
+
+  <!-- State: belum login -->
+  <a href="login-register.html" id="authGuest" class="auth-login-btn">
+    👤 Masuk / Daftar
+  </a>
+
+  <!-- State: sudah login (hidden by default) -->
+  <div id="authUser" class="auth-user-wrap" style="display:none">
+
+    <!-- trigger card (klik untuk buka dropdown) -->
+    <button class="auth-trigger" id="authTrigger" aria-expanded="false">
+      <div class="auth-avatar" id="authAvatar">👤</div>
+      <div class="auth-trigger-text">
+        <span class="auth-trigger-name" id="authTriggerName">User</span>
+        <span class="auth-trigger-arrow" id="authArrow">▾</span>
+      </div>
+    </button>
+
+    <!-- dropdown card -->
+    <div class="auth-dropdown" id="authDropdown">
+      <div class="auth-card-head">
+        <div class="auth-card-avatar" id="authCardAvatar">👤</div>
+        <div>
+          <div class="auth-card-name" id="authCardName">—</div>
+          <div class="auth-card-email" id="authCardEmail">—</div>
+          <div class="auth-card-uid" id="authCardUid">—</div>
+        </div>
+      </div>
+      <div class="auth-card-divider"></div>
+      <div class="auth-card-actions">
+        <a href="akun.html" class="auth-btn-info">👤 Info Akun</a>
+        <button id="authLogoutBtn" class="auth-btn-logout">🚪 Logout</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- ===== END AUTH HEADER WIDGET ===== -->
+
   <!-- ===== SALDO CARD (tempel setelah .menu-header) ===== -->
 <div class="msc-wrap" id="mscWrap">
 
@@ -1640,6 +1843,118 @@ onAuthStateChanged(_auth, (user) => {
   user ? showUser(user.uid) : showGuest();
 });
 </script>
+
+<script type="module">
+/*
+  AUTH HEADER WIDGET — script terpisah
+  Pakai getApps()[0] → tidak double-init Firebase.
+  Tidak menyentuh variabel apapun dari script utama.
+*/
+import { getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const _app  = getApps()[0];
+const _auth = getAuth(_app);
+
+/* refs */
+const authGuest       = document.getElementById('authGuest');
+const authUser        = document.getElementById('authUser');
+const authTrigger     = document.getElementById('authTrigger');
+const authDropdown    = document.getElementById('authDropdown');
+const authTriggerName = document.getElementById('authTriggerName');
+const authAvatar      = document.getElementById('authAvatar');
+const authCardAvatar  = document.getElementById('authCardAvatar');
+const authCardName    = document.getElementById('authCardName');
+const authCardEmail   = document.getElementById('authCardEmail');
+const authCardUid     = document.getElementById('authCardUid');
+const authLogoutBtn   = document.getElementById('authLogoutBtn');
+
+/* helpers */
+function shortUid(uid) {
+  return uid ? uid.slice(0,6) + '...' + uid.slice(-4) : '—';
+}
+function shortName(name, email) {
+  if (name && name.trim()) return name.trim().split(' ')[0];
+  if (email) return email.split('@')[0];
+  return 'User';
+}
+function avatarHTML(photoURL, fallback) {
+  if (photoURL) return `<img src="${photoURL}" alt="avatar">`;
+  return fallback;
+}
+
+/* toggle dropdown */
+let dropdownOpen = false;
+function openDropdown() {
+  dropdownOpen = true;
+  authDropdown.classList.add('open');
+  authTrigger.setAttribute('aria-expanded', 'true');
+}
+function closeDropdown() {
+  dropdownOpen = false;
+  authDropdown.classList.remove('open');
+  authTrigger.setAttribute('aria-expanded', 'false');
+}
+
+authTrigger.addEventListener('click', (e) => {
+  e.stopPropagation();
+  dropdownOpen ? closeDropdown() : openDropdown();
+});
+
+/* tutup kalau klik di luar */
+document.addEventListener('click', (e) => {
+  if (dropdownOpen && !document.getElementById('authWidget').contains(e.target)) {
+    closeDropdown();
+  }
+});
+
+/* tutup kalau menu mobile dibuka */
+document.getElementById('menuBtn')?.addEventListener('click', closeDropdown);
+
+/* auth state */
+onAuthStateChanged(_auth, (user) => {
+  if (user) {
+    /* tampil user state */
+    authGuest.style.display = 'none';
+    authUser.style.display  = 'block';
+
+    const name  = user.displayName || '';
+    const email = user.email || '';
+    const uid   = user.uid || '';
+    const photo = user.photoURL || '';
+
+    /* trigger */
+    authTriggerName.textContent = shortName(name, email);
+    authAvatar.innerHTML = avatarHTML(photo, '👤');
+
+    /* dropdown card */
+    authCardAvatar.innerHTML = avatarHTML(photo, '👤');
+    authCardName.textContent  = name || shortName('', email);
+    authCardEmail.textContent = email;
+    authCardUid.textContent   = 'UID: ' + shortUid(uid);
+
+  } else {
+    /* tampil guest state */
+    authUser.style.display  = 'none';
+    authGuest.style.display = 'inline-flex';
+    closeDropdown();
+  }
+});
+
+/* logout */
+authLogoutBtn.addEventListener('click', async () => {
+  closeDropdown();
+  try {
+    await signOut(_auth);
+    /* opsional: redirect ke home setelah logout */
+    /* location.href = 'https://nubiastore.netlify.app'; */
+  } catch (e) {
+    console.error('Logout error', e);
+    alert('Gagal logout. Coba lagi.');
+  }
+});
+</script>
+
 
 </body>
 </html>
