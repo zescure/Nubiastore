@@ -1077,52 +1077,6 @@ footer ul li a:hover { color:var(--g1); }
 
 <script>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-  authDomain: "zestoreid-f9e85.firebaseapp.com",
-  projectId: "zestoreid-f9e85",
-  storageBucket: "zestoreid-f9e85.firebasestorage.app",
-  messagingSenderId: "426093692154",
-  appId: "1:426093692154:web:38c6e9c143af626a623543",
-  measurementId: "G-TS0Y9NYW8"
-};
-
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
-let USER_NUBIA_SALDO = 0;
-
-async function loadNubiaSaldo(uid){
-  try{
-    const snap = await getDoc(doc(db,"users",uid));
-
-    if(snap.exists()){
-      USER_NUBIA_SALDO = Number(snap.data().nubiPayBalance || 0);
-    }
-
-    const saldoElem = document.getElementById("nubiaSaldo");
-    if(saldoElem){
-      saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString("id");
-    }
-
-  }catch(e){
-    console.error("saldo error",e);
-  }
-}
-
-onAuthStateChanged(auth,(user)=>{
-  if(user){
-    loadNubiaSaldo(user.uid);
-  }
-});
-
-
-
 const gamesData = [
   { name:"Mobile Legends", cat:"MOBA", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4sqBxABspT2k5eGkvweih9PbVdcNMIRHUBZRWk78l-nCeiM9TjKZ6Wfca&s=10", url:"mobile-legends.html" },
   { name:"Free Fire", cat:"Battle Royale", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQthzbcsOjsCsykuN4uk6-pzsnZLoRzcg-pfTpZL-nVYKgcK7eYinXZx78&s=10", url:"free-fire.html" },
