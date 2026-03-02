@@ -408,6 +408,303 @@ footer ul li a:hover { color:var(--g1); }
   font-family:'DM Sans',sans-serif; transition:opacity 0.2s, transform 0.2s;
 }
 .cta-btn:hover { opacity:0.9; transform:translateY(-2px); }
+
+/* ================================================
+   MENU SALDO CARD — tambahan CSS
+   Tidak override class apapun yang sudah ada
+   ================================================ */
+
+.msc-wrap {
+  margin: 0.875rem 1rem 0.5rem;
+  padding: 0.875rem 1rem;
+  background: linear-gradient(135deg,
+    rgba(22,163,74,0.1) 0%,
+    rgba(22,163,74,0.04) 100%);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* sudut glow dekoratif */
+.msc-wrap::after {
+  content: '';
+  position: absolute;
+  top: -18px; right: -18px;
+  width: 72px; height: 72px;
+  background: radial-gradient(circle,
+    rgba(74,222,128,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ---- shared ---- */
+.msc-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 6px rgba(74,222,128,0.45));
+  flex-shrink: 0;
+}
+.msc-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: rgba(74,222,128,0.9);
+}
+
+/* ---- guest state ---- */
+.msc-guest {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.msc-sub {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.4);
+  margin-top: 2px;
+}
+
+/* ---- loggedin state ---- */
+.msc-user {
+  display: flex;
+  flex-direction: column;
+}
+.msc-user-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.msc-uid {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.3);
+  font-family: monospace;
+  margin-top: 2px;
+  max-width: 155px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.msc-divider {
+  height: 1px;
+  background: rgba(34,197,94,0.2);
+  margin: 0.6rem 0 0.45rem;
+}
+.msc-bal-label {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.msc-amount {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.3rem; font-weight: 800;
+  color: #4ade80;
+  filter: drop-shadow(0 0 8px rgba(74,222,128,0.3));
+  margin-top: 3px; letter-spacing: 0.5px;
+  min-height: 1.6rem;
+}
+.msc-dots {
+  animation: mscPulse 1.2s ease infinite;
+  color: rgba(74,222,128,0.5);
+  font-size: 1rem;
+}
+@keyframes mscPulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.25; }
+}
+.msc-topup-btn {
+  display: block;
+  margin-top: 0.75rem;
+  padding: 0.45rem 0;
+  background: linear-gradient(135deg, #16a34a, #0d7c3a);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.78rem; font-weight: 700;
+  text-align: center; text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(22,163,74,0.3);
+}
+.msc-topup-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(22,163,74,0.5);
+}
+
+/* ================================================
+   END MENU SALDO CARD CSS
+   ================================================ */
+
+
+
+/* ================================================
+   AUTH HEADER WIDGET
+   Tidak override class apapun yang sudah ada
+   ================================================ */
+
+.auth-widget { 
+  position: relative; 
+  display: flex;
+  justify-content: center;     /* tengah */
+  padding: 0.75rem 1.1rem 0.25rem;
+}
+
+/* --- tombol login (guest) --- */
+.auth-login-btn {
+  transform: translateX(20px); /* geser kanan */
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 0.875rem;
+  background: linear-gradient(135deg, #16a34a, #0d7c3a);
+  border: none; border-radius: 7px;
+  color: #fff; font-family: 'Exo 2', sans-serif;
+  font-size: 0.82rem; font-weight: 700;
+  cursor: pointer; text-decoration: none;
+  letter-spacing: 0.5px; transition: all 0.2s;
+  box-shadow: 0 0 12px rgba(22,163,74,0.4);
+  white-space: nowrap;
+}
+.auth-login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(22,163,74,0.6);
+}
+
+/* --- trigger button (logged in) --- */
+.auth-trigger {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.35rem 0.7rem 0.35rem 0.45rem;
+  background: rgba(22,163,74,0.1);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 8px; cursor: pointer;
+  transition: all 0.2s; position: relative;
+}
+.auth-trigger:hover {
+  background: rgba(22,163,74,0.18);
+  border-color: rgba(74,222,128,0.4);
+}
+.auth-trigger[aria-expanded="true"] {
+  background: rgba(22,163,74,0.2);
+  border-color: rgba(74,222,128,0.5);
+}
+
+.auth-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a, #0d7c3a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+  border: 1px solid rgba(74,222,128,0.4);
+  overflow: hidden;
+}
+.auth-avatar img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+
+.auth-trigger-text {
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.auth-trigger-name {
+  font-family: 'Exo 2', sans-serif; font-size: 0.78rem; font-weight: 700;
+  color: #fff; max-width: 90px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.auth-trigger-arrow {
+  font-size: 0.65rem; color: rgba(74,222,128,0.8);
+  transition: transform 0.25s;
+}
+.auth-trigger[aria-expanded="true"] .auth-trigger-arrow {
+  transform: rotate(180deg);
+}
+
+/* --- dropdown card --- */
+.auth-dropdown {
+  position: absolute; top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px) scale(0.97);
+  width: 240px;
+  background: linear-gradient(160deg, #0e1f12, #0a1a0d);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 14px; overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.7), 0 0 24px rgba(34,197,94,0.12);
+  z-index: 9000;
+  opacity: 0; transform: translateY(-8px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.auth-dropdown.open {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* card head */
+.auth-card-head {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 1rem 0.75rem;
+  background: linear-gradient(90deg, rgba(22,163,74,0.12), rgba(22,163,74,0.03));
+}
+.auth-card-avatar {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #16a34a, #0d7c3a);
+  border: 2px solid rgba(74,222,128,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; overflow: hidden;
+  box-shadow: 0 0 10px rgba(74,222,128,0.25);
+}
+.auth-card-avatar img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+.auth-card-name {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.92rem; font-weight: 700;
+  color: #fff; max-width: 160px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.auth-card-email {
+  font-size: 0.68rem; color: rgba(255,255,255,0.5); margin-top: 2px;
+  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.auth-card-uid {
+  font-size: 0.6rem; color: rgba(74,222,128,0.5);
+  font-family: monospace; margin-top: 3px;
+}
+
+.auth-card-divider {
+  height: 1px; background: rgba(34,197,94,0.15);
+}
+
+/* action buttons */
+.auth-card-actions {
+  display: flex; flex-direction: column; gap: 0.35rem;
+  padding: 0.6rem 0.75rem 0.75rem;
+}
+.auth-btn-info {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 0.875rem;
+  background: rgba(22,163,74,0.1);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 8px; color: rgba(255,255,255,0.85);
+  font-family: 'Exo 2', sans-serif; font-size: 0.82rem; font-weight: 600;
+  text-decoration: none; transition: all 0.2s; cursor: pointer;
+}
+.auth-btn-info:hover {
+  background: rgba(22,163,74,0.2); color: #4ade80;
+  border-color: rgba(34,197,94,0.4);
+}
+.auth-btn-logout {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 0.875rem; width: 100%;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px; color: rgba(248,113,113,0.85);
+  font-family: 'Exo 2', sans-serif; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; text-align: left;
+}
+.auth-btn-logout:hover {
+  background: rgba(239,68,68,0.15); color: #f87171;
+  border-color: rgba(239,68,68,0.35);
+}
+
+/* ================================================
+   END AUTH HEADER WIDGET CSS
+   ================================================ */
+
+    
 ```
 
   </style>
@@ -427,6 +724,81 @@ footer ul li a:hover { color:var(--g1); }
 
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">NUBIA<span>STORE</span></div>
+
+   <!-- ===== AUTH HEADER WIDGET ===== -->
+<div id="authWidget" class="auth-widget">
+
+  <!-- State: belum login -->
+  <a href="login-register.html" id="authGuest" class="auth-login-btn">
+    👤 Masuk / Daftar
+  </a>
+
+  <!-- State: sudah login (hidden by default) -->
+  <div id="authUser" class="auth-user-wrap" style="display:none">
+
+    <!-- trigger card (klik untuk buka dropdown) -->
+    <button class="auth-trigger" id="authTrigger" aria-expanded="false">
+      <div class="auth-avatar" id="authAvatar">👤</div>
+      <div class="auth-trigger-text">
+        <span class="auth-trigger-name" id="authTriggerName">User</span>
+        <span class="auth-trigger-arrow" id="authArrow">▾</span>
+      </div>
+    </button>
+
+    <!-- dropdown card -->
+    <div class="auth-dropdown" id="authDropdown">
+      <div class="auth-card-head">
+        <div class="auth-card-avatar" id="authCardAvatar">👤</div>
+        <div>
+          <div class="auth-card-name" id="authCardName">—</div>
+          <div class="auth-card-email" id="authCardEmail">—</div>
+          <div class="auth-card-uid" id="authCardUid">—</div>
+        </div>
+      </div>
+      <div class="auth-card-divider"></div>
+      <div class="auth-card-actions">
+        <a href="akun.html" class="auth-btn-info">👤 Info Akun</a>
+        <button id="authLogoutBtn" class="auth-btn-logout">🚪 Logout</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- ===== END AUTH HEADER WIDGET ===== -->
+
+  <!-- ===== SALDO CARD (tempel setelah .menu-header) ===== -->
+<div class="msc-wrap" id="mscWrap">
+
+  <!-- Belum login -->
+  <div id="mscGuest" class="msc-guest">
+    <span class="msc-icon">💳</span>
+    <div>
+      <div class="msc-title">NUBIAPAY</div>
+      <div class="msc-sub">Login untuk lihat saldo</div>
+    </div>
+  </div>
+
+  <!-- Sudah login -->
+  <div id="mscUser" class="msc-user" style="display:none">
+    <div class="msc-user-top">
+      <div>
+        <div class="msc-title">NUBIAPAY</div>
+        <div class="msc-uid" id="mscUid">—</div>
+      </div>
+      <span class="msc-icon">💳</span>
+    </div>
+    <div class="msc-divider"></div>
+    <div class="msc-bal-label">Saldo Kamu</div>
+    <div class="msc-amount" id="mscAmount">
+      <span class="msc-dots">•••</span>
+    </div>
+    <a href="akun.html" class="msc-topup-btn">＋ Isi Saldo</a>
+  </div>
+
+</div>
+<!-- ===== END SALDO CARD ===== -->
+
+  
   <ul>
     <li><a href="home.html">🏠 Home</a></li>
     <div class="sidebar-section">Informasi</div>
@@ -438,10 +810,6 @@ footer ul li a:hover { color:var(--g1); }
     <div class="sidebar-section">Games & Hiburan</div>
     <li><a href="SpinMlbb12.html">🎰 Spin Keberuntungan</a></li>
     <li><a href="game2.html">🚀 Rocketman Crash 100x</a></li>
-    <div class="sidebar-section">Sosial Media</div>
-    <li><a href="https://www.instagram.com/zestore.zcn">📸 Instagram</a></li>
-    <li><a href="https://wa.me/6285697747768">💬 WhatsApp</a></li>
-    <li><a href="https://www.tiktok.com/@zeeyaza12">🎵 TikTok</a></li>
   </ul>
 </nav>
 
@@ -847,6 +1215,182 @@ updateAuth();
 // Floating gift
 document.getElementById('floatingGift')?.addEventListener('click',()=>{
   window.location.href='/undang-teman.html';
+});
+</script>
+
+<script type="module">
+/*
+  MENU SALDO CARD — script terpisah
+  Menggunakan getApps()[0] agar tidak double-init Firebase.
+  Tidak menyentuh variabel apapun dari script utama.
+*/
+import { getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* ambil instance Firebase yang sudah diinit di script utama */
+const _app  = getApps()[0];
+const _auth = getAuth(_app);
+const _db   = getFirestore(_app);
+
+/* refs */
+const mscGuest  = document.getElementById('mscGuest');
+const mscUser   = document.getElementById('mscUser');
+const mscUid    = document.getElementById('mscUid');
+const mscAmount = document.getElementById('mscAmount');
+
+let _unsubSaldo = null;
+
+function fmtSaldo(n) {
+  return 'Rp ' + Number(n).toLocaleString('id');
+}
+function shortUid(uid) {
+  return uid ? uid.slice(0,6) + '...' + uid.slice(-4) : '—';
+}
+
+function showGuest() {
+  if (mscGuest) mscGuest.style.display = 'flex';
+  if (mscUser)  mscUser.style.display  = 'none';
+  if (_unsubSaldo) { try { _unsubSaldo(); } catch(e){} _unsubSaldo = null; }
+}
+
+function showUser(uid) {
+  if (mscGuest) mscGuest.style.display = 'none';
+  if (mscUser)  mscUser.style.display  = 'flex';
+  if (mscUid)   mscUid.textContent     = shortUid(uid);
+  /* reset ke loading dots */
+  if (mscAmount) mscAmount.innerHTML = '<span class="msc-dots">•••</span>';
+
+  /* cleanup listener lama */
+  if (_unsubSaldo) { try { _unsubSaldo(); } catch(e){} }
+
+  /* realtime listener saldo */
+  _unsubSaldo = onSnapshot(
+    doc(_db, 'users', uid),
+    (snap) => {
+      const bal = snap.exists() ? Number(snap.data().nubiPayBalance || 0) : 0;
+      if (mscAmount) mscAmount.textContent = fmtSaldo(bal);
+    },
+    (err) => {
+      console.warn('[MenuSaldo] err:', err);
+      if (mscAmount) mscAmount.textContent = 'Rp —';
+    }
+  );
+}
+
+onAuthStateChanged(_auth, (user) => {
+  user ? showUser(user.uid) : showGuest();
+});
+</script>
+
+<script type="module">
+/*
+  AUTH HEADER WIDGET — script terpisah
+  Pakai getApps()[0] → tidak double-init Firebase.
+  Tidak menyentuh variabel apapun dari script utama.
+*/
+import { getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const _app  = getApps()[0];
+const _auth = getAuth(_app);
+
+/* refs */
+const authGuest       = document.getElementById('authGuest');
+const authUser        = document.getElementById('authUser');
+const authTrigger     = document.getElementById('authTrigger');
+const authDropdown    = document.getElementById('authDropdown');
+const authTriggerName = document.getElementById('authTriggerName');
+const authAvatar      = document.getElementById('authAvatar');
+const authCardAvatar  = document.getElementById('authCardAvatar');
+const authCardName    = document.getElementById('authCardName');
+const authCardEmail   = document.getElementById('authCardEmail');
+const authCardUid     = document.getElementById('authCardUid');
+const authLogoutBtn   = document.getElementById('authLogoutBtn');
+
+/* helpers */
+function shortUid(uid) {
+  return uid ? uid.slice(0,6) + '...' + uid.slice(-4) : '—';
+}
+function shortName(name, email) {
+  if (name && name.trim()) return name.trim().split(' ')[0];
+  if (email) return email.split('@')[0];
+  return 'User';
+}
+function avatarHTML(photoURL, fallback) {
+  if (photoURL) return `<img src="${photoURL}" alt="avatar">`;
+  return fallback;
+}
+
+/* toggle dropdown */
+let dropdownOpen = false;
+function openDropdown() {
+  dropdownOpen = true;
+  authDropdown.classList.add('open');
+  authTrigger.setAttribute('aria-expanded', 'true');
+}
+function closeDropdown() {
+  dropdownOpen = false;
+  authDropdown.classList.remove('open');
+  authTrigger.setAttribute('aria-expanded', 'false');
+}
+
+authTrigger.addEventListener('click', (e) => {
+  e.stopPropagation();
+  dropdownOpen ? closeDropdown() : openDropdown();
+});
+
+/* tutup kalau klik di luar */
+document.addEventListener('click', (e) => {
+  if (dropdownOpen && !document.getElementById('authWidget').contains(e.target)) {
+    closeDropdown();
+  }
+});
+
+/* tutup kalau menu mobile dibuka */
+document.getElementById('menuBtn')?.addEventListener('click', closeDropdown);
+
+/* auth state */
+onAuthStateChanged(_auth, (user) => {
+  if (user) {
+    /* tampil user state */
+    authGuest.style.display = 'none';
+    authUser.style.display  = 'block';
+
+    const name  = user.displayName || '';
+    const email = user.email || '';
+    const uid   = user.uid || '';
+    const photo = user.photoURL || '';
+
+    /* trigger */
+    authTriggerName.textContent = shortName(name, email);
+    authAvatar.innerHTML = avatarHTML(photo, '👤');
+
+    /* dropdown card */
+    authCardAvatar.innerHTML = avatarHTML(photo, '👤');
+    authCardName.textContent  = name || shortName('', email);
+    authCardEmail.textContent = email;
+    authCardUid.textContent   = 'UID: ' + shortUid(uid);
+
+  } else {
+    /* tampil guest state */
+    authUser.style.display  = 'none';
+    authGuest.style.display = 'inline-flex';
+    closeDropdown();
+  }
+});
+
+/* logout */
+authLogoutBtn.addEventListener('click', async () => {
+  closeDropdown();
+  try {
+    await signOut(_auth);
+    /* opsional: redirect ke home setelah logout */
+    /* location.href = 'https://nubiastore.netlify.app'; */
+  } catch (e) {
+    console.error('Logout error', e);
+    alert('Gagal logout. Coba lagi.');
+  }
 });
 </script>
 
