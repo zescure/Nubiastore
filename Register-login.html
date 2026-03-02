@@ -1,182 +1,546 @@
 <!DOCTYPE html>
+
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>NUBIASTORE Login/Register</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
+  <title>Masuk / Daftar — NUBIASTORE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f1a;
-      --card: #121829;
-      --accent: #1e88e5;
-      --accent-light: #42a5f5;
-      --text: #fff;
-      --muted: #888;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-    body,html { width:100%; height:100%; background:var(--bg); color:var(--text); }
-    .screen { display:none; width:100%; max-width:400px; margin:0 auto; padding:20px; }
-    .screen.active { display:block; }
-    .card { background:var(--card); border-radius:12px; padding:30px 20px; box-shadow:0 4px 12px rgba(0,0,0,0.5); }
-    h1,h2 { text-align:center; margin-bottom:20px; }
-
-    /* Banner explore */
-    .banner {
-      background: var(--accent);
-      border-radius:12px;
-      padding:20px;
-      text-align:center;
-      margin-bottom:30px;
-    }
-    .banner h2 { margin-bottom:10px; }
-
-    .btn, .btn-primary {
-      display:block;
-      width:100%;
-      text-align:center;
-      padding:12px;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-      font-size:16px;
-      margin-top:15px;
-    }
-    .btn-primary { background:var(--accent-light); color:var(--bg); }
-
-    .btn-circle {
-      width:48px; height:48px;
-      border-radius:50%;
-      background:var(--text);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      margin:0 10px;
-      cursor:pointer;
+      --green-primary: #16a34a;
+      --green-bright: #22c55e;
+      --green-neon: #4ade80;
+      --green-dark: #0d7c3a;
+      --green-glow: rgba(34,197,94,0.35);
+      --black-deep: #040a06;
+      --black-mid: #0a1a0d;
+      --black-card: #0e1f12;
+      --black-surface: #13271a;
+      --black-input: #0c1a0f;
+      --white: #ffffff;
+      --white-muted: rgba(255,255,255,0.65);
+      --border-green: rgba(34,197,94,0.2);
+      --border-green-bright: rgba(74,222,128,0.45);
+      --yellow-accent: #facc15;
+      --red-accent: #ef4444;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-body: 'Exo 2', sans-serif;
     }
 
-    .input-group {
-      position:relative;
-      margin-bottom:20px;
-    }
-    .input-group input {
-      width:100%;
-      padding:12px 44px;
-      border:none; border-radius:6px;
-      background:#1f2a40;
-      color:var(--text);
-    }
-    .input-group .icon-left,
-    .input-group .icon-right {
-      position:absolute;
-      top:50%; transform:translateY(-50%);
-      width:24px; height:24px;
-      opacity:0.7;
-    }
-    .input-group .icon-left { left:12px; }
-    .input-group .icon-right { right:12px; cursor:pointer; }
+```
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
-    .toggle { text-align:center; margin-top:20px; font-size:14px; }
-    .toggle a { color:var(--accent-light); text-decoration:underline; cursor:pointer; }
+body {
+  font-family: var(--font-body);
+  background: var(--black-deep);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
 
-    .alert {
-      margin-top:10px;
-      color:#f44336;
-      font-size:13px;
-      height:20px;
-      text-align:center;
-    }
+a { text-decoration: none; color: inherit; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black-deep); }
+::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 4px; }
+
+/* ===== BG DECORATION ===== */
+.bg-glow {
+  position: fixed; pointer-events: none; z-index: 0;
+}
+.bg-glow-1 {
+  top: -120px; left: -120px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%);
+}
+.bg-glow-2 {
+  bottom: -100px; right: -100px;
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%);
+}
+
+/* ===== HEADER ===== */
+header {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  background: rgba(4,10,6,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-green);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.35rem; font-weight: 700; letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--green-bright), var(--green-neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 8px var(--green-glow));
+}
+.btn-back-header {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 0.875rem;
+  background: var(--black-surface);
+  border: 1px solid var(--border-green);
+  border-radius: 7px; color: var(--white-muted);
+  font-family: var(--font-body); font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-back-header:hover { color: var(--green-neon); border-color: var(--green-bright); }
+
+/* ===== ANNOUNCE ===== */
+.announce-bar {
+  background: linear-gradient(90deg, var(--green-dark), var(--green-primary), var(--green-dark));
+  background-size: 200%; animation: gradShift 4s ease infinite;
+  padding: 0.4rem 1rem; overflow: hidden; position: relative; z-index: 10;
+}
+.marquee-text {
+  display: inline-block; animation: marquee 24s linear infinite;
+  white-space: nowrap; font-size: 0.72rem; font-weight: 600;
+}
+@keyframes marquee { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+@keyframes gradShift { 0%,100% { background-position: 0%; } 50% { background-position: 100%; } }
+
+/* ===== PAGE WRAPPER ===== */
+.page-wrap {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: clamp(1.25rem, 4vw, 2rem) 1rem;
+  position: relative; z-index: 5;
+}
+
+.auth-container {
+  width: 100%; max-width: 420px;
+}
+
+/* ===== PROMO BANNER ===== */
+.promo-banner {
+  background: linear-gradient(135deg, rgba(22,163,74,0.18), rgba(22,163,74,0.06));
+  border: 1px solid var(--border-green);
+  border-radius: 14px; padding: 1.1rem 1.25rem;
+  margin-bottom: 1.1rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.promo-banner::before {
+  content: '';
+  position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(74,222,128,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.promo-banner .pb-tag {
+  font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+  color: var(--green-neon); margin-bottom: 0.4rem;
+}
+.promo-banner h2 {
+  font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;
+  letter-spacing: 0.5px; margin-bottom: 0.35rem;
+  background: linear-gradient(135deg, #fff, var(--green-neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.promo-banner p { font-size: 0.78rem; color: var(--white-muted); line-height: 1.5; }
+.promo-perks {
+  display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.promo-perk {
+  font-size: 0.68rem; font-weight: 700; padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(34,197,94,0.12); color: var(--green-neon);
+  border: 1px solid var(--border-green);
+}
+
+/* ===== SCREEN TOGGLE ===== */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ===== AUTH CARD ===== */
+.auth-card {
+  background: var(--black-card);
+  border: 1px solid var(--border-green);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(34,197,94,0.05);
+}
+
+/* tabs */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-green);
+}
+.auth-tab {
+  flex: 1; padding: 0.875rem;
+  background: none; border: none;
+  font-family: var(--font-display); font-size: 0.95rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--white-muted); cursor: pointer;
+  transition: all 0.2s; position: relative;
+}
+.auth-tab::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 50%; right: 50%;
+  height: 2px; background: var(--green-neon);
+  transition: all 0.25s;
+}
+.auth-tab.active {
+  color: var(--green-neon);
+  background: rgba(34,197,94,0.05);
+}
+.auth-tab.active::after { left: 10%; right: 10%; }
+
+/* card body */
+.auth-body { padding: 1.5rem 1.25rem; }
+
+/* section title */
+.auth-title {
+  font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+  letter-spacing: 1px; margin-bottom: 0.3rem;
+  background: linear-gradient(135deg, #fff 60%, var(--green-neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.auth-subtitle { font-size: 0.78rem; color: var(--white-muted); margin-bottom: 1.5rem; line-height: 1.4; }
+
+/* ===== INPUT ===== */
+.input-wrap {
+  position: relative; margin-bottom: 1rem;
+}
+.input-wrap label {
+  display: block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--white-muted); margin-bottom: 0.35rem;
+}
+.input-field {
+  width: 100%; padding: 0.72rem 2.5rem 0.72rem 2.6rem;
+  background: var(--black-input);
+  border: 1px solid var(--border-green);
+  border-radius: 9px; color: #fff;
+  font-family: var(--font-body); font-size: 0.9rem;
+  outline: none; transition: all 0.25s;
+}
+.input-field:focus {
+  border-color: var(--green-bright);
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
+}
+.input-field::placeholder { color: rgba(255,255,255,0.28); }
+
+.input-icon-left {
+  position: absolute; left: 0.75rem;
+  top: calc(50% + 0.9rem); transform: translateY(-50%);
+  width: 16px; height: 16px; opacity: 0.5;
+  pointer-events: none;
+}
+.input-icon-right {
+  position: absolute; right: 0.75rem;
+  top: calc(50% + 0.9rem); transform: translateY(-50%);
+  width: 18px; height: 18px; opacity: 0.5;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.input-icon-right:hover { opacity: 0.9; }
+
+/* ===== ALERT ===== */
+.alert-box {
+  min-height: 22px; margin-bottom: 0.75rem;
+  font-size: 0.78rem; text-align: center;
+  border-radius: 6px; padding: 0 0.5rem;
+}
+.alert-box.error { color: #f87171; }
+.alert-box.success { color: var(--green-neon); }
+
+/* ===== BTN PRIMARY ===== */
+.btn-primary {
+  display: block; width: 100%;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, var(--green-primary), var(--green-dark));
+  border: none; border-radius: 10px;
+  color: #fff; font-family: var(--font-display);
+  font-size: 1rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(22,163,74,0.4);
+  position: relative; overflow: hidden;
+}
+.btn-primary::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  transition: left 0.5s;
+}
+.btn-primary:hover::before { left: 100%; }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(22,163,74,0.55);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.6; pointer-events: none; }
+
+/* ===== DIVIDER ===== */
+.or-divider {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin: 1.1rem 0;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border-green);
+}
+.or-divider span {
+  font-size: 0.7rem; color: var(--white-muted); text-transform: uppercase;
+  letter-spacing: 1px; white-space: nowrap;
+}
+
+/* ===== SOCIAL BUTTONS ===== */
+.social-row {
+  display: flex; gap: 0.65rem;
+}
+.btn-social {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.65rem 0.5rem;
+  background: var(--black-surface);
+  border: 1px solid var(--border-green);
+  border-radius: 9px; cursor: pointer;
+  font-family: var(--font-body); font-size: 0.8rem; font-weight: 600;
+  color: var(--white-muted); transition: all 0.2s;
+}
+.btn-social:hover {
+  border-color: rgba(255,255,255,0.3); color: #fff;
+  background: rgba(255,255,255,0.05);
+}
+.btn-social img { width: 18px; height: 18px; }
+
+/* ===== CARD FOOTER ===== */
+.auth-card-footer {
+  padding: 0.875rem 1.25rem;
+  border-top: 1px solid var(--border-green);
+  background: rgba(0,0,0,0.2);
+  text-align: center; font-size: 0.8rem; color: var(--white-muted);
+}
+.auth-card-footer a {
+  color: var(--green-neon); font-weight: 700; cursor: pointer;
+  transition: color 0.2s;
+}
+.auth-card-footer a:hover { color: var(--green-bright); }
+
+/* ===== LOADING SPINNER ===== */
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== SECURITY ROW ===== */
+.security-row {
+  display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
+  margin-top: 1.1rem;
+}
+.sec-badge {
+  display: flex; align-items: center; gap: 0.3rem;
+  font-size: 0.68rem; color: var(--white-muted);
+}
+.sec-badge .dot { color: var(--green-neon); }
+```
+
   </style>
 </head>
 <body>
 
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+
+<!-- HEADER -->
+
+<header>
+  <div class="logo">NUBIASTORE</div>
+  <button class="btn-back-header" id="btnBackHeader">← Kembali</button>
+</header>
+
+<!-- ANNOUNCE -->
+
+<div class="announce-bar">
+  <span class="marquee-text">
+    🎁 Daftar Sekarang & Dapatkan Bonus Saldo &nbsp;|&nbsp; 💎 Top Up Lebih Murah dengan NUBIAPAY &nbsp;|&nbsp; 🔒 Akun Aman & Terenkripsi &nbsp;|&nbsp; ⚡ Proses Otomatis 24 Jam
+  </span>
+</div>
+
+<!-- PAGE -->
+
+<div class="page-wrap">
+  <div class="auth-container">
+
+```
+<!-- PROMO BANNER (tampil di register) -->
+<div class="promo-banner" id="promoBanner" style="display:none">
+  <div class="pb-tag">✨ Bergabung Sekarang</div>
+  <h2>NUBIASTORE & NUBIAPAY</h2>
+  <p>Top up game lebih murah, proses instan, dan bayar pakai saldo NUBIAPAY tanpa biaya admin.</p>
+  <div class="promo-perks">
+    <span class="promo-perk">🎁 Bonus Saldo</span>
+    <span class="promo-perk">⚡ Instan</span>
+    <span class="promo-perk">💰 Termurah</span>
+    <span class="promo-perk">🛡 Aman</span>
+  </div>
+</div>
+
+<!-- AUTH CARD -->
+<div class="auth-card">
+
+  <!-- TABS -->
+  <div class="auth-tabs">
+    <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">🔑 Masuk</button>
+    <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">✨ Daftar</button>
+  </div>
+
   <!-- LOGIN SCREEN -->
-  <section id="loginScreen" class="screen active">
-    <div class="card">
-      <h1>Login</h1>
-      <div class="input-group">
-        <img class="icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png"/>
-        <input type="email" id="email" placeholder="Email address" />
-      </div>
-      <div class="input-group">
-        <img class="icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png"/>
-        <input type="password" id="password" placeholder="Password" />
-        <img class="icon-right" id="togglePwd" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png"/>
-      </div>
-      <button class="btn-primary" id="submitLogin">Login</button>
+  <div class="screen active" id="loginScreen">
+    <div class="auth-body">
+      <div class="auth-title">Selamat Datang</div>
+      <div class="auth-subtitle">Masuk untuk menikmati top up game termurah & NUBIAPAY.</div>
 
-      <div style="text-align:center; margin-top:15px;">
-        <div class="btn-circle" id="loginGoogle">
-          <img src="https://img.icons8.com/color/24/000000/google-logo.png"/>
-        </div>
-        <div class="btn-circle" id="loginApple">
-          <img src="https://img.icons8.com/ios-filled/24/000000/mac-os.png"/>
-        </div>
+      <div class="input-wrap">
+        <label>Email</label>
+        <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png">
+        <input class="input-field" type="email" id="email" placeholder="nama@email.com">
       </div>
 
-      <div class="toggle">
-        Belum punya akun? <a id="goRegister">Register</a>
+      <div class="input-wrap">
+        <label>Password</label>
+        <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png">
+        <input class="input-field" type="password" id="password" placeholder="••••••••">
+        <img class="input-icon-right" id="togglePwd" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png">
       </div>
 
-      <div class="alert" id="alertText"></div>
+      <div class="alert-box error" id="alertLogin"></div>
+
+      <button class="btn-primary" id="submitLogin">⚡ Masuk</button>
+
+      <div class="or-divider"><span>atau masuk dengan</span></div>
+
+      <div class="social-row">
+        <button class="btn-social" id="loginGoogle">
+          <img src="https://img.icons8.com/color/24/google-logo.png"> Google
+        </button>
+        <button class="btn-social" id="loginApple">
+          <img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png"> Apple
+        </button>
+      </div>
     </div>
-  </section>
 
-  <!-- REGISTER SCREEN + BANNER -->
-  <section id="exploreScreen" class="screen">
-    <div class="banner">
-      <h2>Explore NUBIASTORE/NUBIAPAY</h2>
-      <p>Dapatkan hadiah, promo, dan kemudahan top-up hanya dengan satu akun.</p>
+    <div class="auth-card-footer">
+      Belum punya akun? <a onclick="switchTab('register')">Daftar sekarang →</a>
     </div>
-    <div class="card">
-      <h2>Register</h2>
-      <div class="input-group">
-        <img class="icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png"/>
-        <input type="email" id="regEmail" placeholder="Email address" />
-      </div>
-      <div class="input-group">
-        <img class="icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png"/>
-        <input type="password" id="regPassword" placeholder="Password" />
-        <img class="icon-right" id="togglePwdReg" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png"/>
-      </div>
-      <button class="btn-primary" id="submitRegister">Register</button>
+  </div>
 
-      <div style="text-align:center; margin-top:15px;">
-        <div class="btn-circle" id="regGoogle">
-          <img src="https://img.icons8.com/color/24/000000/google-logo.png"/>
-        </div>
-        <div class="btn-circle" id="regApple">
-          <img src="https://img.icons8.com/ios-filled/24/000000/mac-os.png"/>
-        </div>
+  <!-- REGISTER SCREEN -->
+  <div class="screen" id="registerScreen">
+    <div class="auth-body">
+      <div class="auth-title">Buat Akun</div>
+      <div class="auth-subtitle">Gratis selamanya. Nikmati semua fitur NUBIASTORE & NUBIAPAY.</div>
+
+      <div class="input-wrap">
+        <label>Email</label>
+        <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png">
+        <input class="input-field" type="email" id="regEmail" placeholder="nama@email.com">
       </div>
 
-      <div class="toggle">
-        Sudah punya akun? <a id="goLogin">Login</a>
+      <div class="input-wrap">
+        <label>Password <span style="color:var(--white-muted);font-weight:400;font-size:0.65rem;">(min. 6 karakter)</span></label>
+        <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png">
+        <input class="input-field" type="password" id="regPassword" placeholder="••••••••">
+        <img class="input-icon-right" id="togglePwdReg" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png">
       </div>
 
-      <div class="alert" id="alertTextReg"></div>
+      <div class="alert-box error" id="alertRegister"></div>
+
+      <button class="btn-primary" id="submitRegister">✨ Buat Akun</button>
+
+      <div class="or-divider"><span>atau daftar dengan</span></div>
+
+      <div class="social-row">
+        <button class="btn-social" id="regGoogle">
+          <img src="https://img.icons8.com/color/24/google-logo.png"> Google
+        </button>
+        <button class="btn-social" id="regApple">
+          <img src="https://img.icons8.com/ios-filled/24/ffffff/mac-os.png"> Apple
+        </button>
+      </div>
     </div>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9953411399547795"
-     crossorigin="anonymous"></script>
 
-  </section>
+    <div class="auth-card-footer">
+      Sudah punya akun? <a onclick="switchTab('login')">← Masuk</a>
+    </div>
+  </div>
 
-  <!-- Firebase JS -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signInWithPopup,
-      GoogleAuthProvider,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+</div><!-- /auth-card -->
 
-    const firebaseConfig = {
+<!-- SECURITY BADGES -->
+<div class="security-row">
+  <span class="sec-badge"><span class="dot">🔒</span> SSL Aman</span>
+  <span class="sec-badge"><span class="dot">✓</span> Data Terenkripsi</span>
+  <span class="sec-badge"><span class="dot">🛡</span> Anti-Penipuan</span>
+</div>
+```
+
+  </div>
+</div>
+
+<script>
+  /* ===== TAB SWITCH ===== */
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('tabLogin').classList.toggle('active', isLogin);
+    document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+    document.getElementById('loginScreen').classList.toggle('active', isLogin);
+    document.getElementById('registerScreen').classList.toggle('active', !isLogin);
+    document.getElementById('promoBanner').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('alertLogin').textContent = '';
+    document.getElementById('alertRegister').textContent = '';
+  }
+
+  /* ===== REDIRECT BACK TO PREVIOUS PAGE ===== */
+  function getRedirectTarget() {
+    // 1. Cek sessionStorage (disimpan sebelum redirect ke halaman ini)
+    const saved = sessionStorage.getItem('nubiastore_login_redirect');
+    if (saved && saved !== window.location.href) {
+      sessionStorage.removeItem('nubiastore_login_redirect');
+      return saved;
+    }
+    // 2. Cek document.referrer
+    const ref = document.referrer;
+    if (ref && ref !== '' && !ref.includes('login-register')) {
+      return ref;
+    }
+    // 3. Fallback ke home
+    return 'https://nubiastore.netlify.app/';
+  }
+
+  /* Tombol kembali */
+  document.getElementById('btnBackHeader').onclick = () => {
+    const target = getRedirectTarget();
+    window.location.href = target;
+  };
+
+  /* Juga simpan referrer saat halaman ini dibuka (buat jaga-jaga) */
+  if (document.referrer && !document.referrer.includes('login-register')) {
+    sessionStorage.setItem('nubiastore_login_redirect', document.referrer);
+  }
+</script>
+
+<!-- ===== FIREBASE ===== -->
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    GoogleAuthProvider,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
     apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
     authDomain: "zestoreid-f9e85.firebaseapp.com",
     projectId: "zestoreid-f9e85",
@@ -186,140 +550,171 @@
     measurementId: "G-TS0YB9NYW8"
   };
 
-    const app  = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
 
-    // === Helper: Pastikan dokumen user & referral ===
-    async function ensureUserDocuments(user){
-      const uid  = user.uid;
-      const code = uid.slice(0,6).toUpperCase();
-      const uRef  = doc(db, 'users', uid);
-      const uSnap = await getDoc(uRef);
-      if (!uSnap.exists()) {
-        await setDoc(uRef, {
-          coinBalance: 0,
-          referralCode: code,
-          createdAt: serverTimestamp()
-        });
-      } else if (!uSnap.data().referralCode) {
-        await updateDoc(uRef, { referralCode: code });
-      }
+  /* ===== REDIRECT TARGET ===== */
+  function getRedirectTarget() {
+    const saved = sessionStorage.getItem('nubiastore_login_redirect');
+    if (saved && saved !== window.location.href && !saved.includes('login-register')) {
+      sessionStorage.removeItem('nubiastore_login_redirect');
+      return saved;
+    }
+    const ref = document.referrer;
+    if (ref && ref !== '' && !ref.includes('login-register')) return ref;
+    return 'https://nubiastore.netlify.app/';
+  }
 
-      const rRef  = doc(db, 'referralCodes', code);
-      const rSnap = await getDoc(rRef);
-      if (!rSnap.exists()) {
-        await setDoc(rRef, {
-          owner: uid,
-          count: 0,
-          createdAt: serverTimestamp()
-        });
-      }
+  /* ===== SIMPAN REDIRECT SEBELUM HALAMAN INI ===== */
+  /* Dipanggil dari halaman lain sebelum redirect ke sini:
+     sessionStorage.setItem('nubiastore_login_redirect', location.href);
+     location.href = 'login-register.html';
+  */
+
+  /* ===== LOADING STATE ===== */
+  function setLoading(btnId, loading, defaultText) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.innerHTML = loading ? `<span class="spinner"></span>Memproses...` : defaultText;
+  }
+
+  /* ===== ALERT ===== */
+  function showAlert(id, msg, type = 'error') {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.className = `alert-box ${type}`;
+  }
+
+  /* ===== FIREBASE ERROR MAP ===== */
+  function firebaseErrorMsg(code) {
+    const map = {
+      'auth/invalid-email':            'Format email tidak valid.',
+      'auth/user-not-found':           'Akun tidak ditemukan. Coba daftar dulu.',
+      'auth/wrong-password':           'Password salah. Coba lagi.',
+      'auth/email-already-in-use':     'Email sudah terdaftar. Coba masuk.',
+      'auth/weak-password':            'Password minimal 6 karakter.',
+      'auth/too-many-requests':        'Terlalu banyak percobaan. Coba lagi nanti.',
+      'auth/popup-closed-by-user':     'Login dibatalkan.',
+      'auth/network-request-failed':   'Koneksi bermasalah. Cek internet kamu.',
+      'auth/invalid-credential':       'Email atau password salah.',
+    };
+    return map[code] || 'Terjadi kesalahan. Coba lagi.';
+  }
+
+  /* ===== ENSURE USER DOC ===== */
+  async function ensureUserDocuments(user) {
+    const uid  = user.uid;
+    const code = uid.slice(0, 6).toUpperCase();
+    const uRef  = doc(db, 'users', uid);
+    const uSnap = await getDoc(uRef);
+
+    if (!uSnap.exists()) {
+      await setDoc(uRef, {
+        displayName:    user.displayName || '',
+        email:          user.email || '',
+        nubiPayBalance: 0,
+        coinBalance:    0,
+        referralCode:   code,
+        createdAt:      serverTimestamp()
+      });
+    } else {
+      const updates = {};
+      if (!uSnap.data().referralCode)   updates.referralCode   = code;
+      if (!uSnap.data().nubiPayBalance && uSnap.data().nubiPayBalance !== 0)
+        updates.nubiPayBalance = 0;
+      if (Object.keys(updates).length) await updateDoc(uRef, updates);
     }
 
-    // Jika user login, redirect
-    onAuthStateChanged(auth, async (user)=>{
-      if (user) {
-        try { await ensureUserDocuments(user); } 
-        catch(e) { console.error('ensureUserDocuments error:', e); }
-        window.location.href = "https://nubiastore.netlify.app/";
-      }
-    });
+    const rRef  = doc(db, 'referralCodes', code);
+    const rSnap = await getDoc(rRef);
+    if (!rSnap.exists()) {
+      await setDoc(rRef, { owner: uid, count: 0, createdAt: serverTimestamp() });
+    }
+  }
 
-    // DOM Elemen
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const regEmailInput = document.getElementById('regEmail');
-    const regPasswordInput = document.getElementById('regPassword');
-    const alertText = document.getElementById('alertText');
-    const alertTextReg = document.getElementById('alertTextReg');
+  /* ===== AUTH STATE — kalau sudah login langsung redirect ===== */
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try { await ensureUserDocuments(user); } catch(e) { console.error(e); }
+      window.location.href = getRedirectTarget();
+    }
+  });
 
-    // Login email
-    document.getElementById('submitLogin').addEventListener('click', async () => {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-      alertText.textContent = "";
-      if (!email || !password) {
-        alertText.textContent = "Isi semua kolom.";
-        return;
-      }
-      try {
-        const { user } = await signInWithEmailAndPassword(auth, email, password);
-        await ensureUserDocuments(user);
-        window.location.href = "https://nubiastore.netlify.app/";
-      } catch (err) {
-        alertText.textContent = err.message;
-      }
-    });
+  /* ===== LOGIN EMAIL ===== */
+  document.getElementById('submitLogin').addEventListener('click', async () => {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    showAlert('alertLogin', '');
+    if (!email || !password) { showAlert('alertLogin', 'Isi email dan password terlebih dahulu.'); return; }
+    setLoading('submitLogin', true, '⚡ Masuk');
+    try {
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
+      await ensureUserDocuments(user);
+      window.location.href = getRedirectTarget();
+    } catch (err) {
+      showAlert('alertLogin', firebaseErrorMsg(err.code));
+      setLoading('submitLogin', false, '⚡ Masuk');
+    }
+  });
 
-    // Register email
-    document.getElementById('submitRegister').addEventListener('click', async () => {
-      const email = regEmailInput.value.trim();
-      const password = regPasswordInput.value.trim();
-      alertTextReg.textContent = "";
-      if (!email || !password) {
-        alertTextReg.textContent = "Isi semua kolom.";
-        return;
-      }
-      try {
-        const { user } = await createUserWithEmailAndPassword(auth, email, password);
-        await ensureUserDocuments(user);
-        window.location.href = "https://nubiastore.netlify.app/";
-      } catch (err) {
-        alertTextReg.textContent = err.message;
-      }
-    });
+  /* ===== REGISTER EMAIL ===== */
+  document.getElementById('submitRegister').addEventListener('click', async () => {
+    const email    = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value.trim();
+    showAlert('alertRegister', '');
+    if (!email || !password) { showAlert('alertRegister', 'Isi email dan password terlebih dahulu.'); return; }
+    setLoading('submitRegister', true, '✨ Buat Akun');
+    try {
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await ensureUserDocuments(user);
+      showAlert('alertRegister', '🎉 Akun berhasil dibuat! Mengalihkan...', 'success');
+      setTimeout(() => { window.location.href = getRedirectTarget(); }, 800);
+    } catch (err) {
+      showAlert('alertRegister', firebaseErrorMsg(err.code));
+      setLoading('submitRegister', false, '✨ Buat Akun');
+    }
+  });
 
-    // Google login
-    document.getElementById('loginGoogle').addEventListener('click', async () => {
-      const provider = new GoogleAuthProvider();
-      try {
-        const { user } = await signInWithPopup(auth, provider);
-        await ensureUserDocuments(user);
-        window.location.href = "https://nubiastore.netlify.app/";
-      } catch (err) {
-        alertText.textContent = err.message;
-      }
-    });
+  /* ===== GOOGLE LOGIN ===== */
+  async function loginWithGoogle(alertId) {
+    const provider = new GoogleAuthProvider();
+    showAlert(alertId, '');
+    try {
+      const { user } = await signInWithPopup(auth, provider);
+      await ensureUserDocuments(user);
+      window.location.href = getRedirectTarget();
+    } catch (err) {
+      showAlert(alertId, firebaseErrorMsg(err.code));
+    }
+  }
 
-    document.getElementById('regGoogle').addEventListener('click', async () => {
-      const provider = new GoogleAuthProvider();
-      try {
-        const { user } = await signInWithPopup(auth, provider);
-        await ensureUserDocuments(user);
-        window.location.href = "https://nubiastore.netlify.app/";
-      } catch (err) {
-        alertTextReg.textContent = err.message;
-      }
-    });
+  document.getElementById('loginGoogle').addEventListener('click', () => loginWithGoogle('alertLogin'));
+  document.getElementById('regGoogle').addEventListener('click',   () => loginWithGoogle('alertRegister'));
 
-    // Toggle screen
-    document.getElementById('goRegister').onclick = () => {
-      document.getElementById('loginScreen').classList.remove('active');
-      document.getElementById('exploreScreen').classList.add('active');
-    };
-    document.getElementById('goLogin').onclick = () => {
-      document.getElementById('exploreScreen').classList.remove('active');
-      document.getElementById('loginScreen').classList.add('active');
-    };
+  /* Apple — placeholder */
+  document.getElementById('loginApple').addEventListener('click', () =>
+    showAlert('alertLogin', '⚠️ Login Apple belum tersedia saat ini.')
+  );
+  document.getElementById('regApple').addEventListener('click', () =>
+    showAlert('alertRegister', '⚠️ Login Apple belum tersedia saat ini.')
+  );
 
-    // Toggle password
-    document.getElementById('togglePwd').onclick = () => {
-      const inp = document.getElementById('password');
-      const vis = inp.type === 'password';
-      inp.type = vis ? 'text' : 'password';
-      document.getElementById('togglePwd').src = vis
-        ? 'https://img.icons8.com/ios-glyphs/30/ffffff/hide.png'
-        : 'https://img.icons8.com/ios-glyphs/30/ffffff/visible.png';
-    };
-    document.getElementById('togglePwdReg').onclick = () => {
-      const inp = document.getElementById('regPassword');
-      const vis = inp.type === 'password';
-      inp.type = vis ? 'text' : 'password';
-      document.getElementById('togglePwdReg').src = vis
-        ? 'https://img.icons8.com/ios-glyphs/30/ffffff/hide.png'
-        : 'https://img.icons8.com/ios-glyphs/30/ffffff/visible.png';
-    };
-  </script>
+  /* ===== TOGGLE PASSWORD ===== */
+  function togglePassword(inputId, iconId) {
+    const inp = document.getElementById(inputId);
+    const ico = document.getElementById(iconId);
+    const isPass = inp.type === 'password';
+    inp.type = isPass ? 'text' : 'password';
+    ico.src  = isPass
+      ? 'https://img.icons8.com/ios-glyphs/30/ffffff/hide.png'
+      : 'https://img.icons8.com/ios-glyphs/30/ffffff/visible.png';
+  }
+  document.getElementById('togglePwd').onclick    = () => togglePassword('password', 'togglePwd');
+  document.getElementById('togglePwdReg').onclick = () => togglePassword('regPassword', 'togglePwdReg');
+</script>
+
 </body>
 </html>
