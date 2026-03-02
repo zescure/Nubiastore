@@ -1075,7 +1075,29 @@ footer ul li a:hover { color:var(--g1); }
   <span class="gift-tooltip">🎁 Event & Hadiah</span>
 </div>
 
-<script>
+<script type="module">
+
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543",
+  measurementId: "G-TS0Y9NYW8"
+};
+
+/* mencegah double initialize */
+if (!getApps().length) {
+  const app = initializeApp(firebaseConfig);
+  getAuth(app);
+  getFirestore(app);
+}
+
 
 const gamesData = [
   { name:"Mobile Legends", cat:"MOBA", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4sqBxABspT2k5eGkvweih9PbVdcNMIRHUBZRWk78l-nCeiM9TjKZ6Wfca&s=10", url:"mobile-legends.html" },
