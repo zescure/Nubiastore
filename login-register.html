@@ -203,12 +203,16 @@ header {
 
 /* ===== INPUT ===== */
 .input-wrap {
-  position: relative; margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 .input-wrap label {
   display: block; font-size: 0.68rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.8px;
   color: var(--white-muted); margin-bottom: 0.35rem;
+}
+/* wrapper khusus untuk input + icon, posisi relative di sini */
+.input-inner {
+  position: relative;
 }
 .input-field {
   width: 100%; padding: 0.72rem 2.5rem 0.72rem 2.6rem;
@@ -224,16 +228,17 @@ header {
 }
 .input-field::placeholder { color: rgba(255,255,255,0.28); }
 
+/* icon sekarang relatif ke .input-inner, bukan .input-wrap */
 .input-icon-left {
   position: absolute; left: 0.75rem;
-  top: calc(50% + 0.9rem); transform: translateY(-50%);
-  width: 16px; height: 16px; opacity: 0.5;
+  top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; opacity: 0.45;
   pointer-events: none;
 }
 .input-icon-right {
   position: absolute; right: 0.75rem;
-  top: calc(50% + 0.9rem); transform: translateY(-50%);
-  width: 18px; height: 18px; opacity: 0.5;
+  top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; opacity: 0.45;
   cursor: pointer; transition: opacity 0.2s;
 }
 .input-icon-right:hover { opacity: 0.9; }
@@ -397,15 +402,19 @@ header {
 
       <div class="input-wrap">
         <label>Email</label>
-        <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png">
-        <input class="input-field" type="email" id="email" placeholder="nama@email.com">
+        <div class="input-inner">
+          <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png">
+          <input class="input-field" type="email" id="email" placeholder="nama@email.com">
+        </div>
       </div>
 
       <div class="input-wrap">
         <label>Password</label>
-        <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png">
-        <input class="input-field" type="password" id="password" placeholder="••••••••">
-        <img class="input-icon-right" id="togglePwd" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png">
+        <div class="input-inner">
+          <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png">
+          <input class="input-field" type="password" id="password" placeholder="••••••••">
+          <img class="input-icon-right" id="togglePwd" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png">
+        </div>
       </div>
 
       <div class="alert-box error" id="alertLogin"></div>
@@ -437,15 +446,19 @@ header {
 
       <div class="input-wrap">
         <label>Email</label>
-        <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png">
-        <input class="input-field" type="email" id="regEmail" placeholder="nama@email.com">
+        <div class="input-inner">
+          <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/new-post.png">
+          <input class="input-field" type="email" id="regEmail" placeholder="nama@email.com">
+        </div>
       </div>
 
       <div class="input-wrap">
         <label>Password <span style="color:var(--white-muted);font-weight:400;font-size:0.65rem;">(min. 6 karakter)</span></label>
-        <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png">
-        <input class="input-field" type="password" id="regPassword" placeholder="••••••••">
-        <img class="input-icon-right" id="togglePwdReg" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png">
+        <div class="input-inner">
+          <img class="input-icon-left" src="https://img.icons8.com/ios-filled/50/ffffff/lock-2.png">
+          <input class="input-field" type="password" id="regPassword" placeholder="••••••••">
+          <img class="input-icon-right" id="togglePwdReg" src="https://img.icons8.com/ios-glyphs/30/ffffff/visible.png">
+        </div>
       </div>
 
       <div class="alert-box error" id="alertRegister"></div>
@@ -534,6 +547,7 @@ header {
     signInWithEmailAndPassword,
     signInWithPopup,
     GoogleAuthProvider,
+    OAuthProvider,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
@@ -681,26 +695,40 @@ header {
   /* ===== GOOGLE LOGIN ===== */
   async function loginWithGoogle(alertId) {
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
     showAlert(alertId, '');
     try {
       const { user } = await signInWithPopup(auth, provider);
       await ensureUserDocuments(user);
       window.location.href = getRedirectTarget();
     } catch (err) {
-      showAlert(alertId, firebaseErrorMsg(err.code));
+      if (err.code !== 'auth/popup-closed-by-user') {
+        showAlert(alertId, firebaseErrorMsg(err.code));
+      }
+    }
+  }
+
+  /* ===== APPLE LOGIN ===== */
+  async function loginWithApple(alertId) {
+    const provider = new OAuthProvider('apple.com');
+    provider.addScope('email');
+    provider.addScope('name');
+    showAlert(alertId, '');
+    try {
+      const { user } = await signInWithPopup(auth, provider);
+      await ensureUserDocuments(user);
+      window.location.href = getRedirectTarget();
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        showAlert(alertId, firebaseErrorMsg(err.code));
+      }
     }
   }
 
   document.getElementById('loginGoogle').addEventListener('click', () => loginWithGoogle('alertLogin'));
   document.getElementById('regGoogle').addEventListener('click',   () => loginWithGoogle('alertRegister'));
-
-  /* Apple — placeholder */
-  document.getElementById('loginApple').addEventListener('click', () =>
-    showAlert('alertLogin', '⚠️ Login Apple belum tersedia saat ini.')
-  );
-  document.getElementById('regApple').addEventListener('click', () =>
-    showAlert('alertRegister', '⚠️ Login Apple belum tersedia saat ini.')
-  );
+  document.getElementById('loginApple').addEventListener('click', () => loginWithApple('alertLogin'));
+  document.getElementById('regApple').addEventListener('click',   () => loginWithApple('alertRegister'));
 
   /* ===== TOGGLE PASSWORD ===== */
   function togglePassword(inputId, iconId) {
