@@ -4,10 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Top Up Mobile Legends - NUBIASTORE</title>
+  <title>Top Up Free Fire Max - NUBIASTORE</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* ===== DESIGN SYSTEM (sinkron dengan home) ===== */
     :root {
       --green-primary: #16a34a;
       --green-bright: #22c55e;
@@ -21,7 +20,6 @@
       --black-input: #0c1a0f;
       --white: #ffffff;
       --white-muted: rgba(255,255,255,0.7);
-      --white-dim: rgba(255,255,255,0.1);
       --border-green: rgba(34,197,94,0.2);
       --border-green-bright: rgba(74,222,128,0.45);
       --yellow-accent: #facc15;
@@ -33,7 +31,6 @@
 ```
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior: smooth; }
-
 body {
   font-family: var(--font-body);
   background: var(--black-deep);
@@ -41,7 +38,6 @@ body {
   overflow-x: hidden;
   min-height: 100vh;
 }
-
 a { text-decoration: none; color: inherit; }
 
 ::-webkit-scrollbar { width: 4px; }
@@ -58,9 +54,7 @@ header {
   border-bottom: 1px solid var(--border-green);
   box-shadow: 0 2px 30px rgba(0,0,0,0.6);
 }
-
 .header-left { display: flex; align-items: center; gap: 0.875rem; }
-
 .menu-btn {
   background: none; border: none; cursor: pointer;
   width: 38px; height: 38px;
@@ -69,13 +63,11 @@ header {
 }
 .menu-btn span {
   display: block; width: 100%; height: 2px;
-  background: var(--green-bright); border-radius: 2px;
-  transition: all 0.3s;
+  background: var(--green-bright); border-radius: 2px; transition: all 0.3s;
 }
 .menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
 .menu-btn.active span:nth-child(2) { opacity: 0; }
 .menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
-
 .logo {
   font-family: var(--font-display);
   font-size: 1.45rem; font-weight: 700; letter-spacing: 3px;
@@ -83,16 +75,13 @@ header {
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   filter: drop-shadow(0 0 8px var(--green-glow));
 }
-
 .header-right { display: flex; align-items: center; gap: 0.75rem; }
-
 .login-btn {
   padding: 0.4rem 0.9rem;
   background: linear-gradient(135deg, var(--green-primary), var(--green-dark));
   border: none; border-radius: 6px;
   color: #fff; font-family: var(--font-body); font-size: 0.82rem; font-weight: 600;
-  cursor: pointer; letter-spacing: 0.5px;
-  transition: all 0.2s;
+  cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s;
   box-shadow: 0 0 12px rgba(22,163,74,0.4);
 }
 .login-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 18px rgba(22,163,74,0.6); }
@@ -107,7 +96,6 @@ header {
   overflow-y: auto;
 }
 .mobile-menu.open { left: 0; }
-
 .menu-header {
   padding: 1.1rem 1.25rem 0.9rem;
   border-bottom: 1px solid var(--border-green);
@@ -118,9 +106,7 @@ header {
   background: linear-gradient(135deg, var(--green-bright), var(--green-neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.menu-close {
-  background: none; border: none; color: var(--white-muted); font-size: 1.3rem; cursor: pointer;
-}
+.menu-close { background: none; border: none; color: var(--white-muted); font-size: 1.3rem; cursor: pointer; }
 .mobile-menu ul { list-style: none; padding: 0.75rem 0; }
 .mobile-menu li a {
   display: flex; align-items: center; gap: 0.75rem;
@@ -138,30 +124,27 @@ header {
 /* ===== ANNOUNCE BAR ===== */
 .announce-bar {
   background: linear-gradient(90deg, var(--green-dark), var(--green-primary), var(--green-dark));
-  background-size: 200%;
-  animation: gradShift 4s ease infinite;
-  padding: 0.5rem 1rem;
-  overflow: hidden;
+  background-size: 200%; animation: gradShift 4s ease infinite;
+  padding: 0.5rem 1rem; overflow: hidden;
 }
 .marquee-text {
-  display: inline-block;
-  animation: marquee 22s linear infinite;
+  display: inline-block; animation: marquee 22s linear infinite;
   white-space: nowrap; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.4px;
 }
 @keyframes marquee { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
 @keyframes gradShift { 0%,100% { background-position: 0%; } 50% { background-position: 100%; } }
 
-/* ===== HERO GAME BANNER ===== */
+/* ===== GAME HERO ===== */
 .game-hero {
   position: relative; overflow: hidden;
-  background: linear-gradient(135deg, #040a06 0%, #0a1a0d 50%, #061510 100%);
+  background: linear-gradient(135deg, #040a06 0%, #0e1a08 50%, #060e0a 100%);
   border-bottom: 1px solid var(--border-green);
 }
 .hero-bg {
   position: absolute; inset: 0;
-  background-image: url('https://cdn1.codashop.com/S/content/mobile/images/product-tiles/MLBB-2025-tiles-178x178.jpg');
+  background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW8IQXRmTwim3_Tx-75r3SncaVZzkYBJ2TNw&usqp=CAU');
   background-size: cover; background-position: center;
-  opacity: 0.12; filter: blur(3px);
+  opacity: 0.1; filter: blur(4px);
 }
 .hero-overlay {
   position: absolute; inset: 0;
@@ -175,12 +158,11 @@ header {
 .hero-img {
   width: 80px; height: 80px; border-radius: 16px; object-fit: cover;
   border: 2px solid var(--border-green-bright);
-  box-shadow: 0 0 20px var(--green-glow);
-  flex-shrink: 0;
+  box-shadow: 0 0 20px var(--green-glow); flex-shrink: 0;
 }
 .hero-text .game-tag {
-  font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
-  color: var(--green-neon); margin-bottom: 0.3rem;
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2px; color: var(--green-neon); margin-bottom: 0.3rem;
 }
 .hero-text h1 {
   font-family: var(--font-display); font-size: clamp(1.3rem,5vw,1.9rem); font-weight: 700;
@@ -188,9 +170,7 @@ header {
   background: linear-gradient(135deg, #fff 50%, var(--green-neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.hero-text .hero-desc {
-  font-size: 0.78rem; color: var(--white-muted); margin-top: 0.35rem; line-height: 1.4;
-}
+.hero-text .hero-desc { font-size: 0.78rem; color: var(--white-muted); margin-top: 0.35rem; line-height: 1.4; }
 .hero-badges { display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
 .hero-badge {
   font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.55rem;
@@ -198,15 +178,10 @@ header {
 }
 .hero-badge.green { color: var(--green-neon); border-color: var(--green-primary); background: rgba(22,163,74,0.15); }
 .hero-badge.yellow { color: var(--yellow-accent); border-color: rgba(250,204,21,0.4); background: rgba(250,204,21,0.1); }
-
-/* ===== COUNTER ===== */
-counter-reset: step;
+.hero-badge.red { color: #fca5a5; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.1); }
 
 /* ===== CONTAINER ===== */
-.container {
-  max-width: 560px; margin: 0 auto;
-  padding: 1.25rem 1rem 2rem;
-}
+.container { max-width: 560px; margin: 0 auto; padding: 1.25rem 1rem 2rem; }
 
 /* ===== STEP BLOCK ===== */
 .step-block {
@@ -218,7 +193,6 @@ counter-reset: step;
   transition: box-shadow 0.3s;
 }
 .step-block:hover { box-shadow: 0 6px 32px rgba(34,197,94,0.1); }
-
 .step-head {
   display: flex; align-items: center; gap: 0.75rem;
   padding: 0.875rem 1.1rem;
@@ -229,15 +203,12 @@ counter-reset: step;
   width: 26px; height: 26px; border-radius: 50%;
   background: var(--green-primary);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
-  flex-shrink: 0;
+  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
 }
 .step-head h3 {
   font-family: var(--font-display); font-size: 1rem; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: var(--green-neon);
+  letter-spacing: 1px; text-transform: uppercase; color: var(--green-neon);
 }
-
 .step-body { padding: 1.1rem; }
 
 /* ===== FORM INPUTS ===== */
@@ -249,36 +220,26 @@ counter-reset: step;
 }
 .field input {
   width: 100%; padding: 0.7rem 0.9rem;
-  background: var(--black-input);
-  border: 1px solid var(--border-green);
-  border-radius: 8px;
-  color: #fff; font-family: var(--font-body); font-size: 0.9rem;
+  background: var(--black-input); border: 1px solid var(--border-green);
+  border-radius: 8px; color: #fff; font-family: var(--font-body); font-size: 0.9rem;
   outline: none; transition: all 0.25s;
 }
-.field input:focus {
-  border-color: var(--green-bright);
-  box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
-}
+.field input:focus { border-color: var(--green-bright); box-shadow: 0 0 0 3px rgba(34,197,94,0.12); }
 .field input::placeholder { color: rgba(255,255,255,0.3); }
 
 /* ===== NOMINAL GRID ===== */
 .nominal-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem;
 }
-
 .nominal-card {
   background: linear-gradient(135deg, #0f2015, #0a1a0d);
   border: 1px solid var(--border-green);
   border-radius: 10px; padding: 0.55rem;
   text-align: center; cursor: pointer;
-  position: relative; overflow: hidden;
-  transition: all 0.2s;
+  position: relative; overflow: hidden; transition: all 0.2s;
 }
 .nominal-card:hover {
-  border-color: var(--green-neon);
-  transform: translateY(-3px);
+  border-color: var(--green-neon); transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(34,197,94,0.25);
 }
 .nominal-card.selected {
@@ -286,31 +247,25 @@ counter-reset: step;
   box-shadow: 0 0 0 2px rgba(250,204,21,0.25), 0 6px 20px rgba(250,204,21,0.12);
   background: linear-gradient(135deg, #1a1800, #12190a);
 }
-
 .nominal-card .top {
   display: flex; align-items: center; justify-content: center; gap: 0.35rem;
   padding: 5px 3px 3px;
 }
-.nominal-card img.icon {
-  width: 28px; height: 28px; object-fit: contain;
-}
+.nominal-card img.icon { width: 28px; height: 28px; object-fit: contain; }
 .nominal-card .count {
   font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
   color: #fff; line-height: 1.1;
 }
-
 .price-overlay {
   margin-top: 6px; height: 38px; border-radius: 6px;
   display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 0.8rem;
-  background-size: cover; background-position: center;
-  color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+  background-size: cover; background-position: center; color: #fff;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
   border: 1px solid rgba(255,255,255,0.07);
 }
-
 .nominal-card .label {
-  font-size: 0.6rem; color: var(--yellow-accent); margin-top: 5px;
-  font-weight: 600;
+  font-size: 0.6rem; color: var(--yellow-accent); margin-top: 5px; font-weight: 600;
 }
 
 /* RIBBON */
@@ -322,10 +277,7 @@ counter-reset: step;
 }
 
 /* ===== PAYMENT GRID ===== */
-.payment-grid {
-  display: grid; grid-template-columns: 1fr; gap: 0.65rem;
-}
-
+.payment-grid { display: grid; grid-template-columns: 1fr; gap: 0.65rem; }
 .payment-card {
   display: flex; gap: 0.75rem; align-items: center;
   padding: 0.75rem 0.875rem;
@@ -344,25 +296,15 @@ counter-reset: step;
   box-shadow: 0 0 0 2px rgba(250,204,21,0.2), 0 4px 16px rgba(250,204,21,0.1);
   background: linear-gradient(135deg, #1a1800, #0e1a06);
 }
-.payment-card.disabled {
-  opacity: 0.38; pointer-events: none; filter: grayscale(0.3);
-}
-
+.payment-card.disabled { opacity: 0.38; pointer-events: none; filter: grayscale(0.3); }
 .payment-card img {
   width: 52px; height: 34px; object-fit: contain;
-  background: #fff; padding: 4px; border-radius: 6px;
-  flex-shrink: 0;
+  background: #fff; padding: 4px; border-radius: 6px; flex-shrink: 0;
 }
 .payment-card .meta { flex: 1; min-width: 0; }
-.payment-card .meta .name {
-  font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: #fff;
-}
-.payment-card .meta .fee {
-  font-size: 0.7rem; color: var(--white-muted); margin-top: 3px;
-}
-.payment-card .meta .saldo-info {
-  font-size: 0.68rem; color: var(--green-neon); margin-top: 2px;
-}
+.payment-card .meta .name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: #fff; }
+.payment-card .meta .fee { font-size: 0.7rem; color: var(--white-muted); margin-top: 3px; }
+.payment-card .meta .saldo-info { font-size: 0.68rem; color: var(--green-neon); margin-top: 2px; }
 .payment-card .total-box { text-align: right; flex-shrink: 0; }
 .payment-card .total-label { font-size: 0.65rem; color: var(--white-muted); }
 .payment-card .total-amt {
@@ -372,54 +314,39 @@ counter-reset: step;
 
 /* ===== CHECKOUT BUTTON ===== */
 .btn-checkout {
-  display: block; width: 100%;
-  padding: 0.9rem 1.5rem;
+  display: block; width: 100%; padding: 0.9rem 1.5rem;
   background: linear-gradient(135deg, var(--green-primary), var(--green-dark));
-  border: none; border-radius: 10px;
-  color: #fff; font-family: var(--font-display);
-  font-size: 1.1rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  border: none; border-radius: 10px; color: #fff;
+  font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
   cursor: pointer; transition: all 0.25s;
   box-shadow: 0 4px 24px rgba(22,163,74,0.4);
   position: relative; overflow: hidden;
 }
 .btn-checkout::before {
-  content: ''; position: absolute; top: 0; left: -100%;
-  width: 100%; height: 100%;
+  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
   transition: left 0.5s;
 }
 .btn-checkout:hover::before { left: 100%; }
-.btn-checkout:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(22,163,74,0.55);
-}
+.btn-checkout:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(22,163,74,0.55); }
 .btn-checkout:active { transform: translateY(0); }
 
-/* ===== SECURITY BADGES ===== */
 .security-row {
-  display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
-  margin-top: 0.875rem;
+  display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.875rem;
 }
-.sec-badge {
-  display: flex; align-items: center; gap: 0.35rem;
-  font-size: 0.7rem; color: var(--white-muted);
-}
-.sec-badge .dot { color: var(--green-neon); }
+.sec-badge { display: flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; color: var(--white-muted); }
 
 /* ===== MODAL ===== */
 .modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.75);
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
   display: none; align-items: center; justify-content: center;
-  z-index: 3000; padding: 1rem;
-  backdrop-filter: blur(6px);
+  z-index: 3000; padding: 1rem; backdrop-filter: blur(6px);
 }
-
 .modal {
   background: var(--black-card);
   border: 1px solid var(--border-green-bright);
-  border-radius: 16px; width: 90%; max-width: 420px;
-  overflow: hidden;
+  border-radius: 16px; width: 90%; max-width: 420px; overflow: hidden;
   box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px var(--green-glow);
   animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
 }
@@ -427,7 +354,6 @@ counter-reset: step;
   from { opacity: 0; transform: scale(0.9) translateY(20px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
-
 .modal-header {
   padding: 1rem 1.25rem;
   background: linear-gradient(90deg, rgba(22,163,74,0.25), rgba(22,163,74,0.08));
@@ -438,82 +364,56 @@ counter-reset: step;
   font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
   letter-spacing: 1px; text-transform: uppercase; color: var(--green-neon);
 }
-
 .modal-body { padding: 1.1rem 1.25rem; }
-
 .detail-row {
   display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 0.55rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
   font-size: 0.85rem;
 }
 .detail-row:last-child { border-bottom: none; }
 .detail-row .d-label { color: var(--white-muted); }
 .detail-row .d-val { font-weight: 600; text-align: right; max-width: 60%; word-break: break-all; }
 .detail-row .d-val.highlight { color: var(--green-neon); }
-
 .total-row {
   display: flex; justify-content: space-between; align-items: center;
   margin-top: 0.875rem; padding: 0.75rem 1rem;
-  background: rgba(34,197,94,0.08);
-  border: 1px solid var(--border-green);
-  border-radius: 10px;
+  background: rgba(34,197,94,0.08); border: 1px solid var(--border-green); border-radius: 10px;
 }
 .total-row .t-label {
   font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 1px;
 }
 .total-row .t-amount {
-  font-family: var(--font-display); font-size: 1.3rem; font-weight: 800;
-  color: var(--yellow-accent);
+  font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--yellow-accent);
 }
-
 .countdown-bar {
   margin-top: 0.875rem; padding: 0.55rem 0.875rem;
   background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
   border-radius: 8px; text-align: center; font-size: 0.78rem; color: var(--white-muted);
 }
 .countdown-bar .timer { color: #f87171; font-weight: 800; font-size: 0.92rem; }
-
 .modal-note {
   margin-top: 0.875rem; padding: 0.65rem 0.875rem;
   background: rgba(250,204,21,0.06); border-left: 3px solid var(--yellow-accent);
   border-radius: 0 8px 8px 0; font-size: 0.75rem;
   color: rgba(250,204,21,0.85); line-height: 1.5;
 }
-
 .modal-footer {
-  display: flex; gap: 0.75rem;
-  padding: 0.875rem 1.25rem;
-  background: rgba(0,0,0,0.2);
-  border-top: 1px solid var(--border-green);
+  display: flex; gap: 0.75rem; padding: 0.875rem 1.25rem;
+  background: rgba(0,0,0,0.2); border-top: 1px solid var(--border-green);
 }
 .modal-footer button {
-  flex: 1; padding: 0.7rem;
-  border: none; border-radius: 8px;
+  flex: 1; padding: 0.7rem; border: none; border-radius: 8px;
   font-family: var(--font-body); font-size: 0.9rem; font-weight: 700;
   cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
 }
 #btnPayNow {
   background: linear-gradient(135deg, var(--green-primary), var(--green-dark));
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(22,163,74,0.4);
+  color: #fff; box-shadow: 0 4px 16px rgba(22,163,74,0.4);
 }
 #btnPayNow:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,0.55); }
-#btnClose {
-  background: var(--black-surface); color: var(--white-muted);
-  border: 1px solid var(--border-green);
-}
+#btnClose { background: var(--black-surface); color: var(--white-muted); border: 1px solid var(--border-green); }
 #btnClose:hover { background: var(--black-mid); color: #fff; }
-
-/* copy btn */
-.copy-btn {
-  background: none; border: none; cursor: pointer;
-  color: var(--green-primary); font-size: 0.75rem; margin-left: 6px;
-  padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-green);
-  transition: all 0.2s;
-}
-.copy-btn:hover { color: var(--green-neon); border-color: var(--green-neon); }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 360px) {
@@ -525,8 +425,10 @@ counter-reset: step;
   .container { padding: 1.5rem 1.5rem 3rem; }
 }
 @media (max-width: 480px) {
-  .modal { width: 100%; max-width: 100%; border-radius: 16px 16px 0 0;
-    position: fixed; bottom: 0; left: 0; max-height: 92vh; overflow-y: auto; }
+  .modal {
+    width: 100%; max-width: 100%; border-radius: 16px 16px 0 0;
+    position: fixed; bottom: 0; left: 0; max-height: 92vh; overflow-y: auto;
+  }
   .modal-overlay { align-items: flex-end; padding: 0; }
 }
 
@@ -827,6 +729,7 @@ counter-reset: step;
    ================================================ */
 
 
+
 /* ===== CHECKOUT SPINNER ===== */
 .btn-checkout-wrap {
   position: relative;
@@ -854,9 +757,10 @@ counter-reset: step;
 
   </style>
 </head>
-<body>
 
-<!-- MOBILE MENU OVERLAY -->
+<body data-requires-server="false">
+
+<!-- MENU OVERLAY -->
 
 <div class="menu-overlay" id="menuOverlay"></div>
 
@@ -867,7 +771,8 @@ counter-reset: step;
     <div class="menu-logo">NUBIASTORE</div>
     <button class="menu-close" id="menuClose">✕</button>
   </div>
-  <!-- ===== AUTH HEADER WIDGET ===== -->
+
+   <!-- ===== AUTH HEADER WIDGET ===== -->
 <div id="authWidget" class="auth-widget">
 
   <!-- State: belum login -->
@@ -968,7 +873,7 @@ counter-reset: step;
 
 <div class="announce-bar">
   <span class="marquee-text">
-    ⚡ Top Up MLBB Termurah &nbsp;|&nbsp; 💎 Proses Otomatis Instan &nbsp;|&nbsp; 🔥 Tanpa Biaya Tersembunyi &nbsp;|&nbsp; ✅ 100% Aman & Terpercaya &nbsp;|&nbsp; 🎁 Flash Sale Setiap Hari
+    🔥 Top Up Free Fire Max Termurah &nbsp;|&nbsp; 💎 Diamond Langsung Masuk &nbsp;|&nbsp; ⚡ Proses Otomatis 24 Jam &nbsp;|&nbsp; ✅ Tanpa Biaya Tersembunyi &nbsp;|&nbsp; 🎁 Flash Sale Setiap Hari
   </span>
 </div>
 
@@ -978,15 +883,15 @@ counter-reset: step;
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <img class="hero-img" src="https://cdn1.codashop.com/S/content/mobile/images/product-tiles/MLBB-2025-tiles-178x178.jpg" alt="Mobile Legends">
+    <img class="hero-img" src="https://i.pinimg.com/474x/9b/aa/66/9baa66a3fb33bfcea3e8b791dee5d1c7.jpg" alt="Free Fire">
     <div class="hero-text">
-      <div class="game-tag">🎮 Top Up Game</div>
-      <h1>Mobile Legends<br>Bang Bang</h1>
-      <div class="hero-desc">Diamonds langsung masuk ke akun kamu. Proses otomatis 24 jam.</div>
+      <div class="game-tag">🔥 Top Up Game</div>
+      <h1>Garena<br>Free Fire Max</h1>
+      <div class="hero-desc">Diamond & Membership langsung masuk ke akun kamu. Proses otomatis 24 jam non-stop.</div>
       <div class="hero-badges">
         <span class="hero-badge green">✓ Harga Termurah</span>
         <span class="hero-badge yellow">⚡ Instan</span>
-        <span class="hero-badge green">🛡 Aman</span>
+        <span class="hero-badge red">🔥 Hot</span>
       </div>
     </div>
   </div>
@@ -996,7 +901,7 @@ counter-reset: step;
 
 <div class="container">
 
-  <!-- STEP 1: Data Akun -->
+  <!-- STEP 1 -->
 
   <div class="step-block">
     <div class="step-head">
@@ -1006,9 +911,9 @@ counter-reset: step;
     <div class="step-body">
       <div class="field">
         <label for="userId">ID Akun <span style="color:var(--white-muted);font-weight:400;">(contoh: 1234567890)</span></label>
-        <input type="text" id="userId" placeholder="Masukkan User ID kamu">
+        <input type="text" id="userId" placeholder="Masukkan User ID Free Fire kamu">
       </div>
-      <div class="field">
+      <div class="field" id="serverField">
         <label for="server">Server <span style="color:var(--white-muted);font-weight:400;">(contoh: 1234)</span></label>
         <input type="text" id="server" placeholder="Masukkan nomor server">
       </div>
@@ -1019,293 +924,506 @@ counter-reset: step;
     </div>
   </div>
 
-  <!-- STEP 2: Pilih Nominal -->
+  <!-- STEP 2 -->
 
   <div class="step-block">
     <div class="step-head">
       <div class="step-num">2</div>
-      <h3>Pilih Nominal Diamond</h3>
+      <h3>Pilih Nominal</h3>
     </div>
     <div class="step-body">
       <div class="nominal-grid" id="nominalGrid">
 
 ```
-    <div class="nominal-card" data-value="WEEKLY PASS PAKET MURAH" data-price="25326" data-nubia-only="true" data-bg="https://i.pinimg.com/originals/71/51/13/71511393d36a8af4d760469b5a21432d.gif">
-      <div class="top">
-        <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
-        <div class="count" style="font-size:0.72rem;">WDP MURAH</div>
-      </div>
+    <div class="nominal-card" data-value="MEMBERSHIP MINGGGUAN Promo Ramadhan" data-price="24387" data-nubia-only="true" data-bg="https://i.pinimg.com/originals/71/51/13/71511393d36a8af4d760469b5a21432d.gif">
+      <div class="top"><img class="icon" src="https://sin1.contabostorage.com/0a986eb902c4469cb860e43985eb18a1:vocapanel/cuantopup/CT-FFWeekly-327c-original.webp" alt="M"><div class="count" style="font-size:0.68rem;">MEMBER 7Hr Promo</div></div>
       <div class="price-overlay"></div>
       <div class="label">⚡ Stok Terbatas</div>
     </div>
 
-    <div class="nominal-card" data-value="WEEKLY DIAMOND PASS" data-price="28102" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top">
-        <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
-        <div class="count" style="font-size:0.72rem;">WDP x1</div>
-      </div>
+    <div class="nominal-card" data-value="MEMBERSHIP MINGGUAN" data-price="28785" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://sin1.contabostorage.com/0a986eb902c4469cb860e43985eb18a1:vocapanel/cuantopup/CT-FFWeekly-327c-original.webp" alt="M"><div class="count" style="font-size:0.68rem;">MEMBER 7Hr Normal</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="WEEKLY DIAMOND PASS X2" data-price="55896" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top">
-        <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
-        <div class="count" style="font-size:0.72rem;">WDP x2</div>
-      </div>
+    <div class="nominal-card" data-value="BP Card" data-price="1341" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://sin1.contabostorage.com/0a986eb902c4469cb860e43985eb18a1:vocapanel/cuantopup/CT-FreeFireBP-2947-original.webp" alt="BP"><div class="count">BP Card</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="WEEKLY PASS X3" data-price="86255" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top">
-        <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
-        <div class="count" style="font-size:0.72rem;">WDP x3</div>
-      </div>
+    <div class="nominal-card" data-value="MEMBERSHIP BULANAN Promo Ramadhan" data-price="74387" data-nubia-only="true" data-bg="https://i.pinimg.com/originals/71/51/13/71511393d36a8af4d760469b5a21432d.gif">
+      <div class="top"><img class="icon" src="https://sin1.contabostorage.com/0a986eb902c4469cb860e43985eb18a1:vocapanel/cuantopup/CT-FFMonthly-69a7-original.webp" alt="M"><div class="count" style="font-size:0.68rem;">MEMBER 30Hr Promo</div></div>
+      <div class="price-overlay"></div>
+      <div class="label">⚡ Stok Terbatas</div>
+    </div>
+
+    <div class="nominal-card" data-value="MEMBERSHIP BULANAN" data-price="87785" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://sin1.contabostorage.com/0a986eb902c4469cb860e43985eb18a1:vocapanel/cuantopup/CT-FFMonthly-69a7-original.webp" alt="M"><div class="count" style="font-size:0.68rem;">MEMBER 30Hr Normal</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="WEEKLY PASS X4" data-price="112586" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top">
-        <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
-        <div class="count" style="font-size:0.72rem;">WDP x4</div>
-      </div>
+    <div class="nominal-card" data-value="5💎" data-price="865" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">5</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="WEEKLY PASS X5" data-price="140903" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top">
-        <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
-        <div class="count" style="font-size:0.72rem;">WDP x5</div>
-      </div>
+    <div class="nominal-card" data-value="10💎" data-price="1744" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">10</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="3💎" data-price="1069" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">3</div></div>
+    <div class="nominal-card" data-value="15💎" data-price="2631" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">15</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="5💎" data-price="1601" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">5</div></div>
+    <div class="nominal-card" data-value="20💎" data-price="3477" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">20</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="18💎" data-price="4980" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">18</div></div>
+    <div class="nominal-card" data-value="25💎" data-price="4341" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">25</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="33💎" data-price="9432" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">33</div></div>
+    <div class="nominal-card" data-value="30💎" data-price="5210" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">30</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="46💎" data-price="13020" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">46</div></div>
+    <div class="nominal-card" data-value="40💎" data-price="6680" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">40</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="56💎" data-price="15866" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">56</div></div>
+    <div class="nominal-card" data-value="50💎" data-price="7491" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">50</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="74💎" data-price="19969" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">74</div></div>
+    <div class="nominal-card" data-value="60💎" data-price="9488" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">60</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="85💎" data-price="24850" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">85</div></div>
+    <div class="nominal-card" data-value="75💎" data-price="10699" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">75</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="92💎" data-price="27340" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">92</div></div>
+    <div class="nominal-card" data-value="80💎" data-price="12811" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">80</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="113💎" data-price="33968" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">113</div></div>
+    <div class="nominal-card" data-value="90💎" data-price="13410" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">90</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="128 (116+12)💎" data-price="37292" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">128</div></div>
+    <div class="nominal-card" data-value="95💎" data-price="14777" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">95</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="148💎" data-price="42400" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">148</div></div>
+    <div class="nominal-card" data-value="100💎" data-price="15090" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">100</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="172 (156+16)💎" data-price="49190" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">172</div></div>
+    <div class="nominal-card" data-value="120💎" data-price="18040" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">120</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="222 (200+22)💎" data-price="66933" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">222</div></div>
+    <div class="nominal-card" data-value="130💎" data-price="19898" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">130</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="240 (217+23)💎" data-price="67267" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">240</div></div>
+    <div class="nominal-card" data-value="145💎" data-price="20858" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">145</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="257 (230+27)💎" data-price="78689" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">257</div></div>
+    <div class="nominal-card" data-value="150💎" data-price="21677" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">150</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="296 (256+40)💎" data-price="83593" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">296</div></div>
+    <div class="nominal-card" data-value="160💎" data-price="24084" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">160</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="344 (312+32)💎" data-price="97689" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">344</div></div>
+    <div class="nominal-card" data-value="170💎" data-price="25557" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">170</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="384 (346+38)💎" data-price="110864" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">384</div></div>
+    <div class="nominal-card" data-value="180💎" data-price="26444" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">180</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="408 (367+41)💎" data-price="115870" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">408</div></div>
+    <div class="nominal-card" data-value="190💎" data-price="27983" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">190</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="429 (386+43)💎" data-price="121600" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">429</div></div>
+    <div class="nominal-card" data-value="260💎" data-price="37789" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">260</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="514 (465+49)💎" data-price="144989" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">514</div></div>
+    <div class="nominal-card" data-value="280💎" data-price="39951" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">280</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="568 (503+65)💎" data-price="156298" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">568</div></div>
+    <div class="nominal-card" data-value="300💎" data-price="44100" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">300</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="659 (586+73)💎" data-price="182751" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">659</div></div>
+    <div class="nominal-card" data-value="355💎" data-price="48989" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">355</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="702 (625+77)💎" data-price="194800" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">702</div></div>
+    <div class="nominal-card" data-value="360💎" data-price="49222" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">360</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="750 (668+82)💎" data-price="208889" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">750</div></div>
+    <div class="nominal-card" data-value="375💎" data-price="52898" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">375</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="875 (774+101)💎" data-price="240333" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">875</div></div>
+    <div class="nominal-card" data-value="400💎" data-price="56515" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">400</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="966 (836+130)💎" data-price="259999" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">966</div></div>
+    <div class="nominal-card" data-value="425💎" data-price="58884" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">425</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="1045 (928+117)💎" data-price="284800" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">1045</div></div>
+    <div class="nominal-card" data-value="475💎" data-price="69090" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">475</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="1412 (1258+154)💎" data-price="387600" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">1412</div></div>
+    <div class="nominal-card" data-value="495💎" data-price="71099" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">495</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="1669 (1484+185)💎" data-price="456789" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">1669</div></div>
+    <div class="nominal-card" data-value="500💎" data-price="72676" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">500</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="2010 (1708+302)💎" data-price="518300" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">2010</div></div>
+    <div class="nominal-card" data-value="512💎" data-price="74001" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">512</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="2195 (1877+318)💎" data-price="569978" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">2195</div></div>
+    <div class="nominal-card" data-value="520💎" data-price="76121" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">520</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="2855 (2461+394)💎" data-price="750875" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">2855</div></div>
+    <div class="nominal-card" data-value="545💎" data-price="78989" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">545</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="3423 (2964+459)💎" data-price="909300" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">3423</div></div>
+    <div class="nominal-card" data-value="565💎" data-price="80311" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">565</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="3688 (3202+486)💎" data-price="979187" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">3688</div></div>
+    <div class="nominal-card" data-value="600💎" data-price="88121" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">600</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="4020 (3416+604)💎" data-price="1038951" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">4020</div></div>
+    <div class="nominal-card" data-value="635💎" data-price="90999" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">635</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="4830 (4003+827)💎" data-price="1245595" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">4830</div></div>
+    <div class="nominal-card" data-value="655💎" data-price="95353" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">655</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="4958 (4120+838)💎" data-price="1287695" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">4958</div></div>
+    <div class="nominal-card" data-value="710💎" data-price="102648" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">710</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="5532 (4628+904)💎" data-price="1442998" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">5532</div></div>
+    <div class="nominal-card" data-value="740💎" data-price="105641" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">740</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="6230 (5274+964)💎" data-price="1624950" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">6230</div></div>
+    <div class="nominal-card" data-value="770💎" data-price="108899" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">770</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="6840💎" data-price="1778631" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">6840</div></div>
+    <div class="nominal-card" data-value="790💎" data-price="111551" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">790</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="8040💎" data-price="2141475" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">8040</div></div>
+    <div class="nominal-card" data-value="800💎" data-price="112979" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">800</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="10050💎" data-price="2608896" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">10050</div></div>
+    <div class="nominal-card" data-value="860💎" data-price="122008" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">860</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="21330💎" data-price="6300000" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">21330</div></div>
+    <div class="nominal-card" data-value="930💎" data-price="131898" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">930</div></div>
       <div class="price-overlay"></div>
     </div>
 
-    <div class="nominal-card" data-value="27864💎" data-price="7821443" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
-      <div class="top"><img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Icon-PNG.png" alt="💎"><div class="count">27864</div></div>
+    <div class="nominal-card" data-value="1000💎" data-price="142598" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1000</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1050💎" data-price="149777" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1050</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1075💎" data-price="152870" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1075</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1200💎" data-price="170989" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1200</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1300💎" data-price="183768" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1300</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1450💎" data-price="201084" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1450</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1490💎" data-price="208888" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1490</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1510💎" data-price="211910" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1510</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1580💎" data-price="221875" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1580</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1800💎" data-price="252551" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1800</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1875💎" data-price="261990" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1875</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="1975💎" data-price="278679" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">1975</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="2000💎" data-price="282457" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">2000</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="2100💎" data-price="296347" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">2100</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="2180💎" data-price="302889" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">2180</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="2200💎" data-price="309008" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">2200</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="2280💎" data-price="321321" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">2280</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="2350💎" data-price="330130" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">2350</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="2400💎" data-price="337878" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">2400</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="2575💎" data-price="358793" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">2575</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="3000💎" data-price="416570" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">3000</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="3310💎" data-price="458458" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">3310</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="3620💎" data-price="500179" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">3620</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="3675💎" data-price="509809" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">3675</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="3800💎" data-price="527777" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">3800</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="4000💎" data-price="551274" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">4000</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="4340💎" data-price="600090" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">4340</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="4450💎" data-price="613211" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">4450</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="4720💎" data-price="650000" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">4720</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="4800💎" data-price="663211" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">4800</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="5500💎" data-price="758871" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">5500</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="5600💎" data-price="771975" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">5600</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="6000💎" data-price="825788" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">6000</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="6480💎" data-price="894721" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">6480</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="6900💎" data-price="941876" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">6900</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="7295💎" data-price="996732" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">7295</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="7360💎" data-price="1182750" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">7360</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="7430💎" data-price="1032469" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">7430</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="7645💎" data-price="1066728" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">7645</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="8010💎" data-price="1104767" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">8010</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="9290💎" data-price="1297574" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">9290</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="9800💎" data-price="1351676" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">9800</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="14850💎" data-price="2047869" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">14850</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="36500💎" data-price="4998321" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">36500</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="37050💎" data-price="5078832" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">37050</div></div>
+      <div class="price-overlay"></div>
+    </div>
+
+    <div class="nominal-card" data-value="73100💎" data-price="9975832" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+      <div class="top"><img class="icon" src="https://freefireupdate.com/wp-content/uploads/2021/10/diamond_box.png" alt="💎"><div class="count">73100</div></div>
       <div class="price-overlay"></div>
     </div>
 
@@ -1315,7 +1433,7 @@ counter-reset: step;
 
   </div>
 
-  <!-- STEP 3: Metode Pembayaran -->
+  <!-- STEP 3 -->
 
   <div class="step-block">
     <div class="step-head">
@@ -1333,144 +1451,75 @@ counter-reset: step;
         <div class="fee">✓ Gratis Admin</div>
         <div class="saldo-info">Saldo: Rp <span id="nubiaSaldo">-</span></div>
       </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
       <div class="ribbon" style="display:none">TERMURAH</div>
     </div>
 
     <div class="payment-card" data-value="QRIS" data-admin="0" data-percent="1">
       <img src="https://cdn.isellercommerce.com/5d09154a498048e8aa9db882f88e4ea0/theme_content/logo-qris.png" alt="QRIS">
-      <div class="meta">
-        <div class="name">QRIS</div>
-        <div class="fee">Gratis Admin + 1%</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">QRIS</div><div class="fee">Gratis Admin + 1%</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
       <div class="ribbon" style="display:none">TERMURAH</div>
     </div>
 
     <div class="payment-card" data-value="DANA" data-admin="820" data-percent="1">
       <img src="https://tugashub.id/assets/2024/09/dana.png" alt="DANA">
-      <div class="meta">
-        <div class="name">DANA</div>
-        <div class="fee">Admin Rp 820 + 1%</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">DANA</div><div class="fee">Admin Rp 820 + 1%</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="GOPAY" data-admin="820" data-percent="1">
       <img src="https://logos-world.net/wp-content/uploads/2023/03/GoPay-Logo.png" alt="GOPAY">
-      <div class="meta">
-        <div class="name">GOPAY</div>
-        <div class="fee">Admin Rp 820 + 1%</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">GOPAY</div><div class="fee">Admin Rp 820 + 1%</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="SHOPEE" data-admin="820" data-percent="1">
       <img src="https://assets.pikiran-rakyat.com/crop/0x0:0x0/720x0/webp/photo/2024/07/16/366956180.png" alt="SHOPEE">
-      <div class="meta">
-        <div class="name">SHOPEE PAY</div>
-        <div class="fee">Admin Rp 820 + 1%</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">SHOPEE PAY</div><div class="fee">Admin Rp 820 + 1%</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="OVO" data-admin="1500" data-percent="1.4">
       <img src="https://developers.bri.co.id/themes/briapi_v20/img/client-logo/ovo.png" alt="OVO">
-      <div class="meta">
-        <div class="name">OVO</div>
-        <div class="fee">Admin Rp 1.500 + 1.4%</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">OVO</div><div class="fee">Admin Rp 1.500 + 1.4%</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="SEABANK" data-admin="1500" data-percent="1.6">
       <img src="https://media.cake.me/image/upload/s--TzB8N9kD--/c_pad,fl_png8,h_315,w_600/v1670899643/icl7myi47g1gwtajsaao.png" alt="SEABANK">
-      <div class="meta">
-        <div class="name">SEABANK</div>
-        <div class="fee">Admin Rp 1.500 + 1.6%</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">SEABANK</div><div class="fee">Admin Rp 1.500 + 1.6%</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="BANKJAGO" data-admin="1500" data-percent="1.8">
       <img src="https://tuwaga.id/wp-content/uploads/2025/01/FI022-_-Bank-Jago-1-300x215.png" alt="BANK JAGO">
-      <div class="meta">
-        <div class="name">BANK JAGO</div>
-        <div class="fee">Admin Rp 1.500 + 1.8%</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">BANK JAGO</div><div class="fee">Admin Rp 1.500 + 1.8%</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="SUPERBANK" data-admin="1500" data-percent="1.8">
       <img src="https://images.bisnis.com/posts/2023/08/11/1683668/logo_superbank_2_1680866191.jpg" alt="SUPERBANK">
-      <div class="meta">
-        <div class="name">SUPERBANK</div>
-        <div class="fee">Admin Rp 1.500 + 1.8%</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">SUPERBANK</div><div class="fee">Admin Rp 1.500 + 1.8%</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="VA_BRI" data-admin="2500" data-percent="2" id="vaBRICard">
       <img src="https://tuwaga.id/wp-content/uploads/2025/01/FI004-_-BRI.png" alt="VA BRI">
-      <div class="meta">
-        <div class="name">VA BRI</div>
-        <div class="fee">Admin Rp 2.500 + 2% (Min Rp 10.000)</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">VA BRI</div><div class="fee">Admin Rp 2.500 + 2% (Min Rp 10.000)</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="VA_BNI" data-admin="2500" data-percent="2" id="vaBNICard">
       <img src="https://upload.wikimedia.org/wikipedia/id/thumb/5/5b/BNI_Life.png/1280px-BNI_Life.png" alt="VA BNI">
-      <div class="meta">
-        <div class="name">VA BNI</div>
-        <div class="fee">Admin Rp 2.500 + 2% (Min Rp 10.000)</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">VA BNI</div><div class="fee">Admin Rp 2.500 + 2% (Min Rp 10.000)</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
     <div class="payment-card" data-value="VA_BCA" data-admin="2500" data-percent="2.1" id="vaBCACard">
       <img src="https://www.freepnglogos.com/uploads/logo-bca-png/bank-bca-bca-photo-anezq-photobucket-1.png" alt="VA BCA">
-      <div class="meta">
-        <div class="name">VA BCA</div>
-        <div class="fee">Admin Rp 2.500 + 2.1% (Min Rp 10.000)</div>
-      </div>
-      <div class="total-box">
-        <div class="total-label">Total</div>
-        <div class="total-amt">-</div>
-      </div>
+      <div class="meta"><div class="name">VA BCA</div><div class="fee">Admin Rp 2.500 + 2.1% (Min Rp 10.000)</div></div>
+      <div class="total-box"><div class="total-label">Total</div><div class="total-amt">-</div></div>
     </div>
 
   </div>
@@ -1501,9 +1550,9 @@ counter-reset: step;
 </div>
 
 
-</div><!-- /container -->
+</div>
 
-<!-- ===== MODAL RINCIAN ===== -->
+<!-- MODAL -->
 
 <div class="modal-overlay" id="modalOverlay" style="display:none;">
   <div class="modal">
@@ -1521,7 +1570,7 @@ counter-reset: step;
         <span class="d-val" id="outId">-</span>
       </div>
       <div class="detail-row">
-        <span class="d-label">Diamond</span>
+        <span class="d-label">Item</span>
         <span class="d-val" id="outDiam">-</span>
       </div>
       <div class="detail-row">
@@ -1532,39 +1581,30 @@ counter-reset: step;
         <span class="d-label">Biaya Admin</span>
         <span class="d-val">Rp <span id="outAdmin">-</span></span>
       </div>
-
-```
-  <div class="total-row">
-    <span class="t-label">💰 Total Bayar</span>
-    <span class="t-amount">Rp <span id="outTotal">-</span></span>
-  </div>
-
-  <div class="countdown-bar" id="countdownBar">
-    ⏳ Bayar sebelum: <span class="timer" id="timerDisplay">14:00</span>
-  </div>
-
-  <div class="modal-note">
-    ⚠️ Cek kembali data kamu sebelum melanjutkan pembayaran. Pastikan ID Akun, Server, dan nominal sudah benar.
-  </div>
-</div>
-
-<div class="modal-footer">
-  <button id="btnPayNow">⚡ Bayar Sekarang</button>
-  <button id="btnClose">✕ Tutup</button>
-</div>
-```
-
+      <div class="total-row">
+        <span class="t-label">💰 Total Bayar</span>
+        <span class="t-amount">Rp <span id="outTotal">-</span></span>
+      </div>
+      <div class="countdown-bar" id="countdownBar">
+        ⏳ Bayar sebelum: <span class="timer" id="timerDisplay">14:00</span>
+      </div>
+      <div class="modal-note">
+        ⚠️ Cek kembali data kamu sebelum melanjutkan. Pastikan ID Akun dan nominal sudah benar.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="btnPayNow">⚡ Bayar Sekarang</button>
+      <button id="btnClose">✕ Tutup</button>
+    </div>
   </div>
 </div>
 
-<!-- ========================= JS ========================= -->
+<!-- ===================== JS ===================== -->
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import {
-  getFirestore, doc, setDoc, serverTimestamp, getDoc
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getFirestore, doc, setDoc, serverTimestamp, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
@@ -1580,7 +1620,6 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-/* ===== STATE ===== */
 let currentUser = null;
 let USER_NUBIA_SALDO = 0;
 
@@ -1588,92 +1627,73 @@ onAuthStateChanged(auth, (u) => {
   if (u) { currentUser = u; loadNubiaSaldo(u.uid); }
 });
 
-/* ===== HELPERS ===== */
-function fmt(num) {
-  if (isNaN(num)) return '-';
-  return Number(num).toLocaleString('id');
-}
-
 /* ===== MENU ===== */
 const menuBtn     = document.getElementById('menuBtn');
 const menuClose   = document.getElementById('menuClose');
 const mobileMenu  = document.getElementById('mobileMenu');
 const menuOverlay = document.getElementById('menuOverlay');
 
-function openMenu() {
-  mobileMenu.classList.add('open');
-  menuOverlay.classList.add('show');
-  menuBtn.classList.add('active');
-}
-function closeMenu() {
-  mobileMenu.classList.remove('open');
-  menuOverlay.classList.remove('show');
-  menuBtn.classList.remove('active');
-}
-
+function openMenu()  { mobileMenu.classList.add('open'); menuOverlay.classList.add('show'); menuBtn.classList.add('active'); }
+function closeMenu() { mobileMenu.classList.remove('open'); menuOverlay.classList.remove('show'); menuBtn.classList.remove('active'); }
 menuBtn.onclick     = openMenu;
 menuClose.onclick   = closeMenu;
 menuOverlay.onclick = closeMenu;
 
-/* ===== LOAD SALDO ===== */
+/* ===== SALDO ===== */
 const saldoElem = document.getElementById('nubiaSaldo');
-
 async function loadNubiaSaldo(uid) {
   try {
-    const ref  = doc(db, 'users', uid);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      const data = snap.data();
-      USER_NUBIA_SALDO = Number(data.nubiPayBalance || 0);
-    }
-    if (saldoElem) saldoElem.textContent = fmt(USER_NUBIA_SALDO);
-  } catch (err) {
-    console.error('Load saldo error', err);
-  }
+    const snap = await getDoc(doc(db, 'users', uid));
+    if (snap.exists()) USER_NUBIA_SALDO = Number(snap.data().nubiPayBalance || 0);
+    if (saldoElem) saldoElem.textContent = USER_NUBIA_SALDO.toLocaleString('id');
+  } catch(e) { console.error('Load saldo error', e); }
 }
 
-/* ===== INIT PRICE OVERLAYS ===== */
+/* ===== SERVER FIELD (data-requires-server) ===== */
+const requiresServer = document.body.dataset.requiresServer === 'true';
+const serverInput = document.getElementById('server');
+const serverField = document.getElementById('serverField');
+if (!requiresServer) { if (serverField) serverField.style.display = 'none'; }
+
+/* ===== HELPERS ===== */
+function fmt(n) { return isNaN(n) ? '-' : Number(n).toLocaleString('id'); }
+
+/* ===== INIT OVERLAYS ===== */
 const nominalCards = document.querySelectorAll('.nominal-card');
 const paymentCards = document.querySelectorAll('.payment-card');
 const nominalGrid  = document.getElementById('nominalGrid');
 const paymentGrid  = document.getElementById('paymentGrid');
 
 nominalCards.forEach(card => {
-  const bg      = card.dataset.bg;
-  const price   = parseFloat(card.dataset.price || 0);
+  const bg = card.dataset.bg, price = parseFloat(card.dataset.price || 0);
   const overlay = card.querySelector('.price-overlay');
   if (overlay) {
-    if (bg) overlay.style.backgroundImage = `url('${bg}')`;
-    else overlay.style.background = '#111827';
+    overlay.style.backgroundImage = bg ? `url('${bg}')` : '';
+    if (!bg) overlay.style.background = '#111827';
     overlay.innerText = `Rp ${fmt(price)}`;
   }
 });
 
-/* ===== UPDATE PAYMENT TOTALS ===== */
+/* ===== UPDATE TOTALS ===== */
 function updatePaymentTotals(price) {
   const selectedNom = document.querySelector('.nominal-card.selected');
   const nubiaOnly   = selectedNom?.dataset.nubiaOnly === 'true';
-
   let minCard = null, minVal = Infinity;
 
   paymentCards.forEach(pc => {
-    const flat    = parseFloat(pc.dataset.admin || 0);
-    const pct     = parseFloat(pc.dataset.percent || 0) / 100;
-    const admin   = Math.ceil(flat + price * pct);
-    const total   = price + admin;
+    const flat  = parseFloat(pc.dataset.admin || 0);
+    const pct   = parseFloat(pc.dataset.percent || 0) / 100;
+    const admin = Math.ceil(flat + price * pct);
+    const total = price + admin;
+    const tEl   = pc.querySelector('.total-amt');
+    if (tEl) tEl.textContent = `Rp ${fmt(total)}`;
 
-    const tElem = pc.querySelector('.total-amt');
-    if (tElem) tElem.textContent = `Rp ${fmt(total)}`;
-
-    // VA min 10k
     pc.classList.remove('disabled');
-    if (pc.id && pc.id.startsWith('va') && total < 10000) pc.classList.add('disabled');
+    if (pc.id?.startsWith('va') && total < 10000)        pc.classList.add('disabled');
     if (nubiaOnly && pc.dataset.value !== 'NUBIAPAY')    pc.classList.add('disabled');
     if (pc.dataset.value === 'NUBIAPAY' && USER_NUBIA_SALDO < total) pc.classList.add('disabled');
 
-    if (!pc.classList.contains('disabled') && total < minVal) {
-      minVal = total; minCard = pc;
-    }
+    if (!pc.classList.contains('disabled') && total < minVal) { minVal = total; minCard = pc; }
   });
 
   paymentCards.forEach(pc => {
@@ -1682,13 +1702,13 @@ function updatePaymentTotals(price) {
   });
 }
 
-/* ===== CARD INTERACTIONS ===== */
+/* ===== CARD CLICKS ===== */
 nominalCards.forEach(c => {
   c.onclick = () => {
     nominalCards.forEach(x => x.classList.remove('selected'));
     c.classList.add('selected');
     updatePaymentTotals(parseFloat(c.dataset.price || 0));
-    setTimeout(() => paymentGrid.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    setTimeout(() => paymentGrid.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
   };
 });
 
@@ -1697,35 +1717,28 @@ paymentCards.forEach(c => {
     if (c.classList.contains('disabled')) return;
     paymentCards.forEach(x => x.classList.remove('selected'));
     c.classList.add('selected');
-    setTimeout(() => document.getElementById('btnCheckout').scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    setTimeout(() => document.getElementById('btnCheckout').scrollIntoView({ behavior:'smooth', block:'center' }), 100);
   };
 });
 
 /* ===== ORDER ===== */
 function genInvoice() {
-  return `INVC-ML-${Date.now()}-${Math.random().toString(36).slice(2,8).toUpperCase()}`;
+  return `INVC-FFMAX-${Date.now()}-${Math.random().toString(36).slice(2,8).toUpperCase()}`;
 }
-
 let orderSaved = false, lastSavedInvoice = null, lastCalc = null;
 
 async function saveOrderToFirestore(payload) {
   if (orderSaved) return lastSavedInvoice;
   const invoice = genInvoice();
   await setDoc(doc(db, 'orders', invoice), {
-    invoice,
-    userId: payload.uid || null,
-    game: 'mobile-legends',
-    game_id: payload.idSel,
-    server: payload.srvSel,
-    noWA: payload.waSel,
-    nominalValue: payload.value,
-    price: payload.price,
-    adminFee: payload.adminCalc,
-    amount_total: payload.total,
+    invoice, userId: payload.uid || null,
+    game: 'free-fire-max',
+    game_id: payload.idSel, server: payload.srvSel, noWA: payload.waSel,
+    nominalValue: payload.value, price: payload.price,
+    adminFee: payload.adminCalc, amount_total: payload.total,
     payment_method: payload.payMethod,
     status: 'initiated',
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
+    createdAt: serverTimestamp(), updatedAt: serverTimestamp()
   });
   orderSaved = true; lastSavedInvoice = invoice;
   return invoice;
@@ -1798,7 +1811,7 @@ document.getElementById('btnCheckout').onclick = async () => {
 };
 
 
-/* ===== MODAL CONTROLS ===== */
+/* ===== MODAL ===== */
 document.getElementById('btnClose').onclick = () => {
   document.getElementById('modalOverlay').style.display = 'none';
   clearInterval(countdownInterval);
@@ -1812,30 +1825,31 @@ document.getElementById('btnPayNow').onclick = () => {
 
 /* ===== COUNTDOWN ===== */
 let countdownInterval = null;
-
 function startCountdown() {
   clearInterval(countdownInterval);
   let sisa = 14 * 60;
   const timerEl = document.getElementById('timerDisplay');
-
   function tick() {
-    if (sisa <= 0) {
-      timerEl.textContent = 'Waktu Habis!';
-      timerEl.style.color = '#ef4444';
-      clearInterval(countdownInterval);
-      return;
-    }
-    const m = Math.floor(sisa / 60).toString().padStart(2, '0');
-    const d = (sisa % 60).toString().padStart(2, '0');
+    if (sisa <= 0) { timerEl.textContent = 'Waktu Habis!'; timerEl.style.color = '#ef4444'; clearInterval(countdownInterval); return; }
+    const m = Math.floor(sisa/60).toString().padStart(2,'0');
+    const d = (sisa%60).toString().padStart(2,'0');
     timerEl.textContent = `${m}:${d}`;
     sisa--;
   }
-
   tick();
   countdownInterval = setInterval(tick, 1000);
 }
-</script>
 
+/* ===== AUTO SCROLL ===== */
+nominalGrid.addEventListener('click', e => {
+  if (e.target.closest('.nominal-card')) setTimeout(() => paymentGrid.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+});
+paymentGrid.addEventListener('click', e => {
+  const card = e.target.closest('.payment-card');
+  if (card && !card.classList.contains('disabled'))
+    setTimeout(() => document.getElementById('btnCheckout').scrollIntoView({ behavior:'smooth', block:'center' }), 100);
+});
+</script>
 
 <script type="module">
 /*
@@ -2012,7 +2026,6 @@ authLogoutBtn.addEventListener('click', async () => {
   }
 });
 </script>
-
 
 </body>
 </html>
