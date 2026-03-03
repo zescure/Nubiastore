@@ -826,6 +826,30 @@ counter-reset: step;
    END AUTH HEADER WIDGET CSS
    ================================================ */
 
+
+/* ===== CHECKOUT SPINNER ===== */
+.btn-checkout-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.btn-checkout-wrap .btn-checkout { flex: 1; }
+
+.checkout-spinner {
+  display: none;
+  width: 22px; height: 22px;
+  flex-shrink: 0;
+  border: 3px solid rgba(74,222,128,0.2);
+  border-top-color: var(--green-neon);
+  border-radius: 50%;
+  animation: checkoutSpin 0.7s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(74,222,128,0.5));
+}
+.checkout-spinner.show { display: block; }
+
+@keyframes checkoutSpin { to { transform: rotate(360deg); } }
+
 ```
 
   </style>
@@ -1455,23 +1479,26 @@ counter-reset: step;
   </div>
 
   <!-- STEP 4: Checkout -->
-
-  <div class="step-block">
-    <div class="step-head">
-      <div class="step-num">4</div>
-      <h3>Konfirmasi & Bayar</h3>
-    </div>
-    <div class="step-body">
+<div class="step-block">
+  <div class="step-head">
+    <div class="step-num">4</div>
+    <h3>Konfirmasi & Bayar</h3>
+  </div>
+  <div class="step-body">
+    <div class="btn-checkout-wrap">
       <button class="btn-checkout" id="btnCheckout">
         ⚡ Lanjutkan Pembayaran
       </button>
-      <div class="security-row">
-        <span class="sec-badge"><span class="dot">🔒</span> SSL Aman</span>
-        <span class="sec-badge"><span class="dot">✓</span> 100% Terpercaya</span>
-        <span class="sec-badge"><span class="dot">⚡</span> Proses Instan</span>
-      </div>
+      <div class="checkout-spinner" id="checkoutSpinner"></div>
+    </div>
+    <div class="security-row">
+      <span class="sec-badge"><span class="dot">🔒</span> SSL Aman</span>
+      <span class="sec-badge"><span class="dot">✓</span> 100% Terpercaya</span>
+      <span class="sec-badge"><span class="dot">⚡</span> Proses Instan</span>
     </div>
   </div>
+</div>
+
 
 </div><!-- /container -->
 
@@ -1718,12 +1745,20 @@ document.getElementById('btnCheckout').onclick = async () => {
   const paySel = document.querySelector('.payment-card.selected');
   if (!paySel) return alert('Pilih metode pembayaran terlebih dahulu.');
 
-  const value    = nomSel.dataset.value;
-  const price    = parseFloat(nomSel.dataset.price);
-  const flat     = parseFloat(paySel.dataset.admin || 0);
-  const pct      = parseFloat(paySel.dataset.percent || 0) / 100;
+  // ===== TAMBAHAN: disable button + tampil spinner =====
+  const btnCheckout      = document.getElementById('btnCheckout');
+  const checkoutSpinner  = document.getElementById('checkoutSpinner');
+  btnCheckout.disabled   = true;
+  btnCheckout.style.opacity = '0.7';
+  checkoutSpinner.classList.add('show');
+  // =====================================================
+
+  const value     = nomSel.dataset.value;
+  const price     = parseFloat(nomSel.dataset.price);
+  const flat      = parseFloat(paySel.dataset.admin || 0);
+  const pct       = parseFloat(paySel.dataset.percent || 0) / 100;
   const adminCalc = Math.ceil(flat + price * pct);
-  const total    = price + adminCalc;
+  const total     = price + adminCalc;
 
   document.getElementById('outId').textContent    = `${idSel} (Srv: ${srvSel})`;
   document.getElementById('outDiam').textContent  = value;
@@ -1742,12 +1777,25 @@ document.getElementById('btnCheckout').onclick = async () => {
     document.getElementById('outInvoice').textContent = invoice;
   } catch (e) {
     console.error('saveOrder error', e);
+    // ===== reset spinner kalau error =====
+    btnCheckout.disabled  = false;
+    btnCheckout.style.opacity = '1';
+    checkoutSpinner.classList.remove('show');
+    // =====================================
     return alert('Gagal menyimpan order. Coba lagi.');
   }
+
+  // ===== TAMBAHAN: tunggu 2 detik lalu buka modal =====
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  btnCheckout.disabled  = false;
+  btnCheckout.style.opacity = '1';
+  checkoutSpinner.classList.remove('show');
+  // ====================================================
 
   document.getElementById('modalOverlay').style.display = 'flex';
   startCountdown();
 };
+
 
 /* ===== MODAL CONTROLS ===== */
 document.getElementById('btnClose').onclick = () => {
