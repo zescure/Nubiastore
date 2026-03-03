@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Admin — NUBIASTORE</title>
+<title>Admin — NUBIASTORE (Vertical List)</title>
 <style>
   /* reset & base */
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',Inter,system-ui,sans-serif;background:#f0f2f5;color:#111;min-height:100vh}
+  body{font-family:'Segoe UI',Inter,system-ui,sans-serif;background:#f6f7f9;color:#111;min-height:100vh}
 
 /* ── TOPBAR ── */
 .topbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -19,122 +19,84 @@
 .btn-signout:hover{background:#f8f8f8;border-color:#ccc}
 
 /* ── MAIN ── */
-.main{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.main{max-width:980px;margin:16px auto;padding:0 16px 60px}
 
 /* ── CARD ── */
 .card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:14px}
 .card-title{font-size:13px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .card-title::before{content:"";display:inline-block;width:3px;height:14px;background:#16a34a;border-radius:2px}
 
-/* ── TOOLBAR ── */
+/* toolbar */
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .search-input{flex:1;min-width:200px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:7px;font-size:13px;outline:none;transition:border-color .15s}
 .search-input:focus{border-color:#16a34a}
 .filter-select{padding:8px 10px;border:1px solid #e5e7eb;border-radius:7px;font-size:13px;outline:none;background:#fff;cursor:pointer}
 .filter-select:focus{border-color:#16a34a}
 
-/* ── LIMIT TOGGLE ── */
-.limit-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.limit-info{font-size:12px;color:#6b7280}
-.btn-more{background:none;border:1px solid #16a34a;color:#16a34a;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer;transition:all .15s}
+/* omset area */
+.reports-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.omset-card{background:#111827;color:#fff;padding:12px;border-radius:8px;display:flex;flex-direction:column;gap:6px;min-width:220px}
+.omset-label{font-size:12px;color:rgba(255,255,255,.75);font-weight:700;text-transform:uppercase}
+.omset-val{font-size:20px;font-weight:800}
+
+/* controls */
+.limit-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.limit-info{font-size:13px;color:#374151;font-weight:600}
+.ctrls{display:flex;gap:8px;align-items:center}
+.btn-more{background:none;border:1px solid #16a34a;color:#16a34a;font-size:13px;font-weight:700;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .15s}
 .btn-more:hover{background:#16a34a;color:#fff}
-.btn-less{background:none;border:1px solid #6b7280;color:#6b7280;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer;transition:all .15s}
+.btn-less{background:none;border:1px solid #6b7280;color:#6b7280;font-size:13px;font-weight:700;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .15s}
 .btn-less:hover{background:#6b7280;color:#fff}
 
-/* ── ORDER LIST ── */
-.order-card{border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;overflow:hidden;transition:box-shadow .15s}
-.order-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.07)}
-.order-card-head{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:#fafafa;border-bottom:1px solid #e5e7eb;cursor:pointer;user-select:none}
-.order-card-head:hover{background:#f3f4f6}
-.order-invoice{font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#111}
-.order-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.order-date{font-size:12px;color:#6b7280}
-.order-total{font-size:13px;font-weight:700;color:#16a34a}
-.chevron{font-size:12px;color:#9ca3af;transition:transform .2s;margin-left:4px}
-.chevron.open{transform:rotate(180deg)}
+/* vertical order blocks */
+.orders-list{display:flex;flex-direction:column;gap:10px}
+.order-block{background:#fff;border:1px solid #e9eef5;border-radius:10px;overflow:hidden;transition:box-shadow .12s,transform .12s}
+.order-block:hover{box-shadow:0 6px 20px rgba(2,6,23,.06);transform:translateY(-2px)}
+.order-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;cursor:pointer}
+.order-left{display:flex;gap:12px;align-items:center;min-width:0}
+.invoice{font-family:'Courier New',monospace;font-weight:700;color:#0f172a;min-width:140px}
+.meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.meta small{font-size:12px;color:#6b7280}
+.right-actions{display:flex;align-items:center;gap:10px}
 
-.order-card-body{display:none;padding:14px}
-.order-card-body.open{display:block}
+/* action buttons (spacious) */
+.actions{display:flex;gap:10px}
+.action-btn{padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:13px;min-width:84px}
+.action-complete{background:#16a34a;color:#fff}
+.action-cancel{background:#ef4444;color:#fff}
+.action-wa{background:#25d366;color:#fff}
+.action-view{background:#f3f4f6;color:#374151;border:1px solid #e5e7eb}
 
-/* fields vertical */
-.field-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-.field-row{display:flex;align-items:flex-start;gap:0;border-bottom:1px solid #f3f4f6;padding-bottom:8px}
-.field-row:last-child{border-bottom:none;padding-bottom:0}
-.field-label{font-size:12px;color:#6b7280;font-weight:600;width:130px;flex-shrink:0;padding-top:1px;text-transform:uppercase;letter-spacing:.5px}
-.field-value{font-size:13px;color:#111;font-weight:500;word-break:break-all}
-.field-value.mono{font-family:'Courier New',monospace}
-.field-value.green{color:#16a34a;font-weight:700}
+/* compact info inline */
+.inline-info{display:flex;gap:10px;align-items:center;font-size:13px;color:#374151;flex-wrap:wrap}
+.inline-info .total{font-weight:800;color:#16a34a}
 
-/* status badge */
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
-.badge::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+/* collapsed body */
+.order-body{display:none;border-top:1px solid #f1f5f9;padding:12px 14px;background:#fbfdff}
+.order-body.open{display:block}
+.field-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:8px}
+.field-label{width:120px;font-size:12px;color:#6b7280;font-weight:700}
+.field-value{font-size:13px;color:#0f172a;word-break:break-all}
+
+/* detail raw */
+.raw-pre{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-family:'Courier New',monospace;font-size:12px;color:#374151;overflow:auto;max-height:180px}
+
+/* small helpers */
+.badge{padding:5px 8px;border-radius:8px;font-size:12px;font-weight:800;text-transform:uppercase}
 .badge.initiated{background:#fef3c7;color:#92400e}
 .badge.pending{background:#dbeafe;color:#1e40af}
 .badge.completed{background:#dcfce7;color:#166534}
 .badge.cancelled{background:#fee2e2;color:#991b1b}
 
-/* action buttons */
-.action-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:4px}
-.btn-action{padding:7px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
-.btn-complete{background:#16a34a;color:#fff}
-.btn-complete:hover{background:#15803d}
-.btn-cancel{background:#ef4444;color:#fff}
-.btn-cancel:hover{background:#dc2626}
-.btn-wa{background:#25d366;color:#fff}
-.btn-wa:hover{background:#22c55e}
-.btn-view-raw{background:#f3f4f6;color:#374151;border:1px solid #e5e7eb}
-.btn-view-raw:hover{background:#e5e7eb}
-
-/* raw JSON */
-.raw-area{display:none;margin-top:12px}
-.raw-area.open{display:block}
-.raw-pre{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:6px;padding:10px;font-size:11px;font-family:'Courier New',monospace;overflow:auto;max-height:280px;line-height:1.5;color:#374151}
-
-/* WA modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:12px;padding:24px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.modal-title{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.modal-title .wa-icon{color:#25d366;font-size:20px}
-.modal-body{display:flex;flex-direction:column;gap:10px}
-.modal-label{font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-.modal-input{padding:9px 12px;border:1px solid #e5e7eb;border-radius:7px;font-size:13px;outline:none;width:100%;transition:border-color .15s}
-.modal-input:focus{border-color:#25d366}
-.modal-textarea{padding:9px 12px;border:1px solid #e5e7eb;border-radius:7px;font-size:13px;outline:none;width:100%;min-height:110px;resize:vertical;transition:border-color .15s;line-height:1.6}
-.modal-textarea:focus{border-color:#25d366}
-.modal-actions{display:flex;gap:8px;margin-top:6px}
-.btn-modal-send{flex:1;padding:10px;background:#25d366;color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer}
-.btn-modal-send:hover{background:#22c55e}
-.btn-modal-cancel{padding:10px 18px;background:#f3f4f6;color:#374151;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer}
-.btn-modal-cancel:hover{background:#e5e7eb}
-.modal-preview{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:10px;font-size:12px;color:#166534;line-height:1.6;margin-top:2px;max-height:120px;overflow:auto}
-
-/* detail panel */
-.detail-panel{background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden}
-.detail-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #f3f4f6;background:#fafafa}
-.detail-header-title{font-weight:700;color:#374151;font-size:14px}
-.detail-invoice{font-family:'Courier New',monospace;font-size:12px;color:#16a34a;margin-left:auto}
-.detail-body{padding:18px}
-.detail-empty{padding:32px;text-align:center;color:#6b7280;font-size:13px}
-.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
-.detail-item{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:12px 14px}
-.detail-title{font-size:11px;color:#6b7280;font-weight:700;margin-bottom:6px}
-
-/* states */
-.auth-card{text-align:center;padding:40px 20px;color:#6b7280}
+/* empty */
 .empty-state{text-align:center;padding:32px;color:#9ca3af;font-size:14px}
-.admin-note-bar{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:13px;color:#92400e;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.admin-note-bar::before{content:"⚠️";font-size:16px}
-.realtime-dot{display:inline-block;width:7px;height:7px;background:#16a34a;border-radius:50%;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* loading skeleton */
-.skel{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:4px;height:12px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-@media(max-width:768px){
-  .main{padding:14px}
-  .detail-grid{grid-template-columns:1fr}
+/* responsive */
+@media(max-width:720px){
+  .order-header{flex-direction:column;align-items:flex-start}
+  .right-actions{width:100%;display:flex;justify-content:space-between}
+  .field-label{width:100px}
+  .omset-card{min-width:100%}
 }
 </style>
 </head>
@@ -147,8 +109,7 @@
     <span class="topbar-title">NUBIASTORE — Order Manager</span>
   </div>
   <div class="topbar-right">
-    <span class="realtime-dot" title="Realtime aktif"></span>
-    <span style="font-size:12px;color:#6b7280;margin-right:4px">Realtime</span>
+    <span style="font-size:12px;color:#6b7280;margin-right:8px">Realtime</span>
     <button id="btnSignOut" class="btn-signout">Sign out</button>
   </div>
 </div>
@@ -158,120 +119,84 @@
 
   <!-- AUTH MSG -->
   <div id="authMsg" class="card auth-card">
-    <div class="skel" style="width:200px;margin:0 auto 8px"></div>
-    <div class="skel" style="width:140px;margin:0 auto"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+      <div style="width:220px;height:14px;background:#eef2f7;border-radius:6px"></div>
+      <div style="width:140px;height:14px;background:#eef2f7;border-radius:6px"></div>
+    </div>
   </div>
 
   <!-- ADMIN UI -->
   <div id="adminUI" style="display:none">
 
-    <div id="adminNoteBox" style="display:none" class="admin-note-bar">
-      Login via UID allowlist (development mode). Gunakan custom claims server-side untuk production.
-    </div>
-
-    <!-- TOOLBAR -->
+    <!-- reports and controls -->
     <div class="card">
-      <div class="toolbar">
-        <input id="qInvoice" class="search-input" placeholder="🔍  Cari invoice / user id / game id / server…"/>
-        <select id="filterStatus" class="filter-select">
-          <option value="all">Semua Status</option>
-          <option value="initiated">Initiated</option>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
+      <div class="reports-row">
+        <div class="omset-card">
+          <div class="omset-label">Omset (blok terakhir)</div>
+          <div class="omset-val" id="omsetVal">Rp 0</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.75)">Total jumlah (total) dari blok yang sedang ditampilkan</div>
+        </div>
+
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+          <div class="toolbar" style="align-items:center">
+            <input id="qInvoice" class="search-input" placeholder="🔍  Cari invoice / user id / game id / server…"/>
+            <select id="filterStatus" class="filter-select">
+              <option value="all">Semua Status</option>
+              <option value="initiated">Initiated</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="limit-bar">
+            <div class="limit-info" id="limitInfo">Menampilkan <strong id="displayLimitLabel">10</strong> blok terakhir</div>
+            <div class="ctrls">
+              <button id="btnMore" class="btn-more">Tampilkan 50 blok</button>
+              <button id="btnLess" class="btn-less" style="display:none">Kembali ke 10</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- ORDER LIST -->
+    <!-- orders list -->
     <div class="card" style="padding:14px">
-      <div class="card-title">Daftar Order</div>
-      <div class="limit-bar">
-        <span class="limit-info" id="limitInfo">Menampilkan semua transaksi realtime.</span>
-        <div style="display:flex;gap:6px">
-          <button id="btnMore" class="btn-more" style="display:none">Tampilkan 50 Transaksi</button>
-          <button id="btnLess" class="btn-less" style="display:none">Kembali ke 10</button>
-        </div>
+      <div class="card-title">Daftar Order (vertical blocks)</div>
+      <div id="ordersList" class="orders-list">
+        <!-- populated by JS -->
       </div>
 
-      <!-- This is the container where table or fallback card-list will be rendered -->
-      <div id="ordersList">
-        <!-- default table structure (ensured by script) -->
-        <div style="overflow:auto">
-          <table style="width:100%;border-collapse:collapse">
-            <thead style="background:#fafafa;border-bottom:1px solid #e5e7eb">
-              <tr>
-                <th style="padding:8px 10px;text-align:left">Invoice</th>
-                <th style="padding:8px 10px">User</th>
-                <th style="padding:8px 10px">Game</th>
-                <th style="padding:8px 10px">Game ID</th>
-                <th style="padding:8px 10px">Server</th>
-                <th style="padding:8px 10px">Nominal</th>
-                <th style="padding:8px 10px">Total</th>
-                <th style="padding:8px 10px">Metode</th>
-                <th style="padding:8px 10px">Created</th>
-                <th style="padding:8px 10px">Status</th>
-                <th style="padding:8px 10px">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="ordersTbody"></tbody>
-          </table>
-        </div>
-      </div>
+      <div id="emptyState" class="empty-state" style="display:none">Belum ada transaksi.</div>
     </div>
 
-    <!-- DETAIL PANEL -->
+    <!-- detail panel (optional) -->
     <div id="detailArea" class="card" style="display:none">
       <div class="detail-panel">
-        <div class="detail-header">
+        <div class="detail-header" style="display:flex;align-items:center;justify-content:space-between">
           <div class="detail-header-title">Detail Order</div>
           <div class="detail-invoice" id="detailInvoice">—</div>
         </div>
-        <div class="detail-body">
-          <div id="detailGrid" class="detail-grid"></div>
-          <div id="detailBox" class="detail-empty">Pilih order untuk melihat detail.</div>
-          <pre id="detailPre" class="raw-pre" style="display:none"></pre>
+        <div class="detail-body" style="padding-top:12px">
+          <div id="detailGrid" class="detail-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px"></div>
+          <pre id="detailPre" class="raw-pre" style="margin-top:12px;display:none"></pre>
         </div>
       </div>
     </div>
 
-  </div>
-</div>
-
-<!-- WA MODAL -->
-<div class="modal-overlay" id="waModal">
-  <div class="modal">
-    <div class="modal-title"><span class="wa-icon">💬</span> Konfirmasi via WhatsApp</div>
-    <div class="modal-body">
-      <div>
-        <div class="modal-label">Nomor WhatsApp Pembeli</div>
-        <input id="waPhone" class="modal-input" type="tel" placeholder="628xxxxxxxxxx"/>
-      </div>
-      <div>
-        <div class="modal-label">Pesan (bisa diedit)</div>
-        <textarea id="waMsg" class="modal-textarea"></textarea>
-      </div>
-      <div>
-        <div class="modal-label">Preview Pesan</div>
-        <div class="modal-preview" id="waPreview"></div>
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-modal-cancel" id="btnWaCancel">Batal</button>
-      <button class="btn-modal-send" id="btnWaSend">📲 Buka WhatsApp</button>
-    </div>
   </div>
 </div>
 
 <!-- SCRIPT -->
 <script type="module">
 /*
-  admin-complete.html
-  - single module script
-  - robust rendering (creates tbody if missing)
-  - fixes for null-element errors
+  Vertical orders admin - ready to paste
+  - Vertical collapsed blocks
+  - default displayLimit = 10, btnMore -> 50
+  - calculates omset (sum amount_total) of displayed blocks
+  - spaced buttons
 */
 
+/* Firebase imports (CDN) */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
@@ -279,7 +204,9 @@ import {
   doc, updateDoc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* =========== your firebase config (keep as-is or update if needed) =========== */
+/* =========== CONFIG ===========
+   ganti config ini sesuai project lo kalau perlu
+*/
 const firebaseConfig = {
   apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
   authDomain: "zestoreid-f9e85.firebaseapp.com",
@@ -293,101 +220,148 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* =========== DOM refs =========== */
+/* =========== DOM ===========
+*/
 const authMsg = document.getElementById('authMsg');
 const adminUI = document.getElementById('adminUI');
-const adminNoteBox = document.getElementById('adminNoteBox');
-
-let ordersTbody = document.getElementById('ordersTbody');
-const ordersListContainer = document.getElementById('ordersList'); // fallback container
-const detailBox = document.getElementById('detailBox');
-const detailPre = document.getElementById('detailPre');
-const detailGrid = document.getElementById('detailGrid');
-const detailArea = document.getElementById('detailArea');
-const detailInvoice = document.getElementById('detailInvoice');
 
 const qInvoice = document.getElementById('qInvoice');
 const filterStatus = document.getElementById('filterStatus');
-const btnSignOut = document.getElementById('btnSignOut');
-const waModal = document.getElementById('waModal');
-const waPhone = document.getElementById('waPhone');
-const waMsg = document.getElementById('waMsg');
-const waPreview = document.getElementById('waPreview');
-const btnWaCancel = document.getElementById('btnWaCancel');
-const btnWaSend = document.getElementById('btnWaSend');
-const limitInfo = document.getElementById('limitInfo');
+const ordersList = document.getElementById('ordersList');
+const emptyState = document.getElementById('emptyState');
 const btnMore = document.getElementById('btnMore');
 const btnLess = document.getElementById('btnLess');
+const displayLimitLabel = document.getElementById('displayLimitLabel');
+const limitInfo = document.getElementById('limitInfo');
+const omsetVal = document.getElementById('omsetVal');
+const detailArea = document.getElementById('detailArea');
+const detailPre = document.getElementById('detailPre');
+const detailGrid = document.getElementById('detailGrid');
+const detailInvoice = document.getElementById('detailInvoice');
+const btnSignOut = document.getElementById('btnSignOut');
 
 let unsubscribeOrders = null;
-let lastOrders = {}; // cache map invoice -> data
+let lastOrders = {}; // invoice -> data
 
-// allowlist for dev convenience (replace with proper admin claims in production)
-const ADMIN_UIDS = [
-  "8z9b0u1LYfTVM0sCP7qHXbYHvGi1"
-];
+// display limit state
+let displayLimit = 10;
 
-/* ===== helpers ===== */
-function formatMoney(n){ return (typeof n === 'number')? n.toLocaleString('id') : n; }
+/* allowlist for dev convenience (ganti atau hapus di production) */
+const ADMIN_UIDS = ["8z9b0u1LYfTVM0sCP7qHXbYHvGi1"];
+
+/* helpers */
+function formatMoney(n){ if (n == null) return '0'; const num = Number(n) || 0; return num.toLocaleString('id'); }
 function formatDate(ts){
   if(!ts) return '-';
   if(typeof ts.toDate === 'function') return ts.toDate().toLocaleString();
   if(ts.seconds) return new Date(ts.seconds * 1000).toLocaleString();
   return new Date(ts).toLocaleString();
 }
+function safeNum(n){ return Number(n) || 0; }
 
-/* ensure ordersTbody exists (create table structure if absent) */
-function ensureOrdersTable(){
-  if (ordersTbody) return;
-  if (ordersListContainer) {
-    // create table structure if not present
-    const existingTbody = document.getElementById('ordersTbody');
-    if (existingTbody) {
-      ordersTbody = existingTbody;
-      return;
-    }
-    ordersListContainer.innerHTML = `
-      <div style="overflow:auto">
-        <table style="width:100%;border-collapse:collapse">
-          <thead style="background:#fafafa;border-bottom:1px solid #e5e7eb">
-            <tr>
-              <th style="padding:8px 10px;text-align:left">Invoice</th>
-              <th style="padding:8px 10px">User</th>
-              <th style="padding:8px 10px">Game</th>
-              <th style="padding:8px 10px">Game ID</th>
-              <th style="padding:8px 10px">Server</th>
-              <th style="padding:8px 10px">Nominal</th>
-              <th style="padding:8px 10px">Total</th>
-              <th style="padding:8px 10px">Metode</th>
-              <th style="padding:8px 10px">Created</th>
-              <th style="padding:8px 10px">Status</th>
-              <th style="padding:8px 10px">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="ordersTbody"></tbody>
-        </table>
+/* render single block (collapsed header + hidden body) */
+function createOrderBlock(d){
+  const wrapper = document.createElement('div');
+  wrapper.className = 'order-block';
+
+  // header
+  const header = document.createElement('div');
+  header.className = 'order-header';
+
+  const left = document.createElement('div');
+  left.className = 'order-left';
+  left.innerHTML = `
+    <div class="invoice">${d.invoice || '-'}</div>
+    <div style="min-width:0">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div class="inline-info"><small>User</small> <strong>${d.userId || 'guest'}</strong></div>
+        <div class="inline-info"><small>Game</small> <strong>${d.game || '-'}</strong></div>
+        <div class="inline-info"><small>Game ID</small> <span class="total mono">${d.game_id || '-'}</span></div>
+        <div class="inline-info"><small>Server</small> <span>${d.server || '-'}</span></div>
       </div>
-    `;
-    ordersTbody = document.getElementById('ordersTbody');
-    return;
-  }
-  // last resort: append to .main
-  const fallback = document.createElement('div');
-  fallback.id = 'ordersList';
-  document.querySelector('.main')?.appendChild(fallback);
-  fallback.innerHTML = '<div id="ordersTbody"></div>';
-  ordersTbody = document.getElementById('ordersTbody');
+      <div style="margin-top:6px;font-size:13px;color:#6b7280">${formatDate(d.createdAt)}</div>
+    </div>
+  `;
+
+  const right = document.createElement('div');
+  right.className = 'right-actions';
+  right.innerHTML = `
+    <div style="text-align:right">
+      <div style="font-size:14px;color:#16a34a;font-weight:800">Rp ${formatMoney(d.amount_total)}</div>
+      <div style="margin-top:6px"><span class="badge ${d.status||'initiated'}">${d.status || 'initiated'}</span></div>
+    </div>
+    <div class="actions" style="margin-left:8px">
+      <button class="action-btn action-view" data-id="${d.invoice}">View</button>
+      <button class="action-btn action-complete" data-id="${d.invoice}">Selesai</button>
+      <button class="action-btn action-cancel" data-id="${d.invoice}">Batal</button>
+      <button class="action-btn action-wa" data-id="${d.invoice}">WA</button>
+    </div>
+  `;
+
+  header.appendChild(left);
+  header.appendChild(right);
+  wrapper.appendChild(header);
+
+  // body (collapsed)
+  const body = document.createElement('div');
+  body.className = 'order-body';
+  body.innerHTML = `
+    <div class="field-row"><div class="field-label">Nominal</div><div class="field-value">${d.nominalValue||'-'}</div></div>
+    <div class="field-row"><div class="field-label">Metode</div><div class="field-value">${(d.payment_method||'-').replace('_',' ')}</div></div>
+    <div class="field-row"><div class="field-label">No. WA</div><div class="field-value">${d.noWA||'-'}</div></div>
+    <div class="field-row"><div class="field-label">Raw</div><div class="field-value"><pre style="white-space:pre-wrap;max-height:160px;overflow:auto">${JSON.stringify(d, null, 2)}</pre></div></div>
+  `;
+  wrapper.appendChild(body);
+
+  // toggle on header click (collapse/expand)
+  header.addEventListener('click', (e)=>{
+    // if click on action buttons, don't toggle
+    if (e.target.closest('.action-btn')) return;
+    const open = body.classList.toggle('open');
+    // smooth scroll if opening
+    if (open) wrapper.scrollIntoView({ behavior:'smooth', block:'center' });
+  });
+
+  // action buttons
+  const btnView = right.querySelector('.action-view');
+  const btnComplete = right.querySelector('.action-complete');
+  const btnCancel = right.querySelector('.action-cancel');
+  const btnWa = right.querySelector('.action-wa');
+
+  btnView.addEventListener('click', async (ev)=>{
+    ev.stopPropagation();
+    // show detail panel (optional)
+    await showDetail(d.invoice);
+  });
+  btnComplete.addEventListener('click', async (ev)=>{
+    ev.stopPropagation();
+    if(!confirm('Tandai order '+d.invoice+' SELESAI?')) return;
+    await markStatus(d.invoice, 'completed');
+  });
+  btnCancel.addEventListener('click', async (ev)=>{
+    ev.stopPropagation();
+    if(!confirm('Tandai order '+d.invoice+' BATAL?')) return;
+    await markStatus(d.invoice, 'cancelled');
+  });
+  btnWa.addEventListener('click', (ev)=>{
+    ev.stopPropagation();
+    const phone = d.noWA || '';
+    const text = encodeURIComponent(`Halo, pesanan dengan invoice ${d.invoice} total Rp ${formatMoney(d.amount_total)} status ${d.status || '—'}.`);
+    if(!phone) return alert('Tidak ada nomor WA tersedia pada order ini.');
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+  });
+
+  return wrapper;
 }
 
-/* render orders (table mode if tbody in table, otherwise fallback cards) */
-function renderOrdersTable(){
-  ensureOrdersTable();
-
+/* render list (vertical) with limit and search/filter */
+function renderOrdersList(){
   const filter = filterStatus.value;
   const search = qInvoice.value.trim().toLowerCase();
 
-  const rows = Object.values(lastOrders || {})
-    .filter(d => {
+  // convert lastOrders to array sorted by createdAt desc
+  const arr = Object.values(lastOrders || {})
+    .filter(d=>{
       if(filter !== 'all' && d.status !== filter) return false;
       if(!search) return true;
       return (d.invoice && d.invoice.toLowerCase().includes(search)) ||
@@ -396,119 +370,45 @@ function renderOrdersTable(){
              (d.server && String(d.server).toLowerCase().includes(search)) ||
              (d.game && String(d.game).toLowerCase().includes(search));
     })
-    .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    .sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
 
-  if (!ordersTbody) return console.warn('ordersTbody missing — abort render');
-  ordersTbody.innerHTML = '';
+  // apply display limit
+  const toShow = arr.slice(0, displayLimit);
 
-  const isTbody = ordersTbody.tagName === 'TBODY';
+  // update omset (sum of amount_total of shown)
+  const totalOmset = toShow.reduce((s,x)=> s + safeNum(x.amount_total), 0);
+  omsetVal.textContent = 'Rp ' + formatMoney(totalOmset);
 
-  rows.forEach(d=>{
-    if (isTbody) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td style="padding:8px 10px">${d.invoice || '-'}</td>
-        <td style="padding:8px 10px">${d.userId || 'guest'}</td>
-        <td style="padding:8px 10px">${d.game || '-'}</td>
-        <td style="padding:8px 10px">${d.game_id || '-'}</td>
-        <td style="padding:8px 10px">${d.server || '-'}</td>
-        <td style="padding:8px 10px">${d.nominalValue || '-'}</td>
-        <td style="padding:8px 10px">Rp ${formatMoney(d.amount_total)}</td>
-        <td style="padding:8px 10px">${(d.payment_method||'-').replace('_',' ')}</td>
-        <td style="padding:8px 10px">${formatDate(d.createdAt)}</td>
-        <td style="padding:8px 10px"><span class="badge ${d.status||'initiated'}" style="padding:3px 8px;border-radius:6px">${(d.status||'initiated')}</span></td>
-        <td style="padding:8px 10px">
-          <button class="btn view" data-id="${d.invoice}">View</button>
-          <button class="btn complete" data-id="${d.invoice}">Selesai</button>
-          <button class="btn cancel" data-id="${d.invoice}">Batal</button>
-        </td>
-      `;
-      ordersTbody.appendChild(tr);
-    } else {
-      const card = document.createElement('div');
-      card.className = 'order-card';
-      card.innerHTML = `
-        <div class="order-card-head">
-          <div style="display:flex;gap:8px;align-items:center">
-            <div class="order-invoice">${d.invoice || '-'}</div>
-            <div class="order-meta">
-              <div class="order-date">${formatDate(d.createdAt)}</div>
-              <div class="order-total">Rp ${formatMoney(d.amount_total)}</div>
-            </div>
-          </div>
-          <div>
-            <button class="btn view" data-id="${d.invoice}">View</button>
-            <button class="btn complete" data-id="${d.invoice}">Selesai</button>
-            <button class="btn cancel" data-id="${d.invoice}">Batal</button>
-          </div>
-        </div>
-        <div class="order-card-body">
-          <div class="field-list">
-            <div class="field-row"><div class="field-label">User</div><div class="field-value">${d.userId||'guest'}</div></div>
-            <div class="field-row"><div class="field-label">Game</div><div class="field-value">${d.game||'-'}</div></div>
-            <div class="field-row"><div class="field-label">Game ID</div><div class="field-value mono">${d.game_id||'-'}</div></div>
-            <div class="field-row"><div class="field-label">Server</div><div class="field-value">${d.server||'-'}</div></div>
-          </div>
-        </div>
-      `;
-      ordersTbody.appendChild(card);
-    }
-  });
+  // update label
+  displayLimitLabel.textContent = displayLimit;
 
-  // attach listeners (scoped)
-  Array.from(ordersTbody.querySelectorAll('button.view')).forEach(b=>{
-    b.onclick = (e)=> showDetail(e.currentTarget.dataset.id);
-  });
-  Array.from(ordersTbody.querySelectorAll('button.complete')).forEach(b=>{
-    b.onclick = async (e)=>{
-      const id = e.currentTarget.dataset.id;
-      if(!confirm('Tandai order '+id+' SELESAI?')) return;
-      await markStatus(id, 'completed');
-    };
-  });
-  Array.from(ordersTbody.querySelectorAll('button.cancel')).forEach(b=>{
-    b.onclick = async (e)=>{
-      const id = e.currentTarget.dataset.id;
-      if(!confirm('Tandai order '+id+' BATAL?')) return;
-      await markStatus(id, 'cancelled');
-    };
-  });
-}
-
-/* start Firestore listener */
-function startOrdersListener(){
-  if(unsubscribeOrders) unsubscribeOrders();
-  const col = collection(db, 'orders');
-  const q = query(col, orderBy('createdAt','desc'));
-  unsubscribeOrders = onSnapshot(q, (snap)=>{
-    lastOrders = {};
-    snap.forEach(docSnap=>{
-      lastOrders[docSnap.id] = { ...(docSnap.data()), invoice: docSnap.id };
+  // render
+  ordersList.innerHTML = '';
+  if(toShow.length === 0){
+    emptyState.style.display = 'block';
+  } else {
+    emptyState.style.display = 'none';
+    toShow.forEach(d=>{
+      const block = createOrderBlock(d);
+      ordersList.appendChild(block);
     });
-    renderOrdersTable();
-  }, (err)=>{
-    console.error('orders snapshot err', err);
-    alert('Gagal load orders: ' + (err.message || err));
-  });
+  }
 }
 
-/* detail view */
+/* show detail in panel (optional) */
 async function showDetail(invoice){
   try{
     const docRef = doc(db,'orders',invoice);
     const snap = await getDoc(docRef);
     if(!snap.exists()){
-      detailGrid.innerHTML = '';
-      detailBox.textContent = 'Order tidak ditemukan';
-      detailPre.style.display='none';
-      detailArea.style.display = 'block';
+      alert('Order tidak ditemukan');
       return;
     }
     const data = snap.data();
-    detailInvoice.textContent = data.invoice || invoice;
+    detailInvoice.textContent = invoice;
     detailGrid.innerHTML = '';
     const items = [
-      { title: 'Invoice', value: data.invoice || invoice },
+      { title: 'Invoice', value: invoice },
       { title: 'User ID', value: data.userId || '-' },
       { title: 'Game', value: data.game || '-' },
       { title: 'Game ID', value: data.game_id || '-' },
@@ -520,27 +420,23 @@ async function showDetail(invoice){
       { title: 'Created', value: formatDate(data.createdAt) },
     ];
     items.forEach(it=>{
-      const elItem = document.createElement('div');
-      elItem.className = 'detail-item';
-      elItem.innerHTML = `<div class="detail-title">${it.title}</div><div>${it.value}</div>`;
-      detailGrid.appendChild(elItem);
+      const el = document.createElement('div');
+      el.className = 'detail-item';
+      el.style.padding = '8px';
+      el.innerHTML = `<div style="font-size:12px;color:#6b7280;font-weight:700;margin-bottom:6px">${it.title}</div><div style="font-weight:700">${it.value}</div>`;
+      detailGrid.appendChild(el);
     });
-
-    detailPre.style.display='block';
+    detailPre.style.display = 'block';
     detailPre.textContent = JSON.stringify(data, null, 2);
-    detailBox.style.display = 'none';
     detailArea.style.display = 'block';
-    // scroll to detail
-    detailArea.scrollIntoView({ behavior:'smooth', block:'center' });
-  }catch(e){
+    detailArea.scrollIntoView({behavior:'smooth', block:'center'});
+  } catch(e){
     console.error(e);
-    detailBox.textContent = 'Error fetch detail';
-    detailPre.style.display='none';
-    detailArea.style.display='block';
+    alert('Gagal fetch detail: ' + (e.message || e));
   }
 }
 
-/* mark status */
+/* update status */
 async function markStatus(invoice, newStatus){
   try{
     const ref = doc(db,'orders',invoice);
@@ -552,19 +448,36 @@ async function markStatus(invoice, newStatus){
   }
 }
 
-/* auth handling */
-onAuthStateChanged(auth, async (u) => {
+/* Firestore realtime listener */
+function startOrdersListener(){
+  if(unsubscribeOrders) unsubscribeOrders();
+  const col = collection(db,'orders');
+  const q = query(col, orderBy('createdAt','desc'));
+  unsubscribeOrders = onSnapshot(q, (snap)=>{
+    lastOrders = {};
+    snap.forEach(s=>{
+      const data = s.data();
+      // ensure invoice field exists; store createdAt as-is
+      lastOrders[s.id] = { ...data, invoice: s.id };
+    });
+    renderOrdersList();
+  }, (err)=>{
+    console.error('orders snapshot err', err);
+    alert('Gagal load orders: ' + (err.message || err));
+  });
+}
+
+/* auth state */
+onAuthStateChanged(auth, async (u)=>{
   if(!u){
     authMsg.innerHTML = '<strong>Harus login sebagai admin</strong> — silakan login di halaman utama.';
     adminUI.style.display = 'none';
-    adminNoteBox.style.display = 'none';
     return;
   }
   let isAdmin = false;
   try {
     const tokenResult = await u.getIdTokenResult();
-    const claims = tokenResult.claims || {};
-    if(claims.admin) isAdmin = true;
+    if(tokenResult.claims && tokenResult.claims.admin) isAdmin = true;
   } catch(e){
     console.warn('getIdTokenResult failed', e);
   }
@@ -573,38 +486,39 @@ onAuthStateChanged(auth, async (u) => {
   if(!isAdmin){
     authMsg.innerHTML = '<strong>Access denied.</strong> Akun tidak memiliki hak admin.';
     adminUI.style.display = 'none';
-    adminNoteBox.style.display = 'none';
     return;
   }
 
   // success
   authMsg.style.display = 'none';
   adminUI.style.display = 'block';
-  adminNoteBox.style.display = ADMIN_UIDS.includes(u.uid) ? 'block' : 'none';
   startOrdersListener();
 });
 
-/* sign out */
-btnSignOut.onclick = ()=> signOut(auth);
+/* events */
+qInvoice.addEventListener('input', ()=> renderOrdersList());
+filterStatus.addEventListener('change', ()=> renderOrdersList());
 
-/* search + filter events */
-qInvoice.addEventListener('input', renderOrdersTable);
-filterStatus.addEventListener('change', renderOrdersTable);
+btnMore.addEventListener('click', ()=>{
+  displayLimit = 50;
+  btnMore.style.display = 'none';
+  btnLess.style.display = 'inline-block';
+  limitInfo.textContent = `Menampilkan ${displayLimit} blok terakhir`;
+  renderOrdersList();
+});
+btnLess.addEventListener('click', ()=>{
+  displayLimit = 10;
+  btnLess.style.display = 'none';
+  btnMore.style.display = 'inline-block';
+  limitInfo.textContent = `Menampilkan ${displayLimit} blok terakhir`;
+  renderOrdersList();
+});
 
-/* WA modal actions (simple preview + open wa) */
-btnWaCancel.onclick = ()=> waModal.classList.remove('open');
-waMsg.addEventListener('input', ()=> waPreview.textContent = waMsg.value);
-btnWaSend.onclick = ()=>{
-  const phone = waPhone.value.trim();
-  const text = encodeURIComponent(waMsg.value || '');
-  if(!phone) return alert('Masukkan nomor WA tujuan.');
-  const url = `https://wa.me/${phone}?text=${text}`;
-  window.open(url, '_blank');
-};
+btnSignOut.addEventListener('click', ()=> signOut(auth));
 
-/* misc */
-btnMore.onclick = ()=> { limitInfo.textContent = 'Menampilkan 50 transaksi (fitur dummy).'; btnMore.style.display='none'; btnLess.style.display='inline-block'; };
-btnLess.onclick = ()=> { limitInfo.textContent = 'Menampilkan semua transaksi realtime.'; btnLess.style.display='none'; btnMore.style.display='inline-block'; };
+/* initial label */
+displayLimitLabel.textContent = displayLimit;
+limitInfo.textContent = `Menampilkan ${displayLimit} blok terakhir`;
 
 </script>
 </body>
