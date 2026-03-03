@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Admin — NUBIASTORE (Vertical List + Copy)</title>
+<title>Admin — NUBIASTORE (Vertical List + Copy + Nominal)</title>
 <style>
   /* reset & base */
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -217,6 +217,7 @@
   - calculates omset (sum amount_total) of displayed blocks
   - spaced buttons
   - per-order copy buttons for User, Game ID, Server
+  - Nominal value shown in header (so admin can see ordered pack immediately)
 */
 
 /* Firebase imports (CDN) */
@@ -320,6 +321,8 @@ function createOrderBlock(d){
         </div>
 
         <div class="inline-info"><small>Game</small> <strong>${d.game || '-'}</strong></div>
+
+        <div class="inline-info"><small>Nominal</small> <strong>${d.nominalValue || '-'}</strong></div>
 
         <div class="inline-info"><small>Game ID</small> <span class="mono">${d.game_id || '-'}</span>
           <button class="copy-btn" data-copy-value="${(d.game_id||'').toString().replace(/"/g,'&quot;')}" title="Copy Game ID">Copy</button>
