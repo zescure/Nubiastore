@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Admin — NUBIASTORE (Vertical List + Copy + Nominal)</title>
+<title>Admin — NUBIASTORE (Vertical List + Copy + Nominal + Payment)</title>
 <style>
   /* reset & base */
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -212,12 +212,10 @@
 <script type="module">
 /*
   Vertical orders admin - ready to paste
-  - Vertical collapsed blocks
-  - default displayLimit = 10, btnMore -> 50
-  - calculates omset (sum amount_total) of displayed blocks
-  - spaced buttons
-  - per-order copy buttons for User, Game ID, Server
-  - Nominal value shown in header (so admin can see ordered pack immediately)
+  - Header now includes: User, Game, Nominal, Payment Method, Game ID, Server
+  - Copy buttons remain for User, Game ID, Server
+  - Default displayLimit = 10 (btn to show 50)
+  - Omset calculation unchanged
 */
 
 /* Firebase imports (CDN) */
@@ -323,6 +321,8 @@ function createOrderBlock(d){
         <div class="inline-info"><small>Game</small> <strong>${d.game || '-'}</strong></div>
 
         <div class="inline-info"><small>Nominal</small> <strong>${d.nominalValue || '-'}</strong></div>
+
+        <div class="inline-info"><small>Metode Bayar</small> <strong>${(d.payment_method||'-').replace('_',' ')}</strong></div>
 
         <div class="inline-info"><small>Game ID</small> <span class="mono">${d.game_id || '-'}</span>
           <button class="copy-btn" data-copy-value="${(d.game_id||'').toString().replace(/"/g,'&quot;')}" title="Copy Game ID">Copy</button>
@@ -431,7 +431,8 @@ function renderOrdersList(){
              (d.userId && String(d.userId).toLowerCase().includes(search)) ||
              (d.game_id && String(d.game_id).toLowerCase().includes(search)) ||
              (d.server && String(d.server).toLowerCase().includes(search)) ||
-             (d.game && String(d.game).toLowerCase().includes(search));
+             (d.game && String(d.game).toLowerCase().includes(search)) ||
+             ((d.payment_method||'').toString().toLowerCase().includes(search));
     })
     .sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
 
