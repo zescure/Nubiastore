@@ -1748,11 +1748,15 @@ async function saveOrderToFirestore(payload) {
 /* ===== CHECKOUT ===== */
 document.getElementById('btnCheckout').onclick = async () => {
   const idSel  = document.getElementById('userId').value.trim();
-  const srvSel = document.getElementById('server').value.trim();
+  const srvSel = (serverInput ? serverInput.value.trim() : '');
   const waSel  = document.getElementById('whatsapp').value.trim();
 
-  if (!idSel || !srvSel || !waSel)
-    return alert('Lengkapi ID Akun, Server, dan No. WhatsApp terlebih dahulu.');
+  // debug cepat — hapus kalau udah oke
+  console.log('[checkout] idSel:', idSel, 'srvSel:', srvSel, 'waSel:', waSel, 'requiresServer:', requiresServer);
+
+  // validasi: server hanya wajib kalau page mengharuskan server
+  if (!idSel || (requiresServer && !srvSel) || !waSel)
+    return alert('Lengkapi ID Akun, Server (jika diperlukan), dan No. WhatsApp terlebih dahulu.');
 
   const nomSel = document.querySelector('.nominal-card.selected');
   if (!nomSel) return alert('Pilih nominal diamond terlebih dahulu.');
@@ -1760,13 +1764,12 @@ document.getElementById('btnCheckout').onclick = async () => {
   const paySel = document.querySelector('.payment-card.selected');
   if (!paySel) return alert('Pilih metode pembayaran terlebih dahulu.');
 
-  // ===== TAMBAHAN: disable button + tampil spinner =====
+  // disable button + tampil spinner
   const btnCheckout      = document.getElementById('btnCheckout');
   const checkoutSpinner  = document.getElementById('checkoutSpinner');
   btnCheckout.disabled   = true;
   btnCheckout.style.opacity = '0.7';
   checkoutSpinner.classList.add('show');
-  // =====================================================
 
   const value     = nomSel.dataset.value;
   const price     = parseFloat(nomSel.dataset.price);
@@ -1775,7 +1778,7 @@ document.getElementById('btnCheckout').onclick = async () => {
   const adminCalc = Math.ceil(flat + price * pct);
   const total     = price + adminCalc;
 
-  document.getElementById('outId').textContent    = `${idSel} (Srv: ${srvSel})`;
+  document.getElementById('outId').textContent    = `${idSel} (Srv: ${srvSel || '-'})`;
   document.getElementById('outDiam').textContent  = value;
   document.getElementById('outPrice').textContent = fmt(price);
   document.getElementById('outAdmin').textContent = fmt(adminCalc);
@@ -1792,20 +1795,17 @@ document.getElementById('btnCheckout').onclick = async () => {
     document.getElementById('outInvoice').textContent = invoice;
   } catch (e) {
     console.error('saveOrder error', e);
-    // ===== reset spinner kalau error =====
     btnCheckout.disabled  = false;
     btnCheckout.style.opacity = '1';
     checkoutSpinner.classList.remove('show');
-    // =====================================
     return alert('Gagal menyimpan order. Coba lagi.');
   }
 
-  // ===== TAMBAHAN: tunggu 2 detik lalu buka modal =====
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  // tunggu singkat (opsional), reset spinner, buka modal
+  await new Promise(resolve => setTimeout(resolve, 500));
   btnCheckout.disabled  = false;
   btnCheckout.style.opacity = '1';
   checkoutSpinner.classList.remove('show');
-  // ====================================================
 
   document.getElementById('modalOverlay').style.display = 'flex';
   startCountdown();
