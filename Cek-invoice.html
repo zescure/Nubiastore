@@ -1,0 +1,611 @@
+<!doctype html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cek Order — NUBIASTORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --green:     #00ff88;
+  --green-dim: #00cc6a;
+  --green-dk:  #007a40;
+  --bg:        #050a06;
+  --bg1:       #0b1410;
+  --bg2:       #101e15;
+  --bg3:       #172a1e;
+  --card:      #0d1a12;
+  --bdr:       rgba(0,255,136,0.13);
+  --bdr-hi:    rgba(0,255,136,0.40);
+  --text:      #dff2e8;
+  --muted:     #5a9e74;
+  --white:     #ffffff;
+  --amber:     #fbbf24;
+  --red:       #ff4545;
+  --blue:      #60a5fa;
+}
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+
+body {
+font-family:‘Rajdhani’,‘Segoe UI’,system-ui,sans-serif;
+background:var(–bg); color:var(–text);
+min-height:100vh; padding:0 0 60px; overflow-x:hidden; position:relative;
+}
+body::before {
+content:’’; position:fixed; inset:0;
+background-image:
+linear-gradient(rgba(0,255,136,0.035) 1px,transparent 1px),
+linear-gradient(90deg,rgba(0,255,136,0.035) 1px,transparent 1px);
+background-size:44px 44px; pointer-events:none; z-index:0;
+}
+body::after {
+content:’’; position:fixed; top:-15%; left:50%; transform:translateX(-50%);
+width:640px; height:640px;
+background:radial-gradient(ellipse,rgba(0,255,136,0.06) 0%,transparent 68%);
+pointer-events:none; z-index:0;
+}
+
+.page {
+position:relative; z-index:1;
+max-width:740px; margin:0 auto; padding:20px 16px 0;
+}
+
+/* header */
+.site-header {
+display:flex; align-items:center; gap:14px;
+margin-bottom:22px; animation:fadeDown .45s ease both;
+}
+.logo-mark {
+width:44px; height:44px; flex-shrink:0;
+background:linear-gradient(135deg,var(–green),var(–green-dk));
+border-radius:10px;
+display:flex; align-items:center; justify-content:center;
+font-family:‘Orbitron’,monospace; font-size:17px; font-weight:900; color:#000;
+box-shadow:0 0 22px rgba(0,255,136,0.38);
+}
+.logo-name { font-family:‘Orbitron’,monospace; font-weight:900; font-size:18px; letter-spacing:2.5px; color:var(–white); line-height:1; }
+.logo-sub  { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(–muted); margin-top:2px; }
+
+/* card */
+.card {
+background:var(–card); border:1px solid var(–bdr); border-radius:16px;
+padding:24px 22px; position:relative; overflow:hidden;
+animation:fadeUp .45s ease both;
+box-shadow:0 12px 40px rgba(0,0,0,0.4); margin-bottom:16px;
+}
+.card::before {
+content:’’; position:absolute; top:0; left:0; right:0; height:2px;
+background:linear-gradient(90deg,transparent 0%,var(–green) 40%,var(–green-dim) 60%,transparent 100%);
+}
+
+/* section label */
+.sec-label {
+font-family:‘Orbitron’,monospace; font-size:11px; font-weight:700;
+letter-spacing:3px; text-transform:uppercase; color:var(–green);
+display:flex; align-items:center; gap:10px; margin-bottom:18px;
+}
+.sec-label::after { content:’’; flex:1; height:1px; background:var(–bdr); }
+
+/* invoice input */
+.invoice-form { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+.input-group { flex:1; min-width:200px; display:flex; flex-direction:column; gap:6px; }
+.input-group label { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(–muted); }
+.invoice-input {
+width:100%; padding:11px 14px;
+background:var(–bg3); border:1px solid var(–bdr);
+border-radius:10px; color:var(–white);
+font-family:‘Orbitron’,monospace; font-size:12px; font-weight:700;
+letter-spacing:1px; outline:none; transition:all 0.2s;
+}
+.invoice-input:focus { border-color:var(–bdr-hi); box-shadow:0 0 0 3px rgba(0,255,136,0.08); }
+.invoice-input::placeholder { color:var(–muted); font-family:‘Rajdhani’,sans-serif; font-size:13px; letter-spacing:0; font-weight:600; }
+
+.btn-cek {
+display:inline-flex; align-items:center; gap:8px;
+padding:11px 22px; border-radius:10px; cursor:pointer;
+font-family:‘Rajdhani’,sans-serif; font-size:14px; font-weight:700;
+letter-spacing:.8px; text-transform:uppercase;
+border:none; transition:all 0.2s;
+background:linear-gradient(135deg,var(–green),var(–green-dk));
+color:#000; box-shadow:0 0 14px rgba(0,255,136,0.28); white-space:nowrap;
+}
+.btn-cek:hover { transform:translateY(-1px); box-shadow:0 0 26px rgba(0,255,136,0.46); }
+.btn-cek:disabled { opacity:0.6; pointer-events:none; }
+.spinner-sm {
+width:14px; height:14px;
+border:2px solid rgba(0,0,0,0.2); border-top-color:#000;
+border-radius:50%; animation:spin .7s linear infinite; display:none;
+}
+.btn-cek.loading .spinner-sm  { display:block; }
+.btn-cek.loading .btn-icon    { display:none; }
+
+/* recent */
+.recent-wrap { margin-top:14px; }
+.recent-label { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(–muted); margin-bottom:8px; }
+.recent-list  { display:flex; flex-wrap:wrap; gap:6px; }
+.recent-chip {
+padding:4px 10px; border-radius:6px; cursor:pointer;
+border:1px solid var(–bdr); background:var(–bg3); color:var(–green-dim);
+font-family:‘Orbitron’,monospace; font-size:10px; font-weight:700;
+letter-spacing:.5px; transition:all 0.2s;
+}
+.recent-chip:hover { border-color:var(–bdr-hi); color:var(–green); background:var(–bg2); }
+
+/* result */
+#resultArea { display:none; }
+#resultArea.show { display:block; animation:fadeUp .35s ease both; }
+
+/* order fields */
+.row { display:flex; gap:14px; flex-wrap:wrap; }
+.col { flex:1; min-width:220px; display:flex; flex-direction:column; gap:14px; }
+@media (max-width:540px){ .row { flex-direction:column; } }
+.field { display:flex; flex-direction:column; gap:2px; }
+.muted { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(–muted); font-weight:600; }
+.field > div { font-size:15px; font-weight:600; color:var(–white); line-height:1.3; }
+.amount { font-family:‘Orbitron’,monospace; font-size:18px; font-weight:700; color:var(–green); text-shadow:0 0 14px rgba(0,255,136,0.4); }
+
+/* status badge */
+.status {
+display:inline-flex; align-items:center; gap:6px;
+padding:4px 12px; border-radius:20px;
+font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+}
+.status::before { content:’’; width:6px; height:6px; border-radius:50%; background:currentColor; }
+.status.initiated { background:rgba(251,191,36,0.12); color:var(–amber); border:1px solid rgba(251,191,36,0.28); }
+.status.initiated::before, .status.pending::before { animation:blink 1.2s infinite; }
+.status.pending   { background:rgba(96,165,250,0.12); color:var(–blue); border:1px solid rgba(96,165,250,0.28); }
+.status.completed { background:rgba(0,255,136,0.10); color:var(–green); border:1px solid rgba(0,255,136,0.28); }
+.status.cancelled { background:rgba(255,69,69,0.10); color:var(–red); border:1px solid rgba(255,69,69,0.22); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+hr { border:none; border-top:1px solid var(–bdr); margin:20px 0; }
+
+/* status banner */
+.status-banner { border-radius:12px; padding:16px 18px; display:flex; align-items:flex-start; gap:14px; margin-bottom:16px; }
+.status-banner.banner-wait   { background:rgba(251,191,36,0.06); border:1px solid rgba(251,191,36,0.25); }
+.status-banner.banner-ok     { background:rgba(0,255,136,0.06);  border:1px solid var(–bdr-hi); }
+.status-banner.banner-cancel { background:rgba(255,69,69,0.06);  border:1px solid rgba(255,69,69,0.22); }
+.banner-icon  { font-size:28px; flex-shrink:0; }
+.banner-title { font-family:‘Orbitron’,monospace; font-size:13px; font-weight:700; margin-bottom:4px; }
+.banner-desc  { font-size:13px; line-height:1.6; color:var(–text); }
+.banner-wait  .banner-title { color:var(–amber); }
+.banner-ok    .banner-title { color:var(–green); }
+.banner-cancel .banner-title { color:var(–red); }
+
+/* payment info */
+.pay-info-box { background:var(–bg2); border:1px solid var(–bdr); border-radius:12px; padding:16px 18px; margin-top:4px; }
+.pay-info-box h4 { font-family:‘Orbitron’,monospace; font-size:11px; letter-spacing:2px; color:var(–green); margin-bottom:12px; }
+.pay-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(–bdr); font-size:14px; }
+.pay-row:last-child { border-bottom:none; }
+.pay-row .k { color:var(–muted); font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+.pay-row .v { font-weight:700; color:var(–white); }
+.pay-row .v.green { color:var(–green); font-family:‘Orbitron’,monospace; font-size:13px; }
+
+/* buttons */
+.btn {
+display:inline-flex; align-items:center; gap:6px;
+padding:9px 18px; border-radius:8px; cursor:pointer;
+font-family:‘Rajdhani’,sans-serif; font-size:14px; font-weight:700;
+letter-spacing:.8px; text-transform:uppercase; text-decoration:none;
+border:none; transition:transform .15s, box-shadow .15s;
+background:linear-gradient(135deg,var(–green),var(–green-dk));
+color:#000; box-shadow:0 0 14px rgba(0,255,136,0.28);
+}
+.btn:hover { transform:translateY(-1px); box-shadow:0 0 26px rgba(0,255,136,0.46); }
+.copy {
+padding:7px 14px; background:var(–bg3); color:var(–white);
+border:1px solid var(–bdr); border-radius:8px; cursor:pointer;
+font-family:‘Rajdhani’,sans-serif; font-size:13px; font-weight:600;
+transition:border-color .15s,background .15s;
+}
+.copy:hover { background:var(–bg2); border-color:var(–bdr-hi); }
+.btn-outline {
+padding:9px 18px; border-radius:8px; cursor:pointer;
+font-family:‘Rajdhani’,sans-serif; font-size:13px; font-weight:700;
+letter-spacing:.5px; text-transform:uppercase;
+background:none; border:1px solid var(–bdr); color:var(–muted);
+transition:all .2s; text-decoration:none;
+display:inline-flex; align-items:center; gap:6px;
+}
+.btn-outline:hover { border-color:var(–bdr-hi); color:var(–white); background:var(–bg3); }
+
+/* actions */
+.actions-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:18px; }
+
+/* note */
+.note {
+background:rgba(251,191,36,0.06); border-left:3px solid var(–amber);
+border-radius:0 8px 8px 0; padding:12px 16px; margin-top:14px;
+font-size:14px; color:var(–amber); line-height:1.6;
+}
+
+/* error alert */
+.alert-error {
+background:rgba(255,69,69,0.08); border:1px solid rgba(255,69,69,0.2);
+border-radius:10px; padding:12px 16px;
+color:#fca5a5; font-size:14px; text-align:center;
+display:none; margin-top:14px;
+}
+.alert-error.show { display:block; animation:fadeIn .3s ease both; }
+
+/* tips */
+.tips-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.tip-item { background:var(–bg2); border:1px solid var(–bdr); border-radius:10px; padding:14px 16px; }
+.tip-num {
+width:28px; height:28px; border-radius:50%;
+background:rgba(0,255,136,0.1); border:1px solid var(–bdr);
+display:flex; align-items:center; justify-content:center;
+font-family:‘Orbitron’,monospace; font-size:12px; font-weight:900; color:var(–green);
+margin-bottom:8px;
+}
+.tip-title { font-size:13px; font-weight:700; color:var(–white); margin-bottom:4px; }
+.tip-desc  { font-size:12px; color:var(–muted); line-height:1.5; }
+
+/* searching */
+#searching { display:none; padding:30px; text-align:center; }
+#searching.show { display:block; animation:fadeIn .3s ease both; }
+.spinner-lg {
+width:42px; height:42px;
+border:3px solid var(–bdr); border-top-color:var(–green);
+border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 14px;
+}
+
+.footer {
+text-align:center; margin-top:26px;
+font-size:12px; color:rgba(90,158,116,0.45); letter-spacing:1px;
+animation:fadeIn .8s ease .5s both;
+}
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+@keyframes spin     { to{transform:rotate(360deg)} }
+</style>
+
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header">
+    <div class="logo-mark">N</div>
+    <div>
+      <div class="logo-name">NUBIASTORE</div>
+      <div class="logo-sub">Cek Status Order</div>
+    </div>
+  </header>
+
+  <!-- INPUT CARD -->
+
+  <div class="card">
+    <div class="sec-label">🔍 Cek Order</div>
+
+```
+<div class="invoice-form">
+  <div class="input-group">
+    <label for="invoiceInput">Nomor Invoice</label>
+    <input
+      class="invoice-input" id="invoiceInput" type="text"
+      placeholder="Contoh: INVC-ML-1234567890-ABCDEF"
+      autocomplete="off" spellcheck="false"
+    />
+  </div>
+  <button class="btn-cek" id="btnCek">
+    <span class="btn-icon">🔍</span>
+    <span class="spinner-sm"></span>
+    Cek Sekarang
+  </button>
+</div>
+
+<div class="alert-error" id="alertError"></div>
+
+<div class="recent-wrap" id="recentWrap" style="display:none">
+  <div class="recent-label">Riwayat Pencarian</div>
+  <div class="recent-list" id="recentList"></div>
+</div>
+```
+
+  </div>
+
+  <!-- SEARCHING -->
+
+  <div id="searching">
+    <div class="spinner-lg"></div>
+    <div style="color:var(--muted);font-size:14px">Mencari invoice...</div>
+  </div>
+
+  <!-- RESULT -->
+
+  <div id="resultArea">
+    <div class="card">
+
+```
+  <div id="statusBanner"></div>
+
+  <div class="sec-label">Detail Order</div>
+
+  <div class="row">
+    <div class="col">
+      <div class="field">
+        <span class="muted">Invoice</span>
+        <div id="invoiceTxt" style="font-weight:700;font-family:'Orbitron',monospace;font-size:12px;color:var(--green-dim);letter-spacing:1px">—</div>
+      </div>
+      <div class="field"><span class="muted">Game</span><div id="gameTxt">—</div></div>
+      <div class="field"><span class="muted">ID Akun</span><div id="idTxt">—</div></div>
+      <div class="field"><span class="muted">Server</span><div id="srvTxt">—</div></div>
+      <div class="field"><span class="muted">No. WA</span><div id="waTxt">—</div></div>
+    </div>
+    <div class="col">
+      <div class="field"><span class="muted">Nominal</span><div id="nominalTxt">—</div></div>
+      <div class="field"><span class="muted">Harga</span><div id="priceTxt">—</div></div>
+      <div class="field"><span class="muted">Admin Fee</span><div id="adminTxt">—</div></div>
+      <div class="field"><span class="muted">Total Bayar</span><div class="amount" id="totalTxt">—</div></div>
+      <div class="field"><span class="muted">Metode</span><div id="methodTxt">—</div></div>
+      <div class="field"><span class="muted">Status</span><span id="statusBadge" class="status initiated">—</span></div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div id="payInfoSection"></div>
+
+  <div class="actions-row">
+    <button id="btnCopyInvoice" class="copy">📋 Salin Invoice</button>
+    <a id="btnOpenCheckout" class="btn" href="#" target="_blank">🔗 Buka Halaman Bayar</a>
+    <a id="btnShareWA" class="btn" href="#" target="_blank" style="background:linear-gradient(135deg,#25d366,#128c7e)">💬 Customer Service</a>
+  </div>
+
+  <div id="adminNote" class="note" style="display:none">
+    Kalau kamu sudah melakukan proses pembayaran, tunggu sampai status order berubah dari <strong>INITIATED</strong> menjadi <strong>COMPLETED</strong>. Lalu buka in-game kamu dan orderan kamu selesai 😉👍
+  </div>
+
+</div>
+
+<div style="text-align:center;margin-bottom:6px">
+  <button class="btn-outline" id="btnReset">← Cek Invoice Lain</button>
+</div>
+```
+
+  </div>
+
+  <!-- HOW TO USE -->
+
+  <div class="card" id="howToCard">
+    <div class="sec-label">Cara Menggunakan</div>
+    <div class="tips-grid">
+      <div class="tip-item">
+        <div class="tip-num">1</div>
+        <div class="tip-title">Temukan Invoice</div>
+        <div class="tip-desc">Nomor invoice dikirim ke WhatsApp kamu saat order dibuat. Format: INVC-ML-... atau INVC-FF-...</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">2</div>
+        <div class="tip-title">Masukkan Invoice</div>
+        <div class="tip-desc">Ketik atau paste nomor invoice di kolom di atas lalu klik "Cek Sekarang".</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">3</div>
+        <div class="tip-title">Lihat Status</div>
+        <div class="tip-desc">Status order akan tampil: INITIATED, PENDING, COMPLETED, atau CANCELLED.</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">4</div>
+        <div class="tip-title">Lanjutkan Bayar</div>
+        <div class="tip-desc">Kalau belum bayar, klik "Buka Halaman Bayar" untuk melanjutkan proses pembayaran.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">© 2026 NUBIASTORE · Top Up Gaming Terpercaya</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543",
+  measurementId: "G-TS0YB9NYW8"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const el    = id => document.getElementById(id);
+const fmtRp = n  => (typeof n === 'number' ? n.toLocaleString('id') : n);
+
+/* ===== RECENT INVOICES (localStorage) ===== */
+const RECENT_KEY = 'nubiastore_recent_invoices';
+function saveRecent(invoice) {
+  try {
+    let arr = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+    arr = arr.filter(x => x !== invoice);
+    arr.unshift(invoice);
+    if (arr.length > 5) arr = arr.slice(0,5);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(arr));
+  } catch(e){}
+}
+function loadRecent() {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch(e){ return []; }
+}
+function renderRecentChips() {
+  const arr = loadRecent();
+  const wrap = el('recentWrap'), list = el('recentList');
+  if (!wrap || !list) return;
+  if (!arr.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = arr.map(inv => `<button class="recent-chip" data-inv="${inv}">${inv}</button>`).join('');
+  list.querySelectorAll('.recent-chip').forEach(chip => {
+    chip.onclick = () => { el('invoiceInput').value = chip.dataset.inv; doSearch(chip.dataset.inv); };
+  });
+}
+
+/* ===== RENDER HELPERS ===== */
+function setStatusBadge(status) {
+  const b = el('statusBadge'); if(!b) return;
+  b.className = 'status ' + (status || 'initiated');
+  b.textContent = (status || 'initiated').toUpperCase();
+}
+
+function renderStatusBanner(status) {
+  const container = el('statusBanner'); if(!container) return;
+  const successStates = ['completed','complete','paid','success'];
+  const cancelStates  = ['cancelled','canceled','failed','expired','rejected'];
+  const s = String(status||'').toLowerCase();
+
+  if (successStates.includes(s)) {
+    container.innerHTML = `<div class="status-banner banner-ok">
+      <div class="banner-icon">✅</div>
+      <div>
+        <div class="banner-title">Order Selesai</div>
+        <div class="banner-desc">Orderan kamu sudah berhasil diproses. Silakan cek in-game untuk memastikan item sudah masuk.</div>
+      </div></div>`;
+  } else if (cancelStates.includes(s)) {
+    container.innerHTML = `<div class="status-banner banner-cancel">
+      <div class="banner-icon">❌</div>
+      <div>
+        <div class="banner-title">Order Dibatalkan</div>
+        <div class="banner-desc">Orderan ini dibatalkan atau kedaluwarsa. Buat order baru atau hubungi customer service.</div>
+      </div></div>`;
+  } else {
+    container.innerHTML = `<div class="status-banner banner-wait">
+      <div class="banner-icon">⏳</div>
+      <div>
+        <div class="banner-title">Menunggu Pembayaran</div>
+        <div class="banner-desc">Order sudah dibuat. Klik "Buka Halaman Bayar" untuk melanjutkan dan menyelesaikan pembayaran.</div>
+      </div></div>`;
+  }
+}
+
+function renderPayInfo(d) {
+  const section = el('payInfoSection'); if(!section) return;
+  const pm = (d.payment_method||'').toUpperCase().replace('_',' ');
+  const successStates = ['completed','complete','paid','success'];
+  const isDone = successStates.includes(String(d.status||'').toLowerCase());
+
+  let rows = `
+    <div class="pay-row"><span class="k">Metode Bayar</span><span class="v">${pm||'—'}</span></div>
+    <div class="pay-row"><span class="k">Total Tagihan</span><span class="v green">Rp ${fmtRp(d.amount_total)}</span></div>
+    <div class="pay-row"><span class="k">Status Bayar</span><span class="v">${(d.status||'—').toUpperCase()}</span></div>`;
+  if (d.createdAt && d.createdAt.toDate) {
+    const dt = d.createdAt.toDate();
+    rows += `<div class="pay-row"><span class="k">Dibuat</span><span class="v">${dt.toLocaleString('id')}</span></div>`;
+  }
+  if (d.paidAt && d.paidAt.toDate) {
+    const dt = d.paidAt.toDate();
+    rows += `<div class="pay-row"><span class="k">Dibayar</span><span class="v" style="color:var(--green)">${dt.toLocaleString('id')}</span></div>`;
+  }
+
+  section.innerHTML = `<div class="pay-info-box"><h4>Ringkasan Pembayaran</h4>${rows}</div>`;
+
+  const btnCheckout = el('btnOpenCheckout');
+  if (btnCheckout) {
+    btnCheckout.style.display = isDone ? 'none' : 'inline-flex';
+    if (!isDone) btnCheckout.href = `/checkout?invoice=${d.invoice||''}`;
+  }
+}
+
+/* ===== RENDER ORDER ===== */
+function renderOrder(d) {
+  if(el('invoiceTxt')) el('invoiceTxt').textContent = d.invoice || '—';
+  if(el('gameTxt'))    el('gameTxt').textContent    = d.game    || '—';
+  if(el('idTxt'))      el('idTxt').textContent      = d.game_id || '—';
+  if(el('srvTxt'))     el('srvTxt').textContent     = d.server  || '—';
+  if(el('waTxt'))      el('waTxt').textContent      = d.noWA    || '—';
+  if(el('nominalTxt')) el('nominalTxt').textContent = d.nominalValue || '—';
+  if(el('priceTxt'))   el('priceTxt').textContent   = 'Rp ' + fmtRp(d.price   || 0);
+  if(el('adminTxt'))   el('adminTxt').textContent   = 'Rp ' + fmtRp(d.adminFee || 0);
+  if(el('totalTxt'))   el('totalTxt').textContent   = 'Rp ' + fmtRp(d.amount_total || 0);
+  if(el('methodTxt'))  el('methodTxt').textContent  = (d.payment_method||'—').replace('_',' ');
+
+  setStatusBadge(d.status);
+  renderStatusBanner(d.status);
+  renderPayInfo(d);
+
+  const successStates = ['completed','complete','paid','success'];
+  const cancelStates  = ['cancelled','canceled','failed','expired','rejected'];
+  const s = String(d.status||'').toLowerCase();
+
+  if(el('adminNote'))
+    el('adminNote').style.display = (successStates.includes(s)||cancelStates.includes(s)) ? 'none' : 'block';
+
+  const share = encodeURIComponent(`Order #${d.invoice}\nGame: ${d.game}\nID: ${d.game_id}\nTotal: Rp ${fmtRp(d.amount_total)}\nStatus: ${d.status}`);
+  if(el('btnShareWA'))     el('btnShareWA').href = `https://wa.me/6283816097956?text=${share}`;
+  if(el('btnCopyInvoice')) el('btnCopyInvoice').onclick = () => {
+    navigator.clipboard.writeText(d.invoice||'').then(() => {
+      el('btnCopyInvoice').textContent = '✓ Tersalin!';
+      setTimeout(() => { el('btnCopyInvoice').textContent = '📋 Salin Invoice'; }, 1500);
+    });
+  };
+}
+
+/* ===== SEARCH ===== */
+async function doSearch(invoiceVal) {
+  const invoice = String(invoiceVal||'').trim();
+  if (!invoice) { showError('Masukkan nomor invoice terlebih dahulu.'); return; }
+
+  setLoading(true); hideError(); hideResult();
+
+  try {
+    const snap = await getDoc(doc(db,'orders',invoice));
+    setLoading(false);
+
+    if (!snap.exists()) {
+      showError(`Invoice "${invoice}" tidak ditemukan. Pastikan nomor invoice sudah benar.`);
+      return;
+    }
+
+    saveRecent(invoice);
+    renderRecentChips();
+    renderOrder(snap.data());
+    showResult();
+    el('howToCard').style.display = 'none';
+    setTimeout(() => el('resultArea').scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+
+  } catch(err) {
+    console.error('fetch order error', err);
+    setLoading(false);
+    showError('Gagal mengambil data. Periksa koneksi internet kamu.');
+  }
+}
+
+/* ===== UI HELPERS ===== */
+function setLoading(on) {
+  const btn = el('btnCek'), spinner = el('searching');
+  if(btn)     { btn.classList.toggle('loading',on); btn.disabled = on; }
+  if(spinner) spinner.classList.toggle('show',on);
+}
+function showError(msg) { const a=el('alertError'); if(a){ a.textContent=msg; a.classList.add('show'); } }
+function hideError()    { const a=el('alertError'); if(a) a.classList.remove('show'); }
+function showResult()   { const r=el('resultArea'); if(r) r.classList.add('show'); }
+function hideResult()   { const r=el('resultArea'); if(r) r.classList.remove('show'); }
+
+/* ===== EVENTS ===== */
+el('btnCek').addEventListener('click', () => doSearch(el('invoiceInput').value));
+el('invoiceInput').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(el('invoiceInput').value); });
+el('invoiceInput').addEventListener('input', () => { el('invoiceInput').value = el('invoiceInput').value.toUpperCase(); });
+el('btnReset').addEventListener('click', () => {
+  hideResult(); hideError();
+  el('invoiceInput').value = '';
+  el('howToCard').style.display = 'block';
+  el('invoiceInput').focus();
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+
+/* ===== URL PARAM (direct link support) ===== */
+const params = new URLSearchParams(location.search);
+const preInvoice = params.get('invoice');
+if (preInvoice) { el('invoiceInput').value = preInvoice.toUpperCase(); doSearch(preInvoice); }
+
+/* ===== INIT ===== */
+renderRecentChips();
+</script>
+
+</body>
+</html>
