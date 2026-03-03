@@ -205,6 +205,20 @@
       </div>
     </div>
 
+    <!-- AUTO LOGIN MODAL -->
+<div id="autoLoginModal" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999">
+  <div style="background:#fff;width:100%;max-width:360px;border-radius:12px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="font-weight:800;font-size:16px;margin-bottom:14px">Admin Login</div>
+    
+    <input id="autoEmail" type="email" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;font-size:14px"/>
+    <input id="autoPassword" type="password" style="width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:14px;font-size:14px"/>
+    
+    <button id="autoLoginBtn" style="width:100%;padding:10px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">
+      Login Admin
+    </button>
+  </div>
+</div>
+
   </div>
 </div>
 
@@ -220,7 +234,12 @@
 
 /* Firebase imports (CDN) */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut,
+  signInWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, query, orderBy, onSnapshot,
   doc, updateDoc, getDoc, serverTimestamp
@@ -261,6 +280,11 @@ const detailPre = document.getElementById('detailPre');
 const detailGrid = document.getElementById('detailGrid');
 const detailInvoice = document.getElementById('detailInvoice');
 const btnSignOut = document.getElementById('btnSignOut');
+const autoLoginModal = document.getElementById('autoLoginModal');
+const autoEmail = document.getElementById('autoEmail');
+const autoPassword = document.getElementById('autoPassword');
+const autoLoginBtn = document.getElementById('autoLoginBtn');
+
 
 let unsubscribeOrders = null;
 let lastOrders = {}; // invoice -> data
@@ -557,6 +581,21 @@ onAuthStateChanged(auth, async (u)=>{
   authMsg.style.display = 'none';
   adminUI.style.display = 'block';
   startOrdersListener();
+});
+
+// AUTO FILL (DEV MODE ONLY)
+autoEmail.value = "adminzestore@gmail.com";
+autoPassword.value = "Jaka01piv";
+
+autoLoginBtn.addEventListener('click', async ()=>{
+  try{
+    autoLoginBtn.textContent = "Logging in...";
+    await signInWithEmailAndPassword(auth, autoEmail.value, autoPassword.value);
+    autoLoginModal.style.display = "none";
+  }catch(e){
+    alert("Login gagal: " + e.message);
+    autoLoginBtn.textContent = "Login Admin";
+  }
 });
 
 /* events */
