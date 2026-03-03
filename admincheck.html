@@ -1,73 +1,272 @@
 <!doctype html>
+
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Admin — NUBIASTORE</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Panel — NUBIASTORE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
 <style>
-  body{font-family:Inter,Segoe UI,system-ui;margin:12px;background:#f6f7f9;color:#111}
-  .wrap{max-width:1100px;margin:12px auto}
-  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-  h1{color:#16a34a}
-  .card{background:#fff;padding:12px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin-bottom:12px}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:.95rem}
-  th{background:#f8faf9}
-  .btn{padding:6px 10px;border-radius:6px;border:none;cursor:pointer}
-  .btn.complete{background:#16a34a;color:#fff}
-  .btn.cancel{background:#ef4444;color:#fff}
-  .btn.view{background:#111;color:#fff}
-  .status{padding:4px 8px;border-radius:6px;font-weight:600}
-  .status.initiated{background:#fef3c7;color:#92400e}
-  .status.pending{background:#e0f2fe;color:#0369a1}
-  .status.completed{background:#dcfce7;color:#166534}
-  .status.cancelled{background:#fee2e2;color:#7f1d1d}
-  .muted{color:#666;font-size:.92rem}
-  .search{padding:8px;border-radius:8px;border:1px solid #e5e7eb;width:250px}
-  .top-actions{display:flex;gap:8px;align-items:center}
-  pre{background:#f8faf9;padding:8px;border-radius:6px;overflow:auto}
-  .admin-note{padding:8px;background:#fff7ed;border-left:4px solid #f59e0b;color:#92400e;border-radius:6px;margin-bottom:12px}
+:root{
+  --bg:#0f1117;
+  --bg2:#161b24;
+  --bg3:#1c2333;
+  --bg4:#222b3a;
+  --border:#2a3447;
+  --border-hi:#3d4f6b;
+  --accent:#3b82f6;
+  --accent-dim:rgba(59,130,246,.12);
+  --green:#22c55e;
+  --green-dim:rgba(34,197,94,.12);
+  --red:#ef4444;
+  --red-dim:rgba(239,68,68,.1);
+  --amber:#f59e0b;
+  --amber-dim:rgba(245,158,11,.1);
+  --wa:#25d366;
+  --wa-dim:rgba(37,211,102,.12);
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --muted2:#94a3b8;
+  --white:#fff;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Inter',system-ui,sans-serif;
+  --radius:8px;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 
-  /* detail small fields */
-  .detail-grid { display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; }
-  .detail-item { background:#f8faf9;padding:8px;border-radius:6px; min-width:180px }
-  .detail-title { font-weight:700; margin-bottom:4px; color:#111 }
-  .small-muted { color:#6b7280; font-size:.92rem; margin-top:6px }
+/* layout */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(–bg2);border-right:1px solid var(–border);padding:20px 16px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+/* sidebar */
+.sb-logo{display:flex;align-items:center;gap:10px;padding:10px 8px 20px;border-bottom:1px solid var(–border);margin-bottom:12px}
+.sb-logo-mark{width:32px;height:32px;background:var(–accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+.sb-logo-text{font-weight:700;font-size:13px;color:var(–white);letter-spacing:.5px}
+.sb-logo-sub{font-size:10px;color:var(–muted);letter-spacing:.5px;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(–radius);cursor:pointer;color:var(–muted2);font-size:13px;font-weight:500;transition:.15s;text-decoration:none}
+.sb-item svg{flex-shrink:0;opacity:.7}
+.sb-item:hover,.sb-item.active{background:var(–bg3);color:var(–white)}
+.sb-item.active svg{opacity:1;color:var(–accent)}
+.sb-item.active{color:var(–accent)}
+.sb-divider{height:1px;background:var(–border);margin:8px 0}
+.sb-signout{margin-top:auto;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(–radius);cursor:pointer;color:var(–red);font-size:13px;font-weight:500;transition:.15s;background:none;border:none;width:100%;text-align:left}
+.sb-signout:hover{background:var(–red-dim)}
+
+/* topbar */
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;background:var(–bg2);border-bottom:1px solid var(–border);flex-shrink:0}
+.topbar-title{font-weight:700;font-size:15px;color:var(–white);flex:1}
+.search-wrap{position:relative}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(–muted);pointer-events:none}
+.search-input{background:var(–bg3);border:1px solid var(–border);border-radius:var(–radius);color:var(–white);padding:7px 12px 7px 34px;font-size:13px;width:240px;outline:none;transition:.2s;font-family:var(–sans)}
+.search-input:focus{border-color:var(–accent);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+.search-input::placeholder{color:var(–muted)}
+
+/* content */
+.content{flex:1;overflow-y:auto;padding:20px 24px}
+
+/* auth card */
+#authMsg{background:var(–bg2);border:1px solid var(–border);border-radius:10px;padding:32px;text-align:center;color:var(–muted2);margin-top:40px}
+
+/* stats row */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(–bg2);border:1px solid var(–border);border-radius:10px;padding:14px 16px}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(–muted);font-weight:600;margin-bottom:6px}
+.stat-val{font-size:22px;font-weight:700;color:var(–white);font-family:var(–mono)}
+.stat-val.green{color:var(–green)}
+.stat-val.amber{color:var(–amber)}
+.stat-val.red{color:var(–red)}
+.stat-val.blue{color:var(–accent)}
+
+/* toolbar */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(–bg2);border:1px solid var(–border);border-radius:10px;padding:12px 16px;margin-bottom:14px}
+.toolbar-label{font-size:12px;color:var(–muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+.filter-select{background:var(–bg3);border:1px solid var(–border);border-radius:6px;color:var(–text);padding:6px 10px;font-size:13px;outline:none;cursor:pointer;font-family:var(–sans)}
+.filter-select:focus{border-color:var(–accent)}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;border:1px solid var(–border);background:var(–bg3);color:var(–muted2);transition:.15s}
+.pill:hover,.pill.active{border-color:var(–accent);color:var(–accent);background:var(–accent-dim)}
+.pill-count{background:var(–bg4);border-radius:10px;padding:1px 6px;font-size:10px;color:var(–white)}
+.toolbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.limit-toggle{display:flex;align-items:center;gap:6px;background:var(–bg3);border:1px solid var(–border);border-radius:6px;padding:2px}
+.limit-btn{padding:4px 10px;border-radius:4px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:none;color:var(–muted2);transition:.15s;font-family:var(–sans)}
+.limit-btn.active{background:var(–accent);color:#fff}
+
+/* table card */
+.table-card{background:var(–bg2);border:1px solid var(–border);border-radius:10px;overflow:hidden;margin-bottom:14px}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+thead th{background:var(–bg3);padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(–muted);font-weight:600;white-space:nowrap;border-bottom:1px solid var(–border)}
+tbody tr{border-bottom:1px solid var(–border);transition:.12s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
+.invoice-code{font-family:var(–mono);font-size:12px;font-weight:700;color:var(–accent)}
+.user-chip{display:inline-flex;align-items:center;gap:5px;background:var(–bg4);border-radius:5px;padding:2px 7px;font-size:11px;color:var(–muted2);font-family:var(–mono)}
+.game-name{font-weight:600;color:var(–white)}
+.id-val{font-family:var(–mono);font-size:12px;color:var(–muted2)}
+.nominal-val{font-family:var(–mono);font-size:12px}
+.amount-val{font-family:var(–mono);font-size:13px;font-weight:700;color:var(–white)}
+.method-val{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(–muted2)}
+.date-val{font-size:12px;color:var(–muted2)}
+
+/* status badges */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;white-space:nowrap}
+.badge::before{content:’’;width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.badge.initiated{background:var(–amber-dim);color:var(–amber);border:1px solid rgba(245,158,11,.25)}
+.badge.pending{background:var(–accent-dim);color:var(–accent);border:1px solid rgba(59,130,246,.25)}
+.badge.completed{background:var(–green-dim);color:var(–green);border:1px solid rgba(34,197,94,.25)}
+.badge.cancelled{background:var(–red-dim);color:var(–red);border:1px solid rgba(239,68,68,.2)}
+.badge.initiated::before,.badge.pending::before{animation:blink 1.3s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* action buttons */
+.acts{display:flex;gap:5px;flex-wrap:nowrap}
+.act{padding:5px 9px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;transition:.15s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-family:var(–sans)}
+.act svg{flex-shrink:0}
+.act.view{background:var(–bg4);color:var(–text);border:1px solid var(–border)}
+.act.view:hover{background:var(–bg3);border-color:var(–border-hi)}
+.act.complete{background:var(–green-dim);color:var(–green);border:1px solid rgba(34,197,94,.25)}
+.act.complete:hover{background:rgba(34,197,94,.22)}
+.act.cancel{background:var(–red-dim);color:var(–red);border:1px solid rgba(239,68,68,.2)}
+.act.cancel:hover{background:rgba(239,68,68,.18)}
+.act.wa{background:var(–wa-dim);color:var(–wa);border:1px solid rgba(37,211,102,.25)}
+.act.wa:hover{background:rgba(37,211,102,.22)}
+.act:disabled{opacity:.45;pointer-events:none}
+
+/* empty / loading */
+.empty-row td{text-align:center;padding:40px;color:var(–muted)}
+
+/* detail panel */
+.detail-panel{background:var(–bg2);border:1px solid var(–border);border-radius:10px;overflow:hidden}
+.detail-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(–border);background:var(–bg3)}
+.detail-header-title{font-weight:700;color:var(–white);font-size:14px}
+.detail-invoice{font-family:var(–mono);font-size:12px;color:var(–accent);margin-left:auto}
+.detail-body{padding:18px}
+.detail-empty{padding:32px;text-align:center;color:var(–muted);font-size:13px}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.detail-item{background:var(–bg3);border:1px solid var(–border);border-radius:8px;padding:12px 14px}
+.di-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(–muted);font-weight:600;margin-bottom:5px}
+.di-val{font-size:14px;font-weight:600;color:var(–white)}
+.di-val.mono{font-family:var(–mono);font-size:13px}
+.di-val.green{color:var(–green)}
+.di-val.amber{color:var(–amber)}
+.raw-toggle{display:flex;align-items:center;gap:8px;padding:8px 0;cursor:pointer;color:var(–muted2);font-size:12px;font-weight:600;user-select:none}
+.raw-toggle:hover{color:var(–white)}
+.raw-box{background:var(–bg);border:1px solid var(–border);border-radius:8px;padding:14px;overflow:auto;max-height:260px}
+pre{font-family:var(–mono);font-size:11px;color:var(–muted2);line-height:1.7}
+.detail-actions{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(–border);background:var(–bg3)}
+.det-act{padding:8px 16px;border-radius:7px;border:none;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.4px;transition:.15s;display:inline-flex;align-items:center;gap:7px;font-family:var(–sans)}
+.det-act.complete{background:var(–green);color:#000}
+.det-act.complete:hover{filter:brightness(1.1)}
+.det-act.cancel{background:var(–red-dim);color:var(–red);border:1px solid rgba(239,68,68,.3)}
+.det-act.cancel:hover{background:rgba(239,68,68,.2)}
+.det-act.wa{background:var(–wa);color:#000}
+.det-act.wa:hover{filter:brightness(1.08)}
+
+/* toast */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;color:#fff;background:#1e293b;border:1px solid var(–border);box-shadow:var(–shadow);animation:toastIn .25s ease both;display:flex;align-items:center;gap:8px}
+.toast.success{background:#14532d;border-color:rgba(34,197,94,.3);color:var(–green)}
+.toast.error{background:#450a0a;border-color:rgba(239,68,68,.3);color:var(–red)}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* note banner */
+.note-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(–amber-dim);border:1px solid rgba(245,158,11,.25);border-radius:8px;color:var(–amber);font-size:12px;margin-bottom:14px}
+
+/* responsive */
+@media(max-width:768px){
+.sidebar{display:none}
+.content{padding:14px}
+.topbar{padding:12px 14px}
+.stats-row{grid-template-columns:1fr 1fr}
+}
 </style>
+
 </head>
 <body>
-  <div class="wrap">
-    <header>
+<div class="shell">
+
+  <!-- sidebar -->
+
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-mark">N</div>
       <div>
-        <h1>Admin Panel — Orders</h1>
-        <div class="muted">Lihat dan kelola order. Hanya admin yang bisa mengubah status.</div>
+        <div class="sb-logo-text">NUBIASTORE</div>
+        <div class="sb-logo-sub">Admin Panel</div>
       </div>
-      <div class="top-actions">
-        <input id="qInvoice" class="search" placeholder="Cari invoice / user id / game id / server" />
-        <button id="btnSignOut" class="btn">Sign out</button>
+    </div>
+    <a class="sb-item active">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Orders
+    </a>
+    <div class="sb-divider"></div>
+    <button class="sb-signout" id="btnSignOut">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign Out
+    </button>
+  </aside>
+
+  <!-- main -->
+
+  <div class="main">
+    <!-- topbar -->
+    <div class="topbar">
+      <div class="topbar-title">Orders Management</div>
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="qInvoice" class="search-input" placeholder="Invoice / User / Game ID / Server…"/>
       </div>
-    </header>
+    </div>
 
-    <div id="authMsg" class="card">Memeriksa otentikasi...</div>
+```
+<div class="content">
+  <!-- auth msg -->
+  <div id="authMsg"><span style="color:var(--muted2)">Memeriksa autentikasi…</span></div>
 
-    <div id="adminUI" style="display:none">
-      <div class="card">
-        <strong>Filter:</strong>
-        <select id="filterStatus">
-          <option value="all">Semua</option>
-          <option value="initiated">initiated</option>
-          <option value="pending">pending</option>
-          <option value="completed">completed</option>
-          <option value="cancelled">cancelled</option>
-        </select>
-        <span style="margin-left:12px" class="muted">Realtime update aktif — perubahan disimpan ke Firestore</span>
+  <div id="adminUI" style="display:none">
+
+    <!-- dev note -->
+    <div id="adminNoteBox" class="note-banner" style="display:none">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Login via UID allowlist (development mode). Gunakan custom claims untuk production.
+    </div>
+
+    <!-- stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-val blue" id="stTotal">—</div></div>
+      <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-val green" id="stCompleted">—</div></div>
+      <div class="stat-card"><div class="stat-label">Pending / Initiated</div><div class="stat-val amber" id="stPending">—</div></div>
+      <div class="stat-card"><div class="stat-label">Cancelled</div><div class="stat-val red" id="stCancelled">—</div></div>
+      <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-val green" id="stRevenue">—</div></div>
+    </div>
+
+    <!-- toolbar -->
+    <div class="toolbar">
+      <span class="toolbar-label">Status</span>
+      <select id="filterStatus" class="filter-select">
+        <option value="all">Semua</option>
+        <option value="initiated">Initiated</option>
+        <option value="pending">Pending</option>
+        <option value="completed">Completed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+      <div class="toolbar-right">
+        <span class="toolbar-label">Tampilkan</span>
+        <div class="limit-toggle">
+          <button class="limit-btn active" id="limit10">10 terbaru</button>
+          <button class="limit-btn" id="limit50">50 transaksi</button>
+        </div>
       </div>
+    </div>
 
-      <div id="adminNoteBox" style="display:none" class="admin-note">
-        Kamu login sebagai admin (akses via UID allowlist). Ingat: ini fitur development. Untuk production, gunakan custom claims server-side.
-      </div>
-
-      <div class="card" id="listCard">
+    <!-- table -->
+    <div class="table-card">
+      <div class="table-scroll">
         <table>
           <thead>
             <tr>
@@ -78,44 +277,57 @@
               <th>Server</th>
               <th>Nominal</th>
               <th>Total</th>
-              <th>Method</th>
-              <th>Created</th>
+              <th>Metode</th>
+              <th>Waktu</th>
               <th>Status</th>
-              <th>Action</th>
+              <th>Aksi</th>
             </tr>
           </thead>
           <tbody id="ordersTbody">
-            <!-- rows injected here -->
+            <tr class="empty-row"><td colspan="11">Memuat data…</td></tr>
           </tbody>
         </table>
       </div>
+    </div>
 
-      <div class="card">
-        <h3>Detail Order</h3>
-        <h4>Catatan: game_id (id akun) | server (srv akun) | amount_total (harga)</h4>
-
-        <div id="detailBox" class="muted">
-          Klik "View" pada baris untuk melihat detail order.
-        </div>
-
-        <!-- detail area yang lebih mudah dibaca + raw JSON -->
-        <div id="detailArea" style="display:none">
+    <!-- detail panel -->
+    <div class="detail-panel">
+      <div class="detail-header">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span class="detail-header-title">Detail Order</span>
+        <span class="detail-invoice" id="detailInvoiceLabel"></span>
+      </div>
+      <div id="detailEmpty" class="detail-empty">
+        Klik <strong>View</strong> pada baris untuk melihat detail lengkap order.
+      </div>
+      <div id="detailArea" style="display:none">
+        <div class="detail-body">
           <div class="detail-grid" id="detailGrid"></div>
-          <div class="small-muted">Raw document:</div>
-          <pre id="detailPre"></pre>
+          <div class="raw-toggle" id="rawToggle">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Raw JSON
+            <svg id="rawArrow" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div id="rawBox" class="raw-box" style="display:none">
+            <pre id="detailPre"></pre>
+          </div>
         </div>
+        <div class="detail-actions" id="detailActions"></div>
       </div>
     </div>
-  </div>
+
+  </div><!-- /adminUI -->
+</div><!-- /content -->
+```
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- toast container -->
+
+<div class="toast-wrap" id="toastWrap"></div>
 
 <script type="module">
-/*
-  admin.html (updated)
-  - Menambahkan kolom Game ID & Server di tabel
-  - Memperlihatkan game_id & server di panel detail (plus raw JSON)
-  - Memperluas pencarian agar bisa cari berdasarkan game_id / server
-*/
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
@@ -136,211 +348,313 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const authMsg = document.getElementById('authMsg');
-const adminUI = document.getElementById('adminUI');
-const adminNoteBox = document.getElementById('adminNoteBox');
-const ordersTbody = document.getElementById('ordersTbody');
-const detailBox = document.getElementById('detailBox');
-const detailPre = document.getElementById('detailPre');
-const detailGrid = document.getElementById('detailGrid');
-const detailArea = document.getElementById('detailArea');
-const qInvoice = document.getElementById('qInvoice');
-const filterStatus = document.getElementById('filterStatus');
-const btnSignOut = document.getElementById('btnSignOut');
+const $ = id => document.getElementById(id);
+const authMsg      = $('authMsg');
+const adminUI      = $('adminUI');
+const adminNoteBox = $('adminNoteBox');
+const ordersTbody  = $('ordersTbody');
+const detailEmpty  = $('detailEmpty');
+const detailPre    = $('detailPre');
+const detailGrid   = $('detailGrid');
+const detailArea   = $('detailArea');
+const detailActions= $('detailActions');
+const detailLabel  = $('detailInvoiceLabel');
+const qInvoice     = $('qInvoice');
+const filterStatus = $('filterStatus');
+const rawToggle    = $('rawToggle');
+const rawBox       = $('rawBox');
+const rawArrow     = $('rawArrow');
+
+const ADMIN_UIDS = ["8z9b0u1LYfTVM0sCP7qHXbYHvGi1"];
 
 let unsubscribeOrders = null;
-let lastOrders = {}; // cache map invoice -> data
+let lastOrders = {};
+let displayLimit = 10;
+let currentDetailId = null;
 
-// === ADMIN ALLOWLIST (development convenience) ===
-const ADMIN_UIDS = [
-  "8z9b0u1LYfTVM0sCP7qHXbYHvGi1"
-];
-// ==================================================
-
-// require login + (custom claim admin==true OR UID in allowlist)
-onAuthStateChanged(auth, async (u) => {
-  if(!u){
-    authMsg.innerHTML = '<strong>Harus login sebagai admin</strong> — silakan login di halaman utama.';
+/* ── auth ── */
+onAuthStateChanged(auth, async u => {
+  if (!u) {
+    authMsg.innerHTML = '<strong style="color:var(--red)">Harus login sebagai admin</strong><br><span style="color:var(--muted)">Silakan login di halaman utama.</span>';
     adminUI.style.display = 'none';
-    adminNoteBox.style.display = 'none';
     return;
   }
-  // inspect token claims
   let isAdmin = false;
   try {
-    const tokenResult = await u.getIdTokenResult();
-    const claims = tokenResult.claims || {};
-    if(claims.admin) isAdmin = true;
-  } catch(e){
-    console.warn('getIdTokenResult failed', e);
-  }
+    const t = await u.getIdTokenResult();
+    if (t.claims?.admin) isAdmin = true;
+  } catch(e) { console.warn(e); }
+  if (ADMIN_UIDS.includes(u.uid)) isAdmin = true;
 
-  if(ADMIN_UIDS.includes(u.uid)) isAdmin = true;
-
-  if(!isAdmin){
-    authMsg.innerHTML = '<strong>Access denied.</strong> Akun tidak memiliki hak admin.';
+  if (!isAdmin) {
+    authMsg.innerHTML = '<strong style="color:var(--red)">Access Denied</strong><br><span style="color:var(--muted)">Akun tidak memiliki hak admin.</span>';
     adminUI.style.display = 'none';
-    adminNoteBox.style.display = 'none';
     return;
   }
-
-  // success: show UI
   authMsg.style.display = 'none';
   adminUI.style.display = 'block';
-  adminNoteBox.style.display = ADMIN_UIDS.includes(u.uid) ? 'block' : 'none';
+  if (ADMIN_UIDS.includes(u.uid)) adminNoteBox.style.display = 'flex';
   startOrdersListener();
 });
 
-// sign out
-btnSignOut.onclick = ()=> signOut(auth);
+$('btnSignOut').onclick = () => signOut(auth);
 
-// listen orders realtime (filtered by select + search)
-function startOrdersListener(){
-  if(unsubscribeOrders) unsubscribeOrders();
-  const col = collection(db, 'orders');
-  const q = query(col, orderBy('createdAt','desc'));
-  unsubscribeOrders = onSnapshot(q, (snap)=>{
+/* ── listener ── */
+function startOrdersListener() {
+  if (unsubscribeOrders) unsubscribeOrders();
+  const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+  unsubscribeOrders = onSnapshot(q, snap => {
     lastOrders = {};
-    snap.forEach(docSnap=>{
-      lastOrders[docSnap.id] = docSnap.data();
-    });
-    renderOrdersTable();
-  }, (err)=>{
-    console.error('orders snapshot err', err);
-  });
+    snap.forEach(d => { lastOrders[d.id] = d.data(); });
+    updateStats();
+    renderTable();
+  }, err => console.error('snapshot err', err));
 }
 
-function renderOrdersTable(){
+/* ── stats ── */
+function updateStats() {
+  const all = Object.values(lastOrders);
+  $('stTotal').textContent     = all.length;
+  $('stCompleted').textContent = all.filter(d => d.status === 'completed').length;
+  $('stPending').textContent   = all.filter(d => d.status === 'pending' || d.status === 'initiated').length;
+  $('stCancelled').textContent = all.filter(d => d.status === 'cancelled').length;
+  const rev = all.filter(d => d.status === 'completed').reduce((s, d) => s + (d.amount_total || 0), 0);
+  $('stRevenue').textContent   = 'Rp ' + formatMoney(rev);
+}
+
+/* ── table ── */
+function renderTable() {
   const filter = filterStatus.value;
   const search = qInvoice.value.trim().toLowerCase();
-  ordersTbody.innerHTML = '';
   const rows = Object.values(lastOrders)
     .filter(d => {
-      if(filter !== 'all' && d.status !== filter) return false;
-      if(!search) return true;
-      // include game_id and server in search
-      return (d.invoice && d.invoice.toLowerCase().includes(search)) ||
-             (d.userId && String(d.userId).toLowerCase().includes(search)) ||
-             (d.game_id && String(d.game_id).toLowerCase().includes(search)) ||
-             (d.server && String(d.server).toLowerCase().includes(search)) ||
-             (d.game && String(d.game).toLowerCase().includes(search));
+      if (filter !== 'all' && d.status !== filter) return false;
+      if (!search) return true;
+      return ['invoice','userId','game_id','server','game']
+        .some(k => d[k] && String(d[k]).toLowerCase().includes(search));
     })
-    .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
+    .slice(0, displayLimit);
 
-  rows.forEach(d=>{
+  if (!rows.length) {
+    ordersTbody.innerHTML = '<tr class="empty-row"><td colspan="11">Tidak ada order yang cocok.</td></tr>';
+    return;
+  }
+
+  ordersTbody.innerHTML = '';
+  rows.forEach(d => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${d.invoice || '-'}</td>
-      <td>${d.userId || 'guest'}</td>
-      <td>${d.game || '-'}</td>
-      <td>${d.game_id || '-'}</td>
-      <td>${d.server || '-'}</td>
-      <td>${d.nominalValue || '-'}</td>
-      <td>Rp ${formatMoney(d.amount_total)}</td>
-      <td>${(d.payment_method||'-').replace('_',' ')}</td>
-      <td>${formatDate(d.createdAt)}</td>
-      <td><span class="status ${d.status||'initiated'}">${(d.status||'initiated')}</span></td>
+      <td><span class="invoice-code">${d.invoice || '-'}</span></td>
+      <td><span class="user-chip">${d.userId ? d.userId.slice(0,10)+'…' : 'guest'}</span></td>
+      <td><span class="game-name">${d.game || '-'}</span></td>
+      <td><span class="id-val">${d.game_id || '-'}</span></td>
+      <td><span class="id-val">${d.server || '-'}</span></td>
+      <td><span class="nominal-val">${d.nominalValue || '-'}</span></td>
+      <td><span class="amount-val">Rp ${formatMoney(d.amount_total)}</span></td>
+      <td><span class="method-val">${(d.payment_method||'-').replace(/_/g,' ')}</span></td>
+      <td><span class="date-val">${formatDate(d.createdAt)}</span></td>
+      <td><span class="badge ${d.status||'initiated'}">${d.status||'initiated'}</span></td>
       <td>
-        <button class="btn view" data-id="${d.invoice}">View</button>
-        <button class="btn complete" data-id="${d.invoice}">Selesai</button>
-        <button class="btn cancel" data-id="${d.invoice}">Batal</button>
-      </td>
-    `;
+        <div class="acts">
+          <button class="act view"     data-id="${d.invoice}">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            View
+          </button>
+          <button class="act complete" data-id="${d.invoice}">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Selesai
+          </button>
+          <button class="act cancel"   data-id="${d.invoice}">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Batal
+          </button>
+          <button class="act wa"       data-id="${d.invoice}">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.555 4.12 1.524 5.852L.057 23.885a.5.5 0 0 0 .613.613l6.033-1.467A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.888a9.881 9.881 0 0 1-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.86 9.86 0 0 1 2.112 12c0-5.462 4.426-9.888 9.888-9.888 5.462 0 9.888 4.426 9.888 9.888 0 5.462-4.426 9.888-9.888 9.888z"/></svg>
+            WA
+          </button>
+        </div>
+      </td>`;
     ordersTbody.appendChild(tr);
   });
 
-  // attach row buttons
-  document.querySelectorAll('button.view').forEach(b=>{
-    b.onclick = async (e)=>{
-      const id = e.target.dataset.id;
-      showDetail(id);
-    };
+  document.querySelectorAll('.act.view').forEach(b => {
+    b.onclick = e => showDetail(e.currentTarget.dataset.id);
   });
-  document.querySelectorAll('button.complete').forEach(b=>{
-    b.onclick = async (e)=>{
-      const id = e.target.dataset.id;
-      if(!confirm('Tandai order '+id+' SELESAI?')) return;
-      await markStatus(id, 'completed');
-    };
+  document.querySelectorAll('.act.complete').forEach(b => {
+    b.onclick = e => confirmStatus(e.currentTarget.dataset.id, 'completed');
   });
-  document.querySelectorAll('button.cancel').forEach(b=>{
-    b.onclick = async (e)=>{
-      const id = e.target.dataset.id;
-      if(!confirm('Tandai order '+id+' BATAL?')) return;
-      await markStatus(id, 'cancelled');
-    };
+  document.querySelectorAll('.act.cancel').forEach(b => {
+    b.onclick = e => confirmStatus(e.currentTarget.dataset.id, 'cancelled');
+  });
+  document.querySelectorAll('.act.wa').forEach(b => {
+    b.onclick = e => sendWhatsApp(e.currentTarget.dataset.id);
   });
 }
 
-async function showDetail(invoice){
-  try{
-    const docRef = doc(db,'orders',invoice);
-    const snap = await getDoc(docRef);
-    if(!snap.exists()){
-      detailBox.textContent = 'Order tidak ditemukan';
-      detailPre.style.display='none';
-      detailArea.style.display='none';
-      return;
-    }
+/* ── detail ── */
+async function showDetail(invoice) {
+  currentDetailId = invoice;
+  detailEmpty.style.display = 'none';
+  detailArea.style.display  = 'block';
+  detailLabel.textContent   = invoice;
+  detailGrid.innerHTML      = '<div style="color:var(--muted);font-size:13px">Memuat…</div>';
+  detailActions.innerHTML   = '';
+  rawBox.style.display      = 'none';
+
+  try {
+    const snap = await getDoc(doc(db, 'orders', invoice));
+    if (!snap.exists()) { toast('Order tidak ditemukan', 'error'); return; }
     const data = snap.data();
 
-    // tampilkan ringkasan penting dulu (mudah dilihat)
-    detailGrid.innerHTML = '';
-    const items = [
-      { title: 'Invoice', value: data.invoice || invoice },
-      { title: 'User ID', value: data.userId || '-' },
-      { title: 'Game', value: data.game || '-' },
-      { title: 'Game ID', value: data.game_id || '-' },
-      { title: 'Server', value: data.server || '-' },
-      { title: 'Nominal', value: data.nominalValue || '-' },
-      { title: 'Jumlah (total)', value: (data.amount_total ? 'Rp ' + formatMoney(data.amount_total) : '-') },
-      { title: 'Metode', value: (data.payment_method||'-').replace('_',' ') },
-      { title: 'Status', value: data.status || '-' },
-      { title: 'Created', value: formatDate(data.createdAt) },
+    // grid fields
+    const fields = [
+      {label:'Invoice',    val:data.invoice||invoice,        cls:'mono'},
+      {label:'User ID',    val:data.userId||'-',             cls:'mono'},
+      {label:'No. HP',     val:data.phone||data.noHp||'-',   cls:'mono'},
+      {label:'Game',       val:data.game||'-',               cls:''},
+      {label:'Game ID',    val:data.game_id||'-',            cls:'mono'},
+      {label:'Server',     val:data.server||'-',             cls:'mono'},
+      {label:'Nominal',    val:data.nominalValue||'-',       cls:''},
+      {label:'Total',      val:'Rp '+formatMoney(data.amount_total), cls:'green'},
+      {label:'Metode',     val:(data.payment_method||'-').replace(/_/g,' '), cls:''},
+      {label:'Status',     val:data.status||'-',             cls: data.status==='completed'?'green':data.status==='cancelled'?'red':'amber'},
+      {label:'Created',    val:formatDate(data.createdAt),   cls:''},
+      {label:'Updated',    val:formatDate(data.updatedAt),   cls:''},
     ];
-    items.forEach(it=>{
-      const elItem = document.createElement('div');
-      elItem.className = 'detail-item';
-      elItem.innerHTML = `<div class="detail-title">${it.title}</div><div>${it.value}</div>`;
-      detailGrid.appendChild(elItem);
+    detailGrid.innerHTML = '';
+    fields.forEach(f => {
+      const el = document.createElement('div');
+      el.className = 'detail-item';
+      el.innerHTML = `<div class="di-label">${f.label}</div><div class="di-val ${f.cls}">${f.val}</div>`;
+      detailGrid.appendChild(el);
     });
 
-    // show raw JSON below
-    detailPre.style.display='block';
     detailPre.textContent = JSON.stringify(data, null, 2);
-    detailBox.style.display = 'none';
-    detailArea.style.display = 'block';
-  }catch(e){
+
+    // action buttons in detail footer
+    detailActions.innerHTML = '';
+    const mkAct = (cls, icon, label, fn) => {
+      const btn = document.createElement('button');
+      btn.className = 'det-act ' + cls;
+      btn.innerHTML = icon + label;
+      btn.onclick = fn;
+      detailActions.appendChild(btn);
+    };
+    mkAct('complete',
+      '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+      'Tandai Selesai', () => confirmStatus(invoice, 'completed'));
+    mkAct('cancel',
+      '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+      'Batalkan Order', () => confirmStatus(invoice, 'cancelled'));
+    mkAct('wa',
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.555 4.12 1.524 5.852L.057 23.885a.5.5 0 0 0 .613.613l6.033-1.467A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.888a9.881 9.881 0 0 1-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.86 9.86 0 0 1 2.112 12c0-5.462 4.426-9.888 9.888-9.888 5.462 0 9.888 4.426 9.888 9.888 0 5.462-4.426 9.888-9.888 9.888z"/></svg>',
+      'Konfirmasi via WhatsApp', () => sendWhatsApp(invoice));
+
+  } catch(e) {
     console.error(e);
-    detailBox.textContent = 'Error fetch detail';
-    detailPre.style.display='none';
-    detailArea.style.display='none';
+    toast('Gagal load detail: ' + e.message, 'error');
   }
 }
 
-async function markStatus(invoice, newStatus){
-  try{
-    const ref = doc(db,'orders',invoice);
-    await updateDoc(ref, { status: newStatus, updatedAt: serverTimestamp() });
-    alert('Status updated: ' + newStatus);
-  }catch(e){
-    console.error('markStatus err', e);
-    alert('Gagal update status: '+e.message);
+/* ── whatsapp ── */
+function sendWhatsApp(invoice) {
+  const d = lastOrders[invoice];
+  if (!d) { toast('Data order tidak ditemukan', 'error'); return; }
+
+  // Ambil no. hp dari berbagai field yang mungkin
+  let phone = d.phone || d.noHp || d.phoneNumber || d.whatsapp || '';
+  phone = phone.replace(/\D/g, '');
+  if (phone.startsWith('0')) phone = '62' + phone.slice(1);
+  if (!phone) {
+    toast('No. WhatsApp user tidak tersedia di data order ini', 'error');
+    return;
+  }
+
+  const status = (d.status || 'initiated').toUpperCase();
+  const statusEmoji = d.status === 'completed' ? '✅' : d.status === 'cancelled' ? '❌' : '⏳';
+  const msg = [
+    `${statusEmoji} *Konfirmasi Order — NUBIASTORE*`,
+    ``,
+    `Halo kak! Berikut update order Anda:`,
+    ``,
+    `📋 *Invoice:* ${d.invoice || invoice}`,
+    `🎮 *Game:* ${d.game || '-'}`,
+    `🆔 *Game ID:* ${d.game_id || '-'}`,
+    `🖥️ *Server:* ${d.server || '-'}`,
+    `🎯 *Nominal:* ${d.nominalValue || '-'}`,
+    `💰 *Total:* Rp ${formatMoney(d.amount_total)}`,
+    `💳 *Metode:* ${(d.payment_method||'-').replace(/_/g,' ')}`,
+    `📌 *Status:* ${status}`,
+    ``,
+    d.status === 'completed'
+      ? `Order Anda telah *SELESAI* diproses. Terima kasih sudah belanja di NUBIASTORE! 🙏`
+      : d.status === 'cancelled'
+      ? `Mohon maaf, order Anda *DIBATALKAN*. Silakan hubungi kami jika ada pertanyaan.`
+      : `Order Anda sedang kami proses. Mohon tunggu sebentar ya kak 🙏`,
+    ``,
+    `_NUBIASTORE — Top Up Game Terpercaya_`,
+  ].join('\n');
+
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+  toast('Membuka WhatsApp…', 'success');
+}
+
+/* ── status update ── */
+async function confirmStatus(invoice, newStatus) {
+  const label = newStatus === 'completed' ? 'SELESAI' : 'BATAL';
+  if (!confirm(`Tandai order ${invoice} sebagai ${label}?`)) return;
+  await markStatus(invoice, newStatus);
+  if (currentDetailId === invoice) showDetail(invoice);
+}
+
+async function markStatus(invoice, newStatus) {
+  try {
+    await updateDoc(doc(db, 'orders', invoice), { status: newStatus, updatedAt: serverTimestamp() });
+    toast(`Status diperbarui: ${newStatus}`, 'success');
+  } catch(e) {
+    console.error(e);
+    toast('Gagal update: ' + e.message, 'error');
   }
 }
 
-// helpers
-function formatMoney(n){ return (typeof n === 'number')? n.toLocaleString('id') : n; }
-function formatDate(ts){
-  if(!ts) return '-';
-  if(typeof ts.toDate === 'function') return ts.toDate().toLocaleString();
-  return new Date(ts.seconds ? ts.seconds *1000 : ts).toLocaleString();
+/* ── limit toggle ── */
+$('limit10').onclick = () => { displayLimit=10;  $('limit10').classList.add('active'); $('limit50').classList.remove('active'); renderTable(); };
+$('limit50').onclick = () => { displayLimit=50;  $('limit50').classList.add('active'); $('limit10').classList.remove('active'); renderTable(); };
+
+/* ── raw json toggle ── */
+rawToggle.onclick = () => {
+  const open = rawBox.style.display === 'block';
+  rawBox.style.display = open ? 'none' : 'block';
+  rawArrow.style.transform = open ? '' : 'rotate(180deg)';
+};
+
+/* ── events ── */
+qInvoice.addEventListener('input', renderTable);
+filterStatus.addEventListener('change', renderTable);
+
+/* ── helpers ── */
+function formatMoney(n) { return typeof n==='number' ? n.toLocaleString('id') : (n||'-'); }
+function formatDate(ts) {
+  if (!ts) return '-';
+  if (typeof ts.toDate === 'function') return ts.toDate().toLocaleString('id');
+  return new Date(ts.seconds ? ts.seconds*1000 : ts).toLocaleString('id');
 }
 
-// search + filter events
-qInvoice.addEventListener('input', renderOrdersTable);
-filterStatus.addEventListener('change', renderOrdersTable);
-
+function toast(msg, type='') {
+  const wrap = $('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">${
+    type==='success'
+      ? '<polyline points="20 6 9 17 4 12"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'
+  }</svg>${msg}`;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.transition='opacity .3s'; el.style.opacity='0'; setTimeout(()=>el.remove(), 300); }, 3000);
+}
 </script>
+
 </body>
 </html>
