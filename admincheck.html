@@ -4,328 +4,216 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Admin Panel — NUBIASTORE</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+<title>Admin — NUBIASTORE</title>
 <style>
-:root{
-  --bg:#0f1117;
-  --bg2:#161b24;
-  --bg3:#1c2333;
-  --bg4:#222b3a;
-  --border:#2a3447;
-  --border-hi:#3d4f6b;
-  --accent:#3b82f6;
-  --accent-dim:rgba(59,130,246,.12);
-  --green:#22c55e;
-  --green-dim:rgba(34,197,94,.12);
-  --red:#ef4444;
-  --red-dim:rgba(239,68,68,.1);
-  --amber:#f59e0b;
-  --amber-dim:rgba(245,158,11,.1);
-  --wa:#25d366;
-  --wa-dim:rgba(37,211,102,.12);
-  --text:#e2e8f0;
-  --muted:#64748b;
-  --muted2:#94a3b8;
-  --white:#fff;
-  --mono:'JetBrains Mono',monospace;
-  --sans:'Inter',system-ui,sans-serif;
-  --radius:8px;
-  --shadow:0 4px 24px rgba(0,0,0,.4);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Inter,system-ui,sans-serif;background:#f0f2f5;color:#111;min-height:100vh}
 
-/* layout */
-.shell{display:flex;min-height:100vh}
-.sidebar{width:220px;background:var(–bg2);border-right:1px solid var(–border);padding:20px 16px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
-.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+/* ── TOPBAR ── */
+.topbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-badge{background:#16a34a;color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;text-transform:uppercase}
+.topbar-title{font-size:15px;font-weight:700;color:#111}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.btn-signout{background:none;border:1px solid #e5e7eb;color:#555;font-size:13px;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .15s}
+.btn-signout:hover{background:#f8f8f8;border-color:#ccc}
 
-/* sidebar */
-.sb-logo{display:flex;align-items:center;gap:10px;padding:10px 8px 20px;border-bottom:1px solid var(–border);margin-bottom:12px}
-.sb-logo-mark{width:32px;height:32px;background:var(–accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
-.sb-logo-text{font-weight:700;font-size:13px;color:var(–white);letter-spacing:.5px}
-.sb-logo-sub{font-size:10px;color:var(–muted);letter-spacing:.5px;text-transform:uppercase}
-.sb-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(–radius);cursor:pointer;color:var(–muted2);font-size:13px;font-weight:500;transition:.15s;text-decoration:none}
-.sb-item svg{flex-shrink:0;opacity:.7}
-.sb-item:hover,.sb-item.active{background:var(–bg3);color:var(–white)}
-.sb-item.active svg{opacity:1;color:var(–accent)}
-.sb-item.active{color:var(–accent)}
-.sb-divider{height:1px;background:var(–border);margin:8px 0}
-.sb-signout{margin-top:auto;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(–radius);cursor:pointer;color:var(–red);font-size:13px;font-weight:500;transition:.15s;background:none;border:none;width:100%;text-align:left}
-.sb-signout:hover{background:var(–red-dim)}
+/* ── MAIN ── */
+.main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
 
-/* topbar */
-.topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;background:var(–bg2);border-bottom:1px solid var(–border);flex-shrink:0}
-.topbar-title{font-weight:700;font-size:15px;color:var(–white);flex:1}
-.search-wrap{position:relative}
-.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(–muted);pointer-events:none}
-.search-input{background:var(–bg3);border:1px solid var(–border);border-radius:var(–radius);color:var(–white);padding:7px 12px 7px 34px;font-size:13px;width:240px;outline:none;transition:.2s;font-family:var(–sans)}
-.search-input:focus{border-color:var(–accent);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
-.search-input::placeholder{color:var(–muted)}
+/* ── CARD ── */
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-title::before{content:’’;display:inline-block;width:3px;height:14px;background:#16a34a;border-radius:2px}
 
-/* content */
-.content{flex:1;overflow-y:auto;padding:20px 24px}
+/* ── TOOLBAR ── */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.search-input{flex:1;min-width:200px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:7px;font-size:13px;outline:none;transition:border-color .15s}
+.search-input:focus{border-color:#16a34a}
+.filter-select{padding:8px 10px;border:1px solid #e5e7eb;border-radius:7px;font-size:13px;outline:none;background:#fff;cursor:pointer}
+.filter-select:focus{border-color:#16a34a}
 
-/* auth card */
-#authMsg{background:var(–bg2);border:1px solid var(–border);border-radius:10px;padding:32px;text-align:center;color:var(–muted2);margin-top:40px}
+/* ── LIMIT TOGGLE ── */
+.limit-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.limit-info{font-size:12px;color:#6b7280}
+.btn-more{background:none;border:1px solid #16a34a;color:#16a34a;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer;transition:all .15s}
+.btn-more:hover{background:#16a34a;color:#fff}
+.btn-less{background:none;border:1px solid #6b7280;color:#6b7280;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer;transition:all .15s}
+.btn-less:hover{background:#6b7280;color:#fff}
 
-/* stats row */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
-.stat-card{background:var(–bg2);border:1px solid var(–border);border-radius:10px;padding:14px 16px}
-.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(–muted);font-weight:600;margin-bottom:6px}
-.stat-val{font-size:22px;font-weight:700;color:var(–white);font-family:var(–mono)}
-.stat-val.green{color:var(–green)}
-.stat-val.amber{color:var(–amber)}
-.stat-val.red{color:var(–red)}
-.stat-val.blue{color:var(–accent)}
+/* ── ORDER CARD ── */
+.order-card{border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;overflow:hidden;transition:box-shadow .15s}
+.order-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.order-card-head{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:#fafafa;border-bottom:1px solid #e5e7eb;cursor:pointer;user-select:none}
+.order-card-head:hover{background:#f3f4f6}
+.order-invoice{font-family:‘Courier New’,monospace;font-size:13px;font-weight:700;color:#111}
+.order-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.order-date{font-size:12px;color:#6b7280}
+.order-total{font-size:13px;font-weight:700;color:#16a34a}
+.chevron{font-size:12px;color:#9ca3af;transition:transform .2s;margin-left:4px}
+.chevron.open{transform:rotate(180deg)}
 
-/* toolbar */
-.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(–bg2);border:1px solid var(–border);border-radius:10px;padding:12px 16px;margin-bottom:14px}
-.toolbar-label{font-size:12px;color:var(–muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px}
-.filter-select{background:var(–bg3);border:1px solid var(–border);border-radius:6px;color:var(–text);padding:6px 10px;font-size:13px;outline:none;cursor:pointer;font-family:var(–sans)}
-.filter-select:focus{border-color:var(–accent)}
-.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;border:1px solid var(–border);background:var(–bg3);color:var(–muted2);transition:.15s}
-.pill:hover,.pill.active{border-color:var(–accent);color:var(–accent);background:var(–accent-dim)}
-.pill-count{background:var(–bg4);border-radius:10px;padding:1px 6px;font-size:10px;color:var(–white)}
-.toolbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.limit-toggle{display:flex;align-items:center;gap:6px;background:var(–bg3);border:1px solid var(–border);border-radius:6px;padding:2px}
-.limit-btn{padding:4px 10px;border-radius:4px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:none;color:var(–muted2);transition:.15s;font-family:var(–sans)}
-.limit-btn.active{background:var(–accent);color:#fff}
+.order-card-body{display:none;padding:14px}
+.order-card-body.open{display:block}
 
-/* table card */
-.table-card{background:var(–bg2);border:1px solid var(–border);border-radius:10px;overflow:hidden;margin-bottom:14px}
-.table-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:900px}
-thead th{background:var(–bg3);padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(–muted);font-weight:600;white-space:nowrap;border-bottom:1px solid var(–border)}
-tbody tr{border-bottom:1px solid var(–border);transition:.12s}
-tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:rgba(255,255,255,.02)}
-tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
-.invoice-code{font-family:var(–mono);font-size:12px;font-weight:700;color:var(–accent)}
-.user-chip{display:inline-flex;align-items:center;gap:5px;background:var(–bg4);border-radius:5px;padding:2px 7px;font-size:11px;color:var(–muted2);font-family:var(–mono)}
-.game-name{font-weight:600;color:var(–white)}
-.id-val{font-family:var(–mono);font-size:12px;color:var(–muted2)}
-.nominal-val{font-family:var(–mono);font-size:12px}
-.amount-val{font-family:var(–mono);font-size:13px;font-weight:700;color:var(–white)}
-.method-val{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(–muted2)}
-.date-val{font-size:12px;color:var(–muted2)}
+/* fields vertical */
+.field-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.field-row{display:flex;align-items:flex-start;gap:0;border-bottom:1px solid #f3f4f6;padding-bottom:8px}
+.field-row:last-child{border-bottom:none;padding-bottom:0}
+.field-label{font-size:12px;color:#6b7280;font-weight:600;width:130px;flex-shrink:0;padding-top:1px;text-transform:uppercase;letter-spacing:.5px}
+.field-value{font-size:13px;color:#111;font-weight:500;word-break:break-all}
+.field-value.mono{font-family:‘Courier New’,monospace}
+.field-value.green{color:#16a34a;font-weight:700}
 
-/* status badges */
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;white-space:nowrap}
-.badge::before{content:’’;width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
-.badge.initiated{background:var(–amber-dim);color:var(–amber);border:1px solid rgba(245,158,11,.25)}
-.badge.pending{background:var(–accent-dim);color:var(–accent);border:1px solid rgba(59,130,246,.25)}
-.badge.completed{background:var(–green-dim);color:var(–green);border:1px solid rgba(34,197,94,.25)}
-.badge.cancelled{background:var(–red-dim);color:var(–red);border:1px solid rgba(239,68,68,.2)}
-.badge.initiated::before,.badge.pending::before{animation:blink 1.3s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+/* status badge */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.badge::before{content:’’;width:5px;height:5px;border-radius:50%;background:currentColor}
+.badge.initiated{background:#fef3c7;color:#92400e}
+.badge.pending{background:#dbeafe;color:#1e40af}
+.badge.completed{background:#dcfce7;color:#166534}
+.badge.cancelled{background:#fee2e2;color:#991b1b}
 
 /* action buttons */
-.acts{display:flex;gap:5px;flex-wrap:nowrap}
-.act{padding:5px 9px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;transition:.15s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-family:var(–sans)}
-.act svg{flex-shrink:0}
-.act.view{background:var(–bg4);color:var(–text);border:1px solid var(–border)}
-.act.view:hover{background:var(–bg3);border-color:var(–border-hi)}
-.act.complete{background:var(–green-dim);color:var(–green);border:1px solid rgba(34,197,94,.25)}
-.act.complete:hover{background:rgba(34,197,94,.22)}
-.act.cancel{background:var(–red-dim);color:var(–red);border:1px solid rgba(239,68,68,.2)}
-.act.cancel:hover{background:rgba(239,68,68,.18)}
-.act.wa{background:var(–wa-dim);color:var(–wa);border:1px solid rgba(37,211,102,.25)}
-.act.wa:hover{background:rgba(37,211,102,.22)}
-.act:disabled{opacity:.45;pointer-events:none}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:4px}
+.btn-action{padding:7px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+.btn-complete{background:#16a34a;color:#fff}
+.btn-complete:hover{background:#15803d}
+.btn-cancel{background:#ef4444;color:#fff}
+.btn-cancel:hover{background:#dc2626}
+.btn-wa{background:#25d366;color:#fff}
+.btn-wa:hover{background:#22c55e}
+.btn-view-raw{background:#f3f4f6;color:#374151;border:1px solid #e5e7eb}
+.btn-view-raw:hover{background:#e5e7eb}
 
-/* empty / loading */
-.empty-row td{text-align:center;padding:40px;color:var(–muted)}
+/* raw JSON */
+.raw-area{display:none;margin-top:12px}
+.raw-area.open{display:block}
+.raw-pre{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:6px;padding:10px;font-size:11px;font-family:‘Courier New’,monospace;overflow:auto;max-height:280px;line-height:1.5;color:#374151}
 
-/* detail panel */
-.detail-panel{background:var(–bg2);border:1px solid var(–border);border-radius:10px;overflow:hidden}
-.detail-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(–border);background:var(–bg3)}
-.detail-header-title{font-weight:700;color:var(–white);font-size:14px}
-.detail-invoice{font-family:var(–mono);font-size:12px;color:var(–accent);margin-left:auto}
-.detail-body{padding:18px}
-.detail-empty{padding:32px;text-align:center;color:var(–muted);font-size:13px}
-.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
-.detail-item{background:var(–bg3);border:1px solid var(–border);border-radius:8px;padding:12px 14px}
-.di-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(–muted);font-weight:600;margin-bottom:5px}
-.di-val{font-size:14px;font-weight:600;color:var(–white)}
-.di-val.mono{font-family:var(–mono);font-size:13px}
-.di-val.green{color:var(–green)}
-.di-val.amber{color:var(–amber)}
-.raw-toggle{display:flex;align-items:center;gap:8px;padding:8px 0;cursor:pointer;color:var(–muted2);font-size:12px;font-weight:600;user-select:none}
-.raw-toggle:hover{color:var(–white)}
-.raw-box{background:var(–bg);border:1px solid var(–border);border-radius:8px;padding:14px;overflow:auto;max-height:260px}
-pre{font-family:var(–mono);font-size:11px;color:var(–muted2);line-height:1.7}
-.detail-actions{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(–border);background:var(–bg3)}
-.det-act{padding:8px 16px;border-radius:7px;border:none;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.4px;transition:.15s;display:inline-flex;align-items:center;gap:7px;font-family:var(–sans)}
-.det-act.complete{background:var(–green);color:#000}
-.det-act.complete:hover{filter:brightness(1.1)}
-.det-act.cancel{background:var(–red-dim);color:var(–red);border:1px solid rgba(239,68,68,.3)}
-.det-act.cancel:hover{background:rgba(239,68,68,.2)}
-.det-act.wa{background:var(–wa);color:#000}
-.det-act.wa:hover{filter:brightness(1.08)}
+/* WA modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:24px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.modal-title .wa-icon{color:#25d366;font-size:20px}
+.modal-body{display:flex;flex-direction:column;gap:10px}
+.modal-label{font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.modal-input{padding:9px 12px;border:1px solid #e5e7eb;border-radius:7px;font-size:13px;outline:none;width:100%;transition:border-color .15s}
+.modal-input:focus{border-color:#25d366}
+.modal-textarea{padding:9px 12px;border:1px solid #e5e7eb;border-radius:7px;font-size:13px;outline:none;width:100%;min-height:110px;resize:vertical;transition:border-color .15s;line-height:1.6}
+.modal-textarea:focus{border-color:#25d366}
+.modal-actions{display:flex;gap:8px;margin-top:6px}
+.btn-modal-send{flex:1;padding:10px;background:#25d366;color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer}
+.btn-modal-send:hover{background:#22c55e}
+.btn-modal-cancel{padding:10px 18px;background:#f3f4f6;color:#374151;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-modal-cancel:hover{background:#e5e7eb}
+.modal-preview{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:10px;font-size:12px;color:#166534;line-height:1.6;margin-top:2px;max-height:120px;overflow:auto}
 
-/* toast */
-.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
-.toast{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;color:#fff;background:#1e293b;border:1px solid var(–border);box-shadow:var(–shadow);animation:toastIn .25s ease both;display:flex;align-items:center;gap:8px}
-.toast.success{background:#14532d;border-color:rgba(34,197,94,.3);color:var(–green)}
-.toast.error{background:#450a0a;border-color:rgba(239,68,68,.3);color:var(–red)}
-@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* states */
+.auth-card{text-align:center;padding:40px 20px;color:#6b7280}
+.empty-state{text-align:center;padding:32px;color:#9ca3af;font-size:14px}
+.admin-note-bar{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:13px;color:#92400e;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.admin-note-bar::before{content:‘⚠️’;font-size:16px}
+.realtime-dot{display:inline-block;width:7px;height:7px;background:#16a34a;border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* note banner */
-.note-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(–amber-dim);border:1px solid rgba(245,158,11,.25);border-radius:8px;color:var(–amber);font-size:12px;margin-bottom:14px}
-
-/* responsive */
-@media(max-width:768px){
-.sidebar{display:none}
-.content{padding:14px}
-.topbar{padding:12px 14px}
-.stats-row{grid-template-columns:1fr 1fr}
-}
+/* loading skeleton */
+.skel{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:4px;height:12px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 
 </head>
 <body>
-<div class="shell">
 
-  <!-- sidebar -->
+<!-- TOPBAR -->
 
-  <aside class="sidebar">
-    <div class="sb-logo">
-      <div class="sb-logo-mark">N</div>
-      <div>
-        <div class="sb-logo-text">NUBIASTORE</div>
-        <div class="sb-logo-sub">Admin Panel</div>
-      </div>
-    </div>
-    <a class="sb-item active">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Orders
-    </a>
-    <div class="sb-divider"></div>
-    <button class="sb-signout" id="btnSignOut">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Sign Out
-    </button>
-  </aside>
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-badge">Admin</span>
+    <span class="topbar-title">NUBIASTORE — Order Manager</span>
+  </div>
+  <div class="topbar-right">
+    <span class="realtime-dot" title="Realtime aktif"></span>
+    <span style="font-size:12px;color:#6b7280;margin-right:4px">Realtime</span>
+    <button id="btnSignOut" class="btn-signout">Sign out</button>
+  </div>
+</div>
 
-  <!-- main -->
+<!-- MAIN -->
 
-  <div class="main">
-    <!-- topbar -->
-    <div class="topbar">
-      <div class="topbar-title">Orders Management</div>
-      <div class="search-wrap">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="qInvoice" class="search-input" placeholder="Invoice / User / Game ID / Server…"/>
-      </div>
-    </div>
+<div class="main">
 
-```
-<div class="content">
-  <!-- auth msg -->
-  <div id="authMsg"><span style="color:var(--muted2)">Memeriksa autentikasi…</span></div>
+  <!-- AUTH MSG -->
+
+  <div id="authMsg" class="card auth-card">
+    <div class="skel" style="width:200px;margin:0 auto 8px"></div>
+    <div class="skel" style="width:140px;margin:0 auto"></div>
+  </div>
+
+  <!-- ADMIN UI -->
 
   <div id="adminUI" style="display:none">
-
-    <!-- dev note -->
-    <div id="adminNoteBox" class="note-banner" style="display:none">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Login via UID allowlist (development mode). Gunakan custom claims untuk production.
+    <div id="adminNoteBox" style="display:none" class="admin-note-bar">
+      Login via UID allowlist (development mode). Gunakan custom claims server-side untuk production.
     </div>
 
-    <!-- stats -->
-    <div class="stats-row" id="statsRow">
-      <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-val blue" id="stTotal">—</div></div>
-      <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-val green" id="stCompleted">—</div></div>
-      <div class="stat-card"><div class="stat-label">Pending / Initiated</div><div class="stat-val amber" id="stPending">—</div></div>
-      <div class="stat-card"><div class="stat-label">Cancelled</div><div class="stat-val red" id="stCancelled">—</div></div>
-      <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-val green" id="stRevenue">—</div></div>
-    </div>
+```
+<!-- TOOLBAR -->
+<div class="card">
+  <div class="toolbar">
+    <input id="qInvoice" class="search-input" placeholder="🔍  Cari invoice / user id / game id / server…"/>
+    <select id="filterStatus" class="filter-select">
+      <option value="all">Semua Status</option>
+      <option value="initiated">Initiated</option>
+      <option value="pending">Pending</option>
+      <option value="completed">Completed</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+  </div>
+</div>
 
-    <!-- toolbar -->
-    <div class="toolbar">
-      <span class="toolbar-label">Status</span>
-      <select id="filterStatus" class="filter-select">
-        <option value="all">Semua</option>
-        <option value="initiated">Initiated</option>
-        <option value="pending">Pending</option>
-        <option value="completed">Completed</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
-      <div class="toolbar-right">
-        <span class="toolbar-label">Tampilkan</span>
-        <div class="limit-toggle">
-          <button class="limit-btn active" id="limit10">10 terbaru</button>
-          <button class="limit-btn" id="limit50">50 transaksi</button>
-        </div>
-      </div>
+<!-- ORDER LIST -->
+<div class="card" style="padding:14px">
+  <div class="card-title">Daftar Order</div>
+  <div class="limit-bar">
+    <span class="limit-info" id="limitInfo"></span>
+    <div style="display:flex;gap:6px">
+      <button id="btnMore" class="btn-more" style="display:none">Tampilkan 50 Transaksi</button>
+      <button id="btnLess" class="btn-less" style="display:none">Kembali ke 10</button>
     </div>
-
-    <!-- table -->
-    <div class="table-card">
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Invoice</th>
-              <th>User</th>
-              <th>Game</th>
-              <th>Game ID</th>
-              <th>Server</th>
-              <th>Nominal</th>
-              <th>Total</th>
-              <th>Metode</th>
-              <th>Waktu</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="ordersTbody">
-            <tr class="empty-row"><td colspan="11">Memuat data…</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- detail panel -->
-    <div class="detail-panel">
-      <div class="detail-header">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <span class="detail-header-title">Detail Order</span>
-        <span class="detail-invoice" id="detailInvoiceLabel"></span>
-      </div>
-      <div id="detailEmpty" class="detail-empty">
-        Klik <strong>View</strong> pada baris untuk melihat detail lengkap order.
-      </div>
-      <div id="detailArea" style="display:none">
-        <div class="detail-body">
-          <div class="detail-grid" id="detailGrid"></div>
-          <div class="raw-toggle" id="rawToggle">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            Raw JSON
-            <svg id="rawArrow" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div id="rawBox" class="raw-box" style="display:none">
-            <pre id="detailPre"></pre>
-          </div>
-        </div>
-        <div class="detail-actions" id="detailActions"></div>
-      </div>
-    </div>
-
-  </div><!-- /adminUI -->
-</div><!-- /content -->
+  </div>
+  <div id="ordersList"></div>
+</div>
 ```
 
-  </div><!-- /main -->
-</div><!-- /shell -->
+  </div>
+</div>
 
-<!-- toast container -->
+<!-- WA MODAL -->
 
-<div class="toast-wrap" id="toastWrap"></div>
+<div class="modal-overlay" id="waModal">
+  <div class="modal">
+    <div class="modal-title"><span class="wa-icon">💬</span> Konfirmasi via WhatsApp</div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-label">Nomor WhatsApp Pembeli</div>
+        <input id="waPhone" class="modal-input" type="tel" placeholder="628xxxxxxxxxx"/>
+      </div>
+      <div>
+        <div class="modal-label">Pesan (bisa diedit)</div>
+        <textarea id="waMsg" class="modal-textarea"></textarea>
+      </div>
+      <div>
+        <div class="modal-label">Preview Pesan</div>
+        <div class="modal-preview" id="waPreview"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" id="btnWaCancel">Batal</button>
+      <button class="btn-modal-send" id="btnWaSend">📲 Buka WhatsApp</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -344,38 +232,41 @@ const firebaseConfig = {
   appId: "1:426093692154:web:38c6e9c143af626a623543",
   measurementId: "G-TS0YB9NYW8"
 };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
-const $ = id => document.getElementById(id);
-const authMsg      = $('authMsg');
-const adminUI      = $('adminUI');
-const adminNoteBox = $('adminNoteBox');
-const ordersTbody  = $('ordersTbody');
-const detailEmpty  = $('detailEmpty');
-const detailPre    = $('detailPre');
-const detailGrid   = $('detailGrid');
-const detailArea   = $('detailArea');
-const detailActions= $('detailActions');
-const detailLabel  = $('detailInvoiceLabel');
-const qInvoice     = $('qInvoice');
-const filterStatus = $('filterStatus');
-const rawToggle    = $('rawToggle');
-const rawBox       = $('rawBox');
-const rawArrow     = $('rawArrow');
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const authMsg      = document.getElementById('authMsg');
+const adminUI      = document.getElementById('adminUI');
+const adminNoteBox = document.getElementById('adminNoteBox');
+const ordersList   = document.getElementById('ordersList');
+const qInvoice     = document.getElementById('qInvoice');
+const filterStatus = document.getElementById('filterStatus');
+const btnSignOut   = document.getElementById('btnSignOut');
+const limitInfo    = document.getElementById('limitInfo');
+const btnMore      = document.getElementById('btnMore');
+const btnLess      = document.getElementById('btnLess');
+
+// WA modal refs
+const waModal    = document.getElementById('waModal');
+const waPhone    = document.getElementById('waPhone');
+const waMsg      = document.getElementById('waMsg');
+const waPreview  = document.getElementById('waPreview');
+const btnWaCancel= document.getElementById('btnWaCancel');
+const btnWaSend  = document.getElementById('btnWaSend');
 
 const ADMIN_UIDS = ["8z9b0u1LYfTVM0sCP7qHXbYHvGi1"];
 
-let unsubscribeOrders = null;
-let lastOrders = {};
-let displayLimit = 10;
-let currentDetailId = null;
+let unsubOrders = null;
+let lastOrders  = {};
+let showLimit   = 10; // 10 or 50
 
-/* ── auth ── */
-onAuthStateChanged(auth, async u => {
+// ── AUTH ──────────────────────────────────────────────
+onAuthStateChanged(auth, async (u) => {
   if (!u) {
-    authMsg.innerHTML = '<strong style="color:var(--red)">Harus login sebagai admin</strong><br><span style="color:var(--muted)">Silakan login di halaman utama.</span>';
+    authMsg.innerHTML = '<strong>Harus login sebagai admin</strong> — silakan login di halaman utama.';
+    authMsg.style.display = '';
     adminUI.style.display = 'none';
     return;
   }
@@ -383,276 +274,207 @@ onAuthStateChanged(auth, async u => {
   try {
     const t = await u.getIdTokenResult();
     if (t.claims?.admin) isAdmin = true;
-  } catch(e) { console.warn(e); }
+  } catch(e) {}
   if (ADMIN_UIDS.includes(u.uid)) isAdmin = true;
 
   if (!isAdmin) {
-    authMsg.innerHTML = '<strong style="color:var(--red)">Access Denied</strong><br><span style="color:var(--muted)">Akun tidak memiliki hak admin.</span>';
+    authMsg.innerHTML = '<strong>Access denied.</strong> Akun tidak memiliki hak admin.';
+    authMsg.style.display = '';
     adminUI.style.display = 'none';
     return;
   }
   authMsg.style.display = 'none';
   adminUI.style.display = 'block';
-  if (ADMIN_UIDS.includes(u.uid)) adminNoteBox.style.display = 'flex';
-  startOrdersListener();
+  adminNoteBox.style.display = ADMIN_UIDS.includes(u.uid) ? 'flex' : 'none';
+  startListener();
 });
 
-$('btnSignOut').onclick = () => signOut(auth);
+btnSignOut.onclick = () => signOut(auth);
 
-/* ── listener ── */
-function startOrdersListener() {
-  if (unsubscribeOrders) unsubscribeOrders();
+// ── LISTENER ──────────────────────────────────────────
+function startListener() {
+  if (unsubOrders) unsubOrders();
   const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
-  unsubscribeOrders = onSnapshot(q, snap => {
+  unsubOrders = onSnapshot(q, snap => {
     lastOrders = {};
-    snap.forEach(d => { lastOrders[d.id] = d.data(); });
-    updateStats();
-    renderTable();
-  }, err => console.error('snapshot err', err));
+    snap.forEach(s => { lastOrders[s.id] = s.data(); });
+    render();
+  }, err => console.error(err));
 }
 
-/* ── stats ── */
-function updateStats() {
-  const all = Object.values(lastOrders);
-  $('stTotal').textContent     = all.length;
-  $('stCompleted').textContent = all.filter(d => d.status === 'completed').length;
-  $('stPending').textContent   = all.filter(d => d.status === 'pending' || d.status === 'initiated').length;
-  $('stCancelled').textContent = all.filter(d => d.status === 'cancelled').length;
-  const rev = all.filter(d => d.status === 'completed').reduce((s, d) => s + (d.amount_total || 0), 0);
-  $('stRevenue').textContent   = 'Rp ' + formatMoney(rev);
-}
-
-/* ── table ── */
-function renderTable() {
+// ── RENDER ────────────────────────────────────────────
+function render() {
   const filter = filterStatus.value;
   const search = qInvoice.value.trim().toLowerCase();
-  const rows = Object.values(lastOrders)
+
+  let rows = Object.values(lastOrders)
     .filter(d => {
       if (filter !== 'all' && d.status !== filter) return false;
       if (!search) return true;
-      return ['invoice','userId','game_id','server','game']
-        .some(k => d[k] && String(d[k]).toLowerCase().includes(search));
+      return [d.invoice, d.userId, d.game_id, d.server, d.game]
+        .some(v => v && String(v).toLowerCase().includes(search));
     })
-    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
-    .slice(0, displayLimit);
+    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
-  if (!rows.length) {
-    ordersTbody.innerHTML = '<tr class="empty-row"><td colspan="11">Tidak ada order yang cocok.</td></tr>';
+  const total   = rows.length;
+  const limited = rows.slice(0, showLimit);
+
+  limitInfo.textContent = `Menampilkan ${limited.length} dari ${total} transaksi`;
+  btnMore.style.display = total > 10 && showLimit === 10  ? '' : 'none';
+  btnLess.style.display = showLimit === 50               ? '' : 'none';
+
+  ordersList.innerHTML = '';
+  if (!limited.length) {
+    ordersList.innerHTML = '<div class="empty-state">Tidak ada order ditemukan.</div>';
     return;
   }
 
-  ordersTbody.innerHTML = '';
-  rows.forEach(d => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><span class="invoice-code">${d.invoice || '-'}</span></td>
-      <td><span class="user-chip">${d.userId ? d.userId.slice(0,10)+'…' : 'guest'}</span></td>
-      <td><span class="game-name">${d.game || '-'}</span></td>
-      <td><span class="id-val">${d.game_id || '-'}</span></td>
-      <td><span class="id-val">${d.server || '-'}</span></td>
-      <td><span class="nominal-val">${d.nominalValue || '-'}</span></td>
-      <td><span class="amount-val">Rp ${formatMoney(d.amount_total)}</span></td>
-      <td><span class="method-val">${(d.payment_method||'-').replace(/_/g,' ')}</span></td>
-      <td><span class="date-val">${formatDate(d.createdAt)}</span></td>
-      <td><span class="badge ${d.status||'initiated'}">${d.status||'initiated'}</span></td>
-      <td>
-        <div class="acts">
-          <button class="act view"     data-id="${d.invoice}">
-            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            View
-          </button>
-          <button class="act complete" data-id="${d.invoice}">
-            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Selesai
-          </button>
-          <button class="act cancel"   data-id="${d.invoice}">
-            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Batal
-          </button>
-          <button class="act wa"       data-id="${d.invoice}">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.555 4.12 1.524 5.852L.057 23.885a.5.5 0 0 0 .613.613l6.033-1.467A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.888a9.881 9.881 0 0 1-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.86 9.86 0 0 1 2.112 12c0-5.462 4.426-9.888 9.888-9.888 5.462 0 9.888 4.426 9.888 9.888 0 5.462-4.426 9.888-9.888 9.888z"/></svg>
-            WA
-          </button>
-        </div>
-      </td>`;
-    ordersTbody.appendChild(tr);
-  });
+  limited.forEach(d => ordersList.appendChild(buildCard(d)));
 
-  document.querySelectorAll('.act.view').forEach(b => {
-    b.onclick = e => showDetail(e.currentTarget.dataset.id);
-  });
-  document.querySelectorAll('.act.complete').forEach(b => {
-    b.onclick = e => confirmStatus(e.currentTarget.dataset.id, 'completed');
-  });
-  document.querySelectorAll('.act.cancel').forEach(b => {
-    b.onclick = e => confirmStatus(e.currentTarget.dataset.id, 'cancelled');
-  });
-  document.querySelectorAll('.act.wa').forEach(b => {
-    b.onclick = e => sendWhatsApp(e.currentTarget.dataset.id);
-  });
-}
-
-/* ── detail ── */
-async function showDetail(invoice) {
-  currentDetailId = invoice;
-  detailEmpty.style.display = 'none';
-  detailArea.style.display  = 'block';
-  detailLabel.textContent   = invoice;
-  detailGrid.innerHTML      = '<div style="color:var(--muted);font-size:13px">Memuat…</div>';
-  detailActions.innerHTML   = '';
-  rawBox.style.display      = 'none';
-
-  try {
-    const snap = await getDoc(doc(db, 'orders', invoice));
-    if (!snap.exists()) { toast('Order tidak ditemukan', 'error'); return; }
-    const data = snap.data();
-
-    // grid fields
-    const fields = [
-      {label:'Invoice',    val:data.invoice||invoice,        cls:'mono'},
-      {label:'User ID',    val:data.userId||'-',             cls:'mono'},
-      {label:'No. HP',     val:data.phone||data.noHp||'-',   cls:'mono'},
-      {label:'Game',       val:data.game||'-',               cls:''},
-      {label:'Game ID',    val:data.game_id||'-',            cls:'mono'},
-      {label:'Server',     val:data.server||'-',             cls:'mono'},
-      {label:'Nominal',    val:data.nominalValue||'-',       cls:''},
-      {label:'Total',      val:'Rp '+formatMoney(data.amount_total), cls:'green'},
-      {label:'Metode',     val:(data.payment_method||'-').replace(/_/g,' '), cls:''},
-      {label:'Status',     val:data.status||'-',             cls: data.status==='completed'?'green':data.status==='cancelled'?'red':'amber'},
-      {label:'Created',    val:formatDate(data.createdAt),   cls:''},
-      {label:'Updated',    val:formatDate(data.updatedAt),   cls:''},
-    ];
-    detailGrid.innerHTML = '';
-    fields.forEach(f => {
-      const el = document.createElement('div');
-      el.className = 'detail-item';
-      el.innerHTML = `<div class="di-label">${f.label}</div><div class="di-val ${f.cls}">${f.val}</div>`;
-      detailGrid.appendChild(el);
-    });
-
-    detailPre.textContent = JSON.stringify(data, null, 2);
-
-    // action buttons in detail footer
-    detailActions.innerHTML = '';
-    const mkAct = (cls, icon, label, fn) => {
-      const btn = document.createElement('button');
-      btn.className = 'det-act ' + cls;
-      btn.innerHTML = icon + label;
-      btn.onclick = fn;
-      detailActions.appendChild(btn);
+  // re-attach collapse toggles
+  document.querySelectorAll('.order-card-head').forEach(h => {
+    h.onclick = () => {
+      const body    = h.nextElementSibling;
+      const chevron = h.querySelector('.chevron');
+      body.classList.toggle('open');
+      chevron.classList.toggle('open');
     };
-    mkAct('complete',
-      '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
-      'Tandai Selesai', () => confirmStatus(invoice, 'completed'));
-    mkAct('cancel',
-      '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-      'Batalkan Order', () => confirmStatus(invoice, 'cancelled'));
-    mkAct('wa',
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.555 4.12 1.524 5.852L.057 23.885a.5.5 0 0 0 .613.613l6.033-1.467A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.888a9.881 9.881 0 0 1-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.86 9.86 0 0 1 2.112 12c0-5.462 4.426-9.888 9.888-9.888 5.462 0 9.888 4.426 9.888 9.888 0 5.462-4.426 9.888-9.888 9.888z"/></svg>',
-      'Konfirmasi via WhatsApp', () => sendWhatsApp(invoice));
-
-  } catch(e) {
-    console.error(e);
-    toast('Gagal load detail: ' + e.message, 'error');
-  }
+  });
+  // raw toggle
+  document.querySelectorAll('.btn-view-raw').forEach(b => {
+    b.onclick = e => {
+      e.stopPropagation();
+      const ra = b.closest('.order-card-body').querySelector('.raw-area');
+      ra.classList.toggle('open');
+      b.textContent = ra.classList.contains('open') ? '▲ Sembunyikan JSON' : '{ } Raw JSON';
+    };
+  });
 }
 
-/* ── whatsapp ── */
-function sendWhatsApp(invoice) {
-  const d = lastOrders[invoice];
-  if (!d) { toast('Data order tidak ditemukan', 'error'); return; }
+function buildCard(d) {
+  const card = document.createElement('div');
+  card.className = 'order-card';
 
-  // Ambil no. hp dari berbagai field yang mungkin
-  let phone = d.phone || d.noHp || d.phoneNumber || d.whatsapp || '';
-  phone = phone.replace(/\D/g, '');
-  if (phone.startsWith('0')) phone = '62' + phone.slice(1);
-  if (!phone) {
-    toast('No. WhatsApp user tidak tersedia di data order ini', 'error');
-    return;
-  }
+  const st     = d.status || 'initiated';
+  const invoice= d.invoice || '—';
 
-  const status = (d.status || 'initiated').toUpperCase();
-  const statusEmoji = d.status === 'completed' ? '✅' : d.status === 'cancelled' ? '❌' : '⏳';
-  const msg = [
-    `${statusEmoji} *Konfirmasi Order — NUBIASTORE*`,
-    ``,
-    `Halo kak! Berikut update order Anda:`,
-    ``,
-    `📋 *Invoice:* ${d.invoice || invoice}`,
-    `🎮 *Game:* ${d.game || '-'}`,
-    `🆔 *Game ID:* ${d.game_id || '-'}`,
-    `🖥️ *Server:* ${d.server || '-'}`,
-    `🎯 *Nominal:* ${d.nominalValue || '-'}`,
-    `💰 *Total:* Rp ${formatMoney(d.amount_total)}`,
-    `💳 *Metode:* ${(d.payment_method||'-').replace(/_/g,' ')}`,
-    `📌 *Status:* ${status}`,
-    ``,
-    d.status === 'completed'
-      ? `Order Anda telah *SELESAI* diproses. Terima kasih sudah belanja di NUBIASTORE! 🙏`
-      : d.status === 'cancelled'
-      ? `Mohon maaf, order Anda *DIBATALKAN*. Silakan hubungi kami jika ada pertanyaan.`
-      : `Order Anda sedang kami proses. Mohon tunggu sebentar ya kak 🙏`,
-    ``,
-    `_NUBIASTORE — Top Up Game Terpercaya_`,
-  ].join('\n');
+  card.innerHTML = `
+    <div class="order-card-head">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="order-invoice">${invoice}</span>
+        <span class="badge ${st}">${st}</span>
+      </div>
+      <div class="order-meta">
+        <span class="order-total">Rp ${fmtMoney(d.amount_total)}</span>
+        <span class="order-date">${fmtDate(d.createdAt)}</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="order-card-body">
+      <div class="field-list">
+        ${field('Invoice',     invoice,             'mono')}
+        ${field('User ID',     d.userId||'guest',   'mono')}
+        ${field('Game',        d.game||'—')}
+        ${field('Game ID',     d.game_id||'—',      'mono')}
+        ${field('Server',      d.server||'—',       'mono')}
+        ${field('Nominal',     d.nominalValue||'—')}
+        ${field('Total Bayar', 'Rp '+fmtMoney(d.amount_total), 'green')}
+        ${field('Metode',      (d.payment_method||'—').replace(/_/g,' '))}
+        ${field('Status',      `<span class="badge ${st}">${st}</span>`,'')}
+        ${field('Dibuat',      fmtDate(d.createdAt))}
+        ${d.updatedAt ? field('Diperbarui', fmtDate(d.updatedAt)) : ''}
+      </div>
+      <div class="action-row">
+        <button class="btn-action btn-complete" data-id="${invoice}" onclick="handleComplete(event)">✔ Selesai</button>
+        <button class="btn-action btn-cancel"   data-id="${invoice}" onclick="handleCancel(event)">✖ Batal</button>
+        <button class="btn-action btn-wa" data-invoice="${invoice}" data-game="${d.game||''}" data-gameid="${d.game_id||''}" data-nominal="${d.nominalValue||''}" data-total="${d.amount_total||''}" data-method="${d.payment_method||''}" data-status="${st}" onclick="openWA(event)">💬 WhatsApp</button>
+        <button class="btn-action btn-view-raw">{ } Raw JSON</button>
+      </div>
+      <div class="raw-area">
+        <pre class="raw-pre">${JSON.stringify(d, null, 2)}</pre>
 
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
-  toast('Membuka WhatsApp…', 'success');
+```
+  </div>
+</div>
+```
+
+`;
+return card;
 }
 
-/* ── status update ── */
-async function confirmStatus(invoice, newStatus) {
-  const label = newStatus === 'completed' ? 'SELESAI' : 'BATAL';
-  if (!confirm(`Tandai order ${invoice} sebagai ${label}?`)) return;
-  await markStatus(invoice, newStatus);
-  if (currentDetailId === invoice) showDetail(invoice);
+function field(label, value, cls=’’) {
+return `<div class="field-row">
+<span class="field-label">${label}</span>
+<span class="field-value ${cls}">${value}</span>
+
+  </div>`;
 }
 
+// ── STATUS ACTIONS ────────────────────────────────────
+window.handleComplete = async e => {
+const id = e.currentTarget.dataset.id;
+if (!confirm(`Tandai order ${id} SELESAI?`)) return;
+await markStatus(id, ‘completed’);
+};
+window.handleCancel = async e => {
+const id = e.currentTarget.dataset.id;
+if (!confirm(`Tandai order ${id} BATAL?`)) return;
+await markStatus(id, ‘cancelled’);
+};
 async function markStatus(invoice, newStatus) {
-  try {
-    await updateDoc(doc(db, 'orders', invoice), { status: newStatus, updatedAt: serverTimestamp() });
-    toast(`Status diperbarui: ${newStatus}`, 'success');
-  } catch(e) {
-    console.error(e);
-    toast('Gagal update: ' + e.message, 'error');
-  }
+try {
+await updateDoc(doc(db, ‘orders’, invoice), { status: newStatus, updatedAt: serverTimestamp() });
+} catch(e) { alert(’Gagal update: ’ + e.message); }
 }
 
-/* ── limit toggle ── */
-$('limit10').onclick = () => { displayLimit=10;  $('limit10').classList.add('active'); $('limit50').classList.remove('active'); renderTable(); };
-$('limit50').onclick = () => { displayLimit=50;  $('limit50').classList.add('active'); $('limit10').classList.remove('active'); renderTable(); };
+// ── WA MODAL ─────────────────────────────────────────
+window.openWA = e => {
+const b  = e.currentTarget;
+const d  = b.dataset;
+const tpl = `Halo! Kami ingin mengkonfirmasi pesanan Anda di NUBIASTORE.\n\n` +
+`📋 Invoice   : ${d.invoice}\n` +
+`🎮 Game      : ${d.game}\n` +
+`🆔 Game ID   : ${d.gameid}\n` +
+`💎 Nominal   : ${d.nominal}\n` +
+`💰 Total     : Rp ${fmtMoney(Number(d.total))}\n` +
+`💳 Metode    : ${(d.method||'').replace(/_/g,' ')}\n` +
+`📦 Status    : ${d.status}\n\n` +
+`Apakah ada yang perlu dikonfirmasi? Terima kasih 🙏`;
 
-/* ── raw json toggle ── */
-rawToggle.onclick = () => {
-  const open = rawBox.style.display === 'block';
-  rawBox.style.display = open ? 'none' : 'block';
-  rawArrow.style.transform = open ? '' : 'rotate(180deg)';
+waPhone.value   = ‘’;
+waMsg.value     = tpl;
+waPreview.textContent = tpl;
+waModal.classList.add(‘open’);
 };
 
-/* ── events ── */
-qInvoice.addEventListener('input', renderTable);
-filterStatus.addEventListener('change', renderTable);
+waMsg.addEventListener(‘input’, () => { waPreview.textContent = waMsg.value; });
+btnWaCancel.onclick = () => waModal.classList.remove(‘open’);
+waModal.addEventListener(‘click’, e => { if (e.target === waModal) waModal.classList.remove(‘open’); });
 
-/* ── helpers ── */
-function formatMoney(n) { return typeof n==='number' ? n.toLocaleString('id') : (n||'-'); }
-function formatDate(ts) {
-  if (!ts) return '-';
-  if (typeof ts.toDate === 'function') return ts.toDate().toLocaleString('id');
-  return new Date(ts.seconds ? ts.seconds*1000 : ts).toLocaleString('id');
-}
+btnWaSend.onclick = () => {
+let phone = waPhone.value.trim().replace(/\D/g,’’);
+if (!phone) { waPhone.focus(); waPhone.style.borderColor=’#ef4444’; return; }
+if (phone.startsWith(‘0’)) phone = ‘62’ + phone.slice(1);
+const url = `https://wa.me/${phone}?text=${encodeURIComponent(waMsg.value)}`;
+window.open(url, ‘_blank’);
+waModal.classList.remove(‘open’);
+};
+waPhone.addEventListener(‘input’, () => { waPhone.style.borderColor=’’; });
 
-function toast(msg, type='') {
-  const wrap = $('toastWrap');
-  const el = document.createElement('div');
-  el.className = 'toast ' + type;
-  el.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">${
-    type==='success'
-      ? '<polyline points="20 6 9 17 4 12"/>'
-      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'
-  }</svg>${msg}`;
-  wrap.appendChild(el);
-  setTimeout(()=>{ el.style.transition='opacity .3s'; el.style.opacity='0'; setTimeout(()=>el.remove(), 300); }, 3000);
+// ── LIMIT TOGGLE ─────────────────────────────────────
+btnMore.onclick = () => { showLimit = 50; render(); };
+btnLess.onclick = () => { showLimit = 10; render(); };
+
+// ── EVENTS ───────────────────────────────────────────
+qInvoice.addEventListener(‘input’, render);
+filterStatus.addEventListener(‘change’, render);
+
+// ── HELPERS ──────────────────────────────────────────
+function fmtMoney(n) { return typeof n === ‘number’ ? n.toLocaleString(‘id’) : (n || ‘—’); }
+function fmtDate(ts) {
+if (!ts) return ‘—’;
+const d = typeof ts.toDate === ‘function’ ? ts.toDate() : new Date(ts.seconds ? ts.seconds*1000 : ts);
+return d.toLocaleString(‘id-ID’, { day:‘2-digit’, month:‘short’, year:‘numeric’, hour:‘2-digit’, minute:‘2-digit’ });
 }
 </script>
 
