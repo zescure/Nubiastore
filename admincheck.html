@@ -47,8 +47,6 @@
 .btn-more:hover{background:#16a34a;color:#fff}
 .btn-less{background:none;border:1px solid #6b7280;color:#6b7280;font-size:13px;font-weight:700;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .15s}
 .btn-less:hover{background:#6b7280;color:#fff}
-.btn-copy-visible{background:#2563eb;color:#fff;font-size:13px;font-weight:700;padding:7px 12px;border-radius:8px;border:none;cursor:pointer}
-.btn-copy-visible:hover{filter:brightness(1.03)}
 
 /* vertical order blocks */
 .orders-list{display:flex;flex-direction:column;gap:10px}
@@ -68,11 +66,32 @@
 .action-cancel{background:#ef4444;color:#fff}
 .action-wa{background:#25d366;color:#fff}
 .action-view{background:#f3f4f6;color:#374151;border:1px solid #e5e7eb}
-.action-copy{background:#111827;color:#fff;border:1px solid rgba(255,255,255,.06)}
+
+/* copy button */
+.copy-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 8px;
+  border-radius:6px;
+  border:1px solid #dbeafe;
+  background:#eef2ff;
+  color:#1e3a8a;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  margin-left:6px;
+}
+.copy-btn.copied{
+  background:#dcfce7;
+  border-color:#bbf7d0;
+  color:#166534;
+}
 
 /* compact info inline */
 .inline-info{display:flex;gap:10px;align-items:center;font-size:13px;color:#374151;flex-wrap:wrap}
 .inline-info .total{font-weight:800;color:#16a34a}
+.inline-info .mono{font-family:'Courier New',monospace}
 
 /* collapsed body */
 .order-body{display:none;border-top:1px solid #f1f5f9;padding:12px 14px;background:#fbfdff}
@@ -154,7 +173,6 @@
           <div class="limit-bar">
             <div class="limit-info" id="limitInfo">Menampilkan <strong id="displayLimitLabel">10</strong> blok terakhir</div>
             <div class="ctrls">
-              <button id="btnCopyVisible" class="btn-copy-visible" title="Copy game_id | server | userId dari blok yang tampil">Copy visible</button>
               <button id="btnMore" class="btn-more">Tampilkan 50 blok</button>
               <button id="btnLess" class="btn-less" style="display:none">Kembali ke 10</button>
             </div>
@@ -192,6 +210,15 @@
 
 <!-- SCRIPT -->
 <script type="module">
+/*
+  Vertical orders admin - ready to paste
+  - Vertical collapsed blocks
+  - default displayLimit = 10, btnMore -> 50
+  - calculates omset (sum amount_total) of displayed blocks
+  - spaced buttons
+  - per-order copy buttons for User, Game ID, Server
+*/
+
 /* Firebase imports (CDN) */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -227,7 +254,6 @@ const ordersList = document.getElementById('ordersList');
 const emptyState = document.getElementById('emptyState');
 const btnMore = document.getElementById('btnMore');
 const btnLess = document.getElementById('btnLess');
-const btnCopyVisible = document.getElementById('btnCopyVisible');
 const displayLimitLabel = document.getElementById('displayLimitLabel');
 const limitInfo = document.getElementById('limitInfo');
 const omsetVal = document.getElementById('omsetVal');
@@ -256,23 +282,21 @@ function formatDate(ts){
 }
 function safeNum(n){ return Number(n) || 0; }
 
-/* copy helpers */
-async function copyText(text){
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(text);
-    } else {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      ta.remove();
-    }
-    return true;
-  } catch(e){
-    console.error('copy failed', e);
-    return false;
+/* small util to copy text and show feedback on button */
+async function copyToClipboard(text, btn){
+  if(!text){
+    alert('Tidak ada data untuk dicopy.');
+    return;
+  }
+  try{
+    await navigator.clipboard.writeText(String(text));
+    const old = btn.textContent;
+    btn.classList.add('copied');
+    btn.textContent = 'Copied';
+    setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = old; }, 1400);
+  }catch(e){
+    console.error('copy err', e);
+    alert('Gagal menyalin clipboard.');
   }
 }
 
@@ -291,10 +315,19 @@ function createOrderBlock(d){
     <div class="invoice">${d.invoice || '-'}</div>
     <div style="min-width:0">
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <div class="inline-info"><small>User</small> <strong>${d.userId || 'guest'}</strong></div>
+        <div class="inline-info"><small>User</small> <strong>${d.userId || 'guest'}</strong>
+          <button class="copy-btn" data-copy-value="${(d.userId||'').toString().replace(/"/g,'&quot;')}" title="Copy User">Copy</button>
+        </div>
+
         <div class="inline-info"><small>Game</small> <strong>${d.game || '-'}</strong></div>
-        <div class="inline-info"><small>Game ID</small> <span class="total mono">${d.game_id || '-'}</span></div>
-        <div class="inline-info"><small>Server</small> <span>${d.server || '-'}</span></div>
+
+        <div class="inline-info"><small>Game ID</small> <span class="mono">${d.game_id || '-'}</span>
+          <button class="copy-btn" data-copy-value="${(d.game_id||'').toString().replace(/"/g,'&quot;')}" title="Copy Game ID">Copy</button>
+        </div>
+
+        <div class="inline-info"><small>Server</small> <span>${d.server || '-'}</span>
+          <button class="copy-btn" data-copy-value="${(d.server||'').toString().replace(/"/g,'&quot;')}" title="Copy Server">Copy</button>
+        </div>
       </div>
       <div style="margin-top:6px;font-size:13px;color:#6b7280">${formatDate(d.createdAt)}</div>
     </div>
@@ -312,7 +345,6 @@ function createOrderBlock(d){
       <button class="action-btn action-complete" data-id="${d.invoice}">Selesai</button>
       <button class="action-btn action-cancel" data-id="${d.invoice}">Batal</button>
       <button class="action-btn action-wa" data-id="${d.invoice}">WA</button>
-      <button class="action-btn action-copy" data-id="${d.invoice}" title="Copy game_id | server | userId">Copy</button>
     </div>
   `;
 
@@ -333,10 +365,21 @@ function createOrderBlock(d){
 
   // toggle on header click (collapse/expand)
   header.addEventListener('click', (e)=>{
-    // if click on action buttons, don't toggle
-    if (e.target.closest('.action-btn')) return;
+    // if click on action or copy buttons, don't toggle
+    if (e.target.closest('.action-btn') || e.target.closest('.copy-btn')) return;
     const open = body.classList.toggle('open');
+    // smooth scroll if opening
     if (open) wrapper.scrollIntoView({ behavior:'smooth', block:'center' });
+  });
+
+  // attach copy listeners for the copy buttons in this block
+  const copyButtons = wrapper.querySelectorAll('.copy-btn');
+  copyButtons.forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const value = btn.getAttribute('data-copy-value') || '';
+      copyToClipboard(value, btn);
+    });
   });
 
   // action buttons
@@ -344,10 +387,10 @@ function createOrderBlock(d){
   const btnComplete = right.querySelector('.action-complete');
   const btnCancel = right.querySelector('.action-cancel');
   const btnWa = right.querySelector('.action-wa');
-  const btnCopy = right.querySelector('.action-copy');
 
   btnView.addEventListener('click', async (ev)=>{
     ev.stopPropagation();
+    // show detail panel (optional)
     await showDetail(d.invoice);
   });
   btnComplete.addEventListener('click', async (ev)=>{
@@ -366,17 +409,6 @@ function createOrderBlock(d){
     const text = encodeURIComponent(`Halo, pesanan dengan invoice ${d.invoice} total Rp ${formatMoney(d.amount_total)} status ${d.status || '—'}.`);
     if(!phone) return alert('Tidak ada nomor WA tersedia pada order ini.');
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
-  });
-
-  btnCopy.addEventListener('click', async (ev)=>{
-    ev.stopPropagation();
-    const line = `${d.game_id || '-'}\t${d.server || '-'}\t${d.userId || '-'}`;
-    const ok = await copyText(line);
-    if(ok) {
-      alert('Copied:\n' + line);
-    } else {
-      alert('Gagal copy ke clipboard.');
-    }
   });
 
   return wrapper;
@@ -420,37 +452,6 @@ function renderOrdersList(){
       const block = createOrderBlock(d);
       ordersList.appendChild(block);
     });
-  }
-}
-
-/* copy visible (all shown blocks) */
-async function handleCopyVisible(){
-  const filter = filterStatus.value;
-  const search = qInvoice.value.trim().toLowerCase();
-
-  const arr = Object.values(lastOrders || {})
-    .filter(d=>{
-      if(filter !== 'all' && d.status !== filter) return false;
-      if(!search) return true;
-      return (d.invoice && d.invoice.toLowerCase().includes(search)) ||
-             (d.userId && String(d.userId).toLowerCase().includes(search)) ||
-             (d.game_id && String(d.game_id).toLowerCase().includes(search)) ||
-             (d.server && String(d.server).toLowerCase().includes(search)) ||
-             (d.game && String(d.game).toLowerCase().includes(search));
-    })
-    .sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0))
-    .slice(0, displayLimit);
-
-  if(arr.length === 0) return alert('Tidak ada data yang bisa dicopy.');
-
-  // build lines: game_id \t server \t userId (tab-separated for easy paste)
-  const lines = arr.map(d => `${d.game_id || '-'}\t${d.server || '-'}\t${d.userId || '-'}`);
-  const text = lines.join('\n');
-  const ok = await copyText(text);
-  if(ok) {
-    alert(`Copied ${arr.length} baris ke clipboard.\nFormat: game_id <tab> server <tab> userId`);
-  } else {
-    alert('Gagal copy ke clipboard.');
   }
 }
 
@@ -572,8 +573,6 @@ btnLess.addEventListener('click', ()=>{
   limitInfo.textContent = `Menampilkan ${displayLimit} blok terakhir`;
   renderOrdersList();
 });
-
-btnCopyVisible.addEventListener('click', handleCopyVisible);
 
 btnSignOut.addEventListener('click', ()=> signOut(auth));
 
