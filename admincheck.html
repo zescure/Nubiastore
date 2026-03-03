@@ -1,11 +1,11 @@
 <!doctype html>
-
 <html lang="id">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Admin — NUBIASTORE</title>
 <style>
+  /* reset & base */
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Segoe UI',Inter,system-ui,sans-serif;background:#f0f2f5;color:#111;min-height:100vh}
 
@@ -19,12 +19,12 @@
 .btn-signout:hover{background:#f8f8f8;border-color:#ccc}
 
 /* ── MAIN ── */
-.main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+.main{max-width:980px;margin:0 auto;padding:20px 16px 60px}
 
 /* ── CARD ── */
 .card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:14px}
 .card-title{font-size:13px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.card-title::before{content:’’;display:inline-block;width:3px;height:14px;background:#16a34a;border-radius:2px}
+.card-title::before{content:"";display:inline-block;width:3px;height:14px;background:#16a34a;border-radius:2px}
 
 /* ── TOOLBAR ── */
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -41,12 +41,12 @@
 .btn-less{background:none;border:1px solid #6b7280;color:#6b7280;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer;transition:all .15s}
 .btn-less:hover{background:#6b7280;color:#fff}
 
-/* ── ORDER CARD ── */
+/* ── ORDER LIST ── */
 .order-card{border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;overflow:hidden;transition:box-shadow .15s}
 .order-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.07)}
 .order-card-head{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:#fafafa;border-bottom:1px solid #e5e7eb;cursor:pointer;user-select:none}
 .order-card-head:hover{background:#f3f4f6}
-.order-invoice{font-family:‘Courier New’,monospace;font-size:13px;font-weight:700;color:#111}
+.order-invoice{font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#111}
 .order-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .order-date{font-size:12px;color:#6b7280}
 .order-total{font-size:13px;font-weight:700;color:#16a34a}
@@ -62,12 +62,12 @@
 .field-row:last-child{border-bottom:none;padding-bottom:0}
 .field-label{font-size:12px;color:#6b7280;font-weight:600;width:130px;flex-shrink:0;padding-top:1px;text-transform:uppercase;letter-spacing:.5px}
 .field-value{font-size:13px;color:#111;font-weight:500;word-break:break-all}
-.field-value.mono{font-family:‘Courier New’,monospace}
+.field-value.mono{font-family:'Courier New',monospace}
 .field-value.green{color:#16a34a;font-weight:700}
 
 /* status badge */
 .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
-.badge::before{content:’’;width:5px;height:5px;border-radius:50%;background:currentColor}
+.badge::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
 .badge.initiated{background:#fef3c7;color:#92400e}
 .badge.pending{background:#dbeafe;color:#1e40af}
 .badge.completed{background:#dcfce7;color:#166534}
@@ -88,7 +88,7 @@
 /* raw JSON */
 .raw-area{display:none;margin-top:12px}
 .raw-area.open{display:block}
-.raw-pre{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:6px;padding:10px;font-size:11px;font-family:‘Courier New’,monospace;overflow:auto;max-height:280px;line-height:1.5;color:#374151}
+.raw-pre{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:6px;padding:10px;font-size:11px;font-family:'Courier New',monospace;overflow:auto;max-height:280px;line-height:1.5;color:#374151}
 
 /* WA modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
@@ -109,24 +109,38 @@
 .btn-modal-cancel:hover{background:#e5e7eb}
 .modal-preview{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:10px;font-size:12px;color:#166534;line-height:1.6;margin-top:2px;max-height:120px;overflow:auto}
 
+/* detail panel */
+.detail-panel{background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden}
+.detail-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #f3f4f6;background:#fafafa}
+.detail-header-title{font-weight:700;color:#374151;font-size:14px}
+.detail-invoice{font-family:'Courier New',monospace;font-size:12px;color:#16a34a;margin-left:auto}
+.detail-body{padding:18px}
+.detail-empty{padding:32px;text-align:center;color:#6b7280;font-size:13px}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.detail-item{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:12px 14px}
+.detail-title{font-size:11px;color:#6b7280;font-weight:700;margin-bottom:6px}
+
 /* states */
 .auth-card{text-align:center;padding:40px 20px;color:#6b7280}
 .empty-state{text-align:center;padding:32px;color:#9ca3af;font-size:14px}
 .admin-note-bar{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:13px;color:#92400e;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.admin-note-bar::before{content:‘⚠️’;font-size:16px}
+.admin-note-bar::before{content:"⚠️";font-size:16px}
 .realtime-dot{display:inline-block;width:7px;height:7px;background:#16a34a;border-radius:50%;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* loading skeleton */
 .skel{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:4px;height:12px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-</style>
 
+@media(max-width:768px){
+  .main{padding:14px}
+  .detail-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
 <!-- TOPBAR -->
-
 <div class="topbar">
   <div class="topbar-left">
     <span class="topbar-badge">Admin</span>
@@ -140,57 +154,91 @@
 </div>
 
 <!-- MAIN -->
-
 <div class="main">
 
   <!-- AUTH MSG -->
-
   <div id="authMsg" class="card auth-card">
     <div class="skel" style="width:200px;margin:0 auto 8px"></div>
     <div class="skel" style="width:140px;margin:0 auto"></div>
   </div>
 
   <!-- ADMIN UI -->
-
   <div id="adminUI" style="display:none">
+
     <div id="adminNoteBox" style="display:none" class="admin-note-bar">
       Login via UID allowlist (development mode). Gunakan custom claims server-side untuk production.
     </div>
 
-```
-<!-- TOOLBAR -->
-<div class="card">
-  <div class="toolbar">
-    <input id="qInvoice" class="search-input" placeholder="🔍  Cari invoice / user id / game id / server…"/>
-    <select id="filterStatus" class="filter-select">
-      <option value="all">Semua Status</option>
-      <option value="initiated">Initiated</option>
-      <option value="pending">Pending</option>
-      <option value="completed">Completed</option>
-      <option value="cancelled">Cancelled</option>
-    </select>
-  </div>
-</div>
-
-<!-- ORDER LIST -->
-<div class="card" style="padding:14px">
-  <div class="card-title">Daftar Order</div>
-  <div class="limit-bar">
-    <span class="limit-info" id="limitInfo"></span>
-    <div style="display:flex;gap:6px">
-      <button id="btnMore" class="btn-more" style="display:none">Tampilkan 50 Transaksi</button>
-      <button id="btnLess" class="btn-less" style="display:none">Kembali ke 10</button>
+    <!-- TOOLBAR -->
+    <div class="card">
+      <div class="toolbar">
+        <input id="qInvoice" class="search-input" placeholder="🔍  Cari invoice / user id / game id / server…"/>
+        <select id="filterStatus" class="filter-select">
+          <option value="all">Semua Status</option>
+          <option value="initiated">Initiated</option>
+          <option value="pending">Pending</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
     </div>
-  </div>
-  <div id="ordersList"></div>
-</div>
-```
+
+    <!-- ORDER LIST -->
+    <div class="card" style="padding:14px">
+      <div class="card-title">Daftar Order</div>
+      <div class="limit-bar">
+        <span class="limit-info" id="limitInfo">Menampilkan semua transaksi realtime.</span>
+        <div style="display:flex;gap:6px">
+          <button id="btnMore" class="btn-more" style="display:none">Tampilkan 50 Transaksi</button>
+          <button id="btnLess" class="btn-less" style="display:none">Kembali ke 10</button>
+        </div>
+      </div>
+
+      <!-- This is the container where table or fallback card-list will be rendered -->
+      <div id="ordersList">
+        <!-- default table structure (ensured by script) -->
+        <div style="overflow:auto">
+          <table style="width:100%;border-collapse:collapse">
+            <thead style="background:#fafafa;border-bottom:1px solid #e5e7eb">
+              <tr>
+                <th style="padding:8px 10px;text-align:left">Invoice</th>
+                <th style="padding:8px 10px">User</th>
+                <th style="padding:8px 10px">Game</th>
+                <th style="padding:8px 10px">Game ID</th>
+                <th style="padding:8px 10px">Server</th>
+                <th style="padding:8px 10px">Nominal</th>
+                <th style="padding:8px 10px">Total</th>
+                <th style="padding:8px 10px">Metode</th>
+                <th style="padding:8px 10px">Created</th>
+                <th style="padding:8px 10px">Status</th>
+                <th style="padding:8px 10px">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div id="detailArea" class="card" style="display:none">
+      <div class="detail-panel">
+        <div class="detail-header">
+          <div class="detail-header-title">Detail Order</div>
+          <div class="detail-invoice" id="detailInvoice">—</div>
+        </div>
+        <div class="detail-body">
+          <div id="detailGrid" class="detail-grid"></div>
+          <div id="detailBox" class="detail-empty">Pilih order untuk melihat detail.</div>
+          <pre id="detailPre" class="raw-pre" style="display:none"></pre>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
 
 <!-- WA MODAL -->
-
 <div class="modal-overlay" id="waModal">
   <div class="modal">
     <div class="modal-title"><span class="wa-icon">💬</span> Konfirmasi via WhatsApp</div>
@@ -215,12 +263,13 @@
   </div>
 </div>
 
+<!-- SCRIPT -->
 <script type="module">
 /*
-  admin.html (updated)
-  - Menambahkan kolom Game ID & Server di tabel
-  - Memperlihatkan game_id & server di panel detail (plus raw JSON)
-  - Memperluas pencarian agar bisa cari berdasarkan game_id / server
+  admin-complete.html
+  - single module script
+  - robust rendering (creates tbody if missing)
+  - fixes for null-element errors
 */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -230,6 +279,7 @@ import {
   doc, updateDoc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* =========== your firebase config (keep as-is or update if needed) =========== */
 const firebaseConfig = {
   apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
   authDomain: "zestoreid-f9e85.firebaseapp.com",
@@ -243,89 +293,103 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+/* =========== DOM refs =========== */
 const authMsg = document.getElementById('authMsg');
 const adminUI = document.getElementById('adminUI');
 const adminNoteBox = document.getElementById('adminNoteBox');
-const ordersTbody = document.getElementById('ordersTbody');
+
+let ordersTbody = document.getElementById('ordersTbody');
+const ordersListContainer = document.getElementById('ordersList'); // fallback container
 const detailBox = document.getElementById('detailBox');
 const detailPre = document.getElementById('detailPre');
 const detailGrid = document.getElementById('detailGrid');
 const detailArea = document.getElementById('detailArea');
+const detailInvoice = document.getElementById('detailInvoice');
+
 const qInvoice = document.getElementById('qInvoice');
 const filterStatus = document.getElementById('filterStatus');
 const btnSignOut = document.getElementById('btnSignOut');
+const waModal = document.getElementById('waModal');
+const waPhone = document.getElementById('waPhone');
+const waMsg = document.getElementById('waMsg');
+const waPreview = document.getElementById('waPreview');
+const btnWaCancel = document.getElementById('btnWaCancel');
+const btnWaSend = document.getElementById('btnWaSend');
+const limitInfo = document.getElementById('limitInfo');
+const btnMore = document.getElementById('btnMore');
+const btnLess = document.getElementById('btnLess');
 
 let unsubscribeOrders = null;
 let lastOrders = {}; // cache map invoice -> data
 
-// === ADMIN ALLOWLIST (development convenience) ===
+// allowlist for dev convenience (replace with proper admin claims in production)
 const ADMIN_UIDS = [
   "8z9b0u1LYfTVM0sCP7qHXbYHvGi1"
 ];
-// ==================================================
 
-// require login + (custom claim admin==true OR UID in allowlist)
-onAuthStateChanged(auth, async (u) => {
-  if(!u){
-    authMsg.innerHTML = '<strong>Harus login sebagai admin</strong> — silakan login di halaman utama.';
-    adminUI.style.display = 'none';
-    adminNoteBox.style.display = 'none';
-    return;
-  }
-  // inspect token claims
-  let isAdmin = false;
-  try {
-    const tokenResult = await u.getIdTokenResult();
-    const claims = tokenResult.claims || {};
-    if(claims.admin) isAdmin = true;
-  } catch(e){
-    console.warn('getIdTokenResult failed', e);
-  }
-
-  if(ADMIN_UIDS.includes(u.uid)) isAdmin = true;
-
-  if(!isAdmin){
-    authMsg.innerHTML = '<strong>Access denied.</strong> Akun tidak memiliki hak admin.';
-    adminUI.style.display = 'none';
-    adminNoteBox.style.display = 'none';
-    return;
-  }
-
-  // success: show UI
-  authMsg.style.display = 'none';
-  adminUI.style.display = 'block';
-  adminNoteBox.style.display = ADMIN_UIDS.includes(u.uid) ? 'block' : 'none';
-  startOrdersListener();
-});
-
-// sign out
-btnSignOut.onclick = ()=> signOut(auth);
-
-// listen orders realtime (filtered by select + search)
-function startOrdersListener(){
-  if(unsubscribeOrders) unsubscribeOrders();
-  const col = collection(db, 'orders');
-  const q = query(col, orderBy('createdAt','desc'));
-  unsubscribeOrders = onSnapshot(q, (snap)=>{
-    lastOrders = {};
-    snap.forEach(docSnap=>{
-      lastOrders[docSnap.id] = docSnap.data();
-    });
-    renderOrdersTable();
-  }, (err)=>{
-    console.error('orders snapshot err', err);
-  });
+/* ===== helpers ===== */
+function formatMoney(n){ return (typeof n === 'number')? n.toLocaleString('id') : n; }
+function formatDate(ts){
+  if(!ts) return '-';
+  if(typeof ts.toDate === 'function') return ts.toDate().toLocaleString();
+  if(ts.seconds) return new Date(ts.seconds * 1000).toLocaleString();
+  return new Date(ts).toLocaleString();
 }
 
+/* ensure ordersTbody exists (create table structure if absent) */
+function ensureOrdersTable(){
+  if (ordersTbody) return;
+  if (ordersListContainer) {
+    // create table structure if not present
+    const existingTbody = document.getElementById('ordersTbody');
+    if (existingTbody) {
+      ordersTbody = existingTbody;
+      return;
+    }
+    ordersListContainer.innerHTML = `
+      <div style="overflow:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead style="background:#fafafa;border-bottom:1px solid #e5e7eb">
+            <tr>
+              <th style="padding:8px 10px;text-align:left">Invoice</th>
+              <th style="padding:8px 10px">User</th>
+              <th style="padding:8px 10px">Game</th>
+              <th style="padding:8px 10px">Game ID</th>
+              <th style="padding:8px 10px">Server</th>
+              <th style="padding:8px 10px">Nominal</th>
+              <th style="padding:8px 10px">Total</th>
+              <th style="padding:8px 10px">Metode</th>
+              <th style="padding:8px 10px">Created</th>
+              <th style="padding:8px 10px">Status</th>
+              <th style="padding:8px 10px">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTbody"></tbody>
+        </table>
+      </div>
+    `;
+    ordersTbody = document.getElementById('ordersTbody');
+    return;
+  }
+  // last resort: append to .main
+  const fallback = document.createElement('div');
+  fallback.id = 'ordersList';
+  document.querySelector('.main')?.appendChild(fallback);
+  fallback.innerHTML = '<div id="ordersTbody"></div>';
+  ordersTbody = document.getElementById('ordersTbody');
+}
+
+/* render orders (table mode if tbody in table, otherwise fallback cards) */
 function renderOrdersTable(){
+  ensureOrdersTable();
+
   const filter = filterStatus.value;
   const search = qInvoice.value.trim().toLowerCase();
-  ordersTbody.innerHTML = '';
-  const rows = Object.values(lastOrders)
+
+  const rows = Object.values(lastOrders || {})
     .filter(d => {
       if(filter !== 'all' && d.status !== filter) return false;
       if(!search) return true;
-      // include game_id and server in search
       return (d.invoice && d.invoice.toLowerCase().includes(search)) ||
              (d.userId && String(d.userId).toLowerCase().includes(search)) ||
              (d.game_id && String(d.game_id).toLowerCase().includes(search)) ||
@@ -334,64 +398,114 @@ function renderOrdersTable(){
     })
     .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
 
+  if (!ordersTbody) return console.warn('ordersTbody missing — abort render');
+  ordersTbody.innerHTML = '';
+
+  const isTbody = ordersTbody.tagName === 'TBODY';
+
   rows.forEach(d=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${d.invoice || '-'}</td>
-      <td>${d.userId || 'guest'}</td>
-      <td>${d.game || '-'}</td>
-      <td>${d.game_id || '-'}</td>
-      <td>${d.server || '-'}</td>
-      <td>${d.nominalValue || '-'}</td>
-      <td>Rp ${formatMoney(d.amount_total)}</td>
-      <td>${(d.payment_method||'-').replace('_',' ')}</td>
-      <td>${formatDate(d.createdAt)}</td>
-      <td><span class="status ${d.status||'initiated'}">${(d.status||'initiated')}</span></td>
-      <td>
-        <button class="btn view" data-id="${d.invoice}">View</button>
-        <button class="btn complete" data-id="${d.invoice}">Selesai</button>
-        <button class="btn cancel" data-id="${d.invoice}">Batal</button>
-      </td>
-    `;
-    ordersTbody.appendChild(tr);
+    if (isTbody) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="padding:8px 10px">${d.invoice || '-'}</td>
+        <td style="padding:8px 10px">${d.userId || 'guest'}</td>
+        <td style="padding:8px 10px">${d.game || '-'}</td>
+        <td style="padding:8px 10px">${d.game_id || '-'}</td>
+        <td style="padding:8px 10px">${d.server || '-'}</td>
+        <td style="padding:8px 10px">${d.nominalValue || '-'}</td>
+        <td style="padding:8px 10px">Rp ${formatMoney(d.amount_total)}</td>
+        <td style="padding:8px 10px">${(d.payment_method||'-').replace('_',' ')}</td>
+        <td style="padding:8px 10px">${formatDate(d.createdAt)}</td>
+        <td style="padding:8px 10px"><span class="badge ${d.status||'initiated'}" style="padding:3px 8px;border-radius:6px">${(d.status||'initiated')}</span></td>
+        <td style="padding:8px 10px">
+          <button class="btn view" data-id="${d.invoice}">View</button>
+          <button class="btn complete" data-id="${d.invoice}">Selesai</button>
+          <button class="btn cancel" data-id="${d.invoice}">Batal</button>
+        </td>
+      `;
+      ordersTbody.appendChild(tr);
+    } else {
+      const card = document.createElement('div');
+      card.className = 'order-card';
+      card.innerHTML = `
+        <div class="order-card-head">
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="order-invoice">${d.invoice || '-'}</div>
+            <div class="order-meta">
+              <div class="order-date">${formatDate(d.createdAt)}</div>
+              <div class="order-total">Rp ${formatMoney(d.amount_total)}</div>
+            </div>
+          </div>
+          <div>
+            <button class="btn view" data-id="${d.invoice}">View</button>
+            <button class="btn complete" data-id="${d.invoice}">Selesai</button>
+            <button class="btn cancel" data-id="${d.invoice}">Batal</button>
+          </div>
+        </div>
+        <div class="order-card-body">
+          <div class="field-list">
+            <div class="field-row"><div class="field-label">User</div><div class="field-value">${d.userId||'guest'}</div></div>
+            <div class="field-row"><div class="field-label">Game</div><div class="field-value">${d.game||'-'}</div></div>
+            <div class="field-row"><div class="field-label">Game ID</div><div class="field-value mono">${d.game_id||'-'}</div></div>
+            <div class="field-row"><div class="field-label">Server</div><div class="field-value">${d.server||'-'}</div></div>
+          </div>
+        </div>
+      `;
+      ordersTbody.appendChild(card);
+    }
   });
 
-  // attach row buttons
-  document.querySelectorAll('button.view').forEach(b=>{
-    b.onclick = async (e)=>{
-      const id = e.target.dataset.id;
-      showDetail(id);
-    };
+  // attach listeners (scoped)
+  Array.from(ordersTbody.querySelectorAll('button.view')).forEach(b=>{
+    b.onclick = (e)=> showDetail(e.currentTarget.dataset.id);
   });
-  document.querySelectorAll('button.complete').forEach(b=>{
+  Array.from(ordersTbody.querySelectorAll('button.complete')).forEach(b=>{
     b.onclick = async (e)=>{
-      const id = e.target.dataset.id;
+      const id = e.currentTarget.dataset.id;
       if(!confirm('Tandai order '+id+' SELESAI?')) return;
       await markStatus(id, 'completed');
     };
   });
-  document.querySelectorAll('button.cancel').forEach(b=>{
+  Array.from(ordersTbody.querySelectorAll('button.cancel')).forEach(b=>{
     b.onclick = async (e)=>{
-      const id = e.target.dataset.id;
+      const id = e.currentTarget.dataset.id;
       if(!confirm('Tandai order '+id+' BATAL?')) return;
       await markStatus(id, 'cancelled');
     };
   });
 }
 
+/* start Firestore listener */
+function startOrdersListener(){
+  if(unsubscribeOrders) unsubscribeOrders();
+  const col = collection(db, 'orders');
+  const q = query(col, orderBy('createdAt','desc'));
+  unsubscribeOrders = onSnapshot(q, (snap)=>{
+    lastOrders = {};
+    snap.forEach(docSnap=>{
+      lastOrders[docSnap.id] = { ...(docSnap.data()), invoice: docSnap.id };
+    });
+    renderOrdersTable();
+  }, (err)=>{
+    console.error('orders snapshot err', err);
+    alert('Gagal load orders: ' + (err.message || err));
+  });
+}
+
+/* detail view */
 async function showDetail(invoice){
   try{
     const docRef = doc(db,'orders',invoice);
     const snap = await getDoc(docRef);
     if(!snap.exists()){
+      detailGrid.innerHTML = '';
       detailBox.textContent = 'Order tidak ditemukan';
       detailPre.style.display='none';
-      detailArea.style.display='none';
+      detailArea.style.display = 'block';
       return;
     }
     const data = snap.data();
-
-    // tampilkan ringkasan penting dulu (mudah dilihat)
+    detailInvoice.textContent = data.invoice || invoice;
     detailGrid.innerHTML = '';
     const items = [
       { title: 'Invoice', value: data.invoice || invoice },
@@ -412,19 +526,21 @@ async function showDetail(invoice){
       detailGrid.appendChild(elItem);
     });
 
-    // show raw JSON below
     detailPre.style.display='block';
     detailPre.textContent = JSON.stringify(data, null, 2);
     detailBox.style.display = 'none';
     detailArea.style.display = 'block';
+    // scroll to detail
+    detailArea.scrollIntoView({ behavior:'smooth', block:'center' });
   }catch(e){
     console.error(e);
     detailBox.textContent = 'Error fetch detail';
     detailPre.style.display='none';
-    detailArea.style.display='none';
+    detailArea.style.display='block';
   }
 }
 
+/* mark status */
 async function markStatus(invoice, newStatus){
   try{
     const ref = doc(db,'orders',invoice);
@@ -432,23 +548,64 @@ async function markStatus(invoice, newStatus){
     alert('Status updated: ' + newStatus);
   }catch(e){
     console.error('markStatus err', e);
-    alert('Gagal update status: '+e.message);
+    alert('Gagal update status: '+(e.message || e));
   }
 }
 
-// helpers
-function formatMoney(n){ return (typeof n === 'number')? n.toLocaleString('id') : n; }
-function formatDate(ts){
-  if(!ts) return '-';
-  if(typeof ts.toDate === 'function') return ts.toDate().toLocaleString();
-  return new Date(ts.seconds ? ts.seconds *1000 : ts).toLocaleString();
-}
+/* auth handling */
+onAuthStateChanged(auth, async (u) => {
+  if(!u){
+    authMsg.innerHTML = '<strong>Harus login sebagai admin</strong> — silakan login di halaman utama.';
+    adminUI.style.display = 'none';
+    adminNoteBox.style.display = 'none';
+    return;
+  }
+  let isAdmin = false;
+  try {
+    const tokenResult = await u.getIdTokenResult();
+    const claims = tokenResult.claims || {};
+    if(claims.admin) isAdmin = true;
+  } catch(e){
+    console.warn('getIdTokenResult failed', e);
+  }
+  if(ADMIN_UIDS.includes(u.uid)) isAdmin = true;
 
-// search + filter events
+  if(!isAdmin){
+    authMsg.innerHTML = '<strong>Access denied.</strong> Akun tidak memiliki hak admin.';
+    adminUI.style.display = 'none';
+    adminNoteBox.style.display = 'none';
+    return;
+  }
+
+  // success
+  authMsg.style.display = 'none';
+  adminUI.style.display = 'block';
+  adminNoteBox.style.display = ADMIN_UIDS.includes(u.uid) ? 'block' : 'none';
+  startOrdersListener();
+});
+
+/* sign out */
+btnSignOut.onclick = ()=> signOut(auth);
+
+/* search + filter events */
 qInvoice.addEventListener('input', renderOrdersTable);
 filterStatus.addEventListener('change', renderOrdersTable);
 
-</script>
+/* WA modal actions (simple preview + open wa) */
+btnWaCancel.onclick = ()=> waModal.classList.remove('open');
+waMsg.addEventListener('input', ()=> waPreview.textContent = waMsg.value);
+btnWaSend.onclick = ()=>{
+  const phone = waPhone.value.trim();
+  const text = encodeURIComponent(waMsg.value || '');
+  if(!phone) return alert('Masukkan nomor WA tujuan.');
+  const url = `https://wa.me/${phone}?text=${text}`;
+  window.open(url, '_blank');
+};
 
+/* misc */
+btnMore.onclick = ()=> { limitInfo.textContent = 'Menampilkan 50 transaksi (fitur dummy).'; btnMore.style.display='none'; btnLess.style.display='inline-block'; };
+btnLess.onclick = ()=> { limitInfo.textContent = 'Menampilkan semua transaksi realtime.'; btnLess.style.display='none'; btnMore.style.display='inline-block'; };
+
+</script>
 </body>
 </html>
