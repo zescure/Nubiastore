@@ -1903,46 +1903,34 @@ authLogoutBtn.addEventListener('click', async () => {
 <!-- ── POPUP JS — tidak bentrok dengan JS halaman utama ── -->
 
 <script>
-(function() {
+(function () {
 
-  // ── 24 JAM SNOOZE ──
-var POP_SNOOZE_KEY = 'ns_pop_snooze';
-
-function popIsSnoozed() {
-  var saved = localStorage.getItem(POP_SNOOZE_KEY);
-  if (!saved) return false;
-  return (Date.now() - parseInt(saved)) < 86400000; // 86400000ms = 24 jam
-}
-
-window.popSnooze = function() {
-  localStorage.setItem(POP_SNOOZE_KEY, Date.now().toString());
-  // tutup semua popup yang sedang aktif
-  var active = document.querySelector('.pop-overlay.pop-active');
-  if (active) {
-    active.classList.remove('pop-active');
-  }
-  // kosongkan antrian
-  popIdx = POP_SEQ.length;
-};
-
-  
-  // ── Urutan popup. Hapus ID yang tidak ingin muncul di halaman ini.
+  var POP_SNOOZE_KEY = 'ns_pop_snooze';
   var POP_SEQ = ['pop1', 'pop2', 'pop3', 'pop5', 'pop4'];
-  var popIdx  = 0;
+  var popIdx = 0;
 
+  // Cek apakah masih dalam periode snooze 24 jam
+  function popIsSnoozed() {
+    var saved = localStorage.getItem(POP_SNOOZE_KEY);
+    if (!saved) return false;
+    return (Date.now() - parseInt(saved)) < 86400000;
+  }
+
+  // Tampilkan popup berikutnya di antrian
   function popShow() {
     if (popIdx >= POP_SEQ.length) return;
     var el = document.getElementById(POP_SEQ[popIdx]);
     if (el) el.classList.add('pop-active');
   }
 
-  window.popClose = function(id) {
+  // Tutup popup tertentu, lalu tampilkan berikutnya
+  window.popClose = function (id) {
     var el = document.getElementById(id);
     if (!el) return;
     el.style.animation = 'popFadeIn .18s ease reverse both';
     var card = el.querySelector('.pop-card');
     if (card) card.style.animation = 'popCardIn .18s ease reverse both';
-    setTimeout(function() {
+    setTimeout(function () {
       el.classList.remove('pop-active');
       el.style.animation = '';
       if (card) card.style.animation = '';
@@ -1951,8 +1939,18 @@ window.popSnooze = function() {
     }, 180);
   };
 
-  // Tutup jika klik area gelap di luar popup card
-  document.addEventListener('click', function(e) {
+  // Tombol "jangan tampilkan 24 jam"
+  window.popSnooze = function () {
+    localStorage.setItem(POP_SNOOZE_KEY, Date.now().toString());
+    var active = document.querySelector('.pop-overlay.pop-active');
+    if (active) {
+      active.classList.remove('pop-active');
+    }
+    popIdx = POP_SEQ.length; // kosongkan antrian
+  };
+
+  // Tutup jika klik area gelap di luar popup
+  document.addEventListener('click', function (e) {
     if (e.target.classList.contains('pop-overlay') &&
         e.target.classList.contains('pop-active')) {
       popClose(e.target.id);
@@ -1960,31 +1958,27 @@ window.popSnooze = function() {
   });
 
   // Tutup dengan Escape
-  document.addEventListener('keydown', function(e) {
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       var active = document.querySelector('.pop-overlay.pop-active');
       if (active) popClose(active.id);
     }
   });
 
-  // Muncul otomatis setelah halaman siap
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(popShow, 700);
-    });
-  } else {
-    // Muncul otomatis setelah halaman siap
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', function() {
+  // Muncul otomatis — hanya jika belum snooze
+  function popInit() {
     if (!popIsSnoozed()) setTimeout(popShow, 700);
-  });
-} else {
-  if (!popIsSnoozed()) setTimeout(popShow, 700);
-
-
   }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', popInit);
+  } else {
+    popInit();
+  }
+
 })();
 </script>
+
 
 <!-- ══ END POPUP SYSTEM ══ -->
   
