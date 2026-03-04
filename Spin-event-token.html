@@ -1,662 +1,525 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Spin — NUBIATOKEN</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#060806; --card:#0e1912; --accent:#16a34a; --muted:#9aa79a; --white:#fff;
-    --glass: rgba(255,255,255,0.03);
-  }
-  *{box-sizing:border-box}
-  body{font-family:Rajdhani,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; background:linear-gradient(180deg,#04130a 0%, #06110a 100%); color:var(--white); margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px;}
-  .wrap{width:100%; max-width:1100px; display:grid; grid-template-columns: 420px 1fr; gap:22px; align-items:start;}
-  .panel{background:var(--card); border-radius:14px; padding:18px; box-shadow:0 8px 30px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.02);}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Claim Token — NUBIASTORE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#060806; --card:#0e1912; --accent:#16a34a; --muted:#9aa79a; --white:#fff;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{font-family:Rajdhani,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; background:linear-gradient(180deg,#04130a 0%, #06110a 100%); color:var(--white); margin:0; min-height:100vh; padding:28px;}
+    .wrap{width:100%; max-width:1100px; margin:0 auto; display:grid; grid-template-columns: 420px 1fr; gap:22px; align-items:start;}
+    .panel{background:var(--card); border-radius:12px; padding:16px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.02);}
 
-  /* left column */
-  .status-row{display:flex; gap:12px; align-items:center; margin-bottom:14px;}
-  .avatar{width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#4ade80); display:flex; align-items:center; justify-content:center; font-weight:700; color:#001; font-size:18px;}
-  .user-info{flex:1}
-  .user-name{font-size:16px; font-weight:700}
-  .user-uid{font-size:12px; color:var(--muted); margin-top:4px}
+    /* left */
+    .status-row{display:flex; gap:12px; align-items:center; margin-bottom:12px;}
+    .avatar{width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#4ade80); display:flex; align-items:center; justify-content:center; color:#001; font-weight:800; font-size:18px}
+    .user-name{font-size:16px; font-weight:700}
+    .user-uid{font-size:12px; color:var(--muted)}
+    .btn{background:linear-gradient(135deg,var(--accent),#0d7c3a); color:#001; padding:8px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:700}
 
-  .token-balance{font-size:28px; font-weight:800; text-align:center; margin:8px 0 12px; color:var(--accent); text-shadow:0 4px 18px rgba(34,197,94,0.12)}
-  .token-help{font-size:13px; color:var(--muted); text-align:center; margin-bottom:10px}
+    .token-balance{font-size:28px; font-weight:800; text-align:center; margin:8px 0 12px; color:var(--accent)}
+    .rules-list{display:flex; flex-direction:column; gap:10px}
+    .rule-item{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015)); border:1px solid rgba(255,255,255,0.02)}
+    .rule-desc{font-size:14px}
+    .claim-log{margin-top:12px; color:var(--muted); font-size:13px; max-height:180px; overflow:auto; padding-right:6px}
 
-  .rules-list{display:flex; flex-direction:column; gap:10px}
-  .rule-item{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015)); border:1px solid rgba(255,255,255,0.02)}
-  .rule-desc{font-size:14px}
-  .rule-meta{font-size:13px; color:var(--muted)}
+    /* right */
+    .nominal-grid{display:flex; gap:12px; flex-wrap:wrap}
+    .nominal-card { width:180px; border-radius:12px; padding:10px; position:relative; cursor:pointer; overflow:hidden; background:#08130b; border:1px solid rgba(255,255,255,0.03); }
+    .nominal-card .top { display:flex; gap:8px; align-items:center; }
+    .nominal-card img.icon { width:42px; height:42px; object-fit:contain; border-radius:6px; background:rgba(255,255,255,0.02); }
+    .nominal-card .count { font-size:13px; font-weight:700; color:var(--white); }
+    .nominal-card .price-overlay { position:absolute; right:10px; bottom:10px; background:rgba(0,0,0,0.35); padding:6px 8px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); font-weight:700; font-size:13px; color:var(--accent); }
 
-  .btn{background:linear-gradient(135deg,var(--accent),#0d7c3a); color:#001; padding:8px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:700}
-  .btn.ghost{background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--white)}
+    /* plus button on card */
+    .claim-plus-btn { position:absolute; top:8px; right:8px; width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.03); color:var(--white); cursor:pointer; font-weight:700; }
 
-  .claim-log{margin-top:12px; font-size:13px; color:var(--muted); max-height:160px; overflow:auto; padding-right:6px}
+    /* modal */
+    #nubiClaimModal { display:none; position:fixed; inset:0; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); z-index:9999; }
+    #nubiClaimModal .box { background:var(--card); padding:16px; border-radius:12px; min-width:320px; max-width:92%; color:var(--white); box-shadow:0 12px 40px rgba(0,0,0,0.7); }
+    .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
 
-  /* right column (wheel) */
-  .wheel-wrap{display:flex; flex-direction:column; align-items:center; gap:12px}
-  .wheel-container{position:relative; width:420px; height:420px; border-radius:50%; overflow:hidden; background:radial-gradient(circle,#1a2b1f 0%, #0b140b 60%); box-shadow:0 10px 40px rgba(0,0,0,0.6)}
-  .wheel{width:100%; height:100%; transition: transform 4s cubic-bezier(.17,.67,.12,.99); transform:rotate(0deg); position:relative}
-  .slice{position:absolute; left:50%; top:50%; width:50%; height:50%; transform-origin:100% 100%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:15px; text-align:center; padding:6px; clip-path: polygon(120% 0, 0 0, 70% 110%);}
-  .pointer{position:absolute; top:-28px; left:50%; transform:translateX(-50%); width:40px; height:40px; background:#8B4513; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index:5}
-  .controls{display:flex; gap:10px; align-items:center; margin-top:12px}
-  .spin-btn{padding:14px 28px; font-size:16px; font-weight:800; border-radius:10px; cursor:pointer}
-  .spin-btn.disable{opacity:.4; cursor:not-allowed}
+    .small-muted { font-size:13px; color:var(--muted) }
 
-  .winners, .total-prizes{margin-top:12px; padding:10px; border-radius:10px; background:rgba(255,255,255,0.02); width:100%}
-  .winners h4, .total-prizes h4{margin:0 0 8px 0; font-size:15px}
-  .winners ul{list-style:none; padding:0; margin:0; max-height:120px; overflow:auto}
-  .winners li{font-size:13px; padding:6px 0; border-bottom:1px dashed rgba(255,255,255,0.02); color:var(--muted)}
-
-  /* modal */
-  .modal-back{position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:999}
-  .modal{background:var(--card); border-radius:12px; padding:16px; width:420px; max-width:92%; box-shadow:0 12px 40px rgba(0,0,0,0.7)}
-  .modal h3{margin:0 0 8px 0}
-  .modal .note{font-size:13px; color:var(--muted); margin-bottom:8px}
-  .modal .actions{display:flex; gap:8px; justify-content:flex-end; margin-top:12px}
-
-  footer{grid-column:1/-1; text-align:center; color:var(--muted); margin-top:12px; font-size:13px}
-</style>
+    footer { grid-column:1/-1; text-align:center; margin-top:12px; color:var(--muted); font-size:13px; }
+  </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- left panel -->
+    <!-- LEFT -->
     <div class="panel">
       <div class="status-row">
         <div class="avatar" id="avatar">N</div>
-        <div class="user-info">
+        <div>
           <div class="user-name" id="displayName">Guest</div>
-          <div class="user-uid" id="displayUid">Belum login</div>
+          <div class="user-uid small-muted" id="displayUid">Belum login</div>
         </div>
-        <button class="btn" id="btnLogin">Masuk (Google)</button>
+        <div style="margin-left:auto">
+          <button class="btn" id="btnLogin">Masuk (Google)</button>
+        </div>
       </div>
 
       <div>
         <div class="token-balance" id="tokenBalance">0 TOKENS</div>
-        <div class="token-help">Setiap pembelian tertentu hari ini → klaim token 1x spin</div>
+        <div class="small-muted" style="text-align:center">Klaim token dari pembelian game yang valid hari ini.</div>
       </div>
 
-      <div style="margin-top:10px">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
-          <strong>Aturan Token</strong>
-          <button class="btn ghost" id="btnRefreshRules">Refresh</button>
-        </div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
 
-        <div class="rules-list" id="rulesList">
-          <!-- JS inject rules -->
-        </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+        <strong>Aturan Klaim</strong>
+        <button class="btn" id="btnRefresh">Refresh</button>
+      </div>
+      <div class="rules-list" id="rulesList">
+        <!-- JS inject rules -->
       </div>
 
-      <div class="claim-log" id="claimLog">
+      <div class="claim-log">
         <strong>Riwayat Klaim</strong>
-        <div id="claimItems" style="margin-top:8px; font-size:13px; color:var(--muted)">Belum ada klaim.</div>
+        <div id="claimItems" style="margin-top:8px">Belum ada klaim.</div>
       </div>
     </div>
 
-    <!-- right panel -->
-    <div class="panel wheel-wrap">
-      <div style="display:flex; align-items:center; gap:12px; width:100%; justify-content:space-between;">
-        <h2 style="margin:0">Roda NUBIATOKEN</h2>
-        <div style="text-align:right">
-          <div style="font-size:12px; color:var(--muted)">Token tersedia</div>
-          <div style="font-weight:800; font-size:16px" id="tokenSmall">0</div>
+    <!-- RIGHT -->
+    <div class="panel">
+      <h3 style="margin-top:0">Pilih Nominal — Klik tombol <b>+</b> untuk cek & klaim token</h3>
+
+      <div class="nominal-grid" id="nominalGrid">
+        <!-- contoh card -->
+        <div class="nominal-card" data-value="WEEKLY DIAMOND PASS" data-price="28102" data-bg="https://img.freepik.com/vektor-premium/polygon-cyber-abu-abu-gelap-hijau-pada-latar-belakang-jaring-lingkaran_33869-1327.jpg">
+          <div class="top">
+            <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="Diamond">
+            <div class="count">WDP x1</div>
+          </div>
+          <div class="price-overlay">Rp 28.102</div>
+        </div>
+
+        <!-- tambahin card lain sesuai kebutuhan -->
+        <div class="nominal-card" data-value="500" data-price="120000" data-bg="">
+          <div class="top">
+            <img class="icon" src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="diamond">
+            <div class="count">500 💎</div>
+          </div>
+          <div class="price-overlay">Rp 120.000</div>
+        </div>
+
+        <div class="nominal-card" data-value="250" data-price="70000" data-bg="">
+          <div class="top">
+            <img class="icon" src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="diamond">
+            <div class="count">250 💎</div>
+          </div>
+          <div class="price-overlay">Rp 70.000</div>
         </div>
       </div>
 
-      <div class="wheel-container">
-        <div class="pointer"></div>
-        <div class="wheel" id="wheel"></div>
-      </div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
 
-      <div class="controls">
-        <button id="spinBtn" class="btn spin-btn" style="background:linear-gradient(135deg,#FFD93D,#FFB84D);">SPIN (pakai 1 token)</button>
-        <div style="margin-left:8px; color:var(--muted)">atau klaim token via aturan di kiri → +</div>
-      </div>
-
-      <div class="winners">
-        <h4>Daftar Pemenang (recent)</h4>
-        <ul id="winnersList"><li>Tidak ada data</li></ul>
-      </div>
-
-      <div class="total-prizes">
-        <h4>Total Hadiah Diberikan</h4>
-        <div id="totalPrize">0 💎</div>
+      <div id="spinArea" style="display:none">
+        <!-- placeholder spin / rewards -->
+        <div class="small-muted">Di sini juga bisa ditambah Roda Spin yang memakai token (opsional)</div>
       </div>
     </div>
 
-    <footer>Catatan: Sistem ini butuh hak baca orders di Firestore. Pastikan domain di Authorized Domains & Firestore Rules mendukung.</footer>
+    <footer>Pastikan field `orders.createdAt` adalah Timestamp, `orders.userId`, `orders.nominalValue`, dan `orders.status`. Sesuaikan rules jika beda.</footer>
   </div>
 
-  <!-- modal -->
-  <div class="modal-back" id="modalBack">
-    <div class="modal" id="modal">
-      <h3 id="modalTitle">Ketentuan Klaim</h3>
-      <div class="note" id="modalNote">Memeriksa riwayat order...</div>
-      <div id="modalBody"></div>
-      <div class="actions">
-        <button class="btn ghost" id="modalClose">Tutup</button>
-        <button class="btn" id="modalClaim">Check & Claim</button>
+  <!-- Modal -->
+  <div id="nubiClaimModal">
+    <div class="box">
+      <div id="nubiClaimModalBody">...</div>
+      <div class="modal-actions">
+        <button id="nubiClaimClose" class="btn" style="background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.04)">Tutup</button>
+        <button id="nubiClaimBtn" class="btn">Claim Token</button>
       </div>
     </div>
   </div>
 
-<script type="module">
-  // Firebase imports (v10)
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signInWithPopup,
-    GoogleAuthProvider
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    getDocs,
-    Timestamp,
-    addDoc,
-    doc,
-    setDoc,
-    updateDoc,
-    serverTimestamp,
-    increment,
-    orderBy,
-    limit
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <!-- Firebase + app logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, collection, query, where, getDocs, orderBy, limit,
+      addDoc, doc, updateDoc, setDoc, serverTimestamp, Timestamp, increment
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // ===== CONFIG =====
-  const firebaseConfig = {
-    apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-    authDomain: "zestoreid-f9e85.firebaseapp.com",
-    projectId: "zestoreid-f9e85",
-    storageBucket: "zestoreid-f9e85.firebasestorage.app",
-    messagingSenderId: "426093692154",
-    appId: "1:426093692154:web:38c6e9c143af626a623543",
-    measurementId: "G-TS0YB9NYW8"
-  };
+    // ---------- CONFIG ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+      authDomain: "zestoreid-f9e85.firebaseapp.com",
+      projectId: "zestoreid-f9e85",
+      storageBucket: "zestoreid-f9e85.firebasestorage.app",
+      messagingSenderId: "426093692154",
+      appId: "1:426093692154:web:38c6e9c143af626a623543",
+      measurementId: "G-TS0YB9NYW8"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  // ===== RULES (editable) =====
-  // Map aturan nominal -> token count (example)
-  const tokenRules = [
-    { id: 'top500', label: 'Topup 500 💎 (harga >= 100000)', match: { nominalValue: '500', minPrice: 100000 }, tokens: 1 },
-    { id: 'top250', label: 'Topup 250 💎 (harga >= 70000)', match: { nominalValue: '250', minPrice: 70000 }, tokens: 1 },
-    { id: 'mlpromo', label: 'Topup Mobile Legends (promo khusus)', match: { game: 'mobile-legends' }, tokens: 1 }
-    // tambahin aturan sesuai kebutuhan
-  ];
+    // ---------- UI refs ----------
+    const btnLogin = document.getElementById('btnLogin');
+    const displayName = document.getElementById('displayName');
+    const displayUid = document.getElementById('displayUid');
+    const avatar = document.getElementById('avatar');
+    const tokenBalanceEl = document.getElementById('tokenBalance');
+    const rulesList = document.getElementById('rulesList');
+    const claimItems = document.getElementById('claimItems');
+    const nominalGrid = document.getElementById('nominalGrid');
+    const modalBack = document.getElementById('nubiClaimModal');
+    const modalBody = document.getElementById('nubiClaimModalBody');
+    const modalClose = document.getElementById('nubiClaimClose');
+    const modalClaimBtn = document.getElementById('nubiClaimBtn');
+    const btnRefresh = document.getElementById('btnRefresh');
 
-  // ===== UI refs =====
-  const btnLogin = document.getElementById('btnLogin');
-  const displayName = document.getElementById('displayName');
-  const displayUid = document.getElementById('displayUid');
-  const avatar = document.getElementById('avatar');
-  const tokenBalanceEl = document.getElementById('tokenBalance');
-  const tokenSmallEl = document.getElementById('tokenSmall');
-  const rulesList = document.getElementById('rulesList');
-  const modalBack = document.getElementById('modalBack');
-  const modal = document.getElementById('modal');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalNote = document.getElementById('modalNote');
-  const modalBody = document.getElementById('modalBody');
-  const modalClose = document.getElementById('modalClose');
-  const modalClaim = document.getElementById('modalClaim');
-  const claimItems = document.getElementById('claimItems');
-  const claimLog = document.getElementById('claimLog');
-  const spinBtn = document.getElementById('spinBtn');
-  const wheelEl = document.getElementById('wheel');
-  const winnersList = document.getElementById('winnersList');
-  const totalPrizeEl = document.getElementById('totalPrize');
+    // ---------- RULES (sesuaikan) ----------
+    // match object: nominalValue (string/number), minPrice (number), game (slug)
+    const tokenRules = [
+      { id:'top500', label:'Topup 500 💎 (>= Rp120.000)', match:{ nominalValue: '500', minPrice: 120000 }, tokens:1 },
+      { id:'top250', label:'Topup 250 💎 (>= Rp70.000)', match:{ nominalValue: '250', minPrice: 70000 }, tokens:1 },
+      { id:'wdp', label:'WEEKLY DIAMOND PASS (WDP x1)', match:{ nominalValue: 'WEEKLY DIAMOND PASS' }, tokens:1 }
+    ];
 
-  // Wheel prizes (simple)
-  const prizes = [
-    { name: 'Zonk', weight: 0.5, type:'none' },
-    { name: '5 💎', weight: 0.2, type:'diamond', value:5 },
-    { name: '20 💎', weight: 0.08, type:'diamond', value:20 },
-    { name: '1220 💎', weight: 0.02, type:'diamond', value:1220 },
-    { name: 'Epic Skin', weight: 0.05, type:'item', value:'epic-skin' },
-    { name: 'Voucher 10k', weight: 0.15, type:'voucher', value:10000 }
-  ];
+    // status sukses yang dianggap valid (sesuaikan)
+    const SUCCESS_STATUSES = ['completed','success','paid','delivered','fulfilled','initiated','done'];
 
-  // Draw wheel slices
-  function drawWheel(){
-    wheelEl.innerHTML = '';
-    const sliceAngle = 360 / prizes.length;
-    prizes.forEach((p, i) => {
-      const s = document.createElement('div');
-      s.className = 'slice';
-      s.style.transform = `rotate(${sliceAngle*i}deg)`;
-      s.style.background = `linear-gradient(45deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))`;
-      const c = document.createElement('div');
-      c.style.transform = `translate(-50%, -50%) rotate(${(sliceAngle/2)}deg)`;
-      c.style.position = 'absolute';
-      c.style.left = '50%';
-      c.style.top = '50%';
-      c.style.width = '40%';
-      c.style.textAlign = 'center';
-      c.style.fontWeight = '800';
-      c.textContent = p.name;
-      s.appendChild(c);
-      wheelEl.appendChild(s);
+    // ---------- Auth ----------
+    btnLogin.addEventListener('click', async () => {
+      if (auth.currentUser) { await signOut(auth); location.reload(); return; }
+      const provider = new GoogleAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+      } catch(err) {
+        console.error('Login error', err);
+        alert('Login gagal: ' + (err.message || err.code));
+      }
     });
-  }
 
-  drawWheel();
-
-  // ===== Auth handling =====
-  let currentUser = null;
-  let currentTokens = 0;
-
-  btnLogin.addEventListener('click', async ()=>{
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-    } catch(err) {
-      alert('Login gagal: ' + (err.message || err.code));
-      console.error(err);
-    }
-  });
-
-  onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
-    if (user) {
-      displayName.textContent = user.displayName || user.email || 'User';
-      displayUid.textContent = 'UID: ' + user.uid;
-      avatar.textContent = (user.displayName || 'U').slice(0,1).toUpperCase();
-      btnLogin.textContent = 'Logout';
-      btnLogin.onclick = async () => { await auth.signOut(); location.reload(); };
-      await refreshTokenBalance();
-      await renderRules();
-      await loadClaimLog();
-      await loadWinners();
-    } else {
-      displayName.textContent = 'Guest';
-      displayUid.textContent = 'Belum login';
-      avatar.textContent = 'N';
-      btnLogin.textContent = 'Masuk (Google)';
-      btnLogin.onclick = async () => {
-        const provider = new GoogleAuthProvider();
-        try { await signInWithPopup(auth, provider); } catch(e){ console.error(e); alert('Login gagal'); }
-      };
-    }
-  });
-
-  // ===== Helpers: get start & end of today (local) =====
-  function todayRangeTimestamps() {
-    const s = new Date();
-    s.setHours(0,0,0,0);
-    const e = new Date();
-    e.setHours(23,59,59,999);
-    return { start: Timestamp.fromDate(s), end: Timestamp.fromDate(e) };
-  }
-
-  // ===== Refresh token balance from users doc (field: nubiTokens) =====
-  async function refreshTokenBalance(){
-    if(!currentUser) { currentTokens = 0; tokenBalanceEl.textContent = '0 TOKENS'; tokenSmallEl.textContent='0'; return; }
-    try {
-      const uRef = doc(db, 'users', currentUser.uid);
-      const snap = await getDocs(query(collection(db, 'users'), where('__name__', '==', currentUser.uid), limit(1))).catch(()=>null);
-      // simpler: get via getDoc
-      // but since we imported getDocs not getDoc, use getDocs above; however better to use getDocs on doc? fallback:
-      // Use getDocs alternative: directly use getDocs with query on users where uid
-      // Simpler & reliable: try getDoc using dynamic import? We'll instead call getDocs with collection and where __name__.
-      // We'll attempt a safe approach:
-      const usersCol = collection(db, 'users');
-      const q = query(usersCol, where('__name__','==', currentUser.uid));
-      const res = await getDocs(q);
-      if (!res.empty) {
-        const data = res.docs[0].data();
-        currentTokens = Number(data.nubiTokens || 0);
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        displayName.textContent = user.displayName || user.email || 'User';
+        displayUid.textContent = 'UID: ' + user.uid;
+        avatar.textContent = (user.displayName || 'U').slice(0,1).toUpperCase();
+        btnLogin.textContent = 'Logout';
+        btnLogin.onclick = async () => { await signOut(auth); location.reload(); };
+        await refreshTokenBalance();
+        renderRulesUI();
+        await loadClaimLog();
       } else {
-        currentTokens = 0;
+        displayName.textContent = 'Guest';
+        displayUid.textContent = 'Belum login';
+        avatar.textContent = 'N';
+        btnLogin.textContent = 'Masuk (Google)';
       }
-    } catch (e) {
-      console.error('refreshTokenBalance err', e);
-      currentTokens = 0;
+    });
+
+    // ---------- Helpers ----------
+    function ts24hAgo() {
+      const now = new Date();
+      return Timestamp.fromDate(new Date(now.getTime() - 24*60*60*1000));
     }
-    tokenBalanceEl.textContent = `${currentTokens} TOKENS`;
-    tokenSmallEl.textContent = `${currentTokens}`;
-    updateSpinButtonState();
-  }
 
-  // ===== Render rules list UI =====
-  async function renderRules(){
-    rulesList.innerHTML = '';
-    tokenRules.forEach(rule => {
-      const el = document.createElement('div');
-      el.className = 'rule-item';
-      el.innerHTML = `<div>
-        <div class="rule-desc">${rule.label}</div>
-        <div class="rule-meta">${rule.tokens} token / sesuai aturan</div>
-      </div>
-      <div style="display:flex; gap:8px; align-items:center">
-        <button class="btn ghost" data-rule="${rule.id}" aria-label="info">?</button>
-        <button class="btn" data-rule-claim="${rule.id}">+</button>
-      </div>`;
-      rulesList.appendChild(el);
-    });
-
-    // attach events
-    rulesList.querySelectorAll('[data-rule]').forEach(b=>{
-      b.onclick = (ev) => {
-        const id = b.dataset.rule;
-        showRuleInfo(id);
-      };
-    });
-    rulesList.querySelectorAll('[data-rule-claim]').forEach(b=>{
-      b.onclick = (ev) => {
-        const id = b.dataset.ruleClaim;
-        openClaimModal(id);
-      };
-    });
-  }
-
-  // ===== Show rule info modal =====
-  function showRuleInfo(ruleId){
-    const rule = tokenRules.find(r=>r.id===ruleId);
-    if(!rule) return;
-    modalTitle.textContent = 'Aturan Token: ' + rule.label;
-    modalNote.textContent = 'Syarat: sistem akan cari order yang cocok di hari ini. Jika ditemukan invoice yang sukses dan belum diklaim, maka token akan diberikan.';
-    modalBody.innerHTML = `<pre style="white-space:pre-wrap; font-size:13px; color:var(--muted)">${JSON.stringify(rule.match, null, 2)}</pre>`;
-    modalClaim.style.display = 'none';
-    modalBack.style.display = 'flex';
-  }
-
-  // ===== Open claim modal for rule (check eligibility) =====
-  let currentClaimRule = null;
-  function openClaimModal(ruleId){
-    if(!currentUser){ alert('Login dulu pake Google biar bisa klaim token.'); return; }
-    const rule = tokenRules.find(r=>r.id===ruleId);
-    if(!rule) return;
-    currentClaimRule = rule;
-    modalTitle.textContent = 'Check & Claim: ' + rule.label;
-    modalNote.textContent = 'Mengecek order hari ini...';
-    modalBody.innerHTML = '<div style="color:var(--muted)">Tunggu sebentar...</div>';
-    modalClaim.style.display = 'inline-block';
-    modalBack.style.display = 'flex';
-    modalClaim.disabled = false;
-    modalClaim.textContent = 'Check & Claim';
-    // Will actually check when modalClaim clicked
-  }
-
-  modalClose.onclick = ()=>{ modalBack.style.display = 'none'; currentClaimRule = null; }
-
-  // ===== Check orders then claim =====
-  modalClaim.onclick = async ()=>{
-    if(!currentUser || !currentClaimRule) return;
-    modalClaim.disabled = true;
-    modalClaim.textContent = 'Memeriksa...';
-    modalNote.textContent = 'Mencari order yang memenuhi aturan di hari ini...';
-
-    try {
-      // Construct query for orders:
-      // orders collection likely has fields: userId, nominalValue, price, game, status, createdAt (serverTimestamp)
-      const { start, end } = todayRangeTimestamps();
-      const ordersCol = collection(db, 'orders');
-
-      // Build query constraints depending on match rules
-      let q = null;
-      // We'll attempt to match these common patterns:
-      // - match.nominalValue: exact match (string or number)
-      // - match.minPrice: price threshold
-      // - match.game: game slug
-
-      // We'll query by userId and createdAt range first, then filter client-side for other conditions,
-      // because Firestore has limited compound index needs.
-      q = query(ordersCol, where('userId','==', currentUser.uid), where('createdAt','>=', start), where('createdAt','<=', end), orderBy('createdAt','desc'));
-
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        modalBody.innerHTML = `<div style="color:var(--muted)">Tidak ada order hari ini.</div>`;
-        modalClaim.disabled = false;
-        modalClaim.textContent = 'Check & Claim';
-        modalNote.textContent = 'Tidak ditemukan order di hari ini.';
-        return;
+    // get user's token balance (users.nubiTokens)
+    async function refreshTokenBalance() {
+      if (!auth.currentUser) { tokenBalanceEl.textContent = '0 TOKENS'; return; }
+      try {
+        const uRef = doc(db, 'users', auth.currentUser.uid);
+        // try read via query on __name__ because we did not import getDoc; but getDocs+query works:
+        const q = query(collection(db, 'users'), where('__name__', '==', auth.currentUser.uid), limit(1));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          const data = snap.docs[0].data();
+          const bal = Number(data.nubiTokens || 0);
+          tokenBalanceEl.textContent = `${bal} TOKENS`;
+        } else {
+          tokenBalanceEl.textContent = '0 TOKENS';
+        }
+      } catch (e) {
+        console.error('refreshTokenBalance', e);
+        tokenBalanceEl.textContent = '0 TOKENS';
       }
+    }
 
-      // Acceptable success statuses (sesuaikan dengan status yang digunakan di project lu)
-      const successStatuses = ['completed','success','paid','delivered','fulfilled'];
-
-      // Find matching order that is successful and not yet claimed
-      let foundOrder = null;
-      let foundInvoice = null;
-      snap.docs.forEach(docSnap=>{
-        const d = docSnap.data();
-        // skip if not success status (if status field exists)
-        const s = (d.status||'').toString().toLowerCase();
-        if (d.status && !successStatuses.includes(s)) return;
-        // test conditions per rule.match
-        const m = currentClaimRule.match || {};
-        let ok = true;
-        if (m.nominalValue !== undefined) {
-          // nominalValue may be stored as number or string
-          if (String(d.nominalValue || d.nominalValue === 0 ? d.nominalValue : '') !== String(m.nominalValue)) ok = false;
-        }
-        if (m.minPrice !== undefined) {
-          const price = Number(d.price || d.amount_total || d.amount || 0);
-          if (isNaN(price) || price < Number(m.minPrice)) ok = false;
-        }
-        if (m.game !== undefined) {
-          const game = (d.game || '').toString().toLowerCase();
-          if (!game.includes(m.game)) ok = false;
-        }
-        if (ok && !foundOrder) { foundOrder = d; foundInvoice = docSnap.id || d.invoice || d.invoiceId || null; }
+    // render rules UI and attach handlers
+    function renderRulesUI() {
+      rulesList.innerHTML = '';
+      tokenRules.forEach(rule => {
+        const el = document.createElement('div');
+        el.className = 'rule-item';
+        el.innerHTML = `
+          <div>
+            <div class="rule-desc">${rule.label}</div>
+            <div class="small-muted">${rule.tokens} token</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <button class="btn" data-rule="${rule.id}" style="background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.04)">?</button>
+            <button class="btn" data-rule-claim="${rule.id}">+</button>
+          </div>
+        `;
+        rulesList.appendChild(el);
       });
 
-      if (!foundOrder) {
-        modalBody.innerHTML = `<div style="color:var(--muted)">Tidak ditemukan order yang memenuhi aturan token untuk hari ini.</div>`;
-        modalNote.textContent = 'Pastikan Anda sudah melakukan top-up sesuai aturan dan statusnya sukses.';
-        modalClaim.disabled = false;
-        modalClaim.textContent = 'Check & Claim';
-        return;
-      }
+      // attach events
+      rulesList.querySelectorAll('[data-rule]').forEach(b=>{
+        b.onclick = () => {
+          const id = b.dataset.rule;
+          const r = tokenRules.find(x=>x.id===id);
+          if (!r) return;
+          modalBody.innerHTML = `<div style="color:var(--muted)"><strong>${r.label}</strong><br>Aturan match: <pre style="white-space:pre-wrap">${JSON.stringify(r.match)}</pre></div>`;
+          modalClaimBtn.style.display = 'none';
+          modalBack.style.display = 'flex';
+        };
+      });
+      rulesList.querySelectorAll('[data-rule-claim]').forEach(b=>{
+        b.onclick = () => {
+          const id = b.dataset.ruleClaim;
+          const r = tokenRules.find(x=>x.id===id);
+          if (!r) return openClaimModal(r);
+          openClaimModal(r);
+        };
+      });
+    }
 
-      // Ensure we have an invoice id to uniquely identify order; prefer stored invoice field else doc id
-      const invoiceId = foundOrder.invoice || foundInvoice || null;
-      if(!invoiceId) {
-        modalBody.innerHTML = `<div style="color:var(--muted)">Ditemukan order tetapi tidak ada invoice id. Tidak bisa klaim otomatis.</div>`;
-        modalClaim.disabled = false;
-        modalClaim.textContent = 'Check & Claim';
-        return;
-      }
+    // attach + button to nominal cards and handlers
+    function injectPlusButtonsOnCards() {
+      document.querySelectorAll('.nominal-card').forEach(card=>{
+        // don't duplicate
+        if (card.querySelector('.claim-plus-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'claim-plus-btn';
+        btn.title = 'Cek & Klaim token';
+        btn.innerHTML = '+';
+        btn.onclick = (e) => { e.stopPropagation(); openClaimForCard(card); };
+        card.appendChild(btn);
+      });
+    }
 
-      // Check if already claimed (tokenClaims collection)
+    // show modal helper
+    function showModal(contentHtml, showClaim=true) {
+      modalBody.innerHTML = contentHtml;
+      modalClaimBtn.style.display = showClaim ? 'inline-block' : 'none';
+      modalClaimBtn.disabled = false;
+      modalClaimBtn.textContent = 'Claim Token';
+      modalBack.style.display = 'flex';
+    }
+
+    modalClose.addEventListener('click', ()=> modalBack.style.display = 'none');
+
+    btnRefresh.addEventListener('click', async ()=> {
+      await refreshTokenBalance();
+      await loadClaimLog();
+    });
+
+    // find eligible order for a uid and nominalValue in the last 24h
+    async function findEligibleOrderForNominal(uid, nominalValue) {
+      const ordersCol = collection(db, 'orders');
+      const since = ts24hAgo();
+      try {
+        const q = query(ordersCol, where('userId','==', uid), where('createdAt','>=', since), orderBy('createdAt','desc'), limit(50));
+        const snap = await getDocs(q);
+        if (snap.empty) return null;
+        for (const dSnap of snap.docs) {
+          const d = dSnap.data();
+          const status = (d.status || '').toString().toLowerCase();
+          if (d.status && !SUCCESS_STATUSES.includes(status)) continue;
+          // compare nominal; convert both to string
+          const nv = d.nominalValue !== undefined ? String(d.nominalValue) : '';
+          if (nv === String(nominalValue)) {
+            const invoice = d.invoice || dSnap.id;
+            return { invoiceId: invoice, orderData: d, orderDocId: dSnap.id };
+          }
+        }
+        return null;
+      } catch (e) {
+        console.error('findEligibleOrderForNominal err', e);
+        throw e;
+      }
+    }
+
+    // check if invoice already claimed in last 24h
+    async function wasInvoiceClaimedRecently(uid, invoiceId) {
+      if (!invoiceId) return null;
       const claimsCol = collection(db, 'tokenClaims');
-      const qClaim = query(claimsCol, where('invoice','==', invoiceId), where('uid','==', currentUser.uid));
-      const claimSnap = await getDocs(qClaim);
-      if (!claimSnap.empty) {
-        modalBody.innerHTML = `<div style="color:var(--muted)">Order dengan invoice <b>${invoiceId}</b> sudah pernah diklaim.</div>`;
-        modalNote.textContent = 'Token sudah diklaim untuk invoice tersebut.';
-        modalClaim.disabled = false;
-        modalClaim.textContent = 'Tutup';
-        return;
+      const since = ts24hAgo();
+      try {
+        const q = query(claimsCol, where('invoice','==', invoiceId), where('uid','==', uid), where('claimedAt','>=', since), limit(1));
+        const snap = await getDocs(q);
+        if (!snap.empty) return snap.docs[0].data();
+        return null;
+      } catch (e) {
+        console.error('wasInvoiceClaimedRecently', e);
+        throw e;
       }
+    }
 
-      // All good — create claim record and increment user's token count
+    // claim token for invoice
+    async function claimTokenForInvoice(uid, invoiceId, ruleId='auto', tokens=1) {
       // create tokenClaims doc
       await addDoc(collection(db, 'tokenClaims'), {
-        uid: currentUser.uid,
-        invoice: invoiceId,
-        nominalValue: foundOrder.nominalValue || null,
-        price: foundOrder.price || foundOrder.amount_total || null,
-        ruleId: currentClaimRule.id,
-        tokens: currentClaimRule.tokens || 1,
-        claimedAt: serverTimestamp()
+        uid, invoice: invoiceId, ruleId, tokens, claimedAt: serverTimestamp()
       });
-
-      // increment user's token field (nubiTokens)
-      const userRef = doc(db, 'users', currentUser.uid);
+      // increment user token
+      const uRef = doc(db, 'users', uid);
       try {
-        await updateDoc(userRef, { nubiTokens: increment(currentClaimRule.tokens || 1) });
-      } catch(e) {
-        // if update fails (doc may not exist), create users doc with nubiTokens
-        await setDoc(userRef, { nubiTokens: currentClaimRule.tokens || 1 }, { merge: true });
+        await updateDoc(uRef, { nubiTokens: increment(tokens) });
+      } catch (e) {
+        // if update fail, set doc or merge
+        await setDoc(uRef, { nubiTokens: tokens }, { merge: true });
       }
-
-      modalBody.innerHTML = `<div style="color:var(--muted)">Berhasil! Token sebanyak <b>${currentClaimRule.tokens}</b> telah ditambahkan ke akun Anda. Invoice: <b>${invoiceId}</b></div>`;
-      modalNote.textContent = 'Token sudah masuk ke akun Anda.';
-      await refreshTokenBalance();
-      await loadClaimLog();
-      modalClaim.disabled = false;
-      modalClaim.textContent = 'Tutup';
-    } catch (err) {
-      console.error('claim err', err);
-      modalBody.innerHTML = `<div style="color:#ff9b9b">Terjadi kesalahan saat klaim: ${err.message || err.code}</div>`;
-      modalClaim.disabled = false;
-      modalClaim.textContent = 'Check & Claim';
     }
-  };
 
-  // ===== load claim log (last 20) =====
-  async function loadClaimLog(){
-    if(!currentUser) { claimItems.innerHTML = 'Belum login.'; return; }
-    try {
-      const claimsCol = collection(db, 'tokenClaims');
-      const q = query(claimsCol, where('uid','==', currentUser.uid), orderBy('claimedAt','desc'), limit(50));
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        claimItems.innerHTML = 'Belum ada klaim.';
-        return;
+    // open claim process for a rule (from rules list)
+    async function openClaimModal(rule) {
+      if (!auth.currentUser) { alert('Login dulu supaya bisa klaim token.'); return; }
+      const uid = auth.currentUser.uid;
+      showModal(`<div class="small-muted">Mengecek order sesuai aturan: <strong>${rule.label}</strong><br>Tunggu sebentar...</div>`, false);
+      try {
+        const eligible = await findEligibleOrderForNominal(uid, rule.match.nominalValue || rule.match.game || rule.match.nominal);
+        if (!eligible) {
+          showModal(`<div style="color:#f7c0c0">Tidak ditemukan order yang memenuhi aturan hari ini.</div>`, false);
+          return;
+        }
+        const invoiceId = eligible.invoiceId;
+        const prev = await wasInvoiceClaimedRecently(uid, invoiceId);
+        if (prev) {
+          // compute remaining time until next claim allowed
+          const claimedAt = prev.claimedAt && prev.claimedAt.toDate ? prev.claimedAt.toDate() : null;
+          if (claimedAt) {
+            const nextAllowed = new Date(claimedAt.getTime() + 24*60*60*1000);
+            const diff = nextAllowed - new Date();
+            const hrs = Math.max(0, Math.floor(diff / (1000*60*60)));
+            const mins = Math.max(0, Math.floor((diff % (1000*60*60)) / (1000*60)));
+            showModal(`<div style="color:#f7c0c0">Invoice <strong>${invoiceId}</strong> sudah diklaim. Bisa klaim lagi setelah <strong>${hrs} jam ${mins} menit</strong>.</div>`, false);
+          } else {
+            showModal(`<div style="color:#f7c0c0">Invoice ${invoiceId} sudah diklaim sebelumnya.</div>`, false);
+          }
+          return;
+        }
+        // eligible and not claimed → show claim button
+        showModal(`<div style="color:var(--muted)">Ditemukan invoice <strong>${invoiceId}</strong> — siap diklaim untuk <strong>${rule.tokens} token</strong>.</div>`, true);
+        modalClaimBtn.onclick = async () => {
+          modalClaimBtn.disabled = true;
+          modalClaimBtn.textContent = 'Memproses...';
+          try {
+            await claimTokenForInvoice(uid, invoiceId, rule.id, rule.tokens || 1);
+            await refreshTokenBalance();
+            await loadClaimLog();
+            modalClaimBtn.textContent = 'Berhasil!';
+            setTimeout(()=> modalBack.style.display = 'none', 800);
+          } catch (e) {
+            console.error(e);
+            modalClaimBtn.disabled = false; modalClaimBtn.textContent = 'Claim Token';
+            alert('Gagal klaim token: ' + (e.message || e.code || e));
+          }
+        };
+      } catch (e) {
+        console.error(e);
+        showModal(`<div style="color:#f7c0c0">Terjadi kesalahan: ${e.message || e.code || e}</div>`, false);
       }
-      const lines = [];
-      snap.docs.forEach(s=>{
-        const d = s.data();
-        const t = d.claimedAt && d.claimedAt.toDate ? d.claimedAt.toDate().toLocaleString() : '-';
-        lines.push(`<div style="padding:6px 0; border-bottom:1px dashed rgba(255,255,255,0.02)">${t} — Invoice: ${d.invoice || '-'} → ${d.tokens} token (rule: ${d.ruleId})</div>`);
-      });
-      claimItems.innerHTML = lines.join('');
-    } catch (e) {
-      console.error(e);
-      claimItems.innerHTML = 'Gagal muat klaim.';
-    }
-  }
-
-  // ===== Spin logic: consume token, spin the wheel, save spin record =====
-  function pickPrizeByWeighted() {
-    const totalW = prizes.reduce((s,p)=>s+p.weight,0);
-    let r = Math.random() * totalW;
-    for (const p of prizes) {
-      if (r < p.weight) return p;
-      r -= p.weight;
-    }
-    return prizes[0];
-  }
-
-  async function doSpin(){
-    if(!currentUser){ alert('Login dulu.'); return; }
-    if(currentTokens <= 0){ alert('Token tidak cukup. Klaim dulu.'); return; }
-
-    // consume 1 token (decrement)
-    const userRef = doc(db, 'users', currentUser.uid);
-    try {
-      await updateDoc(userRef, { nubiTokens: increment(-1) });
-    } catch(e) {
-      console.error('consume token update failed', e);
-      alert('Gagal mengurangi token. Coba lagi.');
-      return;
-    }
-    await refreshTokenBalance();
-
-    // animate wheel
-    const prize = pickPrizeByWeighted();
-    const prizeIndex = prizes.indexOf(prize);
-    const sliceAngle = 360 / prizes.length;
-    const extra = 5; // full rotations
-    const targetDeg = extra*360 + (360 - (prizeIndex * sliceAngle) - sliceAngle/2) + Math.floor(Math.random()*sliceAngle/2);
-    wheelEl.style.transition = 'transform 4s cubic-bezier(.17,.67,.12,.99)';
-    wheelEl.style.transform = `rotate(${targetDeg}deg)`;
-
-    // Save spin record
-    try {
-      await addDoc(collection(db, 'spins'), {
-        uid: currentUser.uid,
-        prize: prize.name,
-        prizeType: prize.type,
-        prizeValue: prize.value || null,
-        createdAt: serverTimestamp()
-      });
-    } catch(e) {
-      console.error('save spin record', e);
     }
 
-    // After spin ends
-    setTimeout(async ()=>{
-      // display result
-      alert(`Hasil spin: ${prize.name}`);
-      // update winners UI & totals
-      await loadWinners();
-    }, 4200);
-  }
-
-  // update spin button enabled state
-  function updateSpinButtonState(){
-    if(currentTokens > 0) {
-      spinBtn.disabled = false;
-      spinBtn.classList.remove('disable');
-    } else {
-      spinBtn.disabled = true;
-      spinBtn.classList.add('disable');
+    // open claim process for a clicked card
+    async function openClaimForCard(card) {
+      if (!auth.currentUser) { alert('Login dulu supaya bisa klaim token.'); return; }
+      const uid = auth.currentUser.uid;
+      const nominal = card.dataset.value || card.getAttribute('data-value') || '';
+      // find matching rule based on nominalValue
+      const rule = tokenRules.find(r => String(r.match.nominalValue || r.match.game || '').toLowerCase() === String(nominal).toLowerCase())
+                 || tokenRules.find(r => String(r.match.nominalValue) === String(nominal))
+                 || tokenRules[0]; // fallback
+      // show checking modal
+      showModal(`<div class="small-muted">Mengecek apakah kamu membeli <strong>${nominal}</strong> hari ini...</div>`, false);
+      try {
+        const eligible = await findEligibleOrderForNominal(uid, nominal);
+        if (!eligible) {
+          showModal(`<div style="color:#f7c0c0">Tidak ditemukan pembelian <strong>${nominal}</strong> dalam 24 jam terakhir dengan status sukses.</div>`, false);
+          return;
+        }
+        const invoiceId = eligible.invoiceId;
+        const prev = await wasInvoiceClaimedRecently(uid, invoiceId);
+        if (prev) {
+          const claimedAt = prev.claimedAt && prev.claimedAt.toDate ? prev.claimedAt.toDate() : null;
+          if (claimedAt) {
+            const nextAllowed = new Date(claimedAt.getTime() + 24*60*60*1000);
+            const diff = nextAllowed - new Date();
+            const hrs = Math.max(0, Math.floor(diff / (1000*60*60)));
+            const mins = Math.max(0, Math.floor((diff % (1000*60*60)) / (1000*60)));
+            showModal(`<div style="color:#f7c0c0">Invoice <strong>${invoiceId}</strong> sudah diklaim. Bisa klaim lagi setelah <strong>${hrs} jam ${mins} menit</strong>.</div>`, false);
+          } else {
+            showModal(`<div style="color:#f7c0c0">Invoice ${invoiceId} sudah diklaim sebelumnya.</div>`, false);
+          }
+          return;
+        }
+        // ready to claim
+        showModal(`<div style="color:var(--muted)">Ditemukan invoice <strong>${invoiceId}</strong> — tekan Claim Token untuk menerima <strong>${rule.tokens} token</strong>.</div>`, true);
+        modalClaimBtn.onclick = async () => {
+          modalClaimBtn.disabled = true; modalClaimBtn.textContent = 'Memproses...';
+          try {
+            await claimTokenForInvoice(uid, invoiceId, `nominal-${nominal}`, rule.tokens || 1);
+            await refreshTokenBalance();
+            await loadClaimLog();
+            modalClaimBtn.textContent = 'Berhasil!';
+            setTimeout(()=> modalBack.style.display = 'none', 800);
+          } catch (e) {
+            console.error(e);
+            modalClaimBtn.disabled = false; modalClaimBtn.textContent = 'Claim Token';
+            alert('Gagal klaim token: ' + (e.message || e.code || e));
+          }
+        };
+      } catch (e) {
+        console.error(e);
+        showModal(`<div style="color:#f7c0c0">Terjadi kesalahan: ${e.message || e.code || e}</div>`, false);
+      }
     }
-  }
 
-  spinBtn.addEventListener('click', async ()=> {
-    spinBtn.disabled = true;
-    await doSpin();
-    setTimeout(()=>{ spinBtn.disabled = false; }, 4500);
-  });
-
-  // ===== load winners (last spins) & total prize calc =====
-  async function loadWinners(){
-    try {
-      const spinsCol = collection(db, 'spins');
-      const q = query(spinsCol, orderBy('createdAt','desc'), limit(10));
-      const snap = await getDocs(q);
-      const arr = [];
-      let totalDiamonds = 0;
-      if (!snap.empty) {
-        snap.docs.forEach(s=>{
-          const d = s.data();
-          const name = (d.uid || 'user').slice(0,6)+'...';
-          const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '-';
-          arr.push(`<li>${name} — ${d.prize} • ${when}</li>`);
-          if (d.prizeType === 'diamond' && d.prizeValue) totalDiamonds += Number(d.prizeValue);
+    // load claim log for user
+    async function loadClaimLog() {
+      if (!auth.currentUser) { claimItems.innerHTML = 'Belum login.'; return; }
+      try {
+        const col = collection(db, 'tokenClaims');
+        const q = query(col, where('uid','==', auth.currentUser.uid), orderBy('claimedAt','desc'), limit(50));
+        const snap = await getDocs(q);
+        if (snap.empty) { claimItems.innerHTML = 'Belum ada klaim.'; return; }
+        const lines = snap.docs.map(d=>{
+          const data = d.data();
+          const t = data.claimedAt && data.claimedAt.toDate ? data.claimedAt.toDate().toLocaleString() : '-';
+          return `<div style="padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.02)">${t} — Invoice: ${data.invoice || '-'} → ${data.tokens || 0} token</div>`;
         });
-      } else {
-        arr.push('<li>Tidak ada pemenang</li>');
+        claimItems.innerHTML = lines.join('');
+      } catch (e) {
+        console.error('loadClaimLog', e);
+        claimItems.innerHTML = 'Gagal muat klaim.';
       }
-      winnersList.innerHTML = arr.join('');
-      totalPrizeEl.textContent = `${totalDiamonds} 💎`;
-    } catch(e) {
-      console.error('load winners', e);
-      winnersList.innerHTML = '<li>Error memuat pemenang</li>';
     }
-  }
 
-  // ===== init =====
-  (function initUI(){
-    // populate rules html initially
-    renderRules();
+    // initial inject + attach
+    (function init(){
+      injectPlusButtonsOnCards();
+      renderRulesUI();
 
-    // clicking rule info handled inside renderRules
-    // modal closing done above
-    document.getElementById('btnRefreshRules').addEventListener('click', async ()=>{
-      await refreshTokenBalance();
-      await loadClaimLog();
-    });
+      // attach generic click to cards to highlight selection (optional)
+      nominalGrid.querySelectorAll('.nominal-card').forEach(c=>{
+        c.addEventListener('click', ()=> {
+          nominalGrid.querySelectorAll('.nominal-card').forEach(x=>x.style.outline='none');
+          c.style.outline = '2px solid rgba(255,255,255,0.04)';
+        });
+      });
+    })();
 
-    // draw wheel initial
-    drawWheel();
+    // expose attach function (optional, if you want to call from outside)
+    window.attachNominalClaimHandlers = function(){ injectPlusButtonsOnCards(); renderRulesUI(); };
 
-    // initial winners load
-    loadWinners();
-  })();
+    // auto-refresh small after login/out
+    setInterval(()=> { if (auth.currentUser) { refreshTokenBalance(); loadClaimLog(); } }, 1000*60*2);
 
-</script>
+  </script>
 </body>
 </html>
