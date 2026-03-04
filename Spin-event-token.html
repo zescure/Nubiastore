@@ -3,171 +3,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Token Admin — NUBIASTORE</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Redeem Invoice → 1 Token — NUBIASTORE</title>
   <style>
-    :root{
-      --bg:#06110a; --card:#0e1912; --accent:#16a34a; --muted:#9aa79a; --white:#fff;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; min-height:100vh; padding:28px;
-      font-family:Rajdhani,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:linear-gradient(180deg,#04130a 0%, #06110a 100%);
-      color:var(--white);
-    }
-    .wrap{max-width:1200px; margin:0 auto; display:grid; grid-template-columns:360px 1fr; gap:20px; align-items:start;}
-    .panel{background:var(--card); border-radius:12px; padding:16px; border:1px solid rgba(255,255,255,0.02); box-shadow:0 10px 30px rgba(0,0,0,0.6)}
-    .status-row{display:flex; gap:12px; align-items:center; margin-bottom:12px}
-    .avatar{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4ade80);display:flex;align-items:center;justify-content:center;color:#001;font-weight:800;font-size:18px}
-    .user-name{font-size:16px;font-weight:700}
-    .small-muted{font-size:13px;color:var(--muted)}
-    .btn{background:linear-gradient(135deg,var(--accent),#0d7c3a); color:#001; padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
-    .token-balance{text-align:center;font-size:26px;font-weight:800;color:var(--accent);margin:8px 0}
-    .rules-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
-    .rule-item{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02)}
-    .nominal-grid{display:flex;gap:12px;flex-wrap:wrap}
-    .nominal-card{width:200px;border-radius:12px;padding:12px;position:relative;background:#08130b;border:1px solid rgba(255,255,255,0.03);cursor:default}
-    .nominal-card .top{display:flex;gap:10px;align-items:center}
-    .nominal-card img.icon{width:48px;height:48px;border-radius:8px;object-fit:cover;background:rgba(255,255,255,0.02)}
-    .nominal-card .count{font-weight:700}
-    .price-overlay{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,0.35);padding:6px 8px;border-radius:8px;font-weight:700;color:var(--accent)}
-    .card-actions{display:flex;gap:8px;margin-top:10px}
-    .link-up{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:6px 8px;border-radius:8px;color:var(--white);text-decoration:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
-    /* admin table */
-    table{width:100%;border-collapse:collapse;font-size:14px}
-    th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
-    th{font-weight:700;color:var(--muted)}
-    .admin-actions{display:flex;gap:6px}
-    input[type="number"]{width:80px;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--white)}
-    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px}
-    footer{grid-column:1/-1;text-align:center;color:var(--muted);margin-top:12px}
-    .admin-panel-toggle{margin-left:auto}
-    .note{font-size:13px;color:var(--muted);margin-top:8px}
-    /* responsive */
-    @media (max-width:900px){ .wrap{grid-template-columns:1fr; padding:10px} .nominal-card{width:48%} }
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;background:#06110a;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .box{width:100%;max-width:720px;background:#0e1912;padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 12px;font-size:18px}
+    .row{display:flex;gap:8px;margin-bottom:12px}
+    input[type="text"]{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
+    button{padding:10px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#16a34a,#0d7c3a);color:#001;font-weight:700;cursor:pointer}
+    .muted{color:#9aa79a;font-size:13px}
+    pre{white-space:pre-wrap;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
+    .ok{color:#9ae6b4}
+    .err{color:#ff9b9b}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <!-- LEFT: User status + rules -->
-    <div class="panel" id="leftPanel">
-      <div class="status-row">
-        <div class="avatar" id="avatar">N</div>
-        <div>
-          <div class="user-name" id="displayName">Guest</div>
-          <div class="small-muted" id="displayUid">Belum login</div>
-        </div>
-        <div style="margin-left:auto">
-          <button class="btn" id="btnLogin">Masuk (Google)</button>
-        </div>
-      </div>
+  <div class="box">
+    <h1>Redeem Invoice → Dapat 1 Token</h1>
+    <div class="muted">Masukkan kode invoice dari transaksi (contoh: INVC-ML-1772595547702-YE1HLU). 1 invoice = 1 token. Siapapun boleh redeem, invoice hanya bisa dipakai sekali.</div>
 
-      <div>
-        <div class="token-balance" id="tokenBalance">0 TOKENS</div>
-        <div class="small-muted" id="tokenHint">Token ditambahkan oleh admin bila pembelian valid.</div>
-      </div>
-
-      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
-
-      <div style="display:flex;align-items:center;gap:8px">
-        <strong>Aturan Klaim</strong>
-        <button class="btn" id="btnRefresh">Refresh</button>
-      </div>
-
-      <div class="rules-list" id="rulesList"></div>
-
-      <div class="note">Perubahan token hanya dilakukan oleh admin. Jika kamu sudah membeli item yang sesuai aturan, minta admin untuk menambah token.</div>
+    <div class="row" style="margin-top:14px">
+      <input id="invoiceInput" placeholder="Masukkan kode invoice..." />
+      <button id="btnRedeem">Redeem</button>
     </div>
 
-    <!-- RIGHT: Nominal grid and admin panel -->
-    <div class="panel" id="rightPanel">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-        <h3 style="margin:0">Nominal</h3>
-        <div class="admin-panel-toggle" id="adminToggleWrap"></div>
-      </div>
-
-      <div class="nominal-grid" id="nominalGrid">
-        <!-- sample cards -->
-        <div class="nominal-card" data-value="WEEKLY DIAMOND PASS" data-price="28102" data-topup-url="free-fire.html">
-          <div class="top">
-            <img class="icon" src="https://www.pngall.com/wp-content/uploads/18/Mobile-Legends-Diamond-Background-PNG.png" alt="diamond">
-            <div class="count">WDP x1</div>
-          </div>
-          <div class="price-overlay">Rp 28.102</div>
-          <div class="card-actions">
-            <a class="link-up" data-topup>Top Up</a>
-          </div>
-        </div>
-
-        <div class="nominal-card" data-value="500" data-price="120000" data-topup-url="mobile-legends.html">
-          <div class="top">
-            <img class="icon" src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="diamond">
-            <div class="count">500 💎</div>
-          </div>
-          <div class="price-overlay">Rp 120.000</div>
-          <div class="card-actions">
-            <a class="link-up" data-topup>Top Up</a>
-          </div>
-        </div>
-
-        <div class="nominal-card" data-value="250" data-price="70000" data-topup-url="mobile-legends.html">
-          <div class="top">
-            <img class="icon" src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="diamond">
-            <div class="count">250 💎</div>
-          </div>
-          <div class="price-overlay">Rp 70.000</div>
-          <div class="card-actions">
-            <a class="link-up" data-topup>Top Up</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Admin panel (hidden unless admin) -->
-      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
-      <div id="adminPanel" style="display:none">
-        <h4 style="margin:0 0 8px 0">Admin — Orders 24 jam terakhir (match rules)</h4>
-        <div class="small-muted" style="margin-bottom:8px">Lihat UID yang valid hari ini dan tambahkan token manual.</div>
-
-        <table>
-          <thead><tr><th>Invoice</th><th>UID</th><th>Nominal</th><th>Price</th><th>Waktu</th><th>Actions</th></tr></thead>
-          <tbody id="adminOrdersBody">
-            <tr><td colspan="6" class="small-muted">Belum ada data.</td></tr>
-          </tbody>
-        </table>
-
-        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
-          <button class="btn" id="btnReloadOrders">Reload Orders</button>
-          <div class="small-muted">Limit: <span id="adminLimit">500</span> dokumen</div>
-        </div>
-      </div>
+    <div class="row">
+      <button id="btnLogin">Login (Google)</button>
+      <div id="status" style="margin-left:12px" class="muted">Status: belum login</div>
     </div>
 
-    <footer>Admin manual flow — pastikan hanya admin yang terdaftar di ADMIN_UIDS bisa menambah token.</footer>
-  </div>
+    <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
 
-  <!-- Modal minimal -->
-  <div id="modal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999">
-    <div style="background:var(--card);padding:16px;border-radius:10px;min-width:320px;color:var(--white)">
-      <div id="modalContent"></div>
-      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
-        <button id="modalClose" class="btn" style="background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.04)">Tutup</button>
-        <button id="modalOk" class="btn">OK</button>
-      </div>
+    <div>
+      <strong>Log:</strong>
+      <pre id="log" style="height:160px;overflow:auto">Ready.</pre>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
-      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getFirestore, collection, query, where, getDocs, orderBy, limit,
-      addDoc, doc, updateDoc, setDoc, serverTimestamp, Timestamp, increment
+      getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    /* -------------- CONFIG -------------- */
+    // === CONFIG ===
     const firebaseConfig = {
       apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
       authDomain: "zestoreid-f9e85.firebaseapp.com",
@@ -178,263 +58,129 @@
       measurementId: "G-TS0YB9NYW8"
     };
 
-    // ADMIN UIDs — tambahin UID admin di sini
-    const ADMIN_UIDS = ["8z9b0u1LYfTVM0sCP7qHXbYHvGi1"]; // <-- contoh, ubah sesuai kebutuhan
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    /* -------------- UI refs -------------- */
+    // UI
+    const invoiceInput = document.getElementById('invoiceInput');
+    const btnRedeem = document.getElementById('btnRedeem');
     const btnLogin = document.getElementById('btnLogin');
-    const displayName = document.getElementById('displayName');
-    const displayUid = document.getElementById('displayUid');
-    const avatar = document.getElementById('avatar');
-    const tokenBalanceEl = document.getElementById('tokenBalance');
-    const rulesList = document.getElementById('rulesList');
-    const nominalGrid = document.getElementById('nominalGrid');
-    const btnRefresh = document.getElementById('btnRefresh');
-    const adminPanel = document.getElementById('adminPanel');
-    const adminOrdersBody = document.getElementById('adminOrdersBody');
-    const adminToggleWrap = document.getElementById('adminToggleWrap');
-    const btnReloadOrders = document.getElementById('btnReloadOrders');
-    const adminLimitEl = document.getElementById('adminLimit');
+    const statusEl = document.getElementById('status');
+    const logEl = document.getElementById('log');
 
-    const modal = document.getElementById('modal');
-    const modalContent = document.getElementById('modalContent');
-    const modalClose = document.getElementById('modalClose');
-    const modalOk = document.getElementById('modalOk');
+    function log(msg) { logEl.textContent = (new Date().toLocaleTimeString()) + ' — ' + msg + "\n" + logEl.textContent; }
 
-    /* -------------- Rules (same as before) -------------- */
-    const tokenRules = [
-      { id:'top500', label:'Topup 500 💎 (>= Rp120.000)', match:{ nominalValue: '500', minPrice: 120000 }, tokens:1 },
-      { id:'top250', label:'Topup 250 💎 (>= Rp70.000)', match:{ nominalValue: '250', minPrice: 70000 }, tokens:1 },
-      { id:'wdp', label:'WEEKLY DIAMOND PASS (WDP x1)', match:{ nominalValue: 'WEEKLY DIAMOND PASS' }, tokens:1 }
-    ];
-
-    const SUCCESS_STATUSES = ['completed','success','paid','delivered','fulfilled','initiated','done'];
-
-    /* -------------- Auth -------------- */
+    // login
     btnLogin.addEventListener('click', async () => {
-      if (auth.currentUser) { await signOut(auth); location.reload(); return; }
       const provider = new GoogleAuthProvider();
       try {
         await signInWithPopup(auth, provider);
-      } catch(e) { console.error(e); alert('Login gagal: ' + (e.message||e.code)); }
+      } catch (e) {
+        alert('Login gagal: ' + (e.message || e.code));
+      }
     });
 
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, user => {
       if (user) {
-        displayName.textContent = user.displayName || user.email || 'User';
-        displayUid.textContent = 'UID: ' + user.uid;
-        avatar.textContent = (user.displayName || 'U').slice(0,1).toUpperCase();
+        statusEl.textContent = `Login: ${user.displayName||user.email} (UID:${user.uid})`;
         btnLogin.textContent = 'Logout';
-        btnLogin.onclick = async () => { await signOut(auth); location.reload(); };
-
-        await refreshTokenBalance();
-        renderRulesUI();
-        attachTopUpLinks();
-        // show admin panel toggle if admin
-        if (ADMIN_UIDS.includes(user.uid)) {
-          showAdminToggle();
-          // optionally auto-load orders
-          await loadAdminOrders();
-        } else {
-          adminPanel.style.display = 'none';
-          adminToggleWrap.innerHTML = '';
-        }
+        btnLogin.onclick = async () => { await auth.signOut(); location.reload(); };
+        log('User logged in: ' + (user.email || user.uid));
       } else {
-        displayName.textContent = 'Guest';
-        displayUid.textContent = 'Belum login';
-        avatar.textContent = 'N';
-        btnLogin.textContent = 'Masuk (Google)';
-        adminPanel.style.display = 'none';
-        adminToggleWrap.innerHTML = '';
+        statusEl.textContent = 'Belum login';
+        btnLogin.textContent = 'Login (Google)';
+        btnLogin.onclick = () => { signInWithPopup(auth, new GoogleAuthProvider()).catch(e=>alert(e.message)); };
       }
     });
 
-    /* -------------- Helpers -------------- */
-    async function refreshTokenBalance() {
-      if (!auth.currentUser) { tokenBalanceEl.textContent = '0 TOKENS'; return; }
+    // redeem flow
+    btnRedeem.addEventListener('click', async () => {
+      const code = (invoiceInput.value || '').trim();
+      if (!code) { alert('Masukkan kode invoice.'); return; }
+      if (!auth.currentUser) { alert('Login dulu supaya bisa redeem.'); return; }
+      btnRedeem.disabled = true;
+      log('Mulai redeem: ' + code);
+
       try {
-        // read users doc by id
-        const usersQ = query(collection(db,'users'), where('__name__','==', auth.currentUser.uid), limit(1));
-        const snap = await getDocs(usersQ);
-        if (!snap.empty) {
-          const d = snap.docs[0].data();
-          tokenBalanceEl.textContent = `${Number(d.nubiTokens||0)} TOKENS`;
-        } else tokenBalanceEl.textContent = '0 TOKENS';
-      } catch(e) {
-        console.error('refreshTokenBalance', e);
-        tokenBalanceEl.textContent = '0 TOKENS';
-      }
-    }
-
-    function renderRulesUI(){
-      rulesList.innerHTML = '';
-      tokenRules.forEach(r => {
-        const node = document.createElement('div');
-        node.className = 'rule-item';
-        node.innerHTML = `<div><div style="font-weight:700">${r.label}</div><div class="small-muted">${r.tokens} token</div></div><div><span class="badge">match: ${JSON.stringify(r.match).replace(/["{}]/g,'')}</span></div>`;
-        rulesList.appendChild(node);
-      });
-    }
-
-    function attachTopUpLinks(){
-      nominalGrid.querySelectorAll('[data-topup]').forEach(a=>{
-        const card = a.closest('.nominal-card');
-        const url = card.getAttribute('data-topup-url') || '/'; // sesuaikan url
-        a.addEventListener('click', (e)=>{
-          e.preventDefault();
-          // redirect to top up page (bisa ubah jadi absolute url)
-          window.location.href = url;
-        });
-      });
-    }
-
-    btnRefresh.addEventListener('click', async ()=>{
-      await refreshTokenBalance();
-      if (auth.currentUser && ADMIN_UIDS.includes(auth.currentUser.uid)) {
-        await loadAdminOrders();
-      }
-    });
-
-    /* -------------- Admin UI -------------- */
-    function showAdminToggle(){
-      adminToggleWrap.innerHTML = '<button class="btn" id="openAdminBtn">Open Admin Panel</button>';
-      const openAdminBtn = document.getElementById('openAdminBtn');
-      openAdminBtn.onclick = () => {
-        adminPanel.style.display = adminPanel.style.display === 'none' ? 'block' : 'none';
-      };
-    }
-
-    const ADMIN_FETCH_LIMIT = 500;
-    document.getElementById('adminLimit').textContent = ADMIN_FETCH_LIMIT;
-
-    // get recent orders (orderBy createdAt desc, limit N) then filter client-side for last 24h matching rules
-    async function loadAdminOrders(){
-      adminOrdersBody.innerHTML = '<tr><td colspan="6" class="small-muted">Memuat...</td></tr>';
-      try {
-        const ordersCol = collection(db,'orders');
-        const q = query(ordersCol, orderBy('createdAt','desc'), limit(ADMIN_FETCH_LIMIT));
-        const snap = await getDocs(q);
-        if (snap.empty) {
-          adminOrdersBody.innerHTML = '<tr><td colspan="6" class="small-muted">Tidak ada order.</td></tr>';
+        // 1) cek kalau tokenClaims/{code} sudah ada (prevent double)
+        const claimRef = doc(db, 'tokenClaims', code);
+        const claimSnap = await getDoc(claimRef);
+        if (claimSnap.exists()) {
+          log('Gagal: invoice sudah diredeem sebelumnya.');
+          alert('Invoice ini sudah pernah diredeem sebelumnya.');
+          btnRedeem.disabled = false;
           return;
         }
-        const since = new Date(Date.now() - 24*60*60*1000);
-        const rows = [];
-        for (const dSnap of snap.docs) {
-          const d = dSnap.data();
-          if (!d.createdAt || typeof d.createdAt.toDate !== 'function') continue;
-          const created = d.createdAt.toDate();
-          if (created < since) break; // docs are ordered desc; past 24h stop loop
-          const status = (d.status || '').toString().toLowerCase();
-          // consider success statuses only
-          if (!d.status || !SUCCESS_STATUSES.includes(status)) continue;
-          // check if any tokenRule matches this nominalValue
-          const nv = d.nominalValue !== undefined ? String(d.nominalValue) : '';
-          const matchedRule = tokenRules.find(r => String(r.match.nominalValue||'').toLowerCase() === nv.toLowerCase()
-                                  || String(r.match.nominalValue) === nv
-                                  || (r.match.minPrice && Number(d.price || d.amount_total || 0) >= r.match.minPrice && String(r.match.nominalValue) === nv));
-          if (matchedRule) {
-            rows.push({
-              invoice: d.invoice || dSnap.id,
-              uid: d.userId || d.uid || '-',
-              nominal: nv,
-              price: d.price || d.amount_total || '-',
-              created: created.toLocaleString(),
-              docId: dSnap.id,
-              ruleId: matchedRule.id,
-              tokens: matchedRule.tokens || 1
-            });
+
+        // 2) cek apakah ada order dengan id == code
+        const orderRefById = doc(db, 'orders', code);
+        const orderSnapById = await getDoc(orderRefById);
+        let orderDocId = null, orderData = null;
+        if (orderSnapById.exists()) {
+          orderDocId = orderSnapById.id;
+          orderData = orderSnapById.data();
+          log('Ditemukan order (doc id match).');
+        } else {
+          // fallback: cari di field invoice (some projects store invoice as field)
+          const ordersCol = collection(db, 'orders');
+          const q = query(ordersCol, where('invoice','==', code), /*limit(1)*/);
+          const qSnap = await getDocs(q);
+          if (!qSnap.empty) {
+            const d = qSnap.docs[0];
+            orderDocId = d.id;
+            orderData = d.data();
+            log('Ditemukan order (field invoice match). docId=' + orderDocId);
+          } else {
+            log('Invoice tidak ditemukan di koleksi orders.');
+            alert('Invoice tidak ditemukan. Pastikan kode benar dan berasal dari transaksi yang tercatat.');
+            btnRedeem.disabled = false;
+            return;
           }
         }
-        if (!rows.length) {
-          adminOrdersBody.innerHTML = '<tr><td colspan="6" class="small-muted">Tidak ditemukan order yang cocok dalam 24 jam terakhir.</td></tr>';
-          return;
+
+        // 3) optional: cek status order (kalau mau memastikan "completed")
+        const status = (orderData.status || '').toString().toLowerCase();
+        // jika ingin wajib status sukses ubah kondisi di bawah; sekarang gw ijinkan semua status (sesuai instruksi "ga perduli siapa pembelinya")
+        // contoh jika mau wajib completed: if (!['completed','success','paid'].includes(status)) { ... }
+        log('Status order: ' + (orderData.status || '-'));
+
+        // 4) coba create tokenClaims doc dengan id = invoice code
+        const payload = {
+          invoice: code,
+          orderDocId,
+          originalOrderUser: orderData.userId || orderData.uid || null,
+          redeemerUid: auth.currentUser.uid,
+          redeemerEmail: auth.currentUser.email || null,
+          redeemedAt: serverTimestamp()
+        };
+
+        // IMPORTANT:
+        // We intentionally create tokenClaims doc with the invoice as ID so Firestore Rules can protect duplicates (deny overwrite).
+        // If two users race to redeem at same time, one create will succeed, the other will fail (permission denied under rules).
+        await setDoc(claimRef, payload);
+
+        log('Redeem berhasil — tokenClaims dibuat.');
+        alert('Redeem berhasil! 1 token akan ditambahkan (diprocess server-side).');
+
+        // NOTE:
+        // We rely on a Cloud Function (recommended) that triggers onCreate(tokenClaims/{invoice})
+        // to increment users[redeemerUid].nubiTokens securely server-side.
+        // Jika kamu tidak pakai CF, bisa juga tambahkan client-side increment di sini — tapi tidak recommended.
+      } catch (err) {
+        console.error(err);
+        // jika permission denied bisa berarti tokenClaims dibuat oleh orang lain di race condition OR rules menolak
+        if (err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'))) {
+          alert('Gagal membuat claim: invoice sudah diredeem atau aturan security menolak. Jika yakin belum diredeem, kontak admin.');
+          log('Gagal membuat claim: permission denied / sudah ada.');
+        } else {
+          alert('Terjadi kesalahan: ' + (err.message || err));
+          log('Error: ' + (err.message || err));
         }
-        adminOrdersBody.innerHTML = '';
-        rows.forEach(r=>{
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${r.invoice}</td><td style="font-family:monospace">${r.uid}</td><td>${r.nominal}</td><td>Rp ${Number(r.price).toLocaleString()}</td><td>${r.created}</td>
-            <td>
-              <div class="admin-actions">
-                <input type="number" min="1" value="${r.tokens}" id="tok_${r.invoice}" />
-                <button class="btn btn-add" data-invoice="${r.invoice}" data-uid="${r.uid}" data-default="${r.tokens}">+Token</button>
-              </div>
-            </td>`;
-          adminOrdersBody.appendChild(tr);
-        });
-
-        // attach events to +Token buttons
-        adminOrdersBody.querySelectorAll('.btn-add').forEach(b=>{
-          b.addEventListener('click', async (e)=>{
-            const invoice = b.dataset.invoice;
-            const uid = b.dataset.uid;
-            const input = document.getElementById(`tok_${invoice}`);
-            const amount = Math.max(1, parseInt(input.value || '0',10));
-            if (!confirm(`Tambah ${amount} token untuk UID ${uid} (invoice ${invoice}) ?`)) return;
-            try {
-              await adminAddTokens(uid, invoice, amount);
-              alert('Token berhasil ditambahkan.');
-              await refreshTokenBalance(); // optional for current admin user
-              // reload claim log if admin is same as target user? keep simple: reload orders
-              await loadAdminOrders();
-            } catch(err) {
-              console.error(err);
-              alert('Gagal menambahkan token: ' + (err.message || err.code || err));
-            }
-          });
-        });
-
-      } catch(e) {
-        console.error('loadAdminOrders err', e);
-        adminOrdersBody.innerHTML = '<tr><td colspan="6" class="small-muted">Terjadi kesalahan saat memuat.</td></tr>';
+      } finally {
+        btnRedeem.disabled = false;
       }
-    }
-
-    // admin operation: add tokens manually
-    async function adminAddTokens(uid, invoiceId, tokens){
-      if (!auth.currentUser || !ADMIN_UIDS.includes(auth.currentUser.uid)) throw new Error('Hanya admin yang bisa melakukan ini.');
-      // create tokenClaims log with admin info
-      await addDoc(collection(db,'tokenClaims'), {
-        uid, invoice: invoiceId, tokens, adminUid: auth.currentUser.uid, manual:true, claimedAt: serverTimestamp()
-      });
-      // increment user's nubiTokens
-      const uRef = doc(db,'users', uid);
-      try {
-        await updateDoc(uRef, { nubiTokens: increment(tokens) });
-      } catch(e) {
-        // if user doc not exist or update failed, set with merge
-        await setDoc(uRef, { nubiTokens: tokens }, { merge: true });
-      }
-    }
-
-    btnReloadOrders.addEventListener('click', async ()=> {
-      await loadAdminOrders();
     });
-
-    /* -------------- modal helpers -------------- */
-    function showModal(html, okText='OK', okCb=null){
-      modalContent.innerHTML = html;
-      modal.style.display = 'flex';
-      modalOk.textContent = okText;
-      modalOk.onclick = ()=>{ modal.style.display='none'; if (okCb) okCb(); };
-    }
-    modalClose.addEventListener('click', ()=> modal.style.display='none');
-
-    /* -------------- init UI attachments -------------- */
-    function init(){
-      renderRulesUI();
-      attachTopUpLinks();
-      // optionally allow admin to toggle panel even when not logged in if his uid present later
-    }
-    init();
-
-    // expose for debugging
-    window.__adminHelpers = { loadAdminOrders, adminAddTokens, ADMIN_UIDS };
-
   </script>
 </body>
 </html>
