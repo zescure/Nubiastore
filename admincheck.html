@@ -566,6 +566,11 @@ function startOrdersListener(){
 onAuthStateChanged(auth, async (u)=>{
   if(!u){
     authMsg.innerHTML = '<strong>Harus login sebagai admin</strong> — silakan login di halaman utama.';
+
+<a href="https://nubiastore.netlify.app/login-registernubiastore" class="auth-login-btn">
+  Login
+</a>
+    
     adminUI.style.display = 'none';
     return;
   }
