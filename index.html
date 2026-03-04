@@ -1732,6 +1732,27 @@ authLogoutBtn.addEventListener('click', async () => {
   animation:popShine 2.4s ease-in-out infinite;
 }
 @keyframes popShine{0%{left:-100%}50%,100%{left:160%}}
+
+.pop-btn-snooze {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+  text-align: center;
+}
+.pop-btn-snooze:hover {
+  color: rgba(255,255,255,0.65);
+}
+
 </style>
 
 <!-- ══ POPUP 1 — INFO / PENGUMUMAN ══ -->
@@ -1757,6 +1778,8 @@ authLogoutBtn.addEventListener('click', async () => {
       </div>
       <button class="pop-btn-accept" onclick="popClose('pop1')">👍 Saya Mengerti</button>
     </div>
+    <button class="pop-btn-snooze" onclick="popSnooze()">🔕 Jangan tampilkan selama 24 jam</button>
+
   </div>
 </div>
 
@@ -1881,6 +1904,28 @@ authLogoutBtn.addEventListener('click', async () => {
 
 <script>
 (function() {
+
+  // ── 24 JAM SNOOZE ──
+var POP_SNOOZE_KEY = 'ns_pop_snooze';
+
+function popIsSnoozed() {
+  var saved = localStorage.getItem(POP_SNOOZE_KEY);
+  if (!saved) return false;
+  return (Date.now() - parseInt(saved)) < 86400000; // 86400000ms = 24 jam
+}
+
+window.popSnooze = function() {
+  localStorage.setItem(POP_SNOOZE_KEY, Date.now().toString());
+  // tutup semua popup yang sedang aktif
+  var active = document.querySelector('.pop-overlay.pop-active');
+  if (active) {
+    active.classList.remove('pop-active');
+  }
+  // kosongkan antrian
+  popIdx = POP_SEQ.length;
+};
+
+  
   // ── Urutan popup. Hapus ID yang tidak ingin muncul di halaman ini.
   var POP_SEQ = ['pop1', 'pop2', 'pop3', 'pop5', 'pop4'];
   var popIdx  = 0;
@@ -1928,7 +1973,15 @@ authLogoutBtn.addEventListener('click', async () => {
       setTimeout(popShow, 700);
     });
   } else {
-    setTimeout(popShow, 700);
+    // Muncul otomatis setelah halaman siap
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    if (!popIsSnoozed()) setTimeout(popShow, 700);
+  });
+} else {
+  if (!popIsSnoozed()) setTimeout(popShow, 700);
+
+
   }
 })();
 </script>
