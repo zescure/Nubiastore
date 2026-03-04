@@ -626,3 +626,205 @@ limitInfo.textContent = `Menampilkan ${displayLimit} blok terakhir`;
 </script>
 </body>
 </html>
+
+
+
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login / Register — NUBIASTORE</title>
+  <style>
+    body{font-family:Inter,Segoe UI,system-ui;background:#f6f7f9;padding:20px;color:#111}
+    .box{max-width:520px;margin:18px auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+    h2{color:#16a34a;margin-bottom:6px}
+    label{display:block;margin-top:10px;font-weight:600}
+    input{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px;margin-top:6px}
+    .row{display:flex;gap:8px}
+    button{background:#16a34a;color:#fff;padding:10px 12px;border-radius:8px;border:none;cursor:pointer}
+    .muted{color:#666;font-size:.95rem}
+    .small{font-size:.9rem;color:#444}
+    .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    #userInfo{margin-top:12px;padding:12px;background:#f8faf9;border-radius:8px}
+    .copyBtn{background:#111;padding:6px 8px;border-radius:6px;color:#fff;cursor:pointer;border:none}
+    a.link{color:#0ea5a4;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Login / Register — NUBIASTORE</h2>
+    <div class="muted">Buat akun untuk akses admin atau hanya sebagai user biasa. Login optional untuk order (guest tetap bisa order).</div>
+
+    <hr style="margin:12px 0">
+
+    <div>
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="email@contoh.com" />
+
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="minimal 6 karakter" />
+
+      <div class="actions">
+        <button id="btnRegister">Register</button>
+        <button id="btnLogin">Login</button>
+        <button id="btnSignOut" style="background:#ef4444;display:none">Sign out</button>
+        <button id="btnResetPw" style="background:#111">Reset Password</button>
+      </div>
+    </div>
+
+    <div id="userInfo" style="display:none">
+      <div><strong>Signed in:</strong> <span id="userEmail"></span></div>
+      <div class="small">UID: <code id="userUID"></code>
+        <button id="btnCopyUID" class="copyBtn">Copy UID</button>
+      </div>
+      <div id="adminBadge" style="margin-top:8px;display:none">
+        <strong style="color:#0f766e">Akun admin terdeteksi</strong> — <a class="link" href="/admincheck">Buka Admin Panel</a>
+      </div>
+
+      <div style="margin-top:10px">
+        <small class="muted">Catatan: setelah register, ambil UID dan jalankan script admin di mesin lu untuk set admin claim.</small>
+      </div>
+    </div>
+
+    <div id="msg" style="margin-top:12px;color:#92400e"></div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, sendPasswordResetEmail, onAuthStateChanged, getIdTokenResult
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // === CONFIG ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+    authDomain: "zestoreid-f9e85.firebaseapp.com",
+    projectId: "zestoreid-f9e85",
+    storageBucket: "zestoreid-f9e85.firebasestorage.app",
+    messagingSenderId: "426093692154",
+    appId: "1:426093692154:web:38c6e9c143af626a623543",
+    measurementId: "G-TS0YB9NYW8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // UI
+  const emailEl = document.getElementById('email');
+  const pwEl = document.getElementById('password');
+  const btnRegister = document.getElementById('btnRegister');
+  const btnLogin = document.getElementById('btnLogin');
+  const btnSignOut = document.getElementById('btnSignOut');
+  const btnResetPw = document.getElementById('btnResetPw');
+  const userInfo = document.getElementById('userInfo');
+  const userEmail = document.getElementById('userEmail');
+  const userUID = document.getElementById('userUID');
+  const btnCopyUID = document.getElementById('btnCopyUID');
+  const adminBadge = document.getElementById('adminBadge');
+  const msg = document.getElementById('msg');
+
+  // Register
+  btnRegister.onclick = async () => {
+    msg.textContent = '';
+    const email = emailEl.value.trim();
+    const pw = pwEl.value.trim();
+    if(!email || !pw) return msg.textContent = 'Lengkapi email & password.';
+    try{
+      const cred = await createUserWithEmailAndPassword(auth, email, pw);
+      // create user doc for profile
+      const u = cred.user;
+      await setDoc(doc(db,'users',u.uid), {
+        email: u.email,
+        createdAt: serverTimestamp()
+      });
+      msg.style.color = '#16a34a';
+      msg.textContent = 'Registrasi sukses. Login otomatis.';
+    }catch(e){
+      console.error(e);
+      msg.style.color = '#92400e';
+      msg.textContent = 'Error register: ' + (e.message || e.code);
+    }
+  };
+
+  // Login
+  btnLogin.onclick = async () => {
+    msg.textContent = '';
+    const email = emailEl.value.trim();
+    const pw = pwEl.value.trim();
+    if(!email || !pw) return msg.textContent = 'Lengkapi email & password.';
+    try{
+      await signInWithEmailAndPassword(auth, email, pw);
+      msg.style.color = '#16a34a';
+      msg.textContent = 'Login sukses.';
+    }catch(e){
+      console.error(e);
+      msg.style.color = '#92400e';
+      msg.textContent = 'Error login: ' + (e.message || e.code);
+    }
+  };
+
+  // Sign out
+  btnSignOut.onclick = async () => {
+    await signOut(auth);
+  };
+
+  // reset password
+  btnResetPw.onclick = async () => {
+    const email = emailEl.value.trim();
+    if(!email) return msg.textContent = 'Masukkan email untuk reset password.';
+    try{
+      await sendPasswordResetEmail(auth, email);
+      msg.style.color = '#16a34a';
+      msg.textContent = 'Email reset terkirim.';
+    }catch(e){
+      console.error(e);
+      msg.style.color = '#92400e';
+      msg.textContent = 'Error kirim reset: ' + (e.message || e.code);
+    }
+  };
+
+  // copy UID
+  btnCopyUID.onclick = ()=> {
+    const txt = userUID.textContent;
+    navigator.clipboard.writeText(txt).then(()=> {
+      msg.style.color = '#16a34a';
+      msg.textContent = 'UID disalin ke clipboard.';
+    });
+  };
+
+  // auth state
+  onAuthStateChanged(auth, async (u) => {
+    if(!u){
+      userInfo.style.display = 'none';
+      btnSignOut.style.display = 'none';
+      return;
+    }
+    // show user
+    userInfo.style.display = 'block';
+    btnSignOut.style.display = 'inline-block';
+    userEmail.textContent = u.email;
+    userUID.textContent = u.uid;
+    msg.textContent = '';
+
+    // cek custom claim admin
+    try{
+      const idRes = await getIdTokenResult(u, true);
+      const claims = idRes.claims || {};
+      if(claims.admin){
+        adminBadge.style.display = 'block';
+      } else {
+        adminBadge.style.display = 'none';
+      }
+    }catch(e){
+      console.error('getIdTokenResult err', e);
+      adminBadge.style.display = 'none';
+    }
+  });
+
+</script>
+</body>
+</html>
