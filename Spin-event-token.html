@@ -146,8 +146,8 @@
       getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
-      getFirestore, collection, query, where, getDocs, orderBy, limit,
-      addDoc, doc, updateDoc, setDoc, serverTimestamp, Timestamp, increment
+      getFirestore, collection, query, where, getDocs, limit,
+      addDoc, doc, updateDoc, setDoc, serverTimestamp, Timestamp, increment, orderBy
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // ---------- CONFIG ----------
@@ -224,7 +224,7 @@
     // ---------- Helpers ----------
     function ts24hAgo() {
       const now = new Date();
-      return Timestamp.fromDate(new Date(now.getTime() - 24*60*60*1000));
+      return new Date(now.getTime() - 24*60*60*1000);
     }
 
     // get user's token balance (users.nubiTokens)
@@ -232,7 +232,7 @@
       if (!auth.currentUser) { tokenBalanceEl.textContent = '0 TOKENS'; return; }
       try {
         const uRef = doc(db, 'users', auth.currentUser.uid);
-        // try read via query on __name__ because we did not import getDoc; but getDocs+query works:
+        // read via query by __name__ (works without composite index)
         const q = query(collection(db, 'users'), where('__name__', '==', auth.currentUser.uid), limit(1));
         const snap = await getDocs(q);
         if (!snap.empty) {
@@ -318,19 +318,28 @@
       await loadClaimLog();
     });
 
-    // find eligible order for a uid and nominalValue in the last 24h
+    // ========== NO-INDEX fallback function ==========
+    // Query only by userId + limit, then filter createdAt & nominalValue on client-side.
+    // Adjust LIMIT_DOCS to balance reads vs coverage (500 is a reasonable default).
+    const LIMIT_DOCS = 500;
+
     async function findEligibleOrderForNominal(uid, nominalValue) {
       const ordersCol = collection(db, 'orders');
-      const since = ts24hAgo();
       try {
-        const q = query(ordersCol, where('userId','==', uid), where('createdAt','>=', since), orderBy('createdAt','desc'), limit(50));
+        // query only by userId, limit to recent N docs (no composite index needed)
+        const q = query(ordersCol, where('userId','==', uid), limit(LIMIT_DOCS));
         const snap = await getDocs(q);
         if (snap.empty) return null;
+        const since = ts24hAgo();
         for (const dSnap of snap.docs) {
           const d = dSnap.data();
+          // ensure createdAt exists and is Timestamp
+          if (!d.createdAt || typeof d.createdAt.toDate !== 'function') continue;
+          const createdAt = d.createdAt.toDate();
+          if (createdAt < since) continue;                 // only last 24 hours
           const status = (d.status || '').toString().toLowerCase();
-          if (d.status && !SUCCESS_STATUSES.includes(status)) continue;
-          // compare nominal; convert both to string
+          if (d.status && !SUCCESS_STATUSES.includes(status)) continue; // skip non-success
+          // compare nominal values (string compare to support "WEEKLY DIAMOND PASS" etc.)
           const nv = d.nominalValue !== undefined ? String(d.nominalValue) : '';
           if (nv === String(nominalValue)) {
             const invoice = d.invoice || dSnap.id;
@@ -339,7 +348,7 @@
         }
         return null;
       } catch (e) {
-        console.error('findEligibleOrderForNominal err', e);
+        console.error('findEligibleOrderForNominal (no-index) err', e);
         throw e;
       }
     }
@@ -348,9 +357,9 @@
     async function wasInvoiceClaimedRecently(uid, invoiceId) {
       if (!invoiceId) return null;
       const claimsCol = collection(db, 'tokenClaims');
-      const since = ts24hAgo();
+      const sinceTs = Timestamp.fromDate(ts24hAgo());
       try {
-        const q = query(claimsCol, where('invoice','==', invoiceId), where('uid','==', uid), where('claimedAt','>=', since), limit(1));
+        const q = query(claimsCol, where('invoice','==', invoiceId), where('uid','==', uid), where('claimedAt','>=', sinceTs), limit(1));
         const snap = await getDocs(q);
         if (!snap.empty) return snap.docs[0].data();
         return null;
@@ -485,7 +494,7 @@
       if (!auth.currentUser) { claimItems.innerHTML = 'Belum login.'; return; }
       try {
         const col = collection(db, 'tokenClaims');
-        const q = query(col, where('uid','==', auth.currentUser.uid), orderBy('claimedAt','desc'), limit(50));
+        const q = query(col, where('uid','==', auth.currentUser.uid), limit(50));
         const snap = await getDocs(q);
         if (snap.empty) { claimItems.innerHTML = 'Belum ada klaim.'; return; }
         const lines = snap.docs.map(d=>{
