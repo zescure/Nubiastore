@@ -1671,6 +1671,67 @@ authLogoutBtn.addEventListener('click', async () => {
   display:flex;align-items:center;justify-content:center;gap:7px;
 }
 #pop4 .pop-btn-ig:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(225,48,108,.6)}
+
+
+/* ── POPUP 5 — PROMO ── */
+#pop5 .pop-card{background:#0c0a00;}
+#pop5 .pop-img-area{background:linear-gradient(135deg,#78350f,#92400e,#b45309);position:relative;}
+#pop5 .pop-promo-tag{
+  position:absolute;top:14px;left:14px;
+  background:linear-gradient(135deg,#dc2626,#ef4444);
+  color:#fff;font-size:10px;font-weight:900;letter-spacing:1.5px;
+  padding:5px 12px;border-radius:20px;text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(220,38,38,.5);
+  animation:popTagPulse 1.5s ease-in-out infinite;
+}
+@keyframes popTagPulse{
+  0%,100%{box-shadow:0 4px 14px rgba(220,38,38,.5)}
+  50%{box-shadow:0 4px 26px rgba(220,38,38,.95)}
+}
+#pop5 .pop-body{padding:20px 22px 22px;position:relative;}
+#pop5 .pop-game-label{
+  font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:#fbbf24;margin-bottom:4px;font-family:'Nunito',sans-serif;
+}
+#pop5 .pop-item-name{
+  font-family:'Syne',sans-serif;font-size:22px;font-weight:800;
+  color:#fff;line-height:1.2;margin-bottom:14px;
+}
+#pop5 .pop-price-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:18px;}
+#pop5 .pop-price-old{
+  font-size:15px;color:#6b7280;font-weight:700;
+  text-decoration:line-through;line-height:1;font-family:'Nunito',sans-serif;
+}
+#pop5 .pop-price-new{
+  font-family:'Syne',sans-serif;font-size:30px;font-weight:800;
+  color:#f59e0b;line-height:1;
+  text-shadow:0 0 20px rgba(245,158,11,.5);
+}
+#pop5 .pop-saving{
+  font-size:11px;font-weight:800;background:rgba(239,68,68,.15);
+  border:1px solid rgba(239,68,68,.3);color:#f87171;
+  padding:3px 8px;border-radius:6px;margin-left:auto;align-self:center;
+  font-family:'Nunito',sans-serif;
+}
+#pop5 .pop-btn-buy{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#f59e0b,#fbbf24);
+  color:#000;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;
+  cursor:pointer;letter-spacing:.4px;
+  box-shadow:0 6px 24px rgba(245,158,11,.5);
+  animation:popBuyPulse 1.8s ease-in-out infinite;
+  position:relative;overflow:hidden;
+}
+@keyframes popBuyPulse{
+  0%,100%{transform:scale(1);box-shadow:0 6px 24px rgba(245,158,11,.5)}
+  50%{transform:scale(1.03);box-shadow:0 8px 34px rgba(245,158,11,.85)}
+}
+#pop5 .pop-btn-buy::after{
+  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+  animation:popShine 2.4s ease-in-out infinite;
+}
+@keyframes popShine{0%{left:-100%}50%,100%{left:160%}}
 </style>
 
 <!-- ══ POPUP 1 — INFO / PENGUMUMAN ══ -->
@@ -1746,10 +1807,38 @@ authLogoutBtn.addEventListener('click', async () => {
         <li>Tersedia untuk semua game populer</li>
         <li>Saldo fleksibel, bisa top up kapan saja</li>
       </ul>
-      <button class="pop-btn-try" onclick="window.location.href='nubiapay.html'">
+      <button class="pop-btn-try" onclick="window.location.href='login-register.html'">
         🔐 Buat Akun NUBIAPAY
       </button>
       
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ POPUP 5 — PROMO ITEM GAME ══ -->
+
+<div class="pop-overlay" id="pop5">
+  <div class="pop-card">
+    <button class="pop-close" onclick="popClose('pop2')">✕</button>
+    <div class="pop-img-area">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSon37kRi5myMRt2g1R_sAGtHq5YEn1tuHWxcA6NXFXn7F3vP79TqUjLZ1Z&s=10" class="pop-img" alt="png">
+      <span class="pop-promo-tag">🔥 EPIC HOT DEAL</span>
+      <span class="pop-emoji"></span>
+    </div>
+    <div class="pop-body">
+      <div class="pop-game-label">Free Fire/Free Fire Max</div>
+      <div class="pop-item-name">Membership Bulanan</div>
+      <div class="pop-price-row">
+        <div>
+          <div class="pop-price-old">Rp 110.599</div>
+          <div class="pop-price-new">Rp 87.785</div>
+        </div>
+        <div class="pop-saving">Hemat 79%</div>
+      </div>
+      <button class="pop-btn-buy" onclick="window.location.href='mobile-legends.html'">
+        ⚡ Beli Sekarang
+      </button>
     </div>
   </div>
 </div>
@@ -1771,7 +1860,7 @@ authLogoutBtn.addEventListener('click', async () => {
       <div class="pop-item-name">Item Game Berlogo ⚡️Stok Terbatas</div>
       <div class="pop-nubia-only">🔒 Hanya via NubiaPay</div>
       <div class="pop-text">
-        Item eksklusif ini hanya tersedia dalam jumlah terbatas dan <strong>tidak semua pengguna mendapatkan akses</strong>. Pembayaran wajib menggunakan saldo NubiaPay.
+        Item eksklusif ini hanya tersedia dalam jumlah terbatas dan <strong>limit 20 stok setiap hari mulai pukul 16:00WIB</strong>. Pembayaran wajib menggunakan saldo NubiaPay.
       </div>
       <div class="pop-restock-note">
         <span>📸</span>
@@ -1793,7 +1882,7 @@ authLogoutBtn.addEventListener('click', async () => {
 <script>
 (function() {
   // ── Urutan popup. Hapus ID yang tidak ingin muncul di halaman ini.
-  var POP_SEQ = ['pop1', 'pop2', 'pop3', 'pop4'];
+  var POP_SEQ = ['pop1', 'pop2', 'pop3', 'pop4', 'pop5'];
   var popIdx  = 0;
 
   function popShow() {
