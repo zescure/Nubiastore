@@ -44,8 +44,10 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
-      getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  getFirestore, doc, getDoc, setDoc, serverTimestamp,
+  collection, query, where, getDocs,
+  updateDoc, increment
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // === CONFIG ===
     const firebaseConfig = {
@@ -160,8 +162,15 @@
         // If two users race to redeem at same time, one create will succeed, the other will fail (permission denied under rules).
         await setDoc(claimRef, payload);
 
-        log('Redeem berhasil — tokenClaims dibuat.');
-        alert('Redeem berhasil! 1 token akan ditambahkan (diprocess server-side).');
+// tambahin 1 token ke user
+import { updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+await updateDoc(doc(db, "users", auth.currentUser.uid), {
+  nubiTokens: increment(1)
+});
+
+log('Token berhasil ditambahkan +1');
+alert('Redeem berhasil! 1 token berhasil ditambahkan.');
 
         // NOTE:
         // We rely on a Cloud Function (recommended) that triggers onCreate(tokenClaims/{invoice})
