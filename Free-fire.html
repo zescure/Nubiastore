@@ -26,18 +26,6 @@ body{
   gap:14px;flex-wrap:wrap;padding:40px 20px;
 }
 
-/* demo trigger buttons */
-.demo-btn{
-padding:12px 22px;border:none;border-radius:10px;
-font-family:‘Nunito’,sans-serif;font-size:14px;font-weight:800;
-cursor:pointer;letter-spacing:.5px;transition:transform .15s,box-shadow .15s;
-}
-.demo-btn:hover{transform:translateY(-2px)}
-.db1{background:#6366f1;color:#fff;box-shadow:0 6px 20px rgba(99,102,241,.4)}
-.db2{background:#f59e0b;color:#000;box-shadow:0 6px 20px rgba(245,158,11,.4)}
-.db3{background:#10b981;color:#fff;box-shadow:0 6px 20px rgba(16,185,129,.4)}
-.db4{background:#ef4444;color:#fff;box-shadow:0 6px 20px rgba(239,68,68,.4)}
-
 /* ─── OVERLAY ──────────────────────────────── */
 .overlay{
 display:none;position:fixed;inset:0;
@@ -278,13 +266,6 @@ display:flex;align-items:center;justify-content:center;gap:7px;
 </head>
 <body>
 
-<!-- DEMO TRIGGERS -->
-
-<button class="demo-btn db1" onclick="open1()">📢 Popup 1 — Info</button>
-<button class="demo-btn db2" onclick="open2()">💎 Popup 2 — Promo</button>
-<button class="demo-btn db3" onclick="open3()">💳 Popup 3 — NubiaPay</button>
-<button class="demo-btn db4" onclick="open4()">🔴 Popup 4 — Stok Terbatas</button>
-
 <!-- ══════════════════════════════════════════
      POPUP 1 — ANNOUNCEMENT / INFO
 ══════════════════════════════════════════ -->
@@ -411,35 +392,50 @@ display:flex;align-items:center;justify-content:center;gap:7px;
 </div>
 
 <script>
-function open1(){ document.getElementById('p1').classList.add('active') }
-function open2(){ document.getElementById('p2').classList.add('active') }
-function open3(){ document.getElementById('p3').classList.add('active') }
-function open4(){ document.getElementById('p4').classList.add('active') }
+// ── Urutan popup yang akan tampil otomatis ──
+// Hapus ID dari array ini jika tidak ingin popup tertentu muncul di halaman ini
+const POPUP_SEQUENCE = ['p1', 'p2', 'p3', 'p4'];
+let currentIndex = 0;
 
-function closePopup(id){
+function showNext() {
+  if (currentIndex >= POPUP_SEQUENCE.length) return;
+  const id = POPUP_SEQUENCE[currentIndex];
+  document.getElementById(id).classList.add('active');
+}
+
+function closePopup(id) {
   const el = document.getElementById(id);
-  el.style.animation='fadeOverlay .2s ease reverse both';
+  el.style.animation = 'fadeOverlay .2s ease reverse both';
   const popup = el.querySelector('.popup');
-  popup.style.animation='popIn .2s cubic-bezier(.34,1.56,.64,1) reverse both';
-  setTimeout(()=>{
+  popup.style.animation = 'popIn .2s cubic-bezier(.34,1.56,.64,1) reverse both';
+  setTimeout(() => {
     el.classList.remove('active');
-    el.style.animation='';
-    popup.style.animation='';
+    el.style.animation = '';
+    popup.style.animation = '';
+    currentIndex++;
+    // Jeda kecil sebelum popup berikutnya muncul
+    setTimeout(showNext, 350);
   }, 200);
 }
 
 // close on overlay click
-document.querySelectorAll('.overlay').forEach(ov=>{
-  ov.addEventListener('click', e=>{
-    if(e.target === ov) closePopup(ov.id);
+document.querySelectorAll('.overlay').forEach(ov => {
+  ov.addEventListener('click', e => {
+    if (e.target === ov) closePopup(ov.id);
   });
 });
 
 // close on Escape
-document.addEventListener('keydown', e=>{
-  if(e.key==='Escape'){
-    document.querySelectorAll('.overlay.active').forEach(ov=>closePopup(ov.id));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const active = document.querySelector('.overlay.active');
+    if (active) closePopup(active.id);
   }
+});
+
+// ── Auto muncul saat halaman dibuka (delay 600ms biar halaman sempat render) ──
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(showNext, 600);
 });
 </script>
 
