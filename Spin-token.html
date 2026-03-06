@@ -1,128 +1,554 @@
 <!DOCTYPE html>
+
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spin Token - Zestore</title>
-
+<title>Spin Berhadiah — NUBIASTORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body{
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
-margin:0;
-font-family:Arial;
-background:#0b0f0c;
-color:white;
+/* ===== DESIGN SYSTEM ===== */
+:root {
+  --green:      #00ff88;
+  --green-dim:  #00cc6a;
+  --green-dk:   #007a40;
+  --bg:         #050a06;
+  --bg2:        #101e15;
+  --bg3:        #172a1e;
+  --card:       #0d1a12;
+  --bdr:        rgba(0,255,136,0.13);
+  --bdr-hi:     rgba(0,255,136,0.40);
+  --text:       #dff2e8;
+  --muted:      #5a9e74;
+  --white:      #ffffff;
+  --amber:      #fbbf24;
+  --red:        #ff4545;
+  --blue:       #60a5fa;
+  --purple:     #a855f7;
 }
 
-.container{
-text-align:center;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+font-family: ‘Rajdhani’, system-ui, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+overflow-x: hidden;
+position: relative;
 }
 
-#tokenBar{
-margin-bottom:15px;
-cursor:pointer;
-font-weight:bold;
-font-size:18px;
-color:#00ff7f;
+/* grid bg */
+body::before {
+content: ‘’; position: fixed; inset: 0;
+background-image:
+linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+background-size: 44px 44px;
+pointer-events: none; z-index: 0;
 }
 
-.wheel-container{
-position:relative;
-width:320px;
-height:320px;
-margin:20px auto;
+/* top glow */
+.bg-glow {
+position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+width: 800px; height: 800px;
+background: radial-gradient(ellipse, rgba(0,255,136,0.07) 0%, transparent 65%);
+pointer-events: none; z-index: 0;
 }
 
-.wheel{
-width:100%;
-height:100%;
-border-radius:50%;
-transition:transform 4s cubic-bezier(0.17,0.67,0.12,0.99);
-overflow:hidden;
-position:relative;
+a { text-decoration: none; color: inherit; }
+
+/* ===== HEADER ===== */
+header {
+display: flex; align-items: center; justify-content: space-between;
+padding: 0.875rem 1.25rem;
+background: rgba(5,10,6,0.93);
+backdrop-filter: blur(16px);
+border-bottom: 1px solid var(–bdr);
+box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+position: sticky; top: 0; z-index: 100;
+}
+.logo {
+font-family: ‘Orbitron’, monospace; font-weight: 900;
+font-size: 1.15rem; letter-spacing: 2.5px; color: var(–white);
+display: flex; align-items: center; gap: 10px;
+}
+.logo-mark {
+width: 36px; height: 36px;
+background: linear-gradient(135deg, var(–green), var(–green-dk));
+border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-size: 15px; font-weight: 900; color: #000;
+box-shadow: 0 0 16px rgba(0,255,136,0.38);
+}
+.header-right { display: flex; align-items: center; gap: 10px; }
+.token-pill {
+display: flex; align-items: center; gap: 7px;
+background: var(–bg3); border: 1px solid var(–bdr);
+border-radius: 20px; padding: 5px 14px;
+cursor: pointer; transition: all 0.2s;
+font-size: 0.85rem; font-weight: 700;
+}
+.token-pill:hover { border-color: var(–bdr-hi); background: var(–bg2); }
+.token-pill .token-count { font-family: ‘Orbitron’, monospace; font-size: 0.9rem; color: var(–amber); }
+.btn-login {
+background: none; border: 1px solid var(–bdr);
+color: var(–green); cursor: pointer;
+padding: 0.4rem 0.875rem; border-radius: 7px;
+font-family: ‘Rajdhani’, sans-serif; font-size: 0.85rem; font-weight: 700;
+letter-spacing: 0.5px; transition: all 0.2s;
+}
+.btn-login:hover { background: rgba(0,255,136,0.08); border-color: var(–bdr-hi); }
+
+/* ===== PAGE ===== */
+.page {
+position: relative; z-index: 1;
+max-width: 900px; margin: 0 auto;
+padding: 32px 16px 80px;
 }
 
-.slice{
-position:absolute;
-width:50%;
-height:50%;
-transform-origin:100% 100%;
-left:50%;
-top:50%;
-margin-left:-50%;
-margin-top:-50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-font-size:14px;
-clip-path:polygon(120% 0,0 0,70% 110%);
+/* ===== HERO TITLE ===== */
+.page-hero {
+text-align: center; margin-bottom: 36px;
+animation: fadeDown 0.5s ease both;
+}
+.page-hero .tag {
+font-size: 0.62rem; font-weight: 700; letter-spacing: 3px;
+text-transform: uppercase; color: var(–green);
+border: 1px solid var(–bdr); border-radius: 20px;
+padding: 3px 14px; display: inline-block; margin-bottom: 12px;
+}
+.page-hero h1 {
+font-family: ‘Orbitron’, monospace; font-weight: 900;
+font-size: clamp(1.6rem, 5vw, 2.4rem);
+color: var(–white); letter-spacing: 3px;
+text-shadow: 0 0 40px rgba(0,255,136,0.3);
+margin-bottom: 8px;
+}
+.page-hero p { font-size: 0.9rem; color: var(–muted); }
+
+/* ===== LAYOUT ===== */
+.spin-layout {
+display: flex; gap: 28px; align-items: flex-start;
+flex-wrap: wrap;
 }
 
-.pointer{
-position:absolute;
-top:-20px;
-left:50%;
-transform:translateX(-50%);
-width:30px;
-height:30px;
-background:#00ff7f;
-clip-path:polygon(50% 100%,0 0,100% 0);
-z-index:2;
+/* ===== WHEEL AREA ===== */
+.wheel-area {
+flex: 0 0 auto;
+display: flex; flex-direction: column; align-items: center; gap: 20px;
+animation: fadeUp 0.5s ease 0.1s both;
 }
 
-button{
-padding:10px 20px;
-background:#00ff7f;
-border:none;
-border-radius:6px;
-font-weight:bold;
-cursor:pointer;
+.wheel-wrapper {
+position: relative;
+width: 340px; height: 340px;
 }
 
-button:disabled{
-background:#444;
-cursor:not-allowed;
+/* outer ring glow */
+.wheel-glow {
+position: absolute; inset: -16px;
+border-radius: 50%;
+background: conic-gradient(from 0deg, rgba(0,255,136,0.15), rgba(168,85,247,0.1), rgba(251,191,36,0.12), rgba(0,255,136,0.15));
+filter: blur(12px);
+z-index: 0;
+animation: rotateSlow 8s linear infinite;
+}
+@keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+.wheel-ring {
+position: absolute; inset: -8px;
+border-radius: 50%;
+border: 2px solid rgba(0,255,136,0.25);
+z-index: 1;
+}
+.wheel-ring::before {
+content: ‘’;
+position: absolute; inset: 6px;
+border-radius: 50%;
+border: 1px dashed rgba(0,255,136,0.12);
 }
 
-.popup{
-display:none;
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:#111;
-padding:20px;
-border-radius:10px;
+canvas#spinWheel {
+position: relative; z-index: 2;
+border-radius: 50%;
+box-shadow: 0 0 40px rgba(0,255,136,0.2), 0 0 80px rgba(0,0,0,0.5);
+display: block;
+}
+
+/* pointer */
+.wheel-pointer {
+position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+z-index: 10; filter: drop-shadow(0 0 8px rgba(0,255,136,0.8));
+}
+.wheel-pointer svg { width: 36px; height: 44px; }
+
+/* center hub */
+.wheel-hub {
+position: absolute; top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+width: 52px; height: 52px; border-radius: 50%;
+background: radial-gradient(circle, #0d1a12, #050a06);
+border: 3px solid var(–green);
+box-shadow: 0 0 0 4px rgba(0,255,136,0.15), 0 0 20px rgba(0,255,136,0.4);
+z-index: 10;
+display: flex; align-items: center; justify-content: center;
+font-family: ‘Orbitron’, monospace; font-size: 0.5rem; font-weight: 900;
+color: var(–green); letter-spacing: 1px; text-align: center;
+}
+
+/* spin button */
+.btn-spin {
+position: relative;
+padding: 14px 48px; border: none; border-radius: 12px;
+background: linear-gradient(135deg, var(–green), var(–green-dk));
+color: #000; font-family: ‘Orbitron’, monospace;
+font-size: 0.85rem; font-weight: 900; letter-spacing: 2px;
+cursor: pointer; transition: all 0.25s; overflow: hidden;
+box-shadow: 0 4px 24px rgba(0,255,136,0.4);
+}
+.btn-spin::before {
+content: ‘’; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+transition: left 0.5s;
+}
+.btn-spin:hover::before { left: 100%; }
+.btn-spin:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,255,136,0.6); }
+.btn-spin:active { transform: translateY(0); }
+.btn-spin:disabled {
+background: linear-gradient(135deg, #2a3d2e, #1a2e1e);
+color: var(–muted); box-shadow: none; cursor: not-allowed; transform: none;
+}
+.btn-spin .spin-cost {
+display: block; font-family: ‘Rajdhani’, sans-serif;
+font-size: 0.7rem; font-weight: 600; letter-spacing: 1px;
+color: rgba(0,0,0,0.6); margin-top: 2px;
+}
+.btn-spin:disabled .spin-cost { color: rgba(90,158,116,0.5); }
+
+/* ===== PRIZE SIDEBAR ===== */
+.prizes-area {
+flex: 1; min-width: 240px;
+display: flex; flex-direction: column; gap: 10px;
+animation: fadeUp 0.5s ease 0.2s both;
+}
+
+.prizes-label {
+font-family: ‘Orbitron’, monospace; font-size: 11px; font-weight: 700;
+letter-spacing: 3px; text-transform: uppercase; color: var(–green);
+display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+}
+.prizes-label::after { content: ‘’; flex: 1; height: 1px; background: var(–bdr); }
+
+.prize-card {
+background: var(–card); border: 1px solid var(–bdr);
+border-radius: 12px; padding: 12px 16px;
+display: flex; align-items: center; gap: 14px;
+transition: all 0.2s; position: relative; overflow: hidden;
+}
+.prize-card::before {
+content: ‘’; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+background: var(–green); opacity: 0; transition: opacity 0.2s;
+}
+.prize-card:hover { border-color: var(–bdr-hi); transform: translateX(3px); }
+.prize-card:hover::before { opacity: 1; }
+.prize-card.highlight {
+border-color: var(–bdr-hi);
+background: rgba(0,255,136,0.05);
+box-shadow: 0 0 20px rgba(0,255,136,0.12);
+animation: prizeGlow 1s ease;
+}
+.prize-card.highlight::before { opacity: 1; }
+
+@keyframes prizeGlow {
+0% { box-shadow: 0 0 0 rgba(0,255,136,0); }
+50% { box-shadow: 0 0 30px rgba(0,255,136,0.3); }
+100% { box-shadow: 0 0 20px rgba(0,255,136,0.12); }
+}
+
+.prize-img-wrap {
+width: 56px; height: 56px; flex-shrink: 0; border-radius: 10px;
+display: flex; align-items: center; justify-content: center;
+font-size: 2rem;
+border: 1px solid var(–bdr);
+position: relative; overflow: hidden;
+}
+.prize-img-wrap img {
+width: 100%; height: 100%; object-fit: cover; border-radius: 9px;
+}
+.prize-img-wrap .prize-emoji { line-height: 1; }
+
+.prize-info { flex: 1; }
+.prize-name {
+font-family: ‘Orbitron’, monospace; font-size: 0.8rem; font-weight: 700;
+color: var(–white); margin-bottom: 3px;
+}
+.prize-desc { font-size: 0.78rem; color: var(–muted); line-height: 1.4; }
+.prize-rarity {
+font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px;
+text-transform: uppercase; padding: 2px 8px; border-radius: 10px;
+display: inline-block; margin-top: 4px;
+}
+.rarity-common  { background: rgba(90,158,116,0.15); color: var(–muted); border: 1px solid var(–bdr); }
+.rarity-rare    { background: rgba(96,165,250,0.12); color: var(–blue); border: 1px solid rgba(96,165,250,0.25); }
+.rarity-epic    { background: rgba(168,85,247,0.12); color: var(–purple); border: 1px solid rgba(168,85,247,0.25); }
+.rarity-legend  { background: rgba(251,191,36,0.12); color: var(–amber); border: 1px solid rgba(251,191,36,0.25); }
+
+/* ===== HOW TO CARD ===== */
+.how-card {
+background: var(–card); border: 1px solid var(–bdr);
+border-radius: 16px; padding: 22px;
+margin-top: 28px; position: relative; overflow: hidden;
+animation: fadeUp 0.5s ease 0.3s both;
+}
+.how-card::before {
+content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+background: linear-gradient(90deg, transparent, var(–green) 40%, var(–green-dim) 60%, transparent);
+}
+.sec-label {
+font-family: ‘Orbitron’, monospace; font-size: 11px; font-weight: 700;
+letter-spacing: 3px; text-transform: uppercase; color: var(–green);
+display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+}
+.sec-label::after { content: ‘’; flex: 1; height: 1px; background: var(–bdr); }
+
+.how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 14px; }
+.how-item { display: flex; flex-direction: column; gap: 6px; }
+.how-num {
+width: 28px; height: 28px; border-radius: 50%;
+background: rgba(0,255,136,0.1); border: 1px solid var(–bdr);
+display: flex; align-items: center; justify-content: center;
+font-family: ‘Orbitron’, monospace; font-size: 12px; font-weight: 900; color: var(–green);
+}
+.how-title { font-size: 13px; font-weight: 700; color: var(–white); }
+.how-desc  { font-size: 12px; color: var(–muted); line-height: 1.5; }
+
+/* ===== RESULT MODAL ===== */
+.modal-overlay {
+display: none; position: fixed; inset: 0; z-index: 500;
+background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+
+.modal {
+background: var(–card); border: 1px solid var(–bdr);
+border-radius: 20px; padding: 32px 28px; text-align: center;
+max-width: 360px; width: 90%; position: relative;
+animation: modalIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+overflow: hidden;
+}
+.modal::before {
+content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+background: linear-gradient(90deg, transparent, var(–green), var(–green-dim), transparent);
+}
+@keyframes modalIn {
+from { opacity:0; transform:scale(0.7) translateY(30px); }
+to   { opacity:1; transform:scale(1) translateY(0); }
+}
+
+.modal-glow {
+position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+width: 300px; height: 300px;
+background: radial-gradient(circle, rgba(0,255,136,0.12) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.modal-icon {
+font-size: 4.5rem; margin-bottom: 12px; display: block;
+animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
+}
+@keyframes popIn { from{transform:scale(0) rotate(-20deg)} to{transform:scale(1) rotate(0)} }
+
+.modal-prize-img {
+width: 100px; height: 100px; border-radius: 16px;
+object-fit: cover; margin: 0 auto 12px; display: block;
+border: 2px solid var(–bdr-hi);
+box-shadow: 0 0 30px rgba(0,255,136,0.25);
+animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
+}
+
+.modal-label {
+font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+text-transform: uppercase; color: var(–muted); margin-bottom: 6px;
+}
+.modal-title {
+font-family: ‘Orbitron’, monospace; font-size: 1.3rem; font-weight: 900;
+color: var(–green); text-shadow: 0 0 20px rgba(0,255,136,0.5);
+margin-bottom: 6px;
+}
+.modal-desc { font-size: 0.88rem; color: var(–text); margin-bottom: 20px; line-height: 1.6; }
+
+.btn-close {
+padding: 11px 32px; border: none; border-radius: 10px;
+background: linear-gradient(135deg, var(–green), var(–green-dk));
+color: #000; font-family: ‘Orbitron’, monospace;
+font-size: 0.75rem; font-weight: 900; letter-spacing: 1.5px;
+cursor: pointer; transition: all 0.2s;
+box-shadow: 0 4px 16px rgba(0,255,136,0.3);
+}
+.btn-close:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,255,136,0.5); }
+
+/* ===== PARTICLES ===== */
+#particles { position: fixed; inset: 0; pointer-events: none; z-index: 400; }
+.particle {
+position: absolute; border-radius: 50%; pointer-events: none;
+animation: particleFly var(–dur) ease forwards;
+}
+@keyframes particleFly {
+0%   { opacity:1; transform:translate(0,0) scale(1); }
+100% { opacity:0; transform:translate(var(–tx),var(–ty)) scale(0); }
+}
+
+/* ===== FOOTER ===== */
+footer {
+background: rgba(5,10,6,0.95); border-top: 1px solid var(–bdr);
+padding: 1.5rem 1.25rem; text-align: center;
+position: relative; z-index: 1;
+}
+.footer-txt { font-size: 12px; color: rgba(90,158,116,0.45); letter-spacing: 1px; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
+
+@media (max-width: 620px) {
+.spin-layout { flex-direction: column; align-items: center; }
+.prizes-area { width: 100%; }
+.wheel-wrapper { width: 290px; height: 290px; }
 }
 </style>
+
 </head>
 <body>
 
-<div class="container">
+<div class="bg-glow"></div>
+<div id="particles"></div>
 
-<div id="tokenBar">
-🎟️ <span id="userTokens">0</span> Token
+<!-- HEADER -->
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">N</div>
+    NUBIASTORE
+  </div>
+  <div class="header-right">
+    <div class="token-pill" id="tokenBar" onclick="window.location.href='/tukar-token'">
+      🎟️ <span class="token-count" id="userTokens">–</span>
+      <span style="color:var(--muted);font-size:0.72rem">Token</span>
+    </div>
+    <button class="btn-login">👤 Akun</button>
+  </div>
+</header>
+
+<!-- PAGE -->
+
+<div class="page">
+
+  <!-- HERO -->
+
+  <div class="page-hero">
+    <div class="tag">🎡 Lucky Spin</div>
+    <h1>SPIN BERHADIAH</h1>
+    <p>Gunakan token kamu untuk memutar roda dan menangkan hadiah menarik!</p>
+  </div>
+
+  <!-- SPIN LAYOUT -->
+
+  <div class="spin-layout">
+
+```
+<!-- WHEEL -->
+<div class="wheel-area">
+  <div class="wheel-wrapper">
+    <!-- outer glow ring -->
+    <div class="wheel-glow"></div>
+    <div class="wheel-ring"></div>
+
+    <!-- pointer -->
+    <div class="wheel-pointer">
+      <svg viewBox="0 0 36 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 44 L0 4 Q18 -4 36 4 Z" fill="#00ff88"/>
+        <path d="M18 38 L4 8 Q18 2 32 8 Z" fill="#007a40"/>
+        <circle cx="18" cy="44" r="4" fill="#00ff88"/>
+      </svg>
+    </div>
+
+    <!-- canvas wheel -->
+    <canvas id="spinWheel" width="340" height="340"></canvas>
+
+    <!-- center hub -->
+    <div class="wheel-hub">SPIN</div>
+  </div>
+
+  <!-- SPIN BUTTON -->
+  <button class="btn-spin" id="spinButton" onclick="spin()">
+    ⚡ PUTAR SEKARANG
+    <span class="spin-cost">Biaya: 1 Token</span>
+  </button>
 </div>
 
-<h2>SPIN BERHADIAH</h2>
+<!-- PRIZES -->
+<div class="prizes-area">
+  <div class="prizes-label">Daftar Hadiah</div>
+  <div id="prizeList"></div>
+</div>
+```
 
-<div class="wheel-container">
-<div class="pointer"></div>
-<div class="wheel" id="wheel"></div>
+  </div>
+
+  <!-- HOW TO -->
+
+  <div class="how-card">
+    <div class="sec-label">Cara Bermain</div>
+    <div class="how-grid">
+      <div class="how-item">
+        <div class="how-num">1</div>
+        <div class="how-title">Kumpulkan Token</div>
+        <div class="how-desc">Dapatkan token dari setiap transaksi top up di NUBIASTORE.</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">2</div>
+        <div class="how-title">Putar Roda</div>
+        <div class="how-desc">Klik "Putar Sekarang" — 1 token per putaran. Coba keberuntungan kamu!</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">3</div>
+        <div class="how-title">Menang Hadiah</div>
+        <div class="how-desc">Hadiah akan langsung dikreditkan ke akunmu secara otomatis.</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">4</div>
+        <div class="how-title">Tukar Token</div>
+        <div class="how-desc">Butuh lebih banyak token? Tukar poin atau beli di halaman Token.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- FOOTER -->
+
+<footer>
+  <p class="footer-txt">© 2026 NUBIASTORE · Top Up Gaming Terpercaya</p>
+</footer>
+
+<!-- RESULT MODAL -->
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="resultModal">
+    <div class="modal-glow"></div>
+    <div id="modalIcon" class="modal-icon"></div>
+    <img id="modalImg" class="modal-prize-img" src="" alt="" style="display:none">
+    <div class="modal-label">Selamat! Kamu dapat</div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-desc"  id="modalDesc"></div>
+    <button class="btn-close" onclick="closePopup()">OK, Tutup!</button>
+  </div>
 </div>
 
-<button onclick="spin()" id="spinButton">SPIN</button>
-
-</div>
-
-<div id="popup" class="popup">
-<h3 id="popupText"></h3>
-<button onclick="closePopup()">Tutup</button>
-</div>
+<!-- ===== FIREBASE (TIDAK DIUBAH) ===== -->
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -139,96 +565,346 @@ const firebaseConfig = {
   measurementId: "G-TS0YB9NYW8"
 };
 
-const app = initializeApp(firebaseConfig);
+const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db   = getFirestore(app);
 
-let currentUser=null;
-let currentTokens=0;
+let currentUser   = null;
+let currentTokens = 0;
 
-const tokenDisplay=document.getElementById("userTokens");
-const tokenBar=document.getElementById("tokenBar");
+const tokenDisplay = document.getElementById("userTokens");
 
-tokenBar.onclick=()=>window.location.href="/tukar-token";
-
-onAuthStateChanged(auth,async(user)=>{
-if(!user){
-tokenDisplay.textContent="Login dulu";
-return;
-}
-
-currentUser=user;
-const snap=await getDoc(doc(db,"users",user.uid));
-currentTokens=snap.exists()? (snap.data().nubiTokens||0):0;
-tokenDisplay.textContent=currentTokens;
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    tokenDisplay.textContent = "Login dulu";
+    return;
+  }
+  currentUser = user;
+  const snap = await getDoc(doc(db, "users", user.uid));
+  currentTokens = snap.exists() ? (snap.data().nubiTokens || 0) : 0;
+  tokenDisplay.textContent = currentTokens;
 });
 
-window.consumeToken=async function(){
-if(!currentUser){
-alert("Login dulu.");
-return false;
-}
-if(currentTokens<=0){
-alert("Token habis! Tukar dulu.");
-return false;
-}
-await updateDoc(doc(db,"users",currentUser.uid),{
-nubiTokens:increment(-1)
-});
-currentTokens--;
-tokenDisplay.textContent=currentTokens;
-return true;
+window.consumeToken = async function () {
+  if (!currentUser) { alert("Login dulu."); return false; }
+  if (currentTokens <= 0) { alert("Token habis! Tukar dulu."); return false; }
+  await updateDoc(doc(db, "users", currentUser.uid), { nubiTokens: increment(-1) });
+  currentTokens--;
+  tokenDisplay.textContent = currentTokens;
+  return true;
 };
 </script>
 
+<!-- ===== WHEEL + PRIZES LOGIC ===== -->
+
 <script>
-const prizes=[
-{name:"Zonk",color:"#ff4d4d"},
-{name:"5 💎",color:"#4caf50"},
-{name:"WDP 7H",color:"#2196f3"},
-{name:"Epic Skin",color:"#ff9800"}
+/* ===== PRIZES CONFIG ===== */
+const prizes = [
+  {
+    name: "Zonk",
+    desc: "Coba lagi! Nasib tidak berpihak kali ini.",
+    emoji: "💔",
+    img: null,
+    rarity: "common",
+    color: ["#1a0a0a", "#2d0f0f"],
+    textColor: "#ff6b6b"
+  },
+  {
+    name: "5 Diamonds",
+    desc: "5 Diamond Mobile Legends dikreditkan ke akunmu.",
+    emoji: "💎",
+    img: null,
+    rarity: "rare",
+    color: ["#0a1a2e", "#0f2d50"],
+    textColor: "#60a5fa"
+  },
+  {
+    name: "WDP 7 Hari",
+    desc: "Weekly Diamond Pass 7 hari untuk MLBB.",
+    emoji: "🎫",
+    img: null,
+    rarity: "epic",
+    color: ["#1a0a2e", "#2d1060"],
+    textColor: "#a855f7"
+  },
+  {
+    name: "Epic Skin",
+    desc: "Epic Skin random untuk hero pilihanmu di MLBB!",
+    emoji: "👑",
+    img: null,
+    rarity: "legend",
+    color: ["#1a1200", "#3d2a00"],
+    textColor: "#fbbf24"
+  },
+  {
+    name: "10 Diamonds",
+    desc: "10 Diamond Mobile Legends dikreditkan ke akunmu.",
+    emoji: "💠",
+    img: null,
+    rarity: "rare",
+    color: ["#0a1a2e", "#0a2440"],
+    textColor: "#38bdf8"
+  },
+  {
+    name: "Zonk",
+    desc: "Coba lagi! Lebih beruntung di putaran berikutnya.",
+    emoji: "🎲",
+    img: null,
+    rarity: "common",
+    color: ["#0f1a0d", "#192e15"],
+    textColor: "#5a9e74"
+  },
+  {
+    name: "50 NubiaCoin",
+    desc: "50 NubiaCoin yang bisa ditukar dengan diskon top up!",
+    emoji: "🪙",
+    img: null,
+    rarity: "rare",
+    color: ["#1a1000", "#332200"],
+    textColor: "#f59e0b"
+  },
+  {
+    name: "Free Spin",
+    desc: "Kamu dapat 1 token ekstra untuk spin lagi gratis!",
+    emoji: "🎡",
+    img: null,
+    rarity: "epic",
+    color: ["#001a10", "#003320"],
+    textColor: "#00ff88"
+  }
 ];
 
-const wheel=document.getElementById("wheel");
-const sliceAngle=360/prizes.length;
-
-prizes.forEach((p,i)=>{
-const slice=document.createElement("div");
-slice.className="slice";
-slice.style.transform=`rotate(${sliceAngle*i}deg)`;
-slice.style.background=p.color;
-slice.textContent=p.name;
-wheel.appendChild(slice);
+/* ===== RENDER PRIZE CARDS ===== */
+const prizeList = document.getElementById('prizeList');
+prizes.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'prize-card';
+  card.id = `prize-card-${i}`;
+  card.innerHTML = `
+    <div class="prize-img-wrap" style="background:linear-gradient(135deg,${p.color[0]},${p.color[1]})">
+      <span class="prize-emoji">${p.emoji}</span>
+    </div>
+    <div class="prize-info">
+      <div class="prize-name">${p.name}</div>
+      <div class="prize-desc">${p.desc}</div>
+      <span class="prize-rarity rarity-${p.rarity}">${p.rarity}</span>
+    </div>
+  `;
+  prizeList.appendChild(card);
 });
 
-async function spin(){
+/* ===== CANVAS WHEEL ===== */
+const canvas = document.getElementById('spinWheel');
+const ctx    = canvas.getContext('2d');
+const W      = canvas.width;
+const H      = canvas.height;
+const cx     = W / 2;
+const cy     = H / 2;
+const radius = W / 2 - 6;
 
-if(!(await window.consumeToken())) return;
+const sliceAngle = (2 * Math.PI) / prizes.length;
+let currentAngle = 0; // current rotation state
+let isSpinning   = false;
 
-const spinButton=document.getElementById("spinButton");
-spinButton.disabled=true;
+function drawWheel(rotation) {
+  ctx.clearRect(0, 0, W, H);
+  prizes.forEach((p, i) => {
+    const startA = rotation + i * sliceAngle;
+    const endA   = startA + sliceAngle;
+    const midA   = startA + sliceAngle / 2;
 
-const randomIndex=Math.floor(Math.random()*prizes.length);
-const extraSpins=5;
-const finalRotation=extraSpins*360+(360-(randomIndex*sliceAngle));
+    // slice background
+    const grad = ctx.createRadialGradient(cx, cy, 20, cx, cy, radius);
+    grad.addColorStop(0, p.color[0]);
+    grad.addColorStop(1, p.color[1]);
 
-wheel.style.transform=`rotate(${finalRotation}deg)`;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, startA, endA);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
 
-setTimeout(()=>{
-spinButton.disabled=false;
-showPrize(prizes[randomIndex].name);
-},4000);
+    // slice border
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, startA, endA);
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(0,255,136,0.15)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // emoji
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(midA);
+    ctx.translate(radius * 0.62, 0);
+    ctx.rotate(Math.PI / 2);
+    ctx.font = `${W < 300 ? 18 : 22}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(p.emoji, 0, 0);
+    ctx.restore();
+
+    // label
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(midA);
+    ctx.translate(radius * 0.34, 0);
+    ctx.rotate(Math.PI / 2);
+    ctx.font = `bold ${W < 300 ? 9 : 10}px Orbitron, monospace`;
+    ctx.fillStyle = p.textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = p.textColor;
+    ctx.shadowBlur = 6;
+    // wrap text
+    const name = p.name.toUpperCase();
+    ctx.fillText(name, 0, 0);
+    ctx.restore();
+  });
+
+  // outer ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'rgba(0,255,136,0.3)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
 }
 
-function showPrize(text){
-const popup=document.getElementById("popup");
-document.getElementById("popupText").innerText="Kamu dapat: "+text;
-popup.style.display="block";
+drawWheel(currentAngle);
+
+/* ===== SPIN LOGIC ===== */
+let animationId = null;
+let spinStartTime = null;
+let spinDuration  = 4500;
+let startAngle    = 0;
+let totalRotation = 0;
+let winningIndex  = 0;
+
+async function spin() {
+  if (isSpinning) return;
+  if (!(await window.consumeToken())) return;
+
+  isSpinning = true;
+  document.getElementById('spinButton').disabled = true;
+
+  winningIndex = Math.floor(Math.random() * prizes.length);
+
+  // Calculate final angle so winning slice lands under pointer (top = -PI/2)
+  const pointerAngle = -Math.PI / 2; // top
+  const targetSliceMid = winningIndex * sliceAngle + sliceAngle / 2;
+  const normalizedCurrent = currentAngle % (2 * Math.PI);
+  const extraSpins = 6 * 2 * Math.PI;
+  const target = pointerAngle - targetSliceMid;
+  // how much to spin from current
+  let delta = (target - normalizedCurrent + extraSpins + 4 * Math.PI) % (2 * Math.PI);
+  if (delta < 2 * Math.PI) delta += 4 * Math.PI;
+  delta += extraSpins;
+
+  startAngle    = currentAngle;
+  totalRotation = delta;
+  spinStartTime = null;
+
+  requestAnimationFrame(animateSpin);
 }
 
-function closePopup(){
-document.getElementById("popup").style.display="none";
+function easeOut(t) {
+  return 1 - Math.pow(1 - t, 4);
 }
+
+function animateSpin(timestamp) {
+  if (!spinStartTime) spinStartTime = timestamp;
+  const elapsed = timestamp - spinStartTime;
+  const progress = Math.min(elapsed / spinDuration, 1);
+  const eased   = easeOut(progress);
+
+  currentAngle = startAngle + totalRotation * eased;
+  drawWheel(currentAngle);
+
+  if (progress < 1) {
+    animationId = requestAnimationFrame(animateSpin);
+  } else {
+    // done
+    isSpinning = false;
+    document.getElementById('spinButton').disabled = false;
+    spawnParticles();
+    highlightPrize(winningIndex);
+    setTimeout(() => showPrize(winningIndex), 400);
+  }
+}
+
+/* ===== PARTICLES ===== */
+function spawnParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#00ff88','#fbbf24','#a855f7','#60a5fa','#ff6b6b'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 4 + Math.random() * 8;
+    const x = 20 + Math.random() * 60;
+    const y = 40 + Math.random() * 30;
+    const tx = (Math.random() - 0.5) * 400 + 'px';
+    const ty = (-(100 + Math.random() * 300)) + 'px';
+    const dur = (0.8 + Math.random() * 1.4) + 's';
+    p.style.cssText = `
+      left:${x}vw; top:${y}vh;
+      width:${size}px; height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      --tx:${tx}; --ty:${ty}; --dur:${dur};
+      animation-delay:${Math.random()*0.4}s;
+      box-shadow: 0 0 6px currentColor;
+    `;
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 2500);
+  }
+}
+
+/* ===== HIGHLIGHT PRIZE CARD ===== */
+function highlightPrize(index) {
+  document.querySelectorAll('.prize-card').forEach(c => c.classList.remove('highlight'));
+  const card = document.getElementById(`prize-card-${index}`);
+  if (card) {
+    card.classList.add('highlight');
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+/* ===== SHOW PRIZE MODAL ===== */
+function showPrize(index) {
+  const p = prizes[index];
+  const icon  = document.getElementById('modalIcon');
+  const img   = document.getElementById('modalImg');
+  const title = document.getElementById('modalTitle');
+  const desc  = document.getElementById('modalDesc');
+
+  if (p.img) {
+    icon.style.display = 'none';
+    img.src = p.img; img.alt = p.name;
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+    icon.style.display = 'block';
+    icon.textContent = p.emoji;
+  }
+
+  title.textContent = p.name;
+  desc.textContent  = p.desc;
+
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closePopup() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// close on overlay click
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closePopup();
+});
+
+// resize redraw
+window.addEventListener('resize', () => drawWheel(currentAngle));
 </script>
 
 </body>
