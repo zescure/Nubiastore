@@ -640,3 +640,322 @@ limitInfo.textContent = `Menampilkan ${displayLimit} blok terakhir`;
 </a>
 
 
+
+
+
+
+<body>
+
+  <!-- ADMIN PANEL -->
+
+  <div id="adminPanel" class="admin-panel hide">
+    <div class="admin-head">
+      <span>⚙️</span>
+      <h3>Admin — Adjust Saldo</h3>
+      <span class="admin-badge">ADMIN ONLY</span>
+    </div>
+    <div class="admin-body">
+      <div class="saldo-label">Gunakan dengan sangat hati-hati. Perubahan akan tercatat di log transaksi.</div>
+      <div class="admin-inputs" style="margin-top:0.75rem;">
+        <div class="a-input">
+          <input id="adminTargetUid" class="nui-input" placeholder="Target UID (contoh: 8z9b0u1L...)">
+        </div>
+        <div class="a-input">
+          <input id="adminDelta" class="nui-input" placeholder="Jumlah (+ tambah / - kurangi, mis: 10000)">
+        </div>
+        <div class="a-input">
+          <input id="adminNote" class="nui-input" placeholder="Catatan / reason">
+        </div>
+        <button id="btnAdminAdjust" class="btn-yellow">Apply Perubahan</button>
+      </div>
+      <div id="adminMsg" class="admin-msg"></div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<!-- ======================= JS ======================= -->
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getFirestore, doc, getDoc, setDoc, serverTimestamp,
+  collection, query, orderBy, limit, onSnapshot, addDoc,
+  runTransaction, where
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const ADMIN_UIDS_FALLBACK = [];
+
+/* ===== UI REFS ===== */
+const avatar          = document.getElementById('avatar');
+const displayNameEl   = document.getElementById('displayName');
+const emailEl         = document.getElementById('email');
+const uidTxt          = document.getElementById('uidTxt');
+const nubiPayBalanceEl= document.getElementById('nubiPayBalance');
+const txList          = document.getElementById('txList');
+const ordersList      = document.getElementById('ordersList');
+const depositBtns     = document.querySelectorAll('.deposit-btn');
+const adminPanel      = document.getElementById('adminPanel');
+const adminBadge      = document.getElementById('adminBadge');
+const adminTargetUid  = document.getElementById('adminTargetUid');
+const adminDelta      = document.getElementById('adminDelta');
+const adminNote       = document.getElementById('adminNote');
+const btnAdminAdjust  = document.getElementById('btnAdminAdjust');
+const adminMsg        = document.getElementById('adminMsg');
+
+let currentUser      = null;
+let unsubscribeTx    = null;
+let unsubscribeOrders= null;
+let isAdmin          = false;
+
+/* ===== UTILS ===== */
+function fmtRp(n){ return typeof n==='number' ? 'Rp '+n.toLocaleString('id') : 'Rp '+String(n); }
+function shortUid(u){ return u ? u.slice(0,6)+'...'+u.slice(-4) : '-'; }
+function timeStr(ts){
+  if(!ts) return '-';
+  try {
+    const d = ts.toDate ? ts.toDate() : new Date(ts.seconds*1000);
+    return d.toLocaleString('id-ID', { day:'2-digit', month:'short', year:'2-digit', hour:'2-digit', minute:'2-digit' });
+  } catch { return '-'; }
+}
+
+function showAdminMsg(msg, isError=false){
+  adminMsg.textContent = msg;
+  adminMsg.className = 'admin-msg show' + (isError ? ' error' : '');
+}
+
+/* ===== AUTH FLOW ===== */
+onAuthStateChanged(auth, async (u) => {
+  currentUser = u;
+  if (!u) {
+    displayNameEl.textContent = 'Belum Login';
+    emailEl.textContent       = '—';
+    uidTxt.textContent        = '—';
+    nubiPayBalanceEl.textContent = 'Rp 0';
+    txList.innerHTML    = '<div class="history-empty">Silakan login terlebih dahulu.</div>';
+    ordersList.innerHTML= '<div class="history-empty">Silakan login terlebih dahulu.</div>';
+    adminPanel.classList.add('hide');
+    return;
+  }
+
+  uidTxt.textContent        = u.uid;
+  displayNameEl.textContent = u.displayName || 'User';
+  emailEl.textContent       = u.email || '—';
+  avatar.src                = u.photoURL || `https://i.pravatar.cc/64?u=${u.uid}`;
+
+  // ensure user doc
+  const userRef = doc(db, 'users', u.uid);
+  try {
+    const existing = await getDoc(userRef);
+    const existingBalance = existing.exists() ? (existing.data().nubiPayBalance || 0) : 0;
+    await setDoc(userRef, {
+      displayName: u.displayName || '',
+      email: u.email || '',
+      createdAt: existing.exists() ? existing.data().createdAt || serverTimestamp() : serverTimestamp(),
+      nubiPayBalance: existingBalance
+    }, { merge: true });
+  } catch(e) { console.error('set user doc err', e); }
+
+  // check admin
+  isAdmin = false;
+  try {
+    const metaSnap = await getDoc(doc(db, 'admin', 'meta'));
+    if (metaSnap.exists()) {
+      const data = metaSnap.data();
+      if (data?.uids?.[u.uid] === true) isAdmin = true;
+      if (data?.[u.uid] === true) isAdmin = true;
+    } else {
+      if (ADMIN_UIDS_FALLBACK.includes(u.uid)) isAdmin = true;
+    }
+  } catch(e) {
+    console.warn('cek admin err', e);
+    if (ADMIN_UIDS_FALLBACK.includes(u.uid)) isAdmin = true;
+  }
+
+  adminPanel.classList.toggle('hide', !isAdmin);
+
+  if (isAdmin) {
+    adminBadge.innerHTML = '<span class="admin-badge" style="font-size:0.68rem;font-weight:700;padding:2px 8px;background:rgba(250,204,21,0.15);color:#facc15;border:1px solid rgba(250,204,21,0.3);border-radius:4px;">⚙️ ADMIN</span>';
+  }
+
+  subscribeUserProfile(u.uid);
+  subscribeTransactions(u.uid);
+  subscribeOrdersForUser(u.uid);
+});
+
+/* ===== PROFILE LISTENER ===== */
+async function subscribeUserProfile(uid) {
+  const ref  = doc(db, 'users', uid);
+  const snap = await getDoc(ref);
+  if (snap.exists()) nubiPayBalanceEl.textContent = fmtRp(snap.data().nubiPayBalance || 0);
+
+  onSnapshot(ref, s => {
+    nubiPayBalanceEl.textContent = s.exists() ? fmtRp(s.data().nubiPayBalance || 0) : fmtRp(0);
+  }, e => console.warn('profile snapshot err', e));
+}
+
+/* ===== TRANSACTIONS LISTENER ===== */
+function subscribeTransactions(uid) {
+  if (unsubscribeTx) unsubscribeTx();
+  const q = query(collection(db, `users/${uid}/transactions`), orderBy('timestamp','desc'), limit(50));
+
+  unsubscribeTx = onSnapshot(q, (snap) => {
+    if (snap.empty) { txList.innerHTML = '<div class="history-empty">Belum ada transaksi</div>'; return; }
+
+    const rows = [];
+    snap.forEach(d => {
+      const data = d.data();
+      rows.push(`
+        <div class="history-item">
+          <div class="history-row">
+            <div class="history-title">${data.type || 'Transaksi'} ${data.note ? '— '+data.note : ''}</div>
+            <div class="history-date">${timeStr(data.timestamp)}</div>
+          </div>
+          <div class="history-sub">
+            ${data.amount ? fmtRp(data.amount) : '—'}
+            ${data.adminUid ? ' &nbsp;• <span class="status-badge">DEPOSIT</span>' : ''}
+          </div>
+        </div>`);
+    });
+    txList.innerHTML = rows.join('');
+  }, e => {
+    console.error('tx snapshot err', e);
+    txList.innerHTML = '<div class="history-empty">Gagal memuat histori.</div>';
+  });
+}
+
+/* ===== ORDERS LISTENER ===== */
+function subscribeOrdersForUser(uid) {
+  if (unsubscribeOrders) unsubscribeOrders();
+  const q = query(collection(db,'orders'), where('userId','==',uid), orderBy('createdAt','desc'), limit(50));
+
+  unsubscribeOrders = onSnapshot(q, (snap) => {
+    if (snap.empty) { ordersList.innerHTML = '<div class="history-empty">Belum ada order</div>'; return; }
+
+    const rows = [];
+    snap.forEach(d => {
+      const data = d.data();
+      const statusColor = data.status === 'success' ? '#4ade80' : data.status === 'failed' ? '#f87171' : '#facc15';
+      rows.push(`
+        <div class="history-item">
+          <div class="history-row">
+            <div class="history-title">${data.invoice || '—'} &nbsp;·&nbsp; ${data.game || '—'}</div>
+            <div class="history-date">${timeStr(data.createdAt)}</div>
+          </div>
+          <div class="history-sub">
+            ${data.nominalValue ? fmtRp(data.nominalValue) : '—'} &nbsp;·&nbsp; ${data.payment_method || '—'}
+            &nbsp;&nbsp;<span class="status-badge" style="color:${statusColor}">${data.status || '—'}</span>
+          </div>
+        </div>`);
+    });
+    ordersList.innerHTML = rows.join('');
+  }, e => {
+    console.error('orders snapshot err', e);
+    ordersList.innerHTML = '<div class="history-empty">Gagal memuat orders.</div>';
+  });
+}
+
+/* ===== DEPOSIT ===== */
+async function createDepositOrder(amount) {
+  if (!currentUser) return alert('Silakan login terlebih dahulu.');
+
+  const adminFee = Math.ceil(amount * 0.016);
+  const total    = amount + adminFee;
+
+  const ok = confirm(
+    `Konfirmasi Deposit NUBIAPAY\n\nUID: ${currentUser.uid}\nNominal: Rp ${amount.toLocaleString('id')}\nBiaya Admin (1%): Rp ${adminFee.toLocaleString('id')}\nTotal Tagihan: Rp ${total.toLocaleString('id')}\n\nLanjutkan ke halaman pembayaran?`
+  );
+  if (!ok) return;
+
+  const invoice  = `INVC-NP-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
+  const orderRef = doc(db, 'orders', invoice);
+
+  try {
+    await setDoc(orderRef, {
+      invoice, userId: currentUser.uid,
+      game: 'nubia-pay', game_id: 'DEPOSIT', server: '',
+      noWA: currentUser.phoneNumber || '',
+      nominalValue: amount, price: amount,
+      adminFee, amount_total: total,
+      payment_method: 'QRIS',
+      isDeposit: true, status: 'initiated',
+      createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+    });
+    location.href = `/checkout?invoice=${invoice}`;
+  } catch(e) {
+    console.error('create deposit order err', e);
+    alert('Gagal membuat order deposit. Coba lagi.');
+  }
+}
+
+depositBtns.forEach(b => {
+  b.addEventListener('click', ev => {
+    const amt = Number(ev.currentTarget.dataset.amt || 0);
+    createDepositOrder(amt);
+  });
+});
+
+/* ===== ADMIN ADJUST ===== */
+btnAdminAdjust.addEventListener('click', async () => {
+  if (!isAdmin) return alert('Hanya admin.');
+  const target   = (adminTargetUid.value || '').trim();
+  const deltaRaw = (adminDelta.value || '').trim();
+  const note     = (adminNote.value || '').trim() || 'admin adjust';
+
+  if (!target)    return alert('Masukkan UID target.');
+  if (!deltaRaw)  return alert('Masukkan jumlah (positif atau negatif).');
+  const delta = Number(deltaRaw);
+  if (isNaN(delta)) return alert('Jumlah harus angka.');
+
+  showAdminMsg('⏳ Memproses...');
+  btnAdminAdjust.disabled = true;
+
+  try {
+    const userRef = doc(db, 'users', target);
+    await runTransaction(db, async (t) => {
+      const uSnap = await t.get(userRef);
+      if (!uSnap.exists()) {
+        t.set(userRef, { createdAt: serverTimestamp(), nubiPayBalance: 0 }, { merge: true });
+      }
+      const cur  = (uSnap.exists() && (uSnap.data().nubiPayBalance || 0)) || 0;
+      const next = cur + delta;
+      t.update(userRef, { nubiPayBalance: next, updatedAt: serverTimestamp() });
+      t.set(doc(collection(db, `users/${target}/transactions`)), {
+        amount: delta, type: 'Perubahan_Saldo', note,
+        adminUid: currentUser.uid, timestamp: serverTimestamp()
+      });
+    });
+    showAdminMsg(`✅ Sukses! Saldo ${shortUid(target)} di-adjust ${fmtRp(delta)}.`);
+    adminTargetUid.value = '';
+    adminDelta.value = '';
+    adminNote.value = '';
+  } catch(e) {
+    console.error('admin adjust err', e);
+    showAdminMsg('❌ Gagal: ' + (e.message || e), true);
+  } finally {
+    btnAdminAdjust.disabled = false;
+  }
+});
+
+/* ===== BACK ===== */
+document.getElementById('btnBack').onclick = () => {
+  location.href = 'https://nubiastore.netlify.app';
+};
+</script>
+
+</body>
+
