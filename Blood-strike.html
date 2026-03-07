@@ -883,10 +883,10 @@ header {
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <img class="hero-img" src="https://i.pinimg.com/474x/9b/aa/66/9baa66a3fb33bfcea3e8b791dee5d1c7.jpg" alt="Free Fire">
+    <img class="hero-img" src="https://cdn.bynogame.com/product/blood-strike-1759420656237.webp" alt="Free Fire">
     <div class="hero-text">
       <div class="game-tag">🔥 Top Up Game</div>
-      <h1>Blood Strike<br>NetEase</h1>
+      <h1>Blood Strike<br>NetEase Games</h1>
       <div class="hero-desc">Gold & Strike Pass langsung masuk ke akun kamu. Proses otomatis 24 jam non-stop.</div>
       <div class="hero-badges">
         <span class="hero-badge green">✓ Harga Termurah</span>
@@ -910,7 +910,7 @@ header {
     </div>
     <div class="step-body">
       <div class="field">
-        <label for="userId">ID Akun <span style="color:var(--white-muted);font-weight:400;">(contoh: 1234567890)</span></label>
+        <label for="userId">UID Akun <span style="color:var(--white-muted);font-weight:400;">(contoh: 1234567890)</span></label>
         <input type="text" id="userId" placeholder="Masukkan User ID Blood Strike kamu">
       </div>
       <div class="field" id="serverField">
@@ -1299,7 +1299,7 @@ paymentCards.forEach(c => {
 
 /* ===== ORDER ===== */
 function genInvoice() {
-  return `INVC-FF-${Date.now()}-${Math.random().toString(36).slice(2,8).toUpperCase()}`;
+  return `INVC-BS-${Date.now()}-${Math.random().toString(36).slice(2,8).toUpperCase()}`;
 }
 let orderSaved = false, lastSavedInvoice = null, lastCalc = null;
 
@@ -1308,7 +1308,7 @@ async function saveOrderToFirestore(payload) {
   const invoice = genInvoice();
   await setDoc(doc(db, 'orders', invoice), {
     invoice, userId: payload.uid || null,
-    game: 'free-fire',
+    game: 'blood-strike',
     game_id: payload.idSel, server: payload.srvSel, noWA: payload.waSel,
     nominalValue: payload.value, price: payload.price,
     adminFee: payload.adminCalc, amount_total: payload.total,
