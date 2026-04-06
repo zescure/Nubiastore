@@ -670,7 +670,7 @@
         <div class="balance-value" id="nubiPayBalance">Rp 0</div>
 
         <div class="uid-row">
-          <span class="uid-label">UID user.</span>
+          <span class="uid-label">wallet ID.</span>
           <span class="uid-value" id="uidTxt">-</span>
           <button class="copy-btn" id="copyUidBtn" type="button" title="Copy UID">📋</button>
         </div>
@@ -704,7 +704,7 @@
     <div class="qa-icon">
       <img src="https://d1yutv2xslo29o.cloudfront.net/help-centre/ico/05a342ed-6db5-4b44-ad81-625b5a4b7471.png" alt="Paylater">
     </div>
-    <span>PAYLATER</span>
+    <span>Paylater</span>
   </button>
 </div>
     </div>
@@ -712,8 +712,8 @@
     <div class="coin-panel" id="coinPanel">
       <div class="coin-inner">
         <div class="coin-kicker">NUBIACOIN</div>
-        <div class="coin-title">Panel Saldo Coin</div>
-        <div class="coin-sub">Dipakai untuk mini game, konversi langsung realtime ke Firestore.</div>
+        <div class="coin-title">konversi Saldo Coin</div>
+        <div class="coin-sub">Dipakai untuk mini game,investasi,staking koin, konversi langsung realtime</div>
 
         <div class="coin-balances">
           <div class="coin-balance-pill">
@@ -727,7 +727,7 @@
         </div>
 
         <div class="coin-mini" id="coinKursInfo">
-          Kurs: <b>10 nubiPayBalance = 5 nubiPayCoin</b> • Fee konversi <b>1.6%</b> dua arah.
+          Kurs: <b>1.000 Rupiah = 5 nubiPayCoin</b> • Fee konversi <b>1.6%</b> dua arah.
         </div>
 
         <div class="convert-mode">
@@ -985,12 +985,12 @@
           nubiPayBalanceEl.textContent = fmtRp(balance);
           nubiPayBalanceSmallEl.textContent = fmtRp(balance);
           nubiPayCoinEl.textContent = fmtNumber(coin, 2);
-          statusText.textContent = 'Saldo NUBIASTORE terhubung ke Firestore.';
+          statusText.textContent = 'Saldo NUBIASTORE terhubung';
         } else {
           nubiPayBalanceEl.textContent = fmtRp(0);
           nubiPayBalanceSmallEl.textContent = fmtRp(0);
           nubiPayCoinEl.textContent = fmtNumber(0, 2);
-          statusText.textContent = 'Dokumen user belum ditemukan di Firestore.';
+          statusText.textContent = 'Dokumen user belum ditemukan.';
         }
       } catch (e) {
         console.error(e);
@@ -1038,11 +1038,11 @@
       balanceHidden = !balanceHidden;
       if (balanceHidden) {
         nubiPayBalanceEl.classList.add('hidden-balance');
-        toggleBalanceBtn.textContent = '👁';
+        toggleBalanceBtn.textContent = 'no-hide';
         toggleBalanceBtn.title = 'Tampilkan saldo';
       } else {
         nubiPayBalanceEl.classList.remove('hidden-balance');
-        toggleBalanceBtn.textContent = '🙈';
+        toggleBalanceBtn.textContent = 'hide';
         toggleBalanceBtn.title = 'Sembunyikan saldo';
       }
     };
