@@ -1,471 +1,688 @@
-<!doctype html>
 
+<!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>NUBIASTORE — Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    /* ===== DESIGN SYSTEM ===== */
-    :root {
-      --green:      #00ff88;
-      --green-dim:  #00cc6a;
-      --green-dk:   #007a40;
-      --amber:      #fbbf24;
-      --blue:       #60a5fa;
-      --purple:     #a855f7;
-      --red:        #ff4545;
-
-      --bg:         #050a06;
-      --bg2:        #101e15;
-      --bg3:        #172a1e;
-      --card:       #0d1a12;
-      --bdr:        rgba(0,255,136,0.13);
-      --bdr-hi:     rgba(0,255,136,0.40);
-      --text:       #dff2e8;
-      --muted:      #5a9e74;
-      --white:      #ffffff;
-
-      --radius:     16px;
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>NUBIASTORE — Home</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"><style>
+    :root{
+      --bg:#f5eefc;
+      --bg2:#eadcff;
+      --card:#ffffff;
+      --text:#241b33;
+      --muted:#7c7490;
+      --accent:#6f3cff;
+      --accent2:#8f5dff;
+      --accent3:#b28dff;
+      --green:#16a34a;
+      --green2:#22c55e;
+      --border:rgba(111,60,255,0.12);
+      --shadow:0 12px 35px rgba(62, 26, 120, 0.12);
+      --radius:22px;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-
-    
-    
-    body {
-      font-family: 'Rajdhani', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-      position: relative;
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(circle at top, #f8f2ff 0%, var(--bg) 35%, #efe5ff 100%);
+      color:var(--text);
+      overflow-x:hidden;
     }
 
-    /* grid bg */
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
-      background-size: 44px 44px;
-      pointer-events: none; z-index: 0;
-    }
-    body::after {
-      content: ''; position: fixed; top: -15%; left: 50%; transform: translateX(-50%);
-      width: 640px; height: 640px;
-      background: radial-gradient(ellipse, rgba(0,255,136,0.06) 0%, transparent 68%);
-      pointer-events: none; z-index: 0;
+    a{text-decoration:none;color:inherit}
+    button,input{font:inherit}
+
+    .app{
+      min-height:100vh;
+      max-width:520px;
+      margin:0 auto;
+      padding:14px 14px 92px;
+      position:relative;
     }
 
-    a { text-decoration: none; color: inherit; }
-    button, input { font: inherit; }
-
-    /* ===== APP SHELL ===== */
-    .app {
-      min-height: 100vh;
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 14px 14px 96px;
-      position: relative; z-index: 1;
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:16px;
+      padding:4px 2px;
     }
 
-    /* ===== TOPBAR ===== */
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 18px; padding: 4px 2px;
-    }
-    .brand {
-      display: flex; align-items: center; gap: 10px;
-      font-family: 'Orbitron', monospace; font-weight: 900;
-      font-size: 1.1rem; letter-spacing: 2px; color: var(--white);
-    }
-    .brand-mark {
-      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--green), var(--green-dk));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 900; color: #000;
-      box-shadow: 0 0 18px rgba(0,255,136,0.38);
-    }
-    .notif-btn {
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-      background: var(--card); border: 1px solid var(--bdr);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; position: relative; transition: all 0.2s;
-    }
-    .notif-btn:hover { border-color: var(--bdr-hi); background: var(--bg3); }
-    .notif-dot {
-      position: absolute; top: 8px; right: 8px;
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--red); border: 2px solid var(--card);
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      font-size:1.15rem;
+      color:var(--accent);
+      letter-spacing:0.2px;
     }
 
-    /* ===== MAIN CARD (balance) ===== */
-    .main-card {
-      background: var(--card); border: 1px solid var(--bdr);
-      border-radius: var(--radius); overflow: hidden;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-      margin-bottom: 14px; position: relative;
-    }
-    .main-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--green) 40%, var(--green-dim) 60%, transparent);
-    }
-
-    .balance-card { padding: 20px 18px 0; }
-
-    .balance-head {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 12px; margin-bottom: 8px;
-    }
-    .balance-title {
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--muted);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .eye-btn {
-      border: none; background: transparent; cursor: pointer;
-      color: var(--muted); display: flex; align-items: center;
-      justify-content: center; width: 26px; height: 26px;
-      font-size: 0.85rem; transition: color 0.2s;
-    }
-    .eye-btn:hover { color: var(--green); }
-
-    .detail-pill {
-      border: 1px solid var(--bdr); padding: 5px 14px;
-      border-radius: 20px; background: transparent;
-      color: var(--green); font-size: 0.78rem; font-weight: 700;
-      cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s;
-    }
-    .detail-pill:hover { background: rgba(0,255,136,0.08); border-color: var(--bdr-hi); }
-
-    .balance-value {
-      font-family: 'Orbitron', monospace; font-weight: 900;
-      font-size: 2rem; line-height: 1; margin: 10px 0 12px;
-      color: var(--green);
-      text-shadow: 0 0 24px rgba(0,255,136,0.35);
-      letter-spacing: 0;
+    .brand-mark{
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-family:'Rajdhani',sans-serif;
+      font-weight:700;
+      box-shadow:0 8px 18px rgba(111,60,255,0.28);
+      flex-shrink:0;
     }
 
-    .uid-row {
-      display: flex; align-items: center; gap: 8px;
-      color: var(--text); font-size: 0.88rem; margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .uid-label {
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--muted);
-    }
-    .uid-value {
-      font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 700;
-      color: var(--green-dim); letter-spacing: 1px; word-break: break-all;
-    }
-    .copy-btn {
-      width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
-      background: var(--bg3); border: 1px solid var(--bdr); color: var(--muted);
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; transition: all 0.2s;
-    }
-    .copy-btn:hover { border-color: var(--bdr-hi); color: var(--green); }
-
-    .muted-small {
-      font-size: 0.72rem; color: var(--muted); line-height: 1.45;
-      padding: 0 0 14px;
+    .notif-btn{
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:999px;
+      background:rgba(255,255,255,0.75);
+      box-shadow:var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      position:relative;
     }
 
-    /* ===== QUICK ACTIONS ===== */
-    .quick-actions {
-      display: grid; grid-template-columns: repeat(4,1fr);
-      gap: 6px; padding: 14px 14px 16px;
-      border-top: 1px solid var(--bdr);
+    .notif-dot{
+      position:absolute;
+      top:10px;
+      right:10px;
+      width:9px;
+      height:9px;
+      background:#ff4d6d;
+      border-radius:50%;
+      border:2px solid #fff;
     }
-    .qa {
-      border: none; background: transparent; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center;
-      gap: 6px; color: var(--text); padding: 8px 4px;
-      border-radius: 12px; transition: all 0.2s;
-    }
-    .qa:hover { background: var(--bg3); color: var(--green); }
 
+    .main-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
+      border:1px solid rgba(255,255,255,0.8);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .balance-card{
+      padding:18px 18px 0;
+    }
+
+    .balance-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .balance-title{
+      font-size:0.98rem;
+      font-weight:700;
+      color:#34264a;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .eye-btn{
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:28px;
+      height:28px;
+    }
+
+    .detail-pill{
+      border:none;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(111,60,255,0.12);
+      color:var(--accent);
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .balance-value{
+      font-family:'Rajdhani',sans-serif;
+      font-weight:800;
+      font-size:2.2rem;
+      line-height:1;
+      margin:8px 0 12px;
+      color:#1f1630;
+      letter-spacing:0.2px;
+    }
+
+    .uid-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#43395a;
+      font-size:0.95rem;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .uid-label{
+      color:var(--muted);
+      font-size:0.85rem;
+      font-weight:600;
+    }
+
+    .uid-value{
+      font-weight:800;
+      letter-spacing:0.4px;
+      word-break:break-all;
+    }
+
+    .copy-btn{
+      width:32px;
+      height:32px;
+      border:none;
+      border-radius:10px;
+      background:rgba(111,60,255,0.08);
+      color:var(--accent);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .quick-actions{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      padding:10px 14px 18px;
+      border-top:1px solid rgba(63,39,102,0.08);
+    }
+
+    .qa{
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:7px;
+      color:#37284d;
+      padding:8px 4px;
+    }
+
+    .qa-icon{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(111,60,255,0.12), rgba(178,141,255,0.22));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--accent);
+      box-shadow:0 8px 18px rgba(111,60,255,0.08);
+      font-size:1.05rem;
+    }
+
+    .qa span{
+      font-size:0.82rem;
+      font-weight:600;
+    }
+
+    .coin-panel{
+      margin:14px 0;
+      border-radius:22px;
+      overflow:hidden;
+      background:linear-gradient(135deg, #7f4dff 0%, #9d74ff 35%, #d7bbff 100%);
+      box-shadow:var(--shadow);
+      color:#fff;
+      position:relative;
+      padding:18px;
+    }
+
+    .coin-panel::before{
+      content:'';
+      position:absolute;
+      right:-25px;
+      top:-20px;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.12);
+      filter:blur(2px);
+    }
+
+    .coin-inner{
+      position:relative;
+      z-index:1;
+    }
+
+    .coin-kicker{
+      font-size:0.72rem;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+      opacity:0.88;
+      margin-bottom:4px;
+      font-weight:700;
+    }
+
+    .coin-title{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.55rem;
+      font-weight:800;
+      line-height:1;
+      margin-bottom:6px;
+    }
+
+    .coin-sub{
+      font-size:0.9rem;
+      opacity:0.92;
+      margin-bottom:12px;
+    }
+
+    .coin-balances{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .coin-balance-pill{
+      background:rgba(255,255,255,0.16);
+      padding:8px 10px;
+      border-radius:14px;
+      min-width:140px;
+    }
+
+    .coin-balance-pill .label{
+      display:block;
+      font-size:0.68rem;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+      opacity:0.9;
+      margin-bottom:4px;
+      font-weight:700;
+    }
+
+    .coin-balance-pill .value{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.35rem;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .coin-mini{
+      font-size:0.78rem;
+      opacity:0.92;
+      margin-bottom:10px;
+      line-height:1.45;
+    }
+
+    .convert-mode{
+      display:flex;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .mode-btn{
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:0.8rem;
+      font-weight:800;
+      background:rgba(255,255,255,0.15);
+      color:#fff;
+    }
+
+    .mode-btn.active{
+      background:#fff;
+      color:var(--accent);
+    }
+
+    .convert-row{
+      display:flex;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .convert-input{
+      flex:1;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      outline:none;
+      background:rgba(255,255,255,0.92);
+      color:#241b33;
+      font-weight:700;
+    }
+
+    .convert-btn{
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      background:#fff;
+      color:var(--accent);
+      font-weight:900;
+      cursor:pointer;
+      min-width:108px;
+      box-shadow:0 10px 18px rgba(62,26,120,0.12);
+    }
+
+    .convert-hint{
+      font-size:0.76rem;
+      opacity:0.92;
+      line-height:1.45;
+    }
+
+    .section{
+      background:rgba(255,255,255,0.9);
+      border:1px solid rgba(255,255,255,0.85);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin-bottom:14px;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+
+    .section-title{
+      font-weight:800;
+      color:#2a1e3b;
+    }
+
+    .link-more{
+      color:var(--accent);
+      font-size:0.9rem;
+      font-weight:700;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+
+    .service{
+      border:none;
+      background:linear-gradient(180deg,#fff,#faf8ff);
+      border-radius:20px;
+      padding:14px 10px;
+      text-align:center;
+      box-shadow:0 8px 16px rgba(62,26,120,0.05);
+      cursor:pointer;
+    }
+
+    .service .ico{
+      width:44px;
+      height:44px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0 auto 8px;
+      background:linear-gradient(135deg, rgba(111,60,255,0.12), rgba(22,163,74,0.08));
+      color:var(--accent);
+      font-size:1.15rem;
+    }
+
+    .service .name{
+      font-weight:700;
+      color:#2e2141;
+      font-size:0.92rem;
+      line-height:1.2;
+    }
+
+    .promo-row{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      overflow:hidden;
+    }
+
+    .promo-card{
+      min-height:148px;
+      border-radius:22px;
+      padding:16px;
+      background:linear-gradient(180deg, #f4ecff, #ffffff);
+      box-shadow:0 10px 20px rgba(62,26,120,0.06);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .promo-card::after{
+      content:'';
+      position:absolute;
+      width:84px;
+      height:84px;
+      right:-16px;
+      bottom:-16px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(111,60,255,0.16), transparent 70%);
+    }
+
+    .promo-card .small{
+      font-size:0.72rem;
+      font-weight:700;
+      color:#775dc1;
+      margin-bottom:4px;
+    }
+
+    .promo-card .big{
+      font-family:'Rajdhani',sans-serif;
+      font-size:2.8rem;
+      font-weight:800;
+      color:var(--accent);
+      line-height:0.9;
+      letter-spacing:-1px;
+      position:relative;
+      z-index:1;
+    }
+
+    .promo-card .sub{
+      color:#4a3f62;
+      font-weight:700;
+      margin-top:8px;
+      position:relative;
+      z-index:1;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      left:50%;
+      bottom:10px;
+      transform:translateX(-50%);
+      width:min(100%, 520px);
+      padding:0 14px;
+      z-index:50;
+    }
+
+    .nav-wrap{
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(111,60,255,0.08);
+      border-radius:24px;
+      box-shadow:0 10px 30px rgba(62,26,120,0.1);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 8px 12px;
+      position:relative;
+    }
+
+    .nav-item{
+      flex:1;
+      text-align:center;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      color:#7b7390;
+      padding:4px 0;
+    }
+
+    .nav-item.active{
+      color:var(--accent);
+      font-weight:800;
+    }
+
+    .nav-icon{
+      font-size:1.18rem;
+      margin-bottom:4px;
+    }
+
+    .center-float{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      position:absolute;
+      left:50%;
+      top:-18px;
+      transform:translateX(-50%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:800;
+      box-shadow:0 14px 26px rgba(111,60,255,0.32);
+      border:4px solid #fff;
+    }
+
+    .muted-small{
+      font-size:0.78rem;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .spinner{
+      width:15px;
+      height:15px;
+      border:2px solid rgba(111,60,255,0.15);
+      border-top-color:var(--accent);
+      border-radius:50%;
+      animation:spin 0.8s linear infinite;
+    }
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .hidden-balance{
+      filter:blur(8px);
+      user-select:none;
+    }
+
+    .uid-copy-toast{
+      position:fixed;
+      left:50%;
+      bottom:92px;
+      transform:translateX(-50%);
+      background:#241b33;
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s, transform .2s;
+      z-index:100;
+      font-size:0.9rem;
+    }
+
+    .uid-copy-toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-4px);
+    }
+
+    .flash-msg{
+      margin-top:8px;
+      font-size:0.78rem;
+      font-weight:700;
+      color:#fff;
+      opacity:0.95;
+    }
+
+    @media (max-width:420px){
+      .balance-value{font-size:1.95rem}
+      .coin-title{font-size:1.4rem}
+      .promo-card .big{font-size:2.35rem}
+      .coin-balance-pill .value{font-size:1.18rem}
+      .service .name{font-size:0.84rem}
+      .quick-actions{gap:6px}
+    }
+
+    @media (max-width:380px){
+      .quick-actions{grid-template-columns:repeat(2,1fr)}
+      .grid,.promo-row{grid-template-columns:repeat(2,1fr)}
+      .convert-row{flex-direction:column}
+      .convert-btn{width:100%}
+    }
     .qa-icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      background: var(--bg3); border: 1px solid var(--bdr);
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; transition: border-color 0.2s;
-    }
-    .qa:hover .qa-icon { border-color: var(--bdr-hi); }
-    .qa-icon img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.2s;
-    }
-    .qa:hover .qa-icon img { transform: scale(1.1); }
-    .qa span {
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px;
-    }
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
+}
 
-    /* ===== COIN PANEL ===== */
-    .coin-panel {
-      margin-bottom: 14px; border-radius: var(--radius); overflow: hidden;
-      background: var(--card); border: 1px solid var(--bdr);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-      position: relative;
-    }
-    .coin-panel::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--amber) 40%, #f59e0b 60%, transparent);
-    }
-    /* accent glow blob */
-    .coin-panel::after {
-      content: ''; position: absolute; right: -30px; top: -30px;
-      width: 130px; height: 130px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(251,191,36,0.08), transparent 70%);
-      pointer-events: none;
-    }
+.qa-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.qa-icon img {
+  transition: 0.2s;
+}
 
-    .coin-inner { padding: 20px 18px; position: relative; z-index: 1; }
+.qa:hover .qa-icon img {
+  transform: scale(1.1);
+}
+.ico {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 6px;
+}
 
-    .coin-kicker {
-      font-size: 0.62rem; font-weight: 700; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--amber); margin-bottom: 4px;
-    }
-    .coin-title {
-      font-family: 'Orbitron', monospace; font-size: 1.2rem; font-weight: 900;
-      color: var(--white); margin-bottom: 6px; letter-spacing: 1px;
-    }
-    .coin-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+.ico img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: 0.2s;
+}
 
-    .coin-balances { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
-    .coin-balance-pill {
-      background: var(--bg3); border: 1px solid var(--bdr);
-      padding: 10px 12px; border-radius: 12px; min-width: 140px;
-    }
-    .coin-balance-pill .label {
-      display: block; font-size: 0.62rem; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 5px; font-weight: 700;
-    }
-    .coin-balance-pill .value {
-      font-family: 'Orbitron', monospace; font-size: 1.1rem; font-weight: 900;
-      color: var(--green); line-height: 1;
-    }
+.service:hover .ico img {
+  transform: scale(1.1);
+}
+.ico {
+  width: 50px;
+  height: 50px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+  </style></head>
+<body><div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">N</div>
+        <div>NUBIASTORE</div>
+      </div>
+      <button class="notif-btn" id="notifBtn" type="button">
+        <span>🔔</span>
+        <span class="notif-dot"></span>
+      </button>
+    </div>
 
-    .coin-mini { font-size: 0.76rem; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
-    .coin-mini b { color: var(--amber); }
-
-    .convert-mode { display: flex; gap: 8px; margin-bottom: 12px; }
-    .mode-btn {
-      border: 1px solid var(--bdr); cursor: pointer; border-radius: 20px;
-      padding: 7px 14px; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.5px;
-      background: var(--bg3); color: var(--muted); transition: all 0.2s;
-    }
-    .mode-btn.active { background: var(--green); color: #000; border-color: var(--green); }
-    .mode-btn:not(.active):hover { border-color: var(--bdr-hi); color: var(--text); }
-
-    .convert-row { display: flex; gap: 8px; margin-bottom: 10px; }
-    .convert-input {
-      flex: 1; border: 1px solid var(--bdr); border-radius: 10px;
-      padding: 11px 14px; outline: none;
-      background: var(--bg3); color: var(--white);
-      font-size: 0.95rem; font-weight: 600; transition: all 0.2s;
-    }
-    .convert-input:focus { border-color: var(--bdr-hi); box-shadow: 0 0 0 3px rgba(0,255,136,0.08); }
-    .convert-input::placeholder { color: var(--muted); font-weight: 500; }
-
-    .convert-btn {
-      border: none; border-radius: 10px;
-      padding: 11px 16px;
-      background: linear-gradient(135deg, var(--green), var(--green-dk));
-      color: #000; font-weight: 900; cursor: pointer;
-      min-width: 100px; font-size: 0.85rem; letter-spacing: 0.5px;
-      box-shadow: 0 4px 16px rgba(0,255,136,0.3); transition: all 0.2s;
-    }
-    .convert-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,255,136,0.5); }
-    .convert-btn:disabled { opacity: 0.5; pointer-events: none; }
-
-    .convert-hint { font-size: 0.74rem; color: var(--muted); line-height: 1.5; margin-bottom: 6px; }
-    .convert-hint b { color: var(--text); }
-
-    .flash-msg { font-size: 0.76rem; font-weight: 700; color: var(--green); min-height: 18px; }
-
-    /* ===== SECTION CARD ===== */
-    .section {
-      background: var(--card); border: 1px solid var(--bdr);
-      border-radius: var(--radius);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      padding: 18px 16px; margin-bottom: 14px;
-      position: relative; overflow: hidden;
-    }
-    .section::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--green) 40%, var(--green-dim) 60%, transparent);
-    }
-
-    .section-head {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 14px;
-    }
-    .section-title {
-      font-family: 'Orbitron', monospace; font-size: 0.7rem; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase; color: var(--green);
-    }
-    .link-more {
-      font-size: 0.78rem; font-weight: 700; color: var(--muted);
-      border: 1px solid var(--bdr); border-radius: 8px; padding: 4px 10px;
-      transition: all 0.2s;
-    }
-    .link-more:hover { color: var(--green); border-color: var(--bdr-hi); }
-
-    /* ===== SERVICE GRID ===== */
-    .grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
-
-    .service {
-      border: 1px solid var(--bdr); background: var(--bg2);
-      border-radius: 14px; padding: 16px 10px; text-align: center;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .service:hover { border-color: var(--bdr-hi); background: var(--bg3); transform: translateY(-2px); }
-
-    .ico {
-      width: 52px; height: 52px; border-radius: 14px;
-      background: var(--bg3); border: 1px solid var(--bdr);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 10px; overflow: hidden; transition: border-color 0.2s;
-    }
-    .service:hover .ico { border-color: var(--bdr-hi); }
-    .ico img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.2s;
-    }
-    .service:hover .ico img { transform: scale(1.1); }
-    .service .name {
-      font-size: 0.82rem; font-weight: 700; color: var(--text); line-height: 1.3;
-    }
-    .service:hover .name { color: var(--green); }
-
-    /* ===== PROMO ROW ===== */
-    .promo-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
-
-    .promo-card {
-      min-height: 140px; border-radius: 14px; padding: 16px;
-      background: var(--bg2); border: 1px solid var(--bdr);
-      position: relative; overflow: hidden; transition: all 0.2s;
-    }
-    .promo-card:hover { border-color: var(--bdr-hi); }
-    .promo-card::after {
-      content: ''; position: absolute; width: 80px; height: 80px;
-      right: -16px; bottom: -16px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,255,136,0.1), transparent 70%);
-    }
-    .promo-card .small {
-      font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 5px;
-    }
-    .promo-card .big {
-      font-family: 'Orbitron', monospace; font-size: 2.4rem;
-      font-weight: 900; color: var(--green); line-height: 0.95;
-      text-shadow: 0 0 20px rgba(0,255,136,0.3); position: relative; z-index: 1;
-    }
-    .promo-card .sub {
-      color: var(--muted); font-size: 0.8rem; font-weight: 600;
-      margin-top: 10px; position: relative; z-index: 1; line-height: 1.4;
-    }
-
-    /* ===== BOTTOM NAV ===== */
-    .bottom-nav {
-      position: fixed; left: 50%; bottom: 10px;
-      transform: translateX(-50%);
-      width: min(100%, 520px); padding: 0 14px; z-index: 50;
-    }
-    .nav-wrap {
-      background: rgba(13,26,18,0.92);
-      backdrop-filter: blur(18px);
-      border: 1px solid var(--bdr);
-      border-radius: 22px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 8px 12px; position: relative;
-    }
-    .nav-item {
-      flex: 1; text-align: center; border: none;
-      background: transparent; cursor: pointer;
-      color: var(--muted); padding: 4px 0;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px;
-      transition: color 0.2s;
-    }
-    .nav-item.active { color: var(--green); }
-    .nav-icon { font-size: 1.1rem; margin-bottom: 3px; }
-
-    .center-float {
-      width: 52px; height: 52px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--green), var(--green-dk));
-      position: absolute; left: 50%; top: -18px; transform: translateX(-50%);
-      display: flex; align-items: center; justify-content: center;
-      color: #000; font-family: 'Orbitron', monospace; font-weight: 900; font-size: 1.1rem;
-      box-shadow: 0 0 0 4px rgba(0,255,136,0.15), 0 8px 24px rgba(0,255,136,0.4);
-      border: 3px solid var(--bg);
-    }
-
-    /* ===== TOAST ===== */
-    .uid-copy-toast {
-      position: fixed; left: 50%; bottom: 96px;
-      transform: translateX(-50%);
-      background: var(--card); border: 1px solid var(--bdr);
-      color: var(--green); padding: 10px 18px; border-radius: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      opacity: 0; pointer-events: none;
-      transition: opacity .2s, transform .2s; z-index: 100;
-      font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;
-    }
-    .uid-copy-toast.show {
-      opacity: 1; transform: translateX(-50%) translateY(-4px);
-    }
-
-    /* ===== SPINNER ===== */
-    .spinner {
-      width: 15px; height: 15px;
-      border: 2px solid rgba(0,255,136,0.15); border-top-color: var(--green);
-      border-radius: 50%; animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ===== UTILS ===== */
-    .hidden-balance { filter: blur(8px); user-select: none; }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width:420px) {
-      .balance-value { font-size: 1.7rem; }
-      .coin-title { font-size: 1.05rem; }
-      .promo-card .big { font-size: 2rem; }
-      .coin-balance-pill .value { font-size: 0.95rem; }
-      .service .name { font-size: 0.78rem; }
-    }
-    @media (max-width:380px) {
-      .quick-actions { grid-template-columns: repeat(2,1fr); }
-      .convert-row { flex-direction: column; }
-      .convert-btn { width: 100%; }
-    }
-  </style>
-
-</head>
-<body>
-
-  <div class="app">
-
-```
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="brand">
-    <div class="brand-mark">N</div>
-    NUBIASTORE
-  </div>
-  <button class="notif-btn" id="notifBtn" type="button">
-    <span>🔔</span>
-    <span class="notif-dot"></span>
-  </button>
-</div>
-
-<!-- MAIN BALANCE CARD -->
 <div class="main-card">
   <div class="balance-card">
     <div class="balance-head">
@@ -488,39 +705,37 @@
   </div>
 
   <div class="quick-actions">
-    <button class="qa" id="isiSaldoBtn" type="button">
-      <div class="qa-icon">
-        <img src="https://static.thenounproject.com/png/2464489-200.png" alt="Isi Saldo">
-      </div>
-      <span>Isi Saldo</span>
-    </button>
-    <button class="qa" id="transferBtn" type="button">
-      <div class="qa-icon">
-        <img src="https://media.istockphoto.com/id/2240768730/vector/casino-chips-solid-icon-gambling-and-staking-concept-vector-graphics-dollar-with-coins.jpg?s=612x612&w=0&k=20&c=bsRWoOKUaUeMgvbAEpe9nJRgk_owAVSB9QS72X67zas=" alt="Transfer">
-      </div>
-      <span>Staking</span>
-    </button>
-    <button class="qa" id="riwayatBtn" type="button">
-      <div class="qa-icon">
-        <img src="https://static.vecteezy.com/system/resources/previews/018/752/702/non_2x/investor-icon-simple-element-from-investment-collection-creative-investor-icon-for-web-design-templates-infographics-and-more-vector.jpg" alt="Riwayat">
-      </div>
-      <span>Investasi</span>
-    </button>
-    <button class="qa" id="lainnyaBtn" type="button">
-      <div class="qa-icon">
-        <img src="https://d1yutv2xslo29o.cloudfront.net/help-centre/ico/05a342ed-6db5-4b44-ad81-625b5a4b7471.png" alt="Paylater">
-      </div>
-      <span>Paylater</span>
-    </button>
-  </div>
-</div>
 
-<!-- COIN PANEL -->
+
+<button class="qa" id="isiSaldoBtn" type="button">
+    <div class="qa-icon">
+      <img src="https://static.thenounproject.com/png/2464489-200.png" alt="Isi Saldo">
+    </div>
+    <span>Isi Saldo</span>
+  </button><button class="qa" id="transferBtn" type="button">
+    <div class="qa-icon">
+      <img src="https://media.istockphoto.com/id/2240768730/vector/casino-chips-solid-icon-gambling-and-staking-concept-vector-graphics-dollar-with-coins.jpg?s=612x612&w=0&k=20&c=bsRWoOKUaUeMgvbAEpe9nJRgk_owAVSB9QS72X67zas=" alt="Transfer">
+    </div>
+    <span>Staking</span>
+  </button><button class="qa" id="riwayatBtn" type="button">
+    <div class="qa-icon">
+      <img src="https://static.vecteezy.com/system/resources/previews/018/752/702/non_2x/investor-icon-simple-element-from-investment-collection-creative-investor-icon-for-web-design-templates-infographics-and-more-vector.jpg" alt="Riwayat">
+    </div>
+    <span>Investasi</span>
+  </button><button class="qa" id="lainnyaBtn" type="button">
+    <div class="qa-icon">
+      <img src="https://d1yutv2xslo29o.cloudfront.net/help-centre/ico/05a342ed-6db5-4b44-ad81-625b5a4b7471.png" alt="Paylater">
+    </div>
+    <span>Paylater</span>
+  </button>
+</div>
+    </div>
+
 <div class="coin-panel" id="coinPanel">
   <div class="coin-inner">
     <div class="coin-kicker">NUBIACOIN</div>
-    <div class="coin-title">Konversi Saldo Coin</div>
-    <div class="coin-sub">Dipakai untuk mini game, investasi, staking koin, konversi langsung realtime</div>
+    <div class="coin-title">konversi Saldo Coin</div>
+    <div class="coin-sub">Dipakai untuk mini game,investasi,staking koin, konversi langsung realtime</div>
 
     <div class="coin-balances">
       <div class="coin-balance-pill">
@@ -539,12 +754,12 @@
 
     <div class="convert-mode">
       <button class="mode-btn active" id="modeBalToCoin" type="button">Balance → Coin</button>
-      <button class="mode-btn"        id="modeCoinToBal" type="button">Coin → Balance</button>
+      <button class="mode-btn" id="modeCoinToBal" type="button">Coin → Balance</button>
     </div>
 
     <div class="convert-row">
       <input class="convert-input" id="convertAmount" type="number" step="0.01" min="0.01" placeholder="Masukkan jumlah">
-      <button class="convert-btn" id="convertBtn" type="button">Tukar 🔄</button>
+      <button class="convert-btn" id="convertBtn" type="button">tukar🔄</button>
     </div>
 
     <div class="convert-hint" id="convertHint">
@@ -554,44 +769,54 @@
   </div>
 </div>
 
-<!-- SERVICES SECTION -->
 <div class="section">
   <div class="section-head">
     <div class="section-title">Layanan Nubiacoin</div>
-    <a class="link-more" href="#" id="lihatSemuaBtn">Semua →</a>
+    <a class="link-more" href="#" id="lihatSemuaBtn">Semua Layanan</a>
   </div>
-  <div class="grid">
-    <button class="service" id="mobileLegendBtn" type="button">
-      <div class="ico"><img src="https://cdn-icons-gif.flaticon.com/16894/16894149.gif" alt="Mobile Legends"></div>
-      <div class="name">Opsi Trade Internal</div>
-    </button>
-    <button class="service" id="freeFireBtn" type="button">
-      <div class="ico"><img src="https://cdn-icons-gif.flaticon.com/17507/17507034.gif" alt="Free Fire"></div>
-      <div class="name">Beli Saham Internal</div>
-    </button>
-    <button class="service" id="pubgBtn" type="button">
-      <div class="ico"><img src="https://img.tapimg.net/market/images/031fd4b94c7ab75b1d2f88157200e00b.jpg" alt="PUBG Mobile"></div>
-      <div class="name">Game Rocket Crash</div>
-    </button>
-    <button class="service" id="allGameBtn" type="button">
-      <div class="ico"><img src="https://assets-v2.lottiefiles.com/a/7012d742-1153-11ee-94f9-731b7f9ba9e4/bZHiXCQAlu.gif" alt="Semua Game"></div>
-      <div class="name">Game Coin Flip</div>
-    </button>
-  </div>
-</div>
 
-<!-- PROMO SECTION -->
+  
+
+  <div class="grid">
+
+
+<button class="service" id="mobileLegendBtn" type="button">
+    <div class="ico">
+      <img src="https://cdn-icons-gif.flaticon.com/16894/16894149.gif" alt="Mobile Legends">
+    </div>
+    <div class="name">Opsi Trade Internal</div>
+  </button><button class="service" id="freeFireBtn" type="button">
+    <div class="ico">
+      <img src="https://cdn-icons-gif.flaticon.com/17507/17507034.gif" alt="Free Fire">
+    </div>
+    <div class="name">Beli Saham Internal</div>
+  </button><button class="service" id="pubgBtn" type="button">
+    <div class="ico">
+      <img src="https://img.tapimg.net/market/images/031fd4b94c7ab75b1d2f88157200e00b.jpg" alt="PUBG Mobile">
+    </div>
+    <div class="name">Game Rocket Crash</div>
+  </button><button class="service" id="allGameBtn" type="button">
+    <div class="ico">
+      <img src="https://assets-v2.lottiefiles.com/a/7012d742-1153-11ee-94f9-731b7f9ba9e4/bZHiXCQAlu.gif" alt="Semua Game">
+    </div>
+    <div class="name">Game Coin Flip</div>
+  </button>
+</div>
+    </div>
+
 <div class="section">
   <div class="section-head">
     <div class="section-title">Promo NUBIASTORE</div>
-    <a class="link-more" href="#" id="promoMoreBtn">Lihat →</a>
+    <a class="link-more" href="#" id="promoMoreBtn">Lihat</a>
   </div>
+
   <div class="promo-row">
     <div class="promo-card">
       <div class="small">Cashback Hingga</div>
       <div class="big">50%</div>
       <div class="sub">untuk event tertentu</div>
     </div>
+
     <div class="promo-card">
       <div class="small">Bonus Akun</div>
       <div class="big">UID</div>
@@ -599,39 +824,35 @@
     </div>
   </div>
 </div>
-```
 
-  </div><!-- /app -->
 
-  <!-- BOTTOM NAV -->
-
-  <div class="bottom-nav">
+</div><div class="bottom-nav">
     <div class="nav-wrap">
       <button class="nav-item active" id="navHome" type="button">
         <div class="nav-icon">🏠</div>
         Home
       </button>
-      <button class="nav-item" id="navSpin" type="button">
-        <div class="nav-icon">🎡</div>
-        Spin
-      </button>
-      <div class="center-float">N</div>
-      <button class="nav-item" id="navStore" type="button">
-        <div class="nav-icon">🛒</div>
-        Store
-      </button>
-      <button class="nav-item" id="navAkun" type="button">
-        <div class="nav-icon">👤</div>
-        Akun
-      </button>
-    </div>
-  </div>
 
-  <div class="uid-copy-toast" id="toastCopy">UID disalin</div>
+  <button class="nav-item" id="navSpin" type="button">
+    <div class="nav-icon">🎡</div>
+    Spin
+  </button>
 
-  <!-- ===== FIREBASE + ALL JS — TIDAK DIUBAH SAMA SEKALI ===== -->
+  <div class="center-float">N</div>
 
-  <script type="module">
+  <button class="nav-item" id="navStore" type="button">
+    <div class="nav-icon">🛒</div>
+    Store
+  </button>
+
+  <button class="nav-item" id="navAkun" type="button">
+    <div class="nav-icon">👤</div>
+    Akun
+  </button>
+</div>
+
+
+</div><div class="uid-copy-toast" id="toastCopy">UID disalin</div><script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import {
@@ -719,7 +940,7 @@
 
     function setConvertMsg(msg, isError = false){
       convertMsg.textContent = msg;
-      convertMsg.style.color = isError ? '#fca5a5' : 'var(--green)';
+      convertMsg.style.color = isError ? '#fff1f2' : '#fff';
     }
 
     function round2(n){
@@ -727,8 +948,8 @@
     }
 
     function calcConversion(amount, mode){
-      const rateBalToCoin = 0.5;
-      const rateCoinToBal = 2;
+      const rateBalToCoin = 0.5; // 10 balance = 5 coin
+      const rateCoinToBal = 2;   // kebalikannya
       const feeRate = 0.016;
 
       const source = Number(amount || 0);
@@ -786,6 +1007,7 @@
           const data = snap.data();
           const balance = Number(data.nubiPayBalance || 0);
           const coin = Number(data.nubiPayCoin || 0);
+
           nubiPayBalanceEl.textContent = fmtRp(balance);
           nubiPayBalanceSmallEl.textContent = fmtRp(balance);
           nubiPayCoinEl.textContent = fmtNumber(coin, 2);
@@ -888,8 +1110,10 @@
 
         await runTransaction(db, async (tx) => {
           const snap = await tx.get(userRef);
+
           let curBalance = 0;
           let curCoin = 0;
+
           if (snap.exists()) {
             curBalance = Number(snap.data().nubiPayBalance || 0);
             curCoin = Number(snap.data().nubiPayCoin || 0);
@@ -934,7 +1158,7 @@
         setConvertMsg(e.message || 'Konversi gagal.', true);
       } finally {
         convertBtn.disabled = false;
-        convertBtn.textContent = 'Tukar 🔄';
+        convertBtn.textContent = 'Konversi';
       }
     };
 
@@ -953,7 +1177,5 @@
     });
 
     updateConvertUI();
-  </script>
-
-</body>
+  </script></body>
 </html>
