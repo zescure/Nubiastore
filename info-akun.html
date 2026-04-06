@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NUBIASTORE — Home</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f5eefc;
+      --bg2:#eadcff;
+      --card:#ffffff;
+      --text:#241b33;
+      --muted:#7c7490;
+      --accent:#6f3cff;
+      --accent2:#8f5dff;
+      --accent3:#b28dff;
+      --green:#16a34a;
+      --green2:#22c55e;
+      --border:rgba(111,60,255,0.12);
+      --shadow:0 12px 35px rgba(62, 26, 120, 0.12);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(circle at top, #f8f2ff 0%, var(--bg) 35%, #efe5ff 100%);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    a{text-decoration:none;color:inherit}
+    button,input{font:inherit}
+
+    .app{
+      min-height:100vh;
+      max-width:520px;
+      margin:0 auto;
+      padding:14px 14px 92px;
+      position:relative;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:16px;
+      padding:4px 2px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      font-size:1.15rem;
+      color:var(--accent);
+      letter-spacing:0.2px;
+    }
+
+    .brand-mark{
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-family:'Rajdhani',sans-serif;
+      font-weight:700;
+      box-shadow:0 8px 18px rgba(111,60,255,0.28);
+      flex-shrink:0;
+    }
+
+    .notif-btn{
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:999px;
+      background:rgba(255,255,255,0.75);
+      box-shadow:var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      position:relative;
+    }
+
+    .notif-dot{
+      position:absolute;
+      top:10px;
+      right:10px;
+      width:9px;
+      height:9px;
+      background:#ff4d6d;
+      border-radius:50%;
+      border:2px solid #fff;
+    }
+
+    .main-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
+      border:1px solid rgba(255,255,255,0.8);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .balance-card{
+      padding:18px 18px 0;
+    }
+
+    .balance-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .balance-title{
+      font-size:0.98rem;
+      font-weight:700;
+      color:#34264a;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .eye-btn{
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:28px;
+      height:28px;
+    }
+
+    .detail-pill{
+      border:none;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(111,60,255,0.12);
+      color:var(--accent);
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .balance-value{
+      font-family:'Rajdhani',sans-serif;
+      font-weight:800;
+      font-size:2.2rem;
+      line-height:1;
+      margin:8px 0 12px;
+      color:#1f1630;
+      letter-spacing:0.2px;
+    }
+
+    .uid-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#43395a;
+      font-size:0.95rem;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .uid-label{
+      color:var(--muted);
+      font-size:0.85rem;
+      font-weight:600;
+    }
+
+    .uid-value{
+      font-weight:800;
+      letter-spacing:0.4px;
+    }
+
+    .copy-btn{
+      width:32px;
+      height:32px;
+      border:none;
+      border-radius:10px;
+      background:rgba(111,60,255,0.08);
+      color:var(--accent);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .quick-actions{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      padding:10px 14px 18px;
+      border-top:1px solid rgba(63,39,102,0.08);
+    }
+
+    .qa{
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:7px;
+      color:#37284d;
+      padding:8px 4px;
+    }
+
+    .qa-icon{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(111,60,255,0.12), rgba(178,141,255,0.22));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--accent);
+      box-shadow:0 8px 18px rgba(111,60,255,0.08);
+      font-size:1.05rem;
+    }
+
+    .qa span{
+      font-size:0.82rem;
+      font-weight:600;
+    }
+
+    .banner{
+      margin:14px 0;
+      border-radius:22px;
+      overflow:hidden;
+      background:linear-gradient(135deg, #7f4dff 0%, #9d74ff 35%, #d7bbff 100%);
+      box-shadow:var(--shadow);
+      color:#fff;
+      position:relative;
+      min-height:118px;
+      display:flex;
+      align-items:center;
+      padding:18px;
+    }
+
+    .banner::before{
+      content:'';
+      position:absolute;
+      right:-25px;
+      top:-20px;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.12);
+      filter:blur(2px);
+    }
+
+    .banner-inner{
+      position:relative;
+      z-index:1;
+      max-width:68%;
+    }
+
+    .banner-kicker{
+      font-size:0.72rem;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+      opacity:0.88;
+      margin-bottom:4px;
+      font-weight:700;
+    }
+
+    .banner-title{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.55rem;
+      font-weight:800;
+      line-height:1;
+      margin-bottom:6px;
+    }
+
+    .banner-sub{
+      font-size:0.9rem;
+      opacity:0.92;
+    }
+
+    .banner-badge{
+      margin-top:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      background:rgba(255,255,255,0.16);
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:0.78rem;
+    }
+
+    .section{
+      background:rgba(255,255,255,0.9);
+      border:1px solid rgba(255,255,255,0.85);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin-bottom:14px;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+
+    .section-title{
+      font-weight:800;
+      color:#2a1e3b;
+    }
+
+    .link-more{
+      color:var(--accent);
+      font-size:0.9rem;
+      font-weight:700;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+
+    .service{
+      border:none;
+      background:linear-gradient(180deg,#fff,#faf8ff);
+      border-radius:20px;
+      padding:14px 10px;
+      text-align:center;
+      box-shadow:0 8px 16px rgba(62,26,120,0.05);
+      cursor:pointer;
+    }
+
+    .service .ico{
+      width:44px;
+      height:44px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0 auto 8px;
+      background:linear-gradient(135deg, rgba(111,60,255,0.12), rgba(22,163,74,0.08));
+      color:var(--accent);
+      font-size:1.15rem;
+    }
+
+    .service .name{
+      font-weight:700;
+      color:#2e2141;
+      font-size:0.92rem;
+      line-height:1.2;
+    }
+
+    .promo-row{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      overflow:hidden;
+    }
+
+    .promo-card{
+      min-height:148px;
+      border-radius:22px;
+      padding:16px;
+      background:linear-gradient(180deg, #f4ecff, #ffffff);
+      box-shadow:0 10px 20px rgba(62,26,120,0.06);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .promo-card::after{
+      content:'';
+      position:absolute;
+      width:84px;
+      height:84px;
+      right:-16px;
+      bottom:-16px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(111,60,255,0.16), transparent 70%);
+    }
+
+    .promo-card .small{
+      font-size:0.72rem;
+      font-weight:700;
+      color:#775dc1;
+      margin-bottom:4px;
+    }
+
+    .promo-card .big{
+      font-family:'Rajdhani',sans-serif;
+      font-size:2.8rem;
+      font-weight:800;
+      color:var(--accent);
+      line-height:0.9;
+      letter-spacing:-1px;
+      position:relative;
+      z-index:1;
+    }
+
+    .promo-card .sub{
+      color:#4a3f62;
+      font-weight:700;
+      margin-top:8px;
+      position:relative;
+      z-index:1;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      left:50%;
+      bottom:10px;
+      transform:translateX(-50%);
+      width:min(100%, 520px);
+      padding:0 14px;
+      z-index:50;
+    }
+
+    .nav-wrap{
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(111,60,255,0.08);
+      border-radius:24px;
+      box-shadow:0 10px 30px rgba(62,26,120,0.1);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 8px 12px;
+      position:relative;
+    }
+
+    .nav-item{
+      flex:1;
+      text-align:center;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      color:#7b7390;
+      padding:4px 0;
+    }
+
+    .nav-item.active{
+      color:var(--accent);
+      font-weight:800;
+    }
+
+    .nav-icon{
+      font-size:1.18rem;
+      margin-bottom:4px;
+    }
+
+    .center-float{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      position:absolute;
+      left:50%;
+      top:-18px;
+      transform:translateX(-50%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:800;
+      box-shadow:0 14px 26px rgba(111,60,255,0.32);
+      border:4px solid #fff;
+    }
+
+    .muted-small{
+      font-size:0.78rem;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .loading{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .spinner{
+      width:15px;
+      height:15px;
+      border:2px solid rgba(111,60,255,0.15);
+      border-top-color:var(--accent);
+      border-radius:50%;
+      animation:spin 0.8s linear infinite;
+    }
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media (max-width:420px){
+      .balance-value{font-size:1.95rem}
+      .promo-card .big{font-size:2.35rem}
+      .banner-inner{max-width:72%}
+      .service .name{font-size:0.84rem}
+      .quick-actions{gap:6px}
+    }
+
+    @media (max-width:380px){
+      .quick-actions{grid-template-columns:repeat(2,1fr)}
+      .grid,.promo-row{grid-template-columns:repeat(2,1fr)}
+    }
+
+    .hidden-balance{
+      filter:blur(8px);
+      user-select:none;
+    }
+
+    .uid-copy-toast{
+      position:fixed;
+      left:50%;
+      bottom:92px;
+      transform:translateX(-50%);
+      background:#241b33;
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s, transform .2s;
+      z-index:100;
+      font-size:0.9rem;
+    }
+
+    .uid-copy-toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-4px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">N</div>
+        <div>NUBIASTORE</div>
+      </div>
+      <button class="notif-btn" id="notifBtn" type="button">
+        <span>🔔</span>
+        <span class="notif-dot"></span>
+      </button>
+    </div>
+
+    <div class="main-card">
+      <div class="balance-card">
+        <div class="balance-head">
+          <div class="balance-title">
+            Saldo Utama
+            <button class="eye-btn" id="toggleBalance" type="button" title="Sembunyikan saldo">🙈</button>
+          </div>
+          <button class="detail-pill" id="detailBtn" type="button">Detail ➜</button>
+        </div>
+
+        <div class="balance-value" id="nubiPayBalance">Rp 0</div>
+
+        <div class="uid-row">
+          <span class="uid-label">UID user.</span>
+          <span class="uid-value" id="uidTxt">-</span>
+          <button class="copy-btn" id="copyUidBtn" type="button" title="Copy UID">📋</button>
+        </div>
+
+        <div class="muted-small" id="statusText">Menghubungkan ke akun NUBIASTORE...</div>
+      </div>
+
+      <div class="quick-actions">
+        <button class="qa" id="isiSaldoBtn" type="button">
+          <div class="qa-icon">➕</div>
+          <span>Isi Saldo</span>
+        </button>
+        <button class="qa" id="transferBtn" type="button">
+          <div class="qa-icon">⇄</div>
+          <span>Transfer</span>
+        </button>
+        <button class="qa" id="riwayatBtn" type="button">
+          <div class="qa-icon">🧾</div>
+          <span>Riwayat</span>
+        </button>
+        <button class="qa" id="lainnyaBtn" type="button">
+          <div class="qa-icon">⦿</div>
+          <span>Lainnya</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="banner" id="promoBanner">
+      <div class="banner-inner">
+        <div class="banner-kicker">NUBIASTORE REWARDS</div>
+        <div class="banner-title">Beli game, dapat bonus.</div>
+        <div class="banner-sub">Pantau saldo, UID, dan transaksi kamu langsung dari dashboard.</div>
+        <div class="banner-badge">⚡ Proses cepat • 🛡 Aman • 💜 Elegant</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">Layanan Cepat</div>
+        <a class="link-more" href="#" id="lihatSemuaBtn">Semua Layanan</a>
+      </div>
+
+      <div class="grid">
+        <button class="service" id="mobileLegendBtn" type="button">
+          <div class="ico">🎮</div>
+          <div class="name">Mobile Legends</div>
+        </button>
+
+        <button class="service" id="freeFireBtn" type="button">
+          <div class="ico">🔥</div>
+          <div class="name">Free Fire</div>
+        </button>
+
+        <button class="service" id="pubgBtn" type="button">
+          <div class="ico">🚀</div>
+          <div class="name">PUBG Mobile</div>
+        </button>
+
+        <button class="service" id="allGameBtn" type="button">
+          <div class="ico">✨</div>
+          <div class="name">Semua Game</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">Promo NUBIASTORE</div>
+        <a class="link-more" href="#" id="promoMoreBtn">Lihat</a>
+      </div>
+
+      <div class="promo-row">
+        <div class="promo-card">
+          <div class="small">Cashback Hingga</div>
+          <div class="big">50%</div>
+          <div class="sub">untuk event tertentu</div>
+        </div>
+
+        <div class="promo-card">
+          <div class="small">Bonus Akun</div>
+          <div class="big">UID</div>
+          <div class="sub">terhubung ke saldo kamu</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-wrap">
+      <button class="nav-item active" id="navHome" type="button">
+        <div class="nav-icon">🏠</div>
+        Home
+      </button>
+
+      <button class="nav-item" id="navSpin" type="button">
+        <div class="nav-icon">🎡</div>
+        Spin
+      </button>
+
+      <div class="center-float">N</div>
+
+      <button class="nav-item" id="navStore" type="button">
+        <div class="nav-icon">🛒</div>
+        Store
+      </button>
+
+      <button class="nav-item" id="navAkun" type="button">
+        <div class="nav-icon">👤</div>
+        Akun
+      </button>
+    </div>
+  </div>
+
+  <div class="uid-copy-toast" id="toastCopy">UID disalin</div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore, doc, getDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+      authDomain: "zestoreid-f9e85.firebaseapp.com",
+      projectId: "zestoreid-f9e85",
+      storageBucket: "zestoreid-f9e85.firebasestorage.app",
+      messagingSenderId: "426093692154",
+      appId: "1:426093692154:web:38c6e9c143af626a623543"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    const avatarEl = null;
+    const displayNameEl = null;
+    const emailEl = null;
+    const uidTxt = document.getElementById('uidTxt');
+    const nubiPayBalanceEl = document.getElementById('nubiPayBalance');
+    const statusText = document.getElementById('statusText');
+    const toastCopy = document.getElementById('toastCopy');
+
+    const toggleBalanceBtn = document.getElementById('toggleBalance');
+    const copyUidBtn = document.getElementById('copyUidBtn');
+
+    const navHome = document.getElementById('navHome');
+    const navSpin = document.getElementById('navSpin');
+    const navStore = document.getElementById('navStore');
+    const navAkun = document.getElementById('navAkun');
+
+    const isiSaldoBtn = document.getElementById('isiSaldoBtn');
+    const transferBtn = document.getElementById('transferBtn');
+    const riwayatBtn = document.getElementById('riwayatBtn');
+    const lainnyaBtn = document.getElementById('lainnyaBtn');
+
+    const mobileLegendBtn = document.getElementById('mobileLegendBtn');
+    const freeFireBtn = document.getElementById('freeFireBtn');
+    const pubgBtn = document.getElementById('pubgBtn');
+    const allGameBtn = document.getElementById('allGameBtn');
+
+    const detailBtn = document.getElementById('detailBtn');
+    const notifBtn = document.getElementById('notifBtn');
+    const lihatSemuaBtn = document.getElementById('lihatSemuaBtn');
+    const promoMoreBtn = document.getElementById('promoMoreBtn');
+
+    let currentUser = null;
+    let balanceHidden = false;
+
+    function fmtRp(n){
+      const num = Number(n || 0);
+      return 'Rp ' + num.toLocaleString('id-ID');
+    }
+
+    function shortUid(uid){
+      if (!uid) return '-';
+      return uid.slice(0, 6) + '...' + uid.slice(-4);
+    }
+
+    function showToast(msg){
+      toastCopy.textContent = msg;
+      toastCopy.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toastCopy.classList.remove('show'), 1500);
+    }
+
+    async function loadUserBalance(uid){
+      try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          const balance = Number(data.nubiPayBalance || 0);
+          nubiPayBalanceEl.textContent = fmtRp(balance);
+          statusText.textContent = 'Saldo NUBIASTORE terhubung ke Firestore.';
+        } else {
+          nubiPayBalanceEl.textContent = fmtRp(0);
+          statusText.textContent = 'Dokumen user belum ditemukan di Firestore.';
+        }
+      } catch (e) {
+        console.error(e);
+        statusText.textContent = 'Gagal memuat saldo.';
+      }
+    }
+
+    function setNavActive(target){
+      [navHome, navSpin, navStore, navAkun].forEach(x => x.classList.remove('active'));
+      target.classList.add('active');
+    }
+
+    navHome.onclick = () => setNavActive(navHome);
+    navSpin.onclick = () => window.location.href = '/spin-token';
+    navStore.onclick = () => window.location.href = '/store';
+    navAkun.onclick = () => window.location.href = '/account';
+
+    isiSaldoBtn.onclick = () => window.location.href = '/topup';
+    transferBtn.onclick = () => window.location.href = '/transfer';
+    riwayatBtn.onclick = () => window.location.href = '/riwayat';
+    lainnyaBtn.onclick = () => window.location.href = '/lainnya';
+
+    mobileLegendBtn.onclick = () => window.location.href = '/mobile-legends.html';
+    freeFireBtn.onclick = () => window.location.href = '/free-fire.html';
+    pubgBtn.onclick = () => window.location.href = '/pubg-mobile.html';
+    allGameBtn.onclick = () => window.location.href = '/all-games';
+
+    detailBtn.onclick = () => window.location.href = '/account';
+    notifBtn.onclick = () => window.location.href = '/notifications';
+    lihatSemuaBtn.onclick = (e) => { e.preventDefault(); window.location.href = '/all-services'; };
+    promoMoreBtn.onclick = (e) => { e.preventDefault(); window.location.href = '/promo'; };
+
+    copyUidBtn.onclick = async () => {
+      const uid = currentUser?.uid || '-';
+      if (uid === '-') return;
+      try {
+        await navigator.clipboard.writeText(uid);
+        showToast('UID disalin');
+      } catch {
+        showToast('Gagal copy UID');
+      }
+    };
+
+    toggleBalanceBtn.onclick = () => {
+      balanceHidden = !balanceHidden;
+      if (balanceHidden) {
+        nubiPayBalanceEl.classList.add('hidden-balance');
+        toggleBalanceBtn.textContent = '👁';
+        toggleBalanceBtn.title = 'Tampilkan saldo';
+      } else {
+        nubiPayBalanceEl.classList.remove('hidden-balance');
+        toggleBalanceBtn.textContent = '🙈';
+        toggleBalanceBtn.title = 'Sembunyikan saldo';
+      }
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      if (user) {
+        uidTxt.textContent = user.uid;
+        await loadUserBalance(user.uid);
+      } else {
+        uidTxt.textContent = '-';
+        nubiPayBalanceEl.textContent = fmtRp(0);
+        statusText.textContent = 'Login untuk melihat saldo NUBIASTORE.';
+      }
+    });
+  </script>
+</body>
+</html>
