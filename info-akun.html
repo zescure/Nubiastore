@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>NUBIASTORE — Home</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -183,6 +184,7 @@
     .uid-value{
       font-weight:800;
       letter-spacing:0.4px;
+      word-break:break-all;
     }
 
     .copy-btn{
@@ -237,7 +239,7 @@
       font-weight:600;
     }
 
-    .banner{
+    .coin-panel{
       margin:14px 0;
       border-radius:22px;
       overflow:hidden;
@@ -245,13 +247,10 @@
       box-shadow:var(--shadow);
       color:#fff;
       position:relative;
-      min-height:118px;
-      display:flex;
-      align-items:center;
       padding:18px;
     }
 
-    .banner::before{
+    .coin-panel::before{
       content:'';
       position:absolute;
       right:-25px;
@@ -263,13 +262,12 @@
       filter:blur(2px);
     }
 
-    .banner-inner{
+    .coin-inner{
       position:relative;
       z-index:1;
-      max-width:68%;
     }
 
-    .banner-kicker{
+    .coin-kicker{
       font-size:0.72rem;
       letter-spacing:1.8px;
       text-transform:uppercase;
@@ -278,7 +276,7 @@
       font-weight:700;
     }
 
-    .banner-title{
+    .coin-title{
       font-family:'Rajdhani',sans-serif;
       font-size:1.55rem;
       font-weight:800;
@@ -286,21 +284,105 @@
       margin-bottom:6px;
     }
 
-    .banner-sub{
+    .coin-sub{
       font-size:0.9rem;
       opacity:0.92;
+      margin-bottom:12px;
     }
 
-    .banner-badge{
-      margin-top:12px;
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
+    .coin-balances{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .coin-balance-pill{
       background:rgba(255,255,255,0.16);
-      padding:6px 10px;
-      border-radius:999px;
+      padding:8px 10px;
+      border-radius:14px;
+      min-width:140px;
+    }
+
+    .coin-balance-pill .label{
+      display:block;
+      font-size:0.68rem;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+      opacity:0.9;
+      margin-bottom:4px;
       font-weight:700;
+    }
+
+    .coin-balance-pill .value{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.35rem;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .coin-mini{
       font-size:0.78rem;
+      opacity:0.92;
+      margin-bottom:10px;
+      line-height:1.45;
+    }
+
+    .convert-mode{
+      display:flex;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .mode-btn{
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:0.8rem;
+      font-weight:800;
+      background:rgba(255,255,255,0.15);
+      color:#fff;
+    }
+
+    .mode-btn.active{
+      background:#fff;
+      color:var(--accent);
+    }
+
+    .convert-row{
+      display:flex;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .convert-input{
+      flex:1;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      outline:none;
+      background:rgba(255,255,255,0.92);
+      color:#241b33;
+      font-weight:700;
+    }
+
+    .convert-btn{
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      background:#fff;
+      color:var(--accent);
+      font-weight:900;
+      cursor:pointer;
+      min-width:108px;
+      box-shadow:0 10px 18px rgba(62,26,120,0.12);
+    }
+
+    .convert-hint{
+      font-size:0.76rem;
+      opacity:0.92;
+      line-height:1.45;
     }
 
     .section{
@@ -487,12 +569,6 @@
       line-height:1.45;
     }
 
-    .loading{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-    }
-
     .spinner{
       width:15px;
       height:15px;
@@ -503,19 +579,6 @@
     }
 
     @keyframes spin{to{transform:rotate(360deg)}}
-
-    @media (max-width:420px){
-      .balance-value{font-size:1.95rem}
-      .promo-card .big{font-size:2.35rem}
-      .banner-inner{max-width:72%}
-      .service .name{font-size:0.84rem}
-      .quick-actions{gap:6px}
-    }
-
-    @media (max-width:380px){
-      .quick-actions{grid-template-columns:repeat(2,1fr)}
-      .grid,.promo-row{grid-template-columns:repeat(2,1fr)}
-    }
 
     .hidden-balance{
       filter:blur(8px);
@@ -542,6 +605,30 @@
     .uid-copy-toast.show{
       opacity:1;
       transform:translateX(-50%) translateY(-4px);
+    }
+
+    .flash-msg{
+      margin-top:8px;
+      font-size:0.78rem;
+      font-weight:700;
+      color:#fff;
+      opacity:0.95;
+    }
+
+    @media (max-width:420px){
+      .balance-value{font-size:1.95rem}
+      .coin-title{font-size:1.4rem}
+      .promo-card .big{font-size:2.35rem}
+      .coin-balance-pill .value{font-size:1.18rem}
+      .service .name{font-size:0.84rem}
+      .quick-actions{gap:6px}
+    }
+
+    @media (max-width:380px){
+      .quick-actions{grid-template-columns:repeat(2,1fr)}
+      .grid,.promo-row{grid-template-columns:repeat(2,1fr)}
+      .convert-row{flex-direction:column}
+      .convert-btn{width:100%}
     }
   </style>
 </head>
@@ -600,12 +687,41 @@
       </div>
     </div>
 
-    <div class="banner" id="promoBanner">
-      <div class="banner-inner">
-        <div class="banner-kicker">NUBIASTORE REWARDS</div>
-        <div class="banner-title">Beli game, dapat bonus.</div>
-        <div class="banner-sub">Pantau saldo, UID, dan transaksi kamu langsung dari dashboard.</div>
-        <div class="banner-badge">⚡ Proses cepat • 🛡 Aman • 💜 Elegant</div>
+    <div class="coin-panel" id="coinPanel">
+      <div class="coin-inner">
+        <div class="coin-kicker">NUBIACOIN</div>
+        <div class="coin-title">Panel Saldo Coin</div>
+        <div class="coin-sub">Dipakai untuk mini game, konversi langsung realtime ke Firestore.</div>
+
+        <div class="coin-balances">
+          <div class="coin-balance-pill">
+            <span class="label">NUBIAPAY BALANCE</span>
+            <div class="value" id="nubiPayBalanceSmall">0</div>
+          </div>
+          <div class="coin-balance-pill">
+            <span class="label">NUBIAPAY COIN</span>
+            <div class="value" id="nubiPayCoin">0</div>
+          </div>
+        </div>
+
+        <div class="coin-mini" id="coinKursInfo">
+          Kurs: <b>10 nubiPayBalance = 5 nubiPayCoin</b> • Fee konversi <b>1.6%</b> dua arah.
+        </div>
+
+        <div class="convert-mode">
+          <button class="mode-btn active" id="modeBalToCoin" type="button">Balance → Coin</button>
+          <button class="mode-btn" id="modeCoinToBal" type="button">Coin → Balance</button>
+        </div>
+
+        <div class="convert-row">
+          <input class="convert-input" id="convertAmount" type="number" step="0.01" min="0.01" placeholder="Masukkan jumlah">
+          <button class="convert-btn" id="convertBtn" type="button">Konversi</button>
+        </div>
+
+        <div class="convert-hint" id="convertHint">
+          Masukkan jumlah nubiPayBalance yang mau ditukar ke coin.
+        </div>
+        <div class="flash-msg" id="convertMsg"></div>
       </div>
     </div>
 
@@ -692,7 +808,7 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import {
-      getFirestore, doc, getDoc
+      getFirestore, doc, getDoc, runTransaction, serverTimestamp, collection
     } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
     const firebaseConfig = {
@@ -708,11 +824,10 @@
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
-    const avatarEl = null;
-    const displayNameEl = null;
-    const emailEl = null;
     const uidTxt = document.getElementById('uidTxt');
     const nubiPayBalanceEl = document.getElementById('nubiPayBalance');
+    const nubiPayBalanceSmallEl = document.getElementById('nubiPayBalanceSmall');
+    const nubiPayCoinEl = document.getElementById('nubiPayCoin');
     const statusText = document.getElementById('statusText');
     const toastCopy = document.getElementById('toastCopy');
 
@@ -739,12 +854,28 @@
     const lihatSemuaBtn = document.getElementById('lihatSemuaBtn');
     const promoMoreBtn = document.getElementById('promoMoreBtn');
 
+    const modeBalToCoinBtn = document.getElementById('modeBalToCoin');
+    const modeCoinToBalBtn = document.getElementById('modeCoinToBal');
+    const convertAmountInput = document.getElementById('convertAmount');
+    const convertBtn = document.getElementById('convertBtn');
+    const convertHint = document.getElementById('convertHint');
+    const convertMsg = document.getElementById('convertMsg');
+
     let currentUser = null;
     let balanceHidden = false;
+    let convertMode = 'bal_to_coin';
+
+    function fmtNumber(n, digits = 2){
+      const num = Number(n || 0);
+      return num.toLocaleString('id-ID', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: digits
+      });
+    }
 
     function fmtRp(n){
       const num = Number(n || 0);
-      return 'Rp ' + num.toLocaleString('id-ID');
+      return 'Rp ' + fmtNumber(num, 2);
     }
 
     function shortUid(uid){
@@ -759,16 +890,84 @@
       showToast._t = setTimeout(() => toastCopy.classList.remove('show'), 1500);
     }
 
-    async function loadUserBalance(uid){
+    function setConvertMsg(msg, isError = false){
+      convertMsg.textContent = msg;
+      convertMsg.style.color = isError ? '#fff1f2' : '#fff';
+    }
+
+    function round2(n){
+      return Math.round(Number(n) * 100) / 100;
+    }
+
+    function calcConversion(amount, mode){
+      const rateBalToCoin = 0.5; // 10 balance = 5 coin
+      const rateCoinToBal = 2;   // kebalikannya
+      const feeRate = 0.016;
+
+      const source = Number(amount || 0);
+      if (!source || source <= 0) return null;
+
+      if (mode === 'bal_to_coin') {
+        const grossCoin = source * rateBalToCoin;
+        const feeCoin = grossCoin * feeRate;
+        const netCoin = round2(grossCoin - feeCoin);
+        return {
+          sourceField: 'nubiPayBalance',
+          targetField: 'nubiPayCoin',
+          sourceAmount: round2(source),
+          targetAmount: netCoin,
+          feeAmount: round2(feeCoin),
+          labelSource: 'Balance',
+          labelTarget: 'Coin'
+        };
+      }
+
+      const grossBal = source * rateCoinToBal;
+      const feeBal = grossBal * feeRate;
+      const netBal = round2(grossBal - feeBal);
+      return {
+        sourceField: 'nubiPayCoin',
+        targetField: 'nubiPayBalance',
+        sourceAmount: round2(source),
+        targetAmount: netBal,
+        feeAmount: round2(feeBal),
+        labelSource: 'Coin',
+        labelTarget: 'Balance'
+      };
+    }
+
+    function updateConvertUI(){
+      if (convertMode === 'bal_to_coin') {
+        modeBalToCoinBtn.classList.add('active');
+        modeCoinToBalBtn.classList.remove('active');
+        convertHint.innerHTML = 'Masukkan jumlah <b>nubiPayBalance</b> yang mau ditukar ke <b>nubiPayCoin</b>.';
+        convertAmountInput.placeholder = 'Contoh: 10';
+        convertAmountInput.step = '0.01';
+      } else {
+        modeCoinToBalBtn.classList.add('active');
+        modeBalToCoinBtn.classList.remove('active');
+        convertHint.innerHTML = 'Masukkan jumlah <b>nubiPayCoin</b> yang mau ditukar ke <b>nubiPayBalance</b>.';
+        convertAmountInput.placeholder = 'Contoh: 5';
+        convertAmountInput.step = '0.01';
+      }
+    }
+
+    async function loadUserBalances(uid){
       try {
         const snap = await getDoc(doc(db, 'users', uid));
         if (snap.exists()) {
           const data = snap.data();
           const balance = Number(data.nubiPayBalance || 0);
+          const coin = Number(data.nubiPayCoin || 0);
+
           nubiPayBalanceEl.textContent = fmtRp(balance);
+          nubiPayBalanceSmallEl.textContent = fmtRp(balance);
+          nubiPayCoinEl.textContent = fmtNumber(coin, 2);
           statusText.textContent = 'Saldo NUBIASTORE terhubung ke Firestore.';
         } else {
           nubiPayBalanceEl.textContent = fmtRp(0);
+          nubiPayBalanceSmallEl.textContent = fmtRp(0);
+          nubiPayCoinEl.textContent = fmtNumber(0, 2);
           statusText.textContent = 'Dokumen user belum ditemukan di Firestore.';
         }
       } catch (e) {
@@ -826,17 +1025,110 @@
       }
     };
 
+    modeBalToCoinBtn.onclick = () => {
+      convertMode = 'bal_to_coin';
+      updateConvertUI();
+      setConvertMsg('');
+      convertAmountInput.value = '';
+    };
+
+    modeCoinToBalBtn.onclick = () => {
+      convertMode = 'coin_to_bal';
+      updateConvertUI();
+      setConvertMsg('');
+      convertAmountInput.value = '';
+    };
+
+    convertBtn.onclick = async () => {
+      if (!currentUser) {
+        setConvertMsg('Login dulu untuk konversi.', true);
+        return;
+      }
+
+      const amount = Number(convertAmountInput.value);
+      const calc = calcConversion(amount, convertMode);
+
+      if (!calc) {
+        setConvertMsg('Masukkan jumlah yang valid.', true);
+        return;
+      }
+
+      convertBtn.disabled = true;
+      convertBtn.textContent = 'Proses...';
+
+      try {
+        const userRef = doc(db, 'users', currentUser.uid);
+        const txRef = doc(collection(db, 'users', currentUser.uid, 'transactions'));
+
+        await runTransaction(db, async (tx) => {
+          const snap = await tx.get(userRef);
+
+          let curBalance = 0;
+          let curCoin = 0;
+
+          if (snap.exists()) {
+            curBalance = Number(snap.data().nubiPayBalance || 0);
+            curCoin = Number(snap.data().nubiPayCoin || 0);
+          }
+
+          const src = calc.sourceField === 'nubiPayBalance' ? curBalance : curCoin;
+          if (src < calc.sourceAmount) {
+            throw new Error(`Saldo ${calc.labelSource} tidak cukup.`);
+          }
+
+          const nextBalance = calc.sourceField === 'nubiPayBalance'
+            ? round2(curBalance - calc.sourceAmount)
+            : round2(curBalance + calc.targetAmount);
+
+          const nextCoin = calc.sourceField === 'nubiPayCoin'
+            ? round2(curCoin - calc.sourceAmount)
+            : round2(curCoin + calc.targetAmount);
+
+          tx.set(userRef, {
+            nubiPayBalance: nextBalance,
+            nubiPayCoin: nextCoin
+          }, { merge: true });
+
+          tx.set(txRef, {
+            type: 'conversion',
+            mode: convertMode,
+            sourceField: calc.sourceField,
+            targetField: calc.targetField,
+            sourceAmount: calc.sourceAmount,
+            targetAmount: calc.targetAmount,
+            feeAmount: calc.feeAmount,
+            createdAt: serverTimestamp()
+          });
+        });
+
+        await loadUserBalances(currentUser.uid);
+        setConvertMsg(`Berhasil: ${calc.labelSource} ${fmtNumber(calc.sourceAmount)} → ${calc.labelTarget} ${fmtNumber(calc.targetAmount)}. Fee ${fmtNumber(calc.feeAmount)}.`);
+        convertAmountInput.value = '';
+        showToast('Konversi berhasil');
+      } catch (e) {
+        console.error(e);
+        setConvertMsg(e.message || 'Konversi gagal.', true);
+      } finally {
+        convertBtn.disabled = false;
+        convertBtn.textContent = 'Konversi';
+      }
+    };
+
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
       if (user) {
         uidTxt.textContent = user.uid;
-        await loadUserBalance(user.uid);
+        await loadUserBalances(user.uid);
       } else {
         uidTxt.textContent = '-';
         nubiPayBalanceEl.textContent = fmtRp(0);
+        nubiPayBalanceSmallEl.textContent = fmtRp(0);
+        nubiPayCoinEl.textContent = fmtNumber(0, 2);
         statusText.textContent = 'Login untuk melihat saldo NUBIASTORE.';
       }
     });
+
+    updateConvertUI();
   </script>
 </body>
 </html>
