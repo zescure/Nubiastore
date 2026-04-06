@@ -648,6 +648,31 @@
 .qa:hover .qa-icon img {
   transform: scale(1.1);
 }
+.ico {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 6px;
+}
+
+.ico img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: 0.2s;
+}
+
+.service:hover .ico img {
+  transform: scale(1.1);
+}
+.ico {
+  width: 50px;
+  height: 50px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
   </style>
 </head>
 <body>
@@ -757,30 +782,46 @@
     <div class="section">
       <div class="section-head">
         <div class="section-title">Layanan Nubiacoin</div>
-        <a class="link-more" href="#" id="lihatSemuaBtn">Semua Layanan</a>
+        
       </div>
 
       <div class="grid">
-        <button class="service" id="mobileLegendBtn" type="button">
-          <div class="ico">🎮</div>
-          <div class="name">Mobile Legends</div>
-        </button>
+  <button class="service" id="mobileLegendBtn" type="button">
+    <div class="ico">
+      <img src="https://cdn-icons-gif.flaticon.com/11020/11020154.gif" alt="Mobile Legends">
+    </div>
+    <div class="name">Staking Koin</div>
+  </button>
 
-        <button class="service" id="freeFireBtn" type="button">
-          <div class="ico">🔥</div>
-          <div class="name">Free Fire</div>
-        </button>
+      <div class="grid">
+  <button class="service" id="mobileLegendBtn" type="button">
+    <div class="ico">
+      <img src="https://cdn-icons-gif.flaticon.com/16894/16894149.gif" alt="Mobile Legends">
+    </div>
+    <div class="name">Opsi Trade Internal</div>
+  </button>
 
-        <button class="service" id="pubgBtn" type="button">
-          <div class="ico">🚀</div>
-          <div class="name">PUBG Mobile</div>
-        </button>
+  <button class="service" id="freeFireBtn" type="button">
+    <div class="ico">
+      <img src="https://cdn-icons-gif.flaticon.com/17507/17507034.gif" alt="Free Fire">
+    </div>
+    <div class="name">Beli Saham Internal</div>
+  </button>
 
-        <button class="service" id="allGameBtn" type="button">
-          <div class="ico">✨</div>
-          <div class="name">Semua Game</div>
-        </button>
-      </div>
+  <button class="service" id="pubgBtn" type="button">
+    <div class="ico">
+      <img src="https://img.tapimg.net/market/images/031fd4b94c7ab75b1d2f88157200e00b.jpg" alt="PUBG Mobile">
+    </div>
+    <div class="name">Game Rocket Crash</div>
+  </button>
+
+  <button class="service" id="allGameBtn" type="button">
+    <div class="ico">
+      <img src="https://assets-v2.lottiefiles.com/a/7012d742-1153-11ee-94f9-731b7f9ba9e4/bZHiXCQAlu.gif" alt="Semua Game">
+    </div>
+    <div class="name">Game Coin Flip</div>
+  </button>
+</div>
     </div>
 
     <div class="section">
