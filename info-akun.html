@@ -28,6 +28,18 @@
 
 ```
 /* ═══ PAGE LOADER ═══ */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* kunci scroll saat loading */
+}
+
+body.loaded {
+  overflow-x: hidden;
+  overflow-y: auto; /* baru buka scroll setelah loader hilang */
+}
+
+
 #pageLoader{
   position:fixed;inset:0;
   background:linear-gradient(160deg,#052e16 0%,#064e3b 45%,#14532d 100%);
@@ -715,6 +727,15 @@ button,input{font:inherit}
   let curBal={nubiPayBalance:0,nubiPayCoin:0};
   let convBarTimer=null;
 
+  history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+document.documentElement.style.overflow = 'hidden';
+document.body.style.overflow = 'hidden';
+
+window.addEventListener('pageshow', () => {
+  window.scrollTo(0, 0);
+});
+
   // ── Page loader ──
   let pct=0;
   const ldPctEl=$('ldPct');
@@ -725,10 +746,18 @@ button,input{font:inherit}
   },200);
 
   function hideLoader(){
-    pct=100; ldPctEl.textContent='100%';
-    clearInterval(ldInterval);
-    setTimeout(()=>{pgLoader.classList.add('hide')},400);
-  }
+  pct = 100;
+  ldPctEl.textContent = '100%';
+  clearInterval(ldInterval);
+
+  setTimeout(() => {
+    pgLoader.classList.add('hide');
+    document.body.classList.add('loaded');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, 0);
+  }, 400);
+}
 
   // ── Top bar ──
   function runTopBar(){
