@@ -1,1181 +1,1101 @@
-
 <!doctype html>
+
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>NUBIASTORE — Home</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"><style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <title>NUBIASTORE — Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
     :root{
-      --bg:#f5eefc;
-      --bg2:#eadcff;
+      --bg:#f0fdf4;
+      --bg2:#dcfce7;
       --card:#ffffff;
-      --text:#241b33;
-      --muted:#7c7490;
-      --accent:#6f3cff;
-      --accent2:#8f5dff;
-      --accent3:#b28dff;
-      --green:#16a34a;
+      --text:#14281c;
+      --muted:#587a63;
+      --accent:#16a34a;
+      --accent2:#059669;
+      --accent3:#34d399;
+      --accent-light:rgba(22,163,74,0.12);
+      --green:#15803d;
       --green2:#22c55e;
-      --border:rgba(111,60,255,0.12);
-      --shadow:0 12px 35px rgba(62, 26, 120, 0.12);
+      --red:#ef4444;
+      --amber:#f59e0b;
+      --border:rgba(22,163,74,0.13);
+      --shadow:0 12px 35px rgba(14,79,36,0.12);
       --radius:22px;
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background: radial-gradient(circle at top, #f8f2ff 0%, var(--bg) 35%, #efe5ff 100%);
-      color:var(--text);
-      overflow-x:hidden;
-    }
-
-    a{text-decoration:none;color:inherit}
-    button,input{font:inherit}
-
-    .app{
-      min-height:100vh;
-      max-width:520px;
-      margin:0 auto;
-      padding:14px 14px 92px;
-      position:relative;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:16px;
-      padding:4px 2px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:800;
-      font-size:1.15rem;
-      color:var(--accent);
-      letter-spacing:0.2px;
-    }
-
-    .brand-mark{
-      width:34px;
-      height:34px;
-      border-radius:10px;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-      font-family:'Rajdhani',sans-serif;
-      font-weight:700;
-      box-shadow:0 8px 18px rgba(111,60,255,0.28);
-      flex-shrink:0;
-    }
-
-    .notif-btn{
-      width:42px;
-      height:42px;
-      border:none;
-      border-radius:999px;
-      background:rgba(255,255,255,0.75);
-      box-shadow:var(--shadow);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-      position:relative;
-    }
-
-    .notif-dot{
-      position:absolute;
-      top:10px;
-      right:10px;
-      width:9px;
-      height:9px;
-      background:#ff4d6d;
-      border-radius:50%;
-      border:2px solid #fff;
-    }
-
-    .main-card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
-      border:1px solid rgba(255,255,255,0.8);
-      border-radius:28px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    .balance-card{
-      padding:18px 18px 0;
-    }
-
-    .balance-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:10px;
-    }
-
-    .balance-title{
-      font-size:0.98rem;
-      font-weight:700;
-      color:#34264a;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .eye-btn{
-      border:none;
-      background:transparent;
-      cursor:pointer;
-      color:var(--muted);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      width:28px;
-      height:28px;
-    }
-
-    .detail-pill{
-      border:none;
-      padding:8px 14px;
-      border-radius:999px;
-      background:rgba(111,60,255,0.12);
-      color:var(--accent);
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .balance-value{
-      font-family:'Rajdhani',sans-serif;
-      font-weight:800;
-      font-size:2.2rem;
-      line-height:1;
-      margin:8px 0 12px;
-      color:#1f1630;
-      letter-spacing:0.2px;
-    }
-
-    .uid-row{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      color:#43395a;
-      font-size:0.95rem;
-      margin-bottom:18px;
-      flex-wrap:wrap;
-    }
-
-    .uid-label{
-      color:var(--muted);
-      font-size:0.85rem;
-      font-weight:600;
-    }
-
-    .uid-value{
-      font-weight:800;
-      letter-spacing:0.4px;
-      word-break:break-all;
-    }
-
-    .copy-btn{
-      width:32px;
-      height:32px;
-      border:none;
-      border-radius:10px;
-      background:rgba(111,60,255,0.08);
-      color:var(--accent);
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-shrink:0;
-    }
-
-    .quick-actions{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-      padding:10px 14px 18px;
-      border-top:1px solid rgba(63,39,102,0.08);
-    }
-
-    .qa{
-      border:none;
-      background:transparent;
-      cursor:pointer;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:7px;
-      color:#37284d;
-      padding:8px 4px;
-    }
-
-    .qa-icon{
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      background:linear-gradient(135deg, rgba(111,60,255,0.12), rgba(178,141,255,0.22));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:var(--accent);
-      box-shadow:0 8px 18px rgba(111,60,255,0.08);
-      font-size:1.05rem;
-    }
-
-    .qa span{
-      font-size:0.82rem;
-      font-weight:600;
-    }
-
-    .coin-panel{
-      margin:14px 0;
-      border-radius:22px;
-      overflow:hidden;
-      background:linear-gradient(135deg, #7f4dff 0%, #9d74ff 35%, #d7bbff 100%);
-      box-shadow:var(--shadow);
-      color:#fff;
-      position:relative;
-      padding:18px;
-    }
-
-    .coin-panel::before{
-      content:'';
-      position:absolute;
-      right:-25px;
-      top:-20px;
-      width:120px;
-      height:120px;
-      border-radius:50%;
-      background:rgba(255,255,255,0.12);
-      filter:blur(2px);
-    }
-
-    .coin-inner{
-      position:relative;
-      z-index:1;
-    }
-
-    .coin-kicker{
-      font-size:0.72rem;
-      letter-spacing:1.8px;
-      text-transform:uppercase;
-      opacity:0.88;
-      margin-bottom:4px;
-      font-weight:700;
-    }
-
-    .coin-title{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.55rem;
-      font-weight:800;
-      line-height:1;
-      margin-bottom:6px;
-    }
-
-    .coin-sub{
-      font-size:0.9rem;
-      opacity:0.92;
-      margin-bottom:12px;
-    }
-
-    .coin-balances{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:12px;
-    }
-
-    .coin-balance-pill{
-      background:rgba(255,255,255,0.16);
-      padding:8px 10px;
-      border-radius:14px;
-      min-width:140px;
-    }
-
-    .coin-balance-pill .label{
-      display:block;
-      font-size:0.68rem;
-      letter-spacing:1.4px;
-      text-transform:uppercase;
-      opacity:0.9;
-      margin-bottom:4px;
-      font-weight:700;
-    }
-
-    .coin-balance-pill .value{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.35rem;
-      font-weight:800;
-      line-height:1;
-    }
-
-    .coin-mini{
-      font-size:0.78rem;
-      opacity:0.92;
-      margin-bottom:10px;
-      line-height:1.45;
-    }
-
-    .convert-mode{
-      display:flex;
-      gap:8px;
-      margin-bottom:10px;
-    }
-
-    .mode-btn{
-      border:none;
-      cursor:pointer;
-      border-radius:999px;
-      padding:8px 12px;
-      font-size:0.8rem;
-      font-weight:800;
-      background:rgba(255,255,255,0.15);
-      color:#fff;
-    }
-
-    .mode-btn.active{
-      background:#fff;
-      color:var(--accent);
-    }
-
-    .convert-row{
-      display:flex;
-      gap:8px;
-      margin-bottom:10px;
-    }
-
-    .convert-input{
-      flex:1;
-      border:none;
-      border-radius:14px;
-      padding:12px 14px;
-      outline:none;
-      background:rgba(255,255,255,0.92);
-      color:#241b33;
-      font-weight:700;
-    }
-
-    .convert-btn{
-      border:none;
-      border-radius:14px;
-      padding:12px 14px;
-      background:#fff;
-      color:var(--accent);
-      font-weight:900;
-      cursor:pointer;
-      min-width:108px;
-      box-shadow:0 10px 18px rgba(62,26,120,0.12);
-    }
-
-    .convert-hint{
-      font-size:0.76rem;
-      opacity:0.92;
-      line-height:1.45;
-    }
-
-    .section{
-      background:rgba(255,255,255,0.9);
-      border:1px solid rgba(255,255,255,0.85);
-      border-radius:28px;
-      box-shadow:var(--shadow);
-      padding:16px;
-      margin-bottom:14px;
-    }
-
-    .section-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:12px;
-    }
-
-    .section-title{
-      font-weight:800;
-      color:#2a1e3b;
-    }
-
-    .link-more{
-      color:var(--accent);
-      font-size:0.9rem;
-      font-weight:700;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-    }
-
-    .service{
-      border:none;
-      background:linear-gradient(180deg,#fff,#faf8ff);
-      border-radius:20px;
-      padding:14px 10px;
-      text-align:center;
-      box-shadow:0 8px 16px rgba(62,26,120,0.05);
-      cursor:pointer;
-    }
-
-    .service .ico{
-      width:44px;
-      height:44px;
-      border-radius:16px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin:0 auto 8px;
-      background:linear-gradient(135deg, rgba(111,60,255,0.12), rgba(22,163,74,0.08));
-      color:var(--accent);
-      font-size:1.15rem;
-    }
-
-    .service .name{
-      font-weight:700;
-      color:#2e2141;
-      font-size:0.92rem;
-      line-height:1.2;
-    }
-
-    .promo-row{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-      overflow:hidden;
-    }
-
-    .promo-card{
-      min-height:148px;
-      border-radius:22px;
-      padding:16px;
-      background:linear-gradient(180deg, #f4ecff, #ffffff);
-      box-shadow:0 10px 20px rgba(62,26,120,0.06);
-      position:relative;
-      overflow:hidden;
-    }
-
-    .promo-card::after{
-      content:'';
-      position:absolute;
-      width:84px;
-      height:84px;
-      right:-16px;
-      bottom:-16px;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(111,60,255,0.16), transparent 70%);
-    }
-
-    .promo-card .small{
-      font-size:0.72rem;
-      font-weight:700;
-      color:#775dc1;
-      margin-bottom:4px;
-    }
-
-    .promo-card .big{
-      font-family:'Rajdhani',sans-serif;
-      font-size:2.8rem;
-      font-weight:800;
-      color:var(--accent);
-      line-height:0.9;
-      letter-spacing:-1px;
-      position:relative;
-      z-index:1;
-    }
-
-    .promo-card .sub{
-      color:#4a3f62;
-      font-weight:700;
-      margin-top:8px;
-      position:relative;
-      z-index:1;
-    }
-
-    .bottom-nav{
-      position:fixed;
-      left:50%;
-      bottom:10px;
-      transform:translateX(-50%);
-      width:min(100%, 520px);
-      padding:0 14px;
-      z-index:50;
-    }
-
-    .nav-wrap{
-      background:rgba(255,255,255,0.85);
-      backdrop-filter:blur(18px);
-      border:1px solid rgba(111,60,255,0.08);
-      border-radius:24px;
-      box-shadow:0 10px 30px rgba(62,26,120,0.1);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:10px 8px 12px;
-      position:relative;
-    }
-
-    .nav-item{
-      flex:1;
-      text-align:center;
-      border:none;
-      background:transparent;
-      cursor:pointer;
-      color:#7b7390;
-      padding:4px 0;
-    }
-
-    .nav-item.active{
-      color:var(--accent);
-      font-weight:800;
-    }
-
-    .nav-icon{
-      font-size:1.18rem;
-      margin-bottom:4px;
-    }
-
-    .center-float{
-      width:56px;
-      height:56px;
-      border-radius:50%;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      position:absolute;
-      left:50%;
-      top:-18px;
-      transform:translateX(-50%);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-      font-weight:800;
-      box-shadow:0 14px 26px rgba(111,60,255,0.32);
-      border:4px solid #fff;
-    }
-
-    .muted-small{
-      font-size:0.78rem;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .spinner{
-      width:15px;
-      height:15px;
-      border:2px solid rgba(111,60,255,0.15);
-      border-top-color:var(--accent);
-      border-radius:50%;
-      animation:spin 0.8s linear infinite;
-    }
-
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    .hidden-balance{
-      filter:blur(8px);
-      user-select:none;
-    }
-
-    .uid-copy-toast{
-      position:fixed;
-      left:50%;
-      bottom:92px;
-      transform:translateX(-50%);
-      background:#241b33;
-      color:#fff;
-      padding:10px 14px;
-      border-radius:999px;
-      box-shadow:var(--shadow);
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .2s, transform .2s;
-      z-index:100;
-      font-size:0.9rem;
-    }
-
-    .uid-copy-toast.show{
-      opacity:1;
-      transform:translateX(-50%) translateY(-4px);
-    }
-
-    .flash-msg{
-      margin-top:8px;
-      font-size:0.78rem;
-      font-weight:700;
-      color:#fff;
-      opacity:0.95;
-    }
-
-    @media (max-width:420px){
-      .balance-value{font-size:1.95rem}
-      .coin-title{font-size:1.4rem}
-      .promo-card .big{font-size:2.35rem}
-      .coin-balance-pill .value{font-size:1.18rem}
-      .service .name{font-size:0.84rem}
-      .quick-actions{gap:6px}
-    }
-
-    @media (max-width:380px){
-      .quick-actions{grid-template-columns:repeat(2,1fr)}
-      .grid,.promo-row{grid-template-columns:repeat(2,1fr)}
-      .convert-row{flex-direction:column}
-      .convert-btn{width:100%}
-    }
-    .qa-icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 6px;
+```
+/* ═══ PAGE LOADER ═══ */
+#pageLoader{
+  position:fixed;inset:0;
+  background:linear-gradient(160deg,#052e16 0%,#064e3b 45%,#14532d 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:9999;transition:opacity .55s ease,visibility .55s ease;
+}
+#pageLoader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.ld-logo{
+  width:80px;height:80px;border-radius:24px;
+  background:linear-gradient(135deg,#16a34a,#059669);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:'Rajdhani',sans-serif;font-weight:800;font-size:2.2rem;
+  box-shadow:0 0 50px rgba(52,211,153,0.5);
+  animation:ldPulse 1.4s ease-in-out infinite alternate;margin-bottom:20px;
+}
+@keyframes ldPulse{
+  from{transform:scale(1);box-shadow:0 0 30px rgba(52,211,153,0.35)}
+  to{transform:scale(1.07);box-shadow:0 0 70px rgba(52,211,153,0.75)}
+}
+.ld-rings{position:relative;width:80px;height:80px;margin-bottom:20px}
+.ld-brand{
+  color:#fff;font-family:'Rajdhani',sans-serif;
+  font-size:1.7rem;font-weight:800;letter-spacing:3px;margin-bottom:8px;
+}
+.ld-sub{color:rgba(255,255,255,0.55);font-size:0.8rem;margin-bottom:28px;letter-spacing:.5px}
+.ld-track{width:220px;height:4px;background:rgba(255,255,255,0.12);border-radius:99px;overflow:hidden}
+.ld-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,#16a34a,#34d399,#16a34a);
+  background-size:200%;
+  animation:ldBar 2s ease forwards, shimmer 1.5s linear infinite;
+}
+@keyframes ldBar{0%{width:0}30%{width:40%}65%{width:72%}90%{width:91%}100%{width:100%}}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+.ld-pct{color:rgba(255,255,255,0.6);font-size:0.78rem;margin-top:10px;font-weight:600}
+
+/* ═══ TOP PROGRESS BAR ═══ */
+#topBar{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,#16a34a,#34d399,#059669);
+  z-index:9998;transition:width .3s ease;border-radius:0 3px 3px 0;
+  box-shadow:0 0 8px rgba(52,211,153,0.6);
 }
 
-.qa-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+/* ═══ BASE ═══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:radial-gradient(circle at 20% 0%,#d1fae5 0%,#f0fdf4 40%,#ecfdf5 100%);
+  color:var(--text);overflow-x:hidden;
 }
-.qa-icon img {
-  transition: 0.2s;
+a{text-decoration:none;color:inherit}
+button,input{font:inherit}
+.app{min-height:100vh;max-width:520px;margin:0 auto;padding:14px 14px 100px;position:relative}
+
+/* ═══ TOPBAR ═══ */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:4px 2px}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  font-weight:800;font-size:1.15rem;color:var(--accent);letter-spacing:.2px;
+}
+.brand-mark{
+  width:36px;height:36px;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;
+  box-shadow:0 8px 18px rgba(22,163,74,0.3);flex-shrink:0;
+}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  width:42px;height:42px;border:none;border-radius:999px;
+  background:rgba(255,255,255,0.78);box-shadow:var(--shadow);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;transition:transform .18s;
+}
+.icon-btn:active{transform:scale(.9)}
+.notif-dot{
+  position:absolute;top:9px;right:9px;width:9px;height:9px;
+  background:var(--red);border-radius:50%;border:2px solid #fff;
+  animation:dotPing 2s ease-in-out infinite;
+}
+@keyframes dotPing{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* ═══ MAIN CARD ═══ */
+.main-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.99));
+  border:1px solid rgba(255,255,255,.85);border-radius:28px;
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;
+}
+.balance-card{padding:18px 18px 0}
+.balance-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.balance-title{
+  font-size:.98rem;font-weight:700;color:#1a2e1f;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.eye-btn{border:none;background:transparent;cursor:pointer;color:var(--muted);width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.detail-pill{
+  border:none;padding:8px 14px;border-radius:999px;
+  background:rgba(22,163,74,0.11);color:var(--accent);
+  font-weight:700;cursor:pointer;transition:background .2s,transform .15s;font-size:.88rem;
+}
+.detail-pill:active{transform:scale(.94);background:rgba(22,163,74,0.2)}
+.balance-value{
+  font-family:'Rajdhani',sans-serif;font-weight:800;font-size:2.2rem;
+  line-height:1;margin:8px 0 12px;color:#0d2418;letter-spacing:.2px;transition:filter .3s;
+}
+.uid-row{display:flex;align-items:center;gap:10px;color:#2d4a35;font-size:.95rem;margin-bottom:14px;flex-wrap:wrap}
+.uid-label{color:var(--muted);font-size:.85rem;font-weight:600}
+.uid-value{font-weight:800;letter-spacing:.4px;word-break:break-all}
+.copy-btn{
+  width:32px;height:32px;border:none;border-radius:10px;
+  background:rgba(22,163,74,0.08);color:var(--accent);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;
+}
+.copy-btn:active{transform:scale(.88)}
+.status-row{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}}
+
+/* ═══ QUICK ACTIONS ═══ */
+.quick-actions{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  padding:10px 14px 18px;border-top:1px solid rgba(22,163,74,0.08);
+}
+.qa{
+  border:none;background:transparent;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  color:#1e3a25;padding:8px 4px;transition:transform .18s;
+}
+.qa:active{transform:scale(.88)}
+.qa-icon{
+  width:44px;height:44px;border-radius:14px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(22,163,74,0.1),rgba(52,211,153,0.2));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 14px rgba(22,163,74,0.1);
+}
+.qa-icon img{width:100%;height:100%;object-fit:contain;transition:transform .2s}
+.qa:hover .qa-icon img{transform:scale(1.12)}
+.qa span{font-size:.82rem;font-weight:600}
+
+/* ═══ COIN PANEL ═══ */
+.coin-panel{
+  margin:0 0 14px;border-radius:24px;overflow:hidden;
+  background:linear-gradient(140deg,#14532d 0%,#15803d 30%,#059669 65%,#34d399 100%);
+  box-shadow:0 14px 40px rgba(14,79,36,.2);color:#fff;position:relative;padding:18px;
+}
+.coin-panel::before{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,.07);filter:blur(4px);
+}
+.coin-panel::after{
+  content:'';position:absolute;left:-20px;bottom:-20px;
+  width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.05);
+}
+.coin-inner{position:relative;z-index:1}
+.coin-kicker{font-size:.72rem;letter-spacing:1.8px;text-transform:uppercase;opacity:.85;margin-bottom:4px;font-weight:700}
+.coin-title{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:800;line-height:1;margin-bottom:6px}
+.coin-sub{font-size:.88rem;opacity:.9;margin-bottom:12px;line-height:1.45}
+.coin-balances{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.coin-balance-pill{background:rgba(255,255,255,.14);padding:8px 12px;border-radius:14px;min-width:138px;backdrop-filter:blur(4px)}
+.coin-balance-pill .label{display:block;font-size:.68rem;letter-spacing:1.4px;text-transform:uppercase;opacity:.88;margin-bottom:4px;font-weight:700}
+.coin-balance-pill .value{font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:800;line-height:1}
+.coin-mini{font-size:.76rem;opacity:.9;margin-bottom:10px;line-height:1.45}
+.convert-mode{display:flex;gap:8px;margin-bottom:10px}
+.mode-btn{
+  border:none;cursor:pointer;border-radius:999px;padding:8px 14px;
+  font-size:.8rem;font-weight:800;background:rgba(255,255,255,.16);
+  color:#fff;transition:all .2s;
+}
+.mode-btn.active{background:#fff;color:var(--accent)}
+.preset-amounts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.preset-btn{
+  border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);
+  color:#fff;border-radius:8px;padding:4px 11px;font-size:.76rem;font-weight:700;
+  cursor:pointer;transition:background .15s;
+}
+.preset-btn:active{background:rgba(255,255,255,.3)}
+.convert-row{display:flex;gap:8px;margin-bottom:10px}
+.convert-input{
+  flex:1;border:none;border-radius:14px;padding:12px 14px;outline:none;
+  background:rgba(255,255,255,.9);color:#14281c;font-weight:700;
+}
+.convert-btn{
+  border:none;border-radius:14px;padding:12px 16px;background:#fff;
+  color:var(--accent);font-weight:900;cursor:pointer;min-width:110px;
+  box-shadow:0 8px 18px rgba(14,79,36,.15);transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.convert-btn:disabled{opacity:.7}
+.conv-bar{
+  position:absolute;bottom:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--accent),#34d399);
+  transition:width .3s ease;border-radius:0;
+}
+.convert-hint{font-size:.76rem;opacity:.9;line-height:1.45}
+.flash-msg{margin-top:8px;font-size:.78rem;font-weight:700;color:#fff;opacity:.95;min-height:20px}
+
+/* ═══ SECTION ═══ */
+.section{
+  background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.88);
+  border-radius:26px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px;
+}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-weight:800;color:#14281c;font-size:.98rem}
+.link-more{color:var(--accent);font-size:.88rem;font-weight:700;cursor:pointer;background:none;border:none;padding:4px 0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.service{
+  border:none;background:linear-gradient(180deg,#fff,#f0fdf4);
+  border-radius:20px;padding:14px 10px;text-align:center;
+  box-shadow:0 6px 14px rgba(14,79,36,0.05);cursor:pointer;transition:transform .2s;
+}
+.service:active{transform:scale(.94)}
+.service .ico{
+  width:50px;height:50px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 8px;background:#1a1a1a;overflow:hidden;
+}
+.service .ico img{width:100%;height:100%;object-fit:contain;transition:transform .2s}
+.service:hover .ico img{transform:scale(1.1)}
+.service .name{font-weight:700;color:#1e3a25;font-size:.9rem;line-height:1.25}
+.promo-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.promo-card{
+  min-height:148px;border-radius:22px;padding:16px;
+  background:linear-gradient(180deg,#f0fdf4,#fff);
+  box-shadow:0 8px 20px rgba(14,79,36,0.07);position:relative;
+  overflow:hidden;cursor:pointer;transition:transform .2s;
+}
+.promo-card:active{transform:scale(.97)}
+.promo-card::after{
+  content:'';position:absolute;width:84px;height:84px;right:-16px;bottom:-16px;
+  border-radius:50%;background:radial-gradient(circle,rgba(22,163,74,.18),transparent 70%);
+}
+.promo-card .small{font-size:.72rem;font-weight:700;color:#15803d;margin-bottom:4px}
+.promo-card .big{
+  font-family:'Rajdhani',sans-serif;font-size:2.8rem;font-weight:800;
+  color:var(--accent);line-height:.9;letter-spacing:-1px;position:relative;z-index:1;
+}
+.promo-card .sub{color:#1e3a25;font-weight:700;margin-top:8px;position:relative;z-index:1;font-size:.88rem}
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);width:min(100%,520px);padding:0 14px;z-index:50}
+.nav-wrap{
+  background:rgba(255,255,255,.86);backdrop-filter:blur(18px);
+  border:1px solid rgba(22,163,74,.08);border-radius:24px;
+  box-shadow:0 10px 30px rgba(14,79,36,.12);
+  display:flex;align-items:center;justify-content:space-between;padding:10px 8px 12px;position:relative;
+}
+.nav-item{
+  flex:1;text-align:center;border:none;background:transparent;cursor:pointer;
+  color:#7b9c82;padding:4px 0;font-size:.78rem;font-weight:600;transition:color .2s;
+}
+.nav-item.active{color:var(--accent);font-weight:800}
+.nav-icon{font-size:1.18rem;margin-bottom:4px}
+.center-float{
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  position:absolute;left:50%;top:-20px;transform:translateX(-50%);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:'Rajdhani',sans-serif;font-weight:800;font-size:1.4rem;
+  box-shadow:0 10px 28px rgba(22,163,74,.38);border:4px solid #fff;
 }
 
-.qa:hover .qa-icon img {
-  transform: scale(1.1);
+/* ═══ TOAST ═══ */
+#toastMsg{
+  position:fixed;left:50%;bottom:95px;transform:translateX(-50%);
+  background:#0d2418;color:#fff;padding:10px 18px;border-radius:999px;
+  box-shadow:var(--shadow);opacity:0;pointer-events:none;
+  transition:opacity .22s,transform .22s;z-index:9990;font-size:.9rem;white-space:nowrap;
 }
-.ico {
-  width: 50px;
-  height: 50px;
-  margin: 0 auto 6px;
+#toastMsg.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+/* ═══ POPUPS ═══ */
+.popup-overlay{
+  position:fixed;inset:0;background:rgba(0,18,8,.55);
+  backdrop-filter:blur(5px);z-index:500;
+  opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s;
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.popup-overlay.open{opacity:1;visibility:visible}
+.popup-sheet{
+  background:#fff;width:100%;max-width:520px;border-radius:28px 28px 0 0;
+  max-height:88vh;overflow:hidden;display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .36s cubic-bezier(.34,1.18,.64,1);
+}
+.popup-overlay.open .popup-sheet{transform:translateY(0)}
+.popup-handle{width:40px;height:4px;background:#e5f5ec;border-radius:99px;margin:12px auto 4px;flex-shrink:0}
+.popup-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px 14px;border-bottom:1px solid #f0fdf4;flex-shrink:0;
+}
+.popup-title{font-weight:800;font-size:1.05rem;color:#14281c;display:flex;align-items:center;gap:8px}
+.popup-close{
+  width:32px;height:32px;border:none;background:#f0fdf4;border-radius:50%;
+  cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;
+  color:#587a63;transition:background .15s;
+}
+.popup-close:active{background:#dcfce7}
+.popup-body{overflow-y:auto;padding:16px 20px 28px;flex:1}
+
+/* notif items */
+.notif-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #f0fdf4}
+.notif-item:last-child{border-bottom:none}
+.notif-icon{
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;
+}
+.ni-green{background:rgba(22,163,74,.1)}
+.ni-amber{background:rgba(245,158,11,.1)}
+.ni-red{background:rgba(239,68,68,.1)}
+.notif-content{flex:1}
+.notif-title{font-weight:700;color:#14281c;font-size:.9rem;margin-bottom:3px}
+.notif-desc{font-size:.82rem;color:var(--muted);line-height:1.4}
+.notif-time{font-size:.74rem;color:#a0b5a8;margin-top:4px}
+.notif-amt{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent);text-align:right;flex-shrink:0;padding-top:2px}
+.notif-amt.red{color:var(--red)}
+.notif-empty{text-align:center;padding:36px 16px;color:var(--muted)}
+.notif-empty-ico{font-size:3rem;margin-bottom:12px}
+
+/* all services */
+.svc-cat{font-size:.76rem;font-weight:800;color:var(--accent);letter-spacing:1.2px;text-transform:uppercase;margin:16px 0 10px}
+.svc-cat:first-child{margin-top:0}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.svc-item{
+  border:none;background:linear-gradient(180deg,#fff,#f0fdf4);border-radius:16px;
+  padding:12px 6px;text-align:center;box-shadow:0 4px 12px rgba(14,79,36,.05);
+  cursor:pointer;transition:transform .18s;
+}
+.svc-item:active{transform:scale(.92)}
+.svc-ico{
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(22,163,74,.1),rgba(52,211,153,.18));
+  display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.2rem;
+}
+.svc-name{font-size:.78rem;font-weight:700;color:#1e3a25;line-height:1.25}
+
+/* promo banners */
+.pb-card{
+  border-radius:18px;overflow:hidden;margin-bottom:10px;cursor:pointer;
+  position:relative;min-height:110px;display:flex;align-items:center;
+  padding:18px 20px;transition:transform .2s;
+}
+.pb-card:active{transform:scale(.98)}
+.pb-green{background:linear-gradient(135deg,#14532d,#16a34a)}
+.pb-teal{background:linear-gradient(135deg,#0d9488,#34d399)}
+.pb-em{background:linear-gradient(135deg,#064e3b,#10b981)}
+.pb-lime{background:linear-gradient(135deg,#3f6212,#84cc16)}
+.pb-dark{background:linear-gradient(135deg,#134e4a,#0f766e)}
+.pb-content{position:relative;z-index:1;color:#fff}
+.pb-badge{
+  display:inline-block;background:rgba(255,255,255,.22);border-radius:6px;
+  padding:3px 9px;font-size:.69rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;
+}
+.pb-val{font-family:'Rajdhani',sans-serif;font-size:2.5rem;font-weight:800;line-height:1;margin-bottom:4px}
+.pb-desc{font-size:.85rem;opacity:.9}
+.pb-exp{font-size:.72rem;opacity:.7;margin-top:5px}
+.pb-card::after{
+  content:'';position:absolute;right:-24px;top:-24px;
+  width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);
 }
 
-.ico img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: 0.2s;
+/* transaction detail */
+.bal-summary{
+  background:linear-gradient(135deg,rgba(22,163,74,.07),rgba(52,211,153,.12));
+  border-radius:16px;padding:16px;margin-bottom:16px;display:flex;gap:10px;
 }
+.bst{flex:1;text-align:center}
+.bst-lbl{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:4px}
+.bst-val{font-family:'Rajdhani',sans-serif;font-size:1.22rem;font-weight:800;color:#14281c}
+.bst-val.green{color:var(--accent)}
+.tx-head-label{font-weight:800;color:#14281c;font-size:.92rem;margin-bottom:10px}
+.tx-item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #f0fdf4}
+.tx-item:last-child{border-bottom:none}
+.tx-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.ti-buy{background:rgba(22,163,74,.1)}
+.ti-sell{background:rgba(239,68,68,.1)}
+.ti-conv{background:rgba(245,158,11,.1)}
+.ti-bonus{background:rgba(16,185,129,.1)}
+.tx-body{flex:1}
+.tx-name{font-weight:700;color:#14281c;font-size:.88rem}
+.tx-date{font-size:.76rem;color:var(--muted);margin-top:2px}
+.tx-amt{font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:800;text-align:right;flex-shrink:0}
+.tx-amt.plus{color:var(--accent)}
+.tx-amt.minus{color:var(--red)}
 
-.service:hover .ico img {
-  transform: scale(1.1);
+/* skeleton loader */
+.skel{
+  background:linear-gradient(90deg,#e8f5ee 25%,#d1fae5 50%,#e8f5ee 75%);
+  background-size:200%;animation:skelAnim 1.4s ease-in-out infinite;
+  border-radius:8px;
 }
-.ico {
-  width: 50px;
-  height: 50px;
-  background: #1a1a1a;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@keyframes skelAnim{0%{background-position:200%}100%{background-position:-200%}}
+
+.hidden-balance{filter:blur(8px);user-select:none}
+.muted-small{font-size:.78rem;color:var(--muted);line-height:1.45}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:420px){
+  .balance-value{font-size:1.95rem}
+  .coin-title{font-size:1.35rem}
+  .promo-card .big{font-size:2.35rem}
+  .coin-balance-pill .value{font-size:1.18rem}
+  .quick-actions{gap:6px}
 }
-  </style></head>
-<body><div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-mark">N</div>
-        <div>NUBIASTORE</div>
-      </div>
-      <button class="notif-btn" id="notifBtn" type="button">
+@media(max-width:380px){
+  .quick-actions{grid-template-columns:repeat(2,1fr)}
+  .grid,.promo-row{grid-template-columns:repeat(2,1fr)}
+  .convert-row{flex-direction:column}
+  .convert-btn{width:100%}
+  .svc-grid{grid-template-columns:repeat(2,1fr)}
+}
+```
+
+  </style>
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+
+<div id="pageLoader">
+  <div class="ld-logo">N</div>
+  <div class="ld-brand">NUBIASTORE</div>
+  <div class="ld-sub">Realtime wallet & gaming platform</div>
+  <div class="ld-track"><div class="ld-fill" id="ldFill"></div></div>
+  <div class="ld-pct" id="ldPct">0%</div>
+</div>
+
+<!-- TOP PROGRESS BAR -->
+
+<div id="topBar"></div>
+
+<!-- ══════ POPUPS ══════ -->
+
+<!-- NOTIF POPUP -->
+
+<div class="popup-overlay" id="notifPopup">
+  <div class="popup-sheet">
+    <div class="popup-handle"></div>
+    <div class="popup-head">
+      <div class="popup-title">🔔 Riwayat Konversi</div>
+      <button class="popup-close" data-close="notifPopup">✕</button>
+    </div>
+    <div class="popup-body" id="notifBody"></div>
+  </div>
+</div>
+
+<!-- ALL SERVICES POPUP -->
+
+<div class="popup-overlay" id="servicesPopup">
+  <div class="popup-sheet">
+    <div class="popup-handle"></div>
+    <div class="popup-head">
+      <div class="popup-title">🎮 Semua Layanan</div>
+      <button class="popup-close" data-close="servicesPopup">✕</button>
+    </div>
+    <div class="popup-body" id="servicesBody"></div>
+  </div>
+</div>
+
+<!-- PROMO POPUP -->
+
+<div class="popup-overlay" id="promoPopup">
+  <div class="popup-sheet">
+    <div class="popup-handle"></div>
+    <div class="popup-head">
+      <div class="popup-title">🎉 Promo NUBIASTORE</div>
+      <button class="popup-close" data-close="promoPopup">✕</button>
+    </div>
+    <div class="popup-body" id="promoBody"></div>
+  </div>
+</div>
+
+<!-- DETAIL SALDO POPUP -->
+
+<div class="popup-overlay" id="detailPopup">
+  <div class="popup-sheet">
+    <div class="popup-handle"></div>
+    <div class="popup-head">
+      <div class="popup-title">💳 Detail & Riwayat Saldo</div>
+      <button class="popup-close" data-close="detailPopup">✕</button>
+    </div>
+    <div class="popup-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- ══════ MAIN APP ══════ -->
+
+<div class="app">
+
+  <!-- TOPBAR -->
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      NUBIASTORE
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="refreshBtn" title="Refresh saldo" style="font-size:1rem">🔄</button>
+      <button class="icon-btn" id="notifBtn" type="button">
         <span>🔔</span>
         <span class="notif-dot"></span>
       </button>
     </div>
-
-<div class="main-card">
-  <div class="balance-card">
-    <div class="balance-head">
-      <div class="balance-title">
-        Saldo Utama
-        <button class="eye-btn" id="toggleBalance" type="button" title="Sembunyikan saldo">🙈</button>
-      </div>
-      <button class="detail-pill" id="detailBtn" type="button">Detail ➜</button>
-    </div>
-
-    <div class="balance-value" id="nubiPayBalance">Rp 0</div>
-
-    <div class="uid-row">
-      <span class="uid-label">wallet ID.</span>
-      <span class="uid-value" id="uidTxt">-</span>
-      <button class="copy-btn" id="copyUidBtn" type="button" title="Copy UID">📋</button>
-    </div>
-
-    <div class="muted-small" id="statusText">Menghubungkan ke akun NUBIASTORE...</div>
   </div>
 
-  <div class="quick-actions">
+  <!-- MAIN CARD -->
 
-
-<button class="qa" id="isiSaldoBtn" type="button">
-    <div class="qa-icon">
-      <img src="https://static.thenounproject.com/png/2464489-200.png" alt="Isi Saldo">
+  <div class="main-card">
+    <div class="balance-card">
+      <div class="balance-head">
+        <div class="balance-title">
+          Saldo Utama
+          <button class="eye-btn" id="toggleBalance" type="button">🙈</button>
+        </div>
+        <button class="detail-pill" id="detailBtn" type="button">Detail ➜</button>
+      </div>
+      <div class="balance-value" id="nubiPayBalance">Rp 0</div>
+      <div class="uid-row">
+        <span class="uid-label">Wallet ID</span>
+        <span class="uid-value" id="uidTxt">-</span>
+        <button class="copy-btn" id="copyUidBtn" title="Copy UID">📋</button>
+      </div>
+      <div class="status-row">
+        <div class="status-dot" id="statusDot" style="background:#94a3b8"></div>
+        <div class="muted-small" id="statusText">Menghubungkan ke akun NUBIASTORE...</div>
+      </div>
     </div>
+
+```
+<div class="quick-actions">
+  <button class="qa" id="isiSaldoBtn">
+    <div class="qa-icon"><img src="https://static.thenounproject.com/png/2464489-200.png" alt="Isi Saldo"></div>
     <span>Isi Saldo</span>
-  </button><button class="qa" id="transferBtn" type="button">
-    <div class="qa-icon">
-      <img src="https://media.istockphoto.com/id/2240768730/vector/casino-chips-solid-icon-gambling-and-staking-concept-vector-graphics-dollar-with-coins.jpg?s=612x612&w=0&k=20&c=bsRWoOKUaUeMgvbAEpe9nJRgk_owAVSB9QS72X67zas=" alt="Transfer">
-    </div>
+  </button>
+  <button class="qa" id="transferBtn">
+    <div class="qa-icon"><img src="https://media.istockphoto.com/id/2240768730/vector/casino-chips-solid-icon-gambling-and-staking-concept-vector-graphics-dollar-with-coins.jpg?s=612x612&w=0&k=20&c=bsRWoOKUaUeMgvbAEpe9nJRgk_owAVSB9QS72X67zas=" alt="Staking"></div>
     <span>Staking</span>
-  </button><button class="qa" id="riwayatBtn" type="button">
-    <div class="qa-icon">
-      <img src="https://static.vecteezy.com/system/resources/previews/018/752/702/non_2x/investor-icon-simple-element-from-investment-collection-creative-investor-icon-for-web-design-templates-infographics-and-more-vector.jpg" alt="Riwayat">
-    </div>
+  </button>
+  <button class="qa" id="riwayatBtn">
+    <div class="qa-icon"><img src="https://static.vecteezy.com/system/resources/previews/018/752/702/non_2x/investor-icon-simple-element-from-investment-collection-creative-investor-icon-for-web-design-templates-infographics-and-more-vector.jpg" alt="Investasi"></div>
     <span>Investasi</span>
-  </button><button class="qa" id="lainnyaBtn" type="button">
-    <div class="qa-icon">
-      <img src="https://d1yutv2xslo29o.cloudfront.net/help-centre/ico/05a342ed-6db5-4b44-ad81-625b5a4b7471.png" alt="Paylater">
-    </div>
+  </button>
+  <button class="qa" id="lainnyaBtn">
+    <div class="qa-icon"><img src="https://d1yutv2xslo29o.cloudfront.net/help-centre/ico/05a342ed-6db5-4b44-ad81-625b5a4b7471.png" alt="Paylater"></div>
     <span>Paylater</span>
   </button>
 </div>
-    </div>
+```
 
-<div class="coin-panel" id="coinPanel">
-  <div class="coin-inner">
-    <div class="coin-kicker">NUBIACOIN</div>
-    <div class="coin-title">konversi Saldo Coin</div>
-    <div class="coin-sub">Dipakai untuk mini game,investasi,staking koin, konversi langsung realtime</div>
+  </div>
 
-    <div class="coin-balances">
-      <div class="coin-balance-pill">
-        <span class="label">NUBIAPAY BALANCE</span>
-        <div class="value" id="nubiPayBalanceSmall">0</div>
+  <!-- COIN PANEL -->
+
+  <div class="coin-panel">
+    <div class="coin-inner">
+      <div class="coin-kicker">NUBIACOIN</div>
+      <div class="coin-title">Konversi Saldo Coin</div>
+      <div class="coin-sub">Mini game, investasi, staking — konversi dua arah realtime</div>
+      <div class="coin-balances">
+        <div class="coin-balance-pill">
+          <span class="label">NUBIAPAY BALANCE</span>
+          <div class="value" id="nubiPayBalanceSmall">0</div>
+        </div>
+        <div class="coin-balance-pill">
+          <span class="label">NUBIAPAY COIN</span>
+          <div class="value" id="nubiPayCoin">0</div>
+        </div>
       </div>
-      <div class="coin-balance-pill">
-        <span class="label">NUBIAPAY COIN</span>
-        <div class="value" id="nubiPayCoin">0</div>
+      <div class="coin-mini">Kurs: <b>1.000 Rupiah = 500 nubiPayCoin</b> • Fee <b>1.6%</b> dua arah</div>
+      <div class="convert-mode">
+        <button class="mode-btn active" id="modeBalToCoin">Balance → Coin</button>
+        <button class="mode-btn" id="modeCoinToBal">Coin → Balance</button>
       </div>
-    </div>
-
-    <div class="coin-mini" id="coinKursInfo">
-      Kurs: <b>1.000 Rupiah = 500 nubiPayCoin</b> • Fee konversi <b>1.6%</b> dua arah.
-    </div>
-
-    <div class="convert-mode">
-      <button class="mode-btn active" id="modeBalToCoin" type="button">Balance → Coin</button>
-      <button class="mode-btn" id="modeCoinToBal" type="button">Coin → Balance</button>
-    </div>
-
-    <div class="convert-row">
-      <input class="convert-input" id="convertAmount" type="number" step="0.01" min="0.01" placeholder="Masukkan jumlah">
-      <button class="convert-btn" id="convertBtn" type="button">tukar🔄</button>
-    </div>
-
-    <div class="convert-hint" id="convertHint">
-      Masukkan jumlah nubiPayBalance yang mau ditukar ke coin.
-    </div>
-    <div class="flash-msg" id="convertMsg"></div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-head">
-    <div class="section-title">Layanan Nubiacoin</div>
-    <a class="link-more" href="#" id="lihatSemuaBtn">Semua Layanan</a>
-  </div>
-
-  
-
-  <div class="grid">
-
-
-<button class="service" id="mobileLegendBtn" type="button">
-    <div class="ico">
-      <img src="https://cdn-icons-gif.flaticon.com/16894/16894149.gif" alt="Mobile Legends">
-    </div>
-    <div class="name">Opsi Trade Internal</div>
-  </button><button class="service" id="freeFireBtn" type="button">
-    <div class="ico">
-      <img src="https://cdn-icons-gif.flaticon.com/17507/17507034.gif" alt="Free Fire">
-    </div>
-    <div class="name">Beli Saham Internal</div>
-  </button><button class="service" id="pubgBtn" type="button">
-    <div class="ico">
-      <img src="https://img.tapimg.net/market/images/031fd4b94c7ab75b1d2f88157200e00b.jpg" alt="PUBG Mobile">
-    </div>
-    <div class="name">Game Rocket Crash</div>
-  </button><button class="service" id="allGameBtn" type="button">
-    <div class="ico">
-      <img src="https://assets-v2.lottiefiles.com/a/7012d742-1153-11ee-94f9-731b7f9ba9e4/bZHiXCQAlu.gif" alt="Semua Game">
-    </div>
-    <div class="name">Game Coin Flip</div>
-  </button>
-</div>
-    </div>
-
-<div class="section">
-  <div class="section-head">
-    <div class="section-title">Promo NUBIASTORE</div>
-    <a class="link-more" href="#" id="promoMoreBtn">Lihat</a>
-  </div>
-
-  <div class="promo-row">
-    <div class="promo-card">
-      <div class="small">Cashback Hingga</div>
-      <div class="big">50%</div>
-      <div class="sub">untuk event tertentu</div>
-    </div>
-
-    <div class="promo-card">
-      <div class="small">Bonus Akun</div>
-      <div class="big">UID</div>
-      <div class="sub">terhubung ke saldo kamu</div>
+      <div class="preset-amounts">
+        <button class="preset-btn" data-v="10">10</button>
+        <button class="preset-btn" data-v="50">50</button>
+        <button class="preset-btn" data-v="100">100</button>
+        <button class="preset-btn" data-v="500">500</button>
+        <button class="preset-btn" data-v="1000">1K</button>
+      </div>
+      <div class="convert-row">
+        <input class="convert-input" id="convertAmount" type="number" step="0.01" min="0.01" placeholder="Masukkan jumlah">
+        <button class="convert-btn" id="convertBtn">
+          <span id="convertBtnTxt">Tukar 🔄</span>
+          <div class="conv-bar" id="convBar"></div>
+        </button>
+      </div>
+      <div class="convert-hint" id="convertHint">Masukkan jumlah <b>Balance</b> yang mau ditukar ke <b>Coin</b>.</div>
+      <div class="flash-msg" id="convertMsg"></div>
     </div>
   </div>
-</div>
 
+  <!-- SERVICES SECTION -->
 
-</div><div class="bottom-nav">
-    <div class="nav-wrap">
-      <button class="nav-item active" id="navHome" type="button">
-        <div class="nav-icon">🏠</div>
-        Home
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">Layanan Nubiacoin</div>
+      <button class="link-more" id="lihatSemuaBtn">Semua Layanan</button>
+    </div>
+    <div class="grid">
+      <button class="service" onclick="window.location.href='/mobile-legends.html'">
+        <div class="ico"><img src="https://cdn-icons-gif.flaticon.com/16894/16894149.gif" alt="Trade"></div>
+        <div class="name">Opsi Trade Internal</div>
       </button>
+      <button class="service" onclick="window.location.href='/free-fire.html'">
+        <div class="ico"><img src="https://cdn-icons-gif.flaticon.com/17507/17507034.gif" alt="Saham"></div>
+        <div class="name">Beli Saham Internal</div>
+      </button>
+      <button class="service" onclick="window.location.href='/Game-roket.html'">
+        <div class="ico"><img src="https://img.tapimg.net/market/images/031fd4b94c7ab75b1d2f88157200e00b.jpg" alt="Rocket"></div>
+        <div class="name">Game Rocket Crash</div>
+      </button>
+      <button class="service" onclick="window.location.href='/Game-flip.html'">
+        <div class="ico"><img src="https://assets-v2.lottiefiles.com/a/7012d742-1153-11ee-94f9-731b7f9ba9e4/bZHiXCQAlu.gif" alt="Flip"></div>
+        <div class="name">Game Coin Flip</div>
+      </button>
+    </div>
+  </div>
 
-  <button class="nav-item" id="navSpin" type="button">
-    <div class="nav-icon">🎡</div>
-    Spin
-  </button>
+  <!-- PROMO SECTION -->
 
-  <div class="center-float">N</div>
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">Promo NUBIASTORE</div>
+      <button class="link-more" id="promoMoreBtn">Lihat Promo Lainnya</button>
+    </div>
+    <div class="promo-row">
+      <div class="promo-card" id="promoCard1">
+        <div class="small">Cashback Hingga</div>
+        <div class="big">50%</div>
+        <div class="sub">untuk event tertentu</div>
+      </div>
+      <div class="promo-card" id="promoCard2">
+        <div class="small">Bonus Akun</div>
+        <div class="big">UID</div>
+        <div class="sub">terhubung ke saldo kamu</div>
+      </div>
+    </div>
+  </div>
 
-  <button class="nav-item" id="navStore" type="button">
-    <div class="nav-icon">🛒</div>
-    Store
-  </button>
-
-  <button class="nav-item" id="navAkun" type="button">
-    <div class="nav-icon">👤</div>
-    Akun
-  </button>
 </div>
 
+<!-- BOTTOM NAV -->
 
-</div><div class="uid-copy-toast" id="toastCopy">UID disalin</div><script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import {
-      getFirestore, doc, getDoc, runTransaction, serverTimestamp, collection
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+<div class="bottom-nav">
+  <div class="nav-wrap">
+    <button class="nav-item active" id="navHome"><div class="nav-icon">🏠</div>Home</button>
+    <button class="nav-item" id="navSpin"><div class="nav-icon">🎡</div>Spin</button>
+    <div class="center-float">N</div>
+    <button class="nav-item" id="navStore"><div class="nav-icon">🛒</div>Store</button>
+    <button class="nav-item" id="navAkun"><div class="nav-icon">👤</div>Akun</button>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-      authDomain: "zestoreid-f9e85.firebaseapp.com",
-      projectId: "zestoreid-f9e85",
-      storageBucket: "zestoreid-f9e85.firebasestorage.app",
-      messagingSenderId: "426093692154",
-      appId: "1:426093692154:web:38c6e9c143af626a623543"
-    };
+<!-- TOAST -->
 
-    const app  = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
+<div id="toastMsg"></div>
 
-    const uidTxt = document.getElementById('uidTxt');
-    const nubiPayBalanceEl = document.getElementById('nubiPayBalance');
-    const nubiPayBalanceSmallEl = document.getElementById('nubiPayBalanceSmall');
-    const nubiPayCoinEl = document.getElementById('nubiPayCoin');
-    const statusText = document.getElementById('statusText');
-    const toastCopy = document.getElementById('toastCopy');
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import {
+    getFirestore, doc, getDoc, getDocs, runTransaction, serverTimestamp,
+    collection, query, orderBy, limit
+  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    const toggleBalanceBtn = document.getElementById('toggleBalance');
-    const copyUidBtn = document.getElementById('copyUidBtn');
+  const FB = { apiKey:"AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",authDomain:"zestoreid-f9e85.firebaseapp.com",projectId:"zestoreid-f9e85",storageBucket:"zestoreid-f9e85.firebasestorage.app",messagingSenderId:"426093692154",appId:"1:426093692154:web:38c6e9c143af626a623543" };
+  const app  = initializeApp(FB);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
 
-    const navHome = document.getElementById('navHome');
-    const navSpin = document.getElementById('navSpin');
-    const navStore = document.getElementById('navStore');
-    const navAkun = document.getElementById('navAkun');
+  // ── DOM refs ──
+  const $= id=>document.getElementById(id);
+  const pgLoader=$('pageLoader'), topBar=$('topBar');
+  const nubiPayBalanceEl=$('nubiPayBalance'), nubiPayBalSmallEl=$('nubiPayBalanceSmall'), nubiPayCoinEl=$('nubiPayCoin');
+  const uidTxt=$('uidTxt'), statusText=$('statusText'), statusDot=$('statusDot');
+  const toastMsg=$('toastMsg');
+  const convBar=$('convBar'), convertBtnTxt=$('convertBtnTxt');
+  const convertAmountInput=$('convertAmount'), convertBtn=$('convertBtn');
+  const convertHint=$('convertHint'), convertMsg=$('convertMsg');
+  const modeBalToCoinBtn=$('modeBalToCoin'), modeCoinToBalBtn=$('modeCoinToBal');
 
-    const isiSaldoBtn = document.getElementById('isiSaldoBtn');
-    const transferBtn = document.getElementById('transferBtn');
-    const riwayatBtn = document.getElementById('riwayatBtn');
-    const lainnyaBtn = document.getElementById('lainnyaBtn');
+  let currentUser=null, balHidden=false, cvMode='bal_to_coin';
+  let curBal={nubiPayBalance:0,nubiPayCoin:0};
+  let convBarTimer=null;
 
-    const mobileLegendBtn = document.getElementById('mobileLegendBtn');
-    const freeFireBtn = document.getElementById('freeFireBtn');
-    const pubgBtn = document.getElementById('pubgBtn');
-    const allGameBtn = document.getElementById('allGameBtn');
+  // ── Page loader ──
+  let pct=0;
+  const ldPctEl=$('ldPct');
+  const ldInterval=setInterval(()=>{
+    pct+=Math.random()*18;
+    if(pct>94)pct=94;
+    ldPctEl.textContent=Math.floor(pct)+'%';
+  },200);
 
-    const detailBtn = document.getElementById('detailBtn');
-    const notifBtn = document.getElementById('notifBtn');
-    const lihatSemuaBtn = document.getElementById('lihatSemuaBtn');
-    const promoMoreBtn = document.getElementById('promoMoreBtn');
+  function hideLoader(){
+    pct=100; ldPctEl.textContent='100%';
+    clearInterval(ldInterval);
+    setTimeout(()=>{pgLoader.classList.add('hide')},400);
+  }
 
-    const modeBalToCoinBtn = document.getElementById('modeBalToCoin');
-    const modeCoinToBalBtn = document.getElementById('modeCoinToBal');
-    const convertAmountInput = document.getElementById('convertAmount');
-    const convertBtn = document.getElementById('convertBtn');
-    const convertHint = document.getElementById('convertHint');
-    const convertMsg = document.getElementById('convertMsg');
+  // ── Top bar ──
+  function runTopBar(){
+    topBar.style.opacity='1'; topBar.style.width='0%';
+    setTimeout(()=>{topBar.style.width='65%'},80);
+    setTimeout(()=>{topBar.style.width='88%'},600);
+    setTimeout(()=>{
+      topBar.style.width='100%';
+      setTimeout(()=>{topBar.style.opacity='0';topBar.style.width='0%';},350);
+    },1500);
+  }
+  runTopBar();
 
-    let currentUser = null;
-    let balanceHidden = false;
-    let convertMode = 'bal_to_coin';
+  // ── Popups ──
+  const openPopup=id=>{$(id).classList.add('open');document.body.style.overflow='hidden'};
+  const closePopup=id=>{$(id).classList.remove('open');document.body.style.overflow=''};
+  document.querySelectorAll('.popup-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closePopup(o.id)}));
+  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closePopup(b.dataset.close)));
 
-    function fmtNumber(n, digits = 2){
-      const num = Number(n || 0);
-      return num.toLocaleString('id-ID', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: digits
+  // ── Utils ──
+  const fmtN=(n,d=2)=>Number(n||0).toLocaleString('id-ID',{minimumFractionDigits:0,maximumFractionDigits:d});
+  const fmtRp=n=>'Rp '+fmtN(n,2);
+  const round2=n=>Math.round(Number(n)*100)/100;
+  const timeAgo=ts=>{
+    if(!ts)return'Baru saja';
+    const d=ts.toDate?ts.toDate():new Date(ts);
+    const s=(Date.now()-d.getTime())/1000;
+    if(s<60)return'Baru saja';
+    if(s<3600)return Math.floor(s/60)+' mnt lalu';
+    if(s<86400)return Math.floor(s/3600)+' jam lalu';
+    return Math.floor(s/86400)+' hari lalu';
+  };
+
+  function showToast(msg,ms=2000){
+    toastMsg.textContent=msg;
+    toastMsg.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t=setTimeout(()=>toastMsg.classList.remove('show'),ms);
+  }
+
+  function setConvMsg(msg,err=false){
+    convertMsg.textContent=msg;
+    convertMsg.style.color=err?'#fca5a5':'rgba(255,255,255,.95)';
+  }
+
+  // ── Convert progress bar ──
+  function startConvBar(){
+    let p=0; convBar.style.background='linear-gradient(90deg,#16a34a,#34d399)';
+    clearInterval(convBarTimer);
+    convBarTimer=setInterval(()=>{
+      p+=Math.random()*12; if(p>88)p=88;
+      convBar.style.width=p+'%';
+    },200);
+  }
+  function finishConvBar(ok){
+    clearInterval(convBarTimer);
+    convBar.style.background=ok?'linear-gradient(90deg,#16a34a,#34d399)':'linear-gradient(90deg,#ef4444,#f87171)';
+    convBar.style.width='100%';
+    setTimeout(()=>{convBar.style.width='0%';},700);
+  }
+
+  // ── Conversion calc ──
+  function calcConv(amount,mode){
+    const src=Number(amount||0); if(!src||src<=0)return null;
+    const fee=0.016;
+    if(mode==='bal_to_coin'){
+      const gross=src*0.5, feeAmt=gross*fee, net=round2(gross-feeAmt);
+      return{sf:'nubiPayBalance',tf:'nubiPayCoin',sa:round2(src),ta:net,fa:round2(feeAmt),ls:'Balance',lt:'Coin'};
+    }
+    const gross=src*2, feeAmt=gross*fee, net=round2(gross-feeAmt);
+    return{sf:'nubiPayCoin',tf:'nubiPayBalance',sa:round2(src),ta:net,fa:round2(feeAmt),ls:'Coin',lt:'Balance'};
+  }
+
+  function updateCvUI(){
+    const toBal=cvMode==='coin_to_bal';
+    modeBalToCoinBtn.classList.toggle('active',!toBal);
+    modeCoinToBalBtn.classList.toggle('active',toBal);
+    convertHint.innerHTML=toBal
+      ?'Masukkan jumlah <b>nubiPayCoin</b> yang mau ditukar ke <b>nubiPayBalance</b>.'
+      :'Masukkan jumlah <b>nubiPayBalance</b> yang mau ditukar ke <b>nubiPayCoin</b>.';
+    convertAmountInput.placeholder=toBal?'Contoh: 5':'Contoh: 10';
+  }
+
+  // ── Firebase load ──
+  async function loadBalances(uid){
+    try{
+      const snap=await getDoc(doc(db,'users',uid));
+      if(snap.exists()){
+        const d=snap.data();
+        curBal={nubiPayBalance:Number(d.nubiPayBalance||0),nubiPayCoin:Number(d.nubiPayCoin||0)};
+        nubiPayBalanceEl.textContent=fmtRp(curBal.nubiPayBalance);
+        nubiPayBalSmallEl.textContent=fmtRp(curBal.nubiPayBalance);
+        nubiPayCoinEl.textContent=fmtN(curBal.nubiPayCoin,2);
+        statusText.textContent='Saldo NUBIASTORE terhubung';
+        statusDot.style.background='#22c55e';
+      } else {
+        statusText.textContent='Dokumen user belum ada.';
+        statusDot.style.background='#f59e0b';
+      }
+    }catch(e){statusText.textContent='Gagal memuat saldo.';statusDot.style.background='#ef4444';}
+  }
+
+  async function loadTxHistory(uid){
+    try{
+      const q=query(collection(db,'users',uid,'transactions'),orderBy('createdAt','desc'),limit(25));
+      const snap=await getDocs(q);
+      return snap.docs.map(d=>({id:d.id,...d.data()}));
+    }catch{return[];}
+  }
+
+  // ── Notification popup ──
+  async function openNotifPopup(){
+    const body=$('notifBody');
+    body.innerHTML=skelHTML(4);
+    openPopup('notifPopup');
+    if(!currentUser){body.innerHTML=lockedHTML();return;}
+    const txs=await loadTxHistory(currentUser.uid);
+    if(!txs.length){body.innerHTML=emptyHTML('📭','Belum ada riwayat konversi');return;}
+    body.innerHTML=txs.map(tx=>{
+      const toCoin=tx.mode==='bal_to_coin';
+      const icon=toCoin?'⬆️':'⬇️', cls=toCoin?'ni-green':'ni-amber';
+      const title=toCoin?'Balance → Coin':'Coin → Balance';
+      const desc=`${fmtN(tx.sourceAmount)} ${tx.ls||tx.labelSource||''} → ${fmtN(tx.targetAmount)} ${tx.lt||tx.labelTarget||''}`;
+      const amt=toCoin?`+${fmtN(tx.targetAmount)} Coin`:`+${fmtRp(tx.targetAmount)}`;
+      return`<div class="notif-item">
+        <div class="notif-icon ${cls}">${icon}</div>
+        <div class="notif-content">
+          <div class="notif-title">${title}</div>
+          <div class="notif-desc">${desc} • Fee: ${fmtN(tx.feeAmount||tx.fa||0)}</div>
+          <div class="notif-time">${timeAgo(tx.createdAt)}</div>
+        </div>
+        <div class="notif-amt${toCoin?'':' red'}">${amt}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── All services popup ──
+  const SERVICES={
+    'Mini Games':[
+      {ico:'🎰',name:'Slot Machine',url:'/game-slot'},
+      {ico:'🃏',name:'Poker Coin',url:'/game-poker'},
+      {ico:'🚀',name:'Rocket Crash',url:'/Game-roket.html'},
+      {ico:'🪙',name:'Coin Flip',url:'/Game-flip.html'},
+      {ico:'🎲',name:'Dice Roll',url:'/game-dice'},
+      {ico:'🎯',name:'Dart Game',url:'/game-dart'},
+      {ico:'🌀',name:'Spin Wheel',url:'/spin-token'},
+      {ico:'🏆',name:'Tournament',url:'/tournament'},
+      {ico:'🌟',name:'Lucky Draw',url:'/lucky-draw'},
+    ],
+    'Trading & Investasi':[
+      {ico:'📈',name:'Opsi Trade',url:'/mobile-legends.html'},
+      {ico:'📊',name:'Beli Saham',url:'/free-fire.html'},
+      {ico:'💹',name:'Forex Mini',url:'/forex'},
+      {ico:'🏦',name:'Staking',url:'/transfer'},
+      {ico:'💎',name:'NFT Trade',url:'/nft'},
+      {ico:'🔮',name:'Futures',url:'/futures'},
+    ],
+    'Keuangan':[
+      {ico:'💳',name:'Isi Saldo',url:'/nubiapay'},
+      {ico:'📤',name:'Transfer',url:'/transfer'},
+      {ico:'📥',name:'Tarik Dana',url:'/withdraw'},
+      {ico:'🏧',name:'Paylater',url:'/lainnya'},
+      {ico:'📑',name:'Riwayat',url:'/history'},
+      {ico:'🎁',name:'Referral',url:'/referral'},
+    ],
+  };
+
+  function openServicesPopup(){
+    const body=$('servicesBody');
+    body.innerHTML=Object.entries(SERVICES).map(([cat,items])=>`
+      <div class="svc-cat">${cat}</div>
+      <div class="svc-grid">${items.map(i=>`
+        <button class="svc-item" onclick="window.location.href='${i.url}'">
+          <div class="svc-ico">${i.ico}</div>
+          <div class="svc-name">${i.name}</div>
+        </button>`).join('')}
+      </div>`).join('');
+    openPopup('servicesPopup');
+  }
+
+  // ── Promo popup ──
+  const PROMOS=[
+    {cls:'pb-green',badge:'Event Terbatas',val:'50%',desc:'Cashback transaksi pertama kamu',exp:'Berlaku hingga 31 Des 2025'},
+    {cls:'pb-teal',badge:'New User',val:'FREE',desc:'Bonus 100 Coin untuk akun baru',exp:'Berlaku untuk pendaftar baru'},
+    {cls:'pb-em',badge:'Referral Program',val:'2×',desc:'Lipat gandakan penghasilan kamu',exp:'Ajak teman, dapatkan bonus'},
+    {cls:'pb-lime',badge:'Weekend Deal',val:'25%',desc:'Diskon fee konversi Sabtu–Minggu',exp:'Berlaku setiap akhir pekan'},
+    {cls:'pb-dark',badge:'VIP Member',val:'0%',desc:'Fee 0% untuk member VIP kamu',exp:'Tingkatkan level akun terlebih dahulu'},
+  ];
+
+  function openPromoPopup(){
+    $('promoBody').innerHTML=PROMOS.map(p=>`
+      <div class="pb-card ${p.cls}">
+        <div class="pb-content">
+          <div class="pb-badge">${p.badge}</div>
+          <div class="pb-val">${p.val}</div>
+          <div class="pb-desc">${p.desc}</div>
+          <div class="pb-exp">${p.exp}</div>
+        </div>
+      </div>`).join('');
+    openPopup('promoPopup');
+  }
+
+  // ── Detail saldo popup ──
+  async function openDetailPopup(){
+    const body=$('detailBody');
+    body.innerHTML=skelHTML(3);
+    openPopup('detailPopup');
+
+    const summaryHTML=`<div class="bal-summary">
+      <div class="bst"><div class="bst-lbl">Saldo</div><div class="bst-val green">${fmtRp(curBal.nubiPayBalance)}</div></div>
+      <div class="bst"><div class="bst-lbl">Nubia Coin</div><div class="bst-val">${fmtN(curBal.nubiPayCoin)}</div></div>
+      <div class="bst"><div class="bst-lbl">Nilai Coin</div><div class="bst-val green">${fmtRp(curBal.nubiPayCoin*2)}</div></div>
+    </div>`;
+
+    if(!currentUser){body.innerHTML=summaryHTML+lockedHTML();return;}
+    const txs=await loadTxHistory(currentUser.uid);
+    if(!txs.length){body.innerHTML=summaryHTML+emptyHTML('📭','Belum ada riwayat transaksi');return;}
+
+    const txHTML=txs.map(tx=>{
+      let ico='🔄',icoCls='ti-conv',amtCls='plus',amtStr='';
+      if(tx.type==='conversion'){
+        if(tx.mode==='bal_to_coin'){ico='⬆️';icoCls='ti-buy';amtStr=`+${fmtN(tx.targetAmount)} Coin`;}
+        else{ico='⬇️';icoCls='ti-sell';amtStr=`+${fmtRp(tx.targetAmount)}`;}
+      } else if(tx.type==='topup'){ico='💳';icoCls='ti-bonus';amtStr=`+${fmtRp(tx.amount||0)}`;}
+      else if(tx.type==='withdraw'){ico='📤';icoCls='ti-sell';amtCls='minus';amtStr=`-${fmtRp(tx.amount||0)}`;}
+      else{amtStr=fmtRp(tx.amount||tx.sourceAmount||0);}
+      const label=tx.type==='conversion'?(tx.mode==='bal_to_coin'?'Konversi Balance → Coin':'Konversi Coin → Balance'):(tx.type||'Transaksi');
+      return`<div class="tx-item">
+        <div class="tx-ico ${icoCls}">${ico}</div>
+        <div class="tx-body">
+          <div class="tx-name">${label}</div>
+          <div class="tx-date">${timeAgo(tx.createdAt)}</div>
+        </div>
+        <div class="tx-amt ${amtCls}">${amtStr}</div>
+      </div>`;
+    }).join('');
+
+    body.innerHTML=summaryHTML+`<div class="tx-head-label">Riwayat Transaksi</div>`+txHTML;
+  }
+
+  // helpers
+  function skelHTML(n){
+    return Array(n).fill(0).map(()=>`<div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #f0fdf4">
+      <div class="skel" style="width:42px;height:42px;border-radius:12px;flex-shrink:0"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+        <div class="skel" style="height:14px;width:60%;border-radius:6px"></div>
+        <div class="skel" style="height:11px;width:80%;border-radius:5px"></div>
+      </div>
+    </div>`).join('');
+  }
+  function lockedHTML(){return`<div class="notif-empty"><div class="notif-empty-ico">🔒</div><div>Login untuk melihat data</div></div>`;}
+  function emptyHTML(ico,msg){return`<div class="notif-empty"><div class="notif-empty-ico">${ico}</div><div>${msg}</div></div>`;}
+
+  // ── Wiring buttons ──
+  $('notifBtn').onclick=()=>openNotifPopup();
+  $('detailBtn').onclick=()=>openDetailPopup();
+  $('lihatSemuaBtn').onclick=e=>{e.preventDefault();openServicesPopup();};
+  $('promoMoreBtn').onclick=e=>{e.preventDefault();openPromoPopup();};
+  $('promoCard1').onclick=()=>openPromoPopup();
+  $('promoCard2').onclick=()=>openPromoPopup();
+
+  $('navHome').onclick=()=>{[$('navHome'),$('navSpin'),$('navStore'),$('navAkun')].forEach(x=>x.classList.remove('active'));$('navHome').classList.add('active');};
+  $('navSpin').onclick=()=>window.location.href='/spin-token';
+  $('navStore').onclick=()=>window.location.href='/index.html';
+  $('navAkun').onclick=()=>window.location.href='/account';
+
+  $('isiSaldoBtn').onclick=()=>window.location.href='/nubiapay';
+  $('transferBtn').onclick=()=>window.location.href='/transfer';
+  $('riwayatBtn').onclick=()=>window.location.href='/investasi';
+  $('lainnyaBtn').onclick=()=>window.location.href='/lainnya';
+
+  $('copyUidBtn').onclick=async()=>{
+    const uid=currentUser?.uid||'-';
+    if(uid==='-')return;
+    try{await navigator.clipboard.writeText(uid);showToast('✅ UID disalin!');}
+    catch{showToast('Gagal copy UID');}
+  };
+
+  $('toggleBalance').onclick=()=>{
+    balHidden=!balHidden;
+    nubiPayBalanceEl.classList.toggle('hidden-balance',balHidden);
+    $('toggleBalance').textContent=balHidden?'👁️':'🙈';
+  };
+
+  $('refreshBtn').onclick=async()=>{
+    if(!currentUser)return;
+    $('refreshBtn').style.animation='spin .8s linear';
+    runTopBar();
+    await loadBalances(currentUser.uid);
+    setTimeout(()=>{$('refreshBtn').style.animation='';},900);
+    showToast('Saldo diperbarui ✅');
+  };
+  // spin keyframe for refresh btn
+  const ks=document.createElement('style');
+  ks.textContent='@keyframes spin{to{transform:rotate(360deg)}}';
+  document.head.appendChild(ks);
+
+  // preset amounts
+  document.querySelectorAll('.preset-btn').forEach(b=>b.addEventListener('click',()=>{
+    convertAmountInput.value=b.dataset.v;
+    const c=calcConv(b.dataset.v,cvMode);
+    if(c)setConvMsg(`Preview: ${fmtN(c.sa)} ${c.ls} → ~${fmtN(c.ta)} ${c.lt} (fee ${fmtN(c.fa)})`);
+  }));
+
+  // live preview on input
+  convertAmountInput.addEventListener('input',()=>{
+    const v=convertAmountInput.value;
+    if(!v||Number(v)<=0){setConvMsg('');return;}
+    const c=calcConv(v,cvMode);
+    if(c)setConvMsg(`Preview: ${fmtN(c.sa)} ${c.ls} → ~${fmtN(c.ta)} ${c.lt}`);
+  });
+
+  modeBalToCoinBtn.onclick=()=>{cvMode='bal_to_coin';updateCvUI();setConvMsg('');convertAmountInput.value='';};
+  modeCoinToBalBtn.onclick=()=>{cvMode='coin_to_bal';updateCvUI();setConvMsg('');convertAmountInput.value='';};
+
+  convertBtn.onclick=async()=>{
+    if(!currentUser){setConvMsg('Login dulu untuk konversi.',true);return;}
+    const calc=calcConv(Number(convertAmountInput.value),cvMode);
+    if(!calc){setConvMsg('Masukkan jumlah yang valid.',true);return;}
+    convertBtn.disabled=true; convertBtnTxt.textContent='Proses...';
+    startConvBar();
+    try{
+      const uRef=doc(db,'users',currentUser.uid);
+      const tRef=doc(collection(db,'users',currentUser.uid,'transactions'));
+      await runTransaction(db,async tx=>{
+        const snap=await tx.get(uRef);
+        let cb=0,cc=0;
+        if(snap.exists()){cb=Number(snap.data().nubiPayBalance||0);cc=Number(snap.data().nubiPayCoin||0);}
+        const src=calc.sf==='nubiPayBalance'?cb:cc;
+        if(src<calc.sa)throw new Error(`Saldo ${calc.ls} tidak cukup.`);
+        const nb=calc.sf==='nubiPayBalance'?round2(cb-calc.sa):round2(cb+calc.ta);
+        const nc=calc.sf==='nubiPayCoin'?round2(cc-calc.sa):round2(cc+calc.ta);
+        tx.set(uRef,{nubiPayBalance:nb,nubiPayCoin:nc},{merge:true});
+        tx.set(tRef,{type:'conversion',mode:cvMode,sourceField:calc.sf,targetField:calc.tf,sourceAmount:calc.sa,targetAmount:calc.ta,feeAmount:calc.fa,ls:calc.ls,lt:calc.lt,labelSource:calc.ls,labelTarget:calc.lt,createdAt:serverTimestamp()});
       });
+      finishConvBar(true);
+      await loadBalances(currentUser.uid);
+      setConvMsg(`✅ Berhasil: ${calc.ls} ${fmtN(calc.sa)} → ${calc.lt} ${fmtN(calc.ta)}. Fee ${fmtN(calc.fa)}.`);
+      convertAmountInput.value='';
+      showToast('✅ Konversi berhasil!');
+    }catch(e){
+      finishConvBar(false);
+      setConvMsg('❌ '+(e.message||'Konversi gagal.'),true);
+    }finally{
+      convertBtn.disabled=false;
+      convertBtnTxt.textContent='Tukar 🔄';
     }
+  };
 
-    function fmtRp(n){
-      const num = Number(n || 0);
-      return 'Rp ' + fmtNumber(num, 2);
+  onAuthStateChanged(auth,async user=>{
+    currentUser=user;
+    if(user){
+      uidTxt.textContent=user.uid.slice(0,8)+'...'+user.uid.slice(-4);
+      await loadBalances(user.uid);
+    } else {
+      uidTxt.textContent='-';
+      nubiPayBalanceEl.textContent=fmtRp(0);
+      nubiPayBalSmallEl.textContent=fmtRp(0);
+      nubiPayCoinEl.textContent=fmtN(0,2);
+      statusText.textContent='🔒 Login untuk melihat saldo.';
+      statusDot.style.background='#94a3b8';
     }
+    hideLoader();
+  });
 
-    function shortUid(uid){
-      if (!uid) return '-';
-      return uid.slice(0, 6) + '...' + uid.slice(-4);
-    }
+  updateCvUI();
+</script>
 
-    function showToast(msg){
-      toastCopy.textContent = msg;
-      toastCopy.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => toastCopy.classList.remove('show'), 1500);
-    }
-
-    function setConvertMsg(msg, isError = false){
-      convertMsg.textContent = msg;
-      convertMsg.style.color = isError ? '#fff1f2' : '#fff';
-    }
-
-    function round2(n){
-      return Math.round(Number(n) * 100) / 100;
-    }
-
-    function calcConversion(amount, mode){
-      const rateBalToCoin = 0.5; // 10 balance = 5 coin
-      const rateCoinToBal = 2;   // kebalikannya
-      const feeRate = 0.016;
-
-      const source = Number(amount || 0);
-      if (!source || source <= 0) return null;
-
-      if (mode === 'bal_to_coin') {
-        const grossCoin = source * rateBalToCoin;
-        const feeCoin = grossCoin * feeRate;
-        const netCoin = round2(grossCoin - feeCoin);
-        return {
-          sourceField: 'nubiPayBalance',
-          targetField: 'nubiPayCoin',
-          sourceAmount: round2(source),
-          targetAmount: netCoin,
-          feeAmount: round2(feeCoin),
-          labelSource: 'Balance',
-          labelTarget: 'Coin'
-        };
-      }
-
-      const grossBal = source * rateCoinToBal;
-      const feeBal = grossBal * feeRate;
-      const netBal = round2(grossBal - feeBal);
-      return {
-        sourceField: 'nubiPayCoin',
-        targetField: 'nubiPayBalance',
-        sourceAmount: round2(source),
-        targetAmount: netBal,
-        feeAmount: round2(feeBal),
-        labelSource: 'Coin',
-        labelTarget: 'Balance'
-      };
-    }
-
-    function updateConvertUI(){
-      if (convertMode === 'bal_to_coin') {
-        modeBalToCoinBtn.classList.add('active');
-        modeCoinToBalBtn.classList.remove('active');
-        convertHint.innerHTML = 'Masukkan jumlah <b>nubiPayBalance</b> yang mau ditukar ke <b>nubiPayCoin</b>.';
-        convertAmountInput.placeholder = 'Contoh: 10';
-        convertAmountInput.step = '0.01';
-      } else {
-        modeCoinToBalBtn.classList.add('active');
-        modeBalToCoinBtn.classList.remove('active');
-        convertHint.innerHTML = 'Masukkan jumlah <b>nubiPayCoin</b> yang mau ditukar ke <b>nubiPayBalance</b>.';
-        convertAmountInput.placeholder = 'Contoh: 5';
-        convertAmountInput.step = '0.01';
-      }
-    }
-
-    async function loadUserBalances(uid){
-      try {
-        const snap = await getDoc(doc(db, 'users', uid));
-        if (snap.exists()) {
-          const data = snap.data();
-          const balance = Number(data.nubiPayBalance || 0);
-          const coin = Number(data.nubiPayCoin || 0);
-
-          nubiPayBalanceEl.textContent = fmtRp(balance);
-          nubiPayBalanceSmallEl.textContent = fmtRp(balance);
-          nubiPayCoinEl.textContent = fmtNumber(coin, 2);
-          statusText.textContent = 'Saldo NUBIASTORE terhubung';
-        } else {
-          nubiPayBalanceEl.textContent = fmtRp(0);
-          nubiPayBalanceSmallEl.textContent = fmtRp(0);
-          nubiPayCoinEl.textContent = fmtNumber(0, 2);
-          statusText.textContent = 'Dokumen user belum ditemukan.';
-        }
-      } catch (e) {
-        console.error(e);
-        statusText.textContent = 'Gagal memuat saldo.';
-      }
-    }
-
-    function setNavActive(target){
-      [navHome, navSpin, navStore, navAkun].forEach(x => x.classList.remove('active'));
-      target.classList.add('active');
-    }
-
-    navHome.onclick = () => setNavActive(navHome);
-    navSpin.onclick = () => window.location.href = '/spin-token';
-    navStore.onclick = () => window.location.href = '/index.html';
-    navAkun.onclick = () => window.location.href = '/account';
-
-    isiSaldoBtn.onclick = () => window.location.href = '/nubiapay';
-    transferBtn.onclick = () => window.location.href = '/transfer';
-    riwayatBtn.onclick = () => window.location.href = '/investasi';
-    lainnyaBtn.onclick = () => window.location.href = '/lainnya';
-
-    mobileLegendBtn.onclick = () => window.location.href = '/mobile-legends.html';
-    freeFireBtn.onclick = () => window.location.href = '/free-fire.html';
-    pubgBtn.onclick = () => window.location.href = '/Game-roket.html';
-    allGameBtn.onclick = () => window.location.href = '/Game-flip.html';
-
-    detailBtn.onclick = () => window.location.href = '/account';
-    notifBtn.onclick = () => window.location.href = '/notifications';
-    lihatSemuaBtn.onclick = (e) => { e.preventDefault(); window.location.href = '/all-services'; };
-    promoMoreBtn.onclick = (e) => { e.preventDefault(); window.location.href = '/promo'; };
-
-    copyUidBtn.onclick = async () => {
-      const uid = currentUser?.uid || '-';
-      if (uid === '-') return;
-      try {
-        await navigator.clipboard.writeText(uid);
-        showToast('UID disalin');
-      } catch {
-        showToast('Gagal copy UID');
-      }
-    };
-
-    toggleBalanceBtn.onclick = () => {
-      balanceHidden = !balanceHidden;
-      if (balanceHidden) {
-        nubiPayBalanceEl.classList.add('hidden-balance');
-        toggleBalanceBtn.textContent = 'no-hide';
-        toggleBalanceBtn.title = 'Tampilkan saldo';
-      } else {
-        nubiPayBalanceEl.classList.remove('hidden-balance');
-        toggleBalanceBtn.textContent = 'hide';
-        toggleBalanceBtn.title = 'Sembunyikan saldo';
-      }
-    };
-
-    modeBalToCoinBtn.onclick = () => {
-      convertMode = 'bal_to_coin';
-      updateConvertUI();
-      setConvertMsg('');
-      convertAmountInput.value = '';
-    };
-
-    modeCoinToBalBtn.onclick = () => {
-      convertMode = 'coin_to_bal';
-      updateConvertUI();
-      setConvertMsg('');
-      convertAmountInput.value = '';
-    };
-
-    convertBtn.onclick = async () => {
-      if (!currentUser) {
-        setConvertMsg('Login dulu untuk konversi.', true);
-        return;
-      }
-
-      const amount = Number(convertAmountInput.value);
-      const calc = calcConversion(amount, convertMode);
-
-      if (!calc) {
-        setConvertMsg('Masukkan jumlah yang valid.', true);
-        return;
-      }
-
-      convertBtn.disabled = true;
-      convertBtn.textContent = 'Proses...';
-
-      try {
-        const userRef = doc(db, 'users', currentUser.uid);
-        const txRef = doc(collection(db, 'users', currentUser.uid, 'transactions'));
-
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(userRef);
-
-          let curBalance = 0;
-          let curCoin = 0;
-
-          if (snap.exists()) {
-            curBalance = Number(snap.data().nubiPayBalance || 0);
-            curCoin = Number(snap.data().nubiPayCoin || 0);
-          }
-
-          const src = calc.sourceField === 'nubiPayBalance' ? curBalance : curCoin;
-          if (src < calc.sourceAmount) {
-            throw new Error(`Saldo ${calc.labelSource} tidak cukup.`);
-          }
-
-          const nextBalance = calc.sourceField === 'nubiPayBalance'
-            ? round2(curBalance - calc.sourceAmount)
-            : round2(curBalance + calc.targetAmount);
-
-          const nextCoin = calc.sourceField === 'nubiPayCoin'
-            ? round2(curCoin - calc.sourceAmount)
-            : round2(curCoin + calc.targetAmount);
-
-          tx.set(userRef, {
-            nubiPayBalance: nextBalance,
-            nubiPayCoin: nextCoin
-          }, { merge: true });
-
-          tx.set(txRef, {
-            type: 'conversion',
-            mode: convertMode,
-            sourceField: calc.sourceField,
-            targetField: calc.targetField,
-            sourceAmount: calc.sourceAmount,
-            targetAmount: calc.targetAmount,
-            feeAmount: calc.feeAmount,
-            createdAt: serverTimestamp()
-          });
-        });
-
-        await loadUserBalances(currentUser.uid);
-        setConvertMsg(`Berhasil: ${calc.labelSource} ${fmtNumber(calc.sourceAmount)} → ${calc.labelTarget} ${fmtNumber(calc.targetAmount)}. Fee ${fmtNumber(calc.feeAmount)}.`);
-        convertAmountInput.value = '';
-        showToast('Konversi berhasil');
-      } catch (e) {
-        console.error(e);
-        setConvertMsg(e.message || 'Konversi gagal.', true);
-      } finally {
-        convertBtn.disabled = false;
-        convertBtn.textContent = 'Konversi';
-      }
-    };
-
-    onAuthStateChanged(auth, async (user) => {
-      currentUser = user;
-      if (user) {
-        uidTxt.textContent = user.uid;
-        await loadUserBalances(user.uid);
-      } else {
-        uidTxt.textContent = '-';
-        nubiPayBalanceEl.textContent = fmtRp(0);
-        nubiPayBalanceSmallEl.textContent = fmtRp(0);
-        nubiPayCoinEl.textContent = fmtNumber(0, 2);
-        statusText.textContent = 'Login untuk melihat saldo NUBIASTORE.';
-      }
-    });
-
-    updateConvertUI();
-  </script></body>
+</body>
 </html>
