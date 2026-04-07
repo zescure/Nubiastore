@@ -1,0 +1,1403 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NUBIA SNAKE & LADDER</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#070615;
+      --bg2:#130f27;
+      --card:rgba(255,255,255,.08);
+      --card2:rgba(255,255,255,.12);
+      --border:rgba(255,255,255,.10);
+      --text:#f7f4ff;
+      --muted:#bdb5de;
+      --accent:#7c4dff;
+      --accent2:#31c4ff;
+      --accent3:#19d38d;
+      --danger:#ff5b7a;
+      --warn:#ffcc66;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --radius:24px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100%}
+    body{
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(124,77,255,.24), transparent 22%),
+        radial-gradient(circle at 90% 0%, rgba(49,196,255,.18), transparent 18%),
+        radial-gradient(circle at 50% 100%, rgba(25,211,141,.10), transparent 20%),
+        linear-gradient(180deg, #090617 0%, #120d23 100%);
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+
+    .app{
+      width:min(100%, 1180px);
+      margin:0 auto;
+      padding:16px 14px 28px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:16px;
+      gap:12px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+    }
+
+    .brand-mark{
+      width:40px;height:40px;border-radius:12px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#fff;
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.08rem;
+      box-shadow:0 10px 22px rgba(124,77,255,.32);
+      flex-shrink:0;
+    }
+
+    .brand-title{
+      font-size:1.08rem;
+      line-height:1;
+    }
+    .brand-sub{
+      display:block;
+      font-size:.72rem;
+      color:var(--muted);
+      margin-top:3px;
+      font-weight:600;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill-btn{
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-weight:700;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap:14px;
+      align-items:start;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .wallet-card,
+    .control-card,
+    .board-card,
+    .info-card{
+      padding:18px;
+    }
+
+    .wallet-head,
+    .control-head,
+    .board-head,
+    .info-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      flex-wrap:wrap;
+    }
+
+    .wallet-title,
+    .control-title,
+    .board-title,
+    .info-title{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.15rem;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+
+    .wallet-desc,
+    .control-desc,
+    .board-desc,
+    .info-desc{
+      margin-top:4px;
+      font-size:.84rem;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .wallet-switch{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .chip{
+      border:none;
+      border-radius:999px;
+      padding:8px 12px;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:700;
+      font-size:.82rem;
+    }
+
+    .chip.primary{
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#fff;
+    }
+
+    .wallet-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .wallet-box{
+      border-radius:20px;
+      padding:14px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .wallet-label{
+      font-size:.7rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1.6px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .wallet-value{
+      font-family:'Rajdhani',sans-serif;
+      font-size:2rem;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:.3px;
+      color:#fff;
+      text-shadow:0 0 18px rgba(124,77,255,.2);
+    }
+
+    .wallet-uid{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:12px;
+      color:#efeaff;
+      flex-wrap:wrap;
+    }
+
+    .uid-pill{
+      font-family:'Rajdhani',sans-serif;
+      font-weight:700;
+      letter-spacing:.2px;
+      color:#fff;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      padding:8px 12px;
+      border-radius:14px;
+      word-break:break-all;
+    }
+
+    .copy-btn{
+      border:none;
+      width:38px;height:38px;
+      border-radius:12px;
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      cursor:pointer;
+      flex-shrink:0;
+    }
+
+    .wallet-note{
+      margin-top:12px;
+      font-size:.82rem;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .board-card{
+      margin-bottom:14px;
+    }
+
+    .board-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .gate-badge{
+      font-size:.75rem;
+      font-weight:800;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(25,211,141,.16);
+      color:#8ff8d2;
+      border:1px solid rgba(25,211,141,.18);
+      white-space:nowrap;
+    }
+
+    .board-wrap{
+      border-radius:28px;
+      padding:14px;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,.10), transparent 36%),
+        linear-gradient(180deg, rgba(124,77,255,.20), rgba(49,196,255,.08));
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+
+    .board{
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      grid-template-rows:repeat(4, 108px);
+      gap:8px;
+    }
+
+    .tile{
+      position:relative;
+      border-radius:18px;
+      padding:10px;
+      background:rgba(7,6,21,.42);
+      border:1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .tile.active-user{
+      box-shadow:0 0 0 2px rgba(25,211,141,.32) inset;
+      background:rgba(25,211,141,.10);
+    }
+    .tile.active-bot{
+      box-shadow:0 0 0 2px rgba(124,77,255,.26) inset;
+      background:rgba(124,77,255,.10);
+    }
+    .tile.active-both{
+      box-shadow:0 0 0 2px rgba(255,255,255,.20) inset;
+      background:rgba(255,255,255,.12);
+    }
+
+    .tile-num{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.15rem;
+      font-weight:800;
+      line-height:1;
+      color:#fff;
+      opacity:.95;
+    }
+
+    .tile-tag{
+      font-size:.68rem;
+      line-height:1.3;
+      color:#efeaff;
+      font-weight:700;
+      min-height:28px;
+      opacity:.94;
+      display:flex;
+      align-items:flex-end;
+    }
+
+    .tile-pawns{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-start;
+      min-height:26px;
+    }
+
+    .pawn{
+      width:26px;
+      height:26px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-size:.8rem;
+      font-weight:900;
+      box-shadow:0 8px 16px rgba(0,0,0,.22);
+      border:2px solid rgba(255,255,255,.28);
+    }
+
+    .pawn.user{
+      background:linear-gradient(135deg, #19d38d, #0ea5a3);
+      color:#03110c;
+    }
+
+    .pawn.bot{
+      background:linear-gradient(135deg, #8f5dff, #31c4ff);
+      color:#0b061a;
+    }
+
+    .mini-note{
+      margin-top:12px;
+      font-size:.82rem;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .control-card{
+      margin-bottom:14px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .field label{
+      font-size:.72rem;
+      font-weight:800;
+      letter-spacing:1.3px;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .input{
+      width:100%;
+      padding:13px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      outline:none;
+      background:rgba(10,7,22,.45);
+      color:#fff;
+      font-weight:700;
+    }
+
+    .input::placeholder{color:rgba(255,255,255,.45)}
+
+    .btn-row{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+
+    .action-btn{
+      flex:1;
+      min-width:140px;
+      border:none;
+      border-radius:16px;
+      padding:14px 16px;
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.2px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      box-shadow:0 14px 24px rgba(124,77,255,.24);
+    }
+
+    .action-btn.secondary{
+      background:rgba(255,255,255,.10);
+      box-shadow:none;
+    }
+
+    .action-btn:disabled{
+      cursor:not-allowed;
+      opacity:.55;
+      box-shadow:none;
+    }
+
+    .msg{
+      margin-top:10px;
+      font-size:.88rem;
+      color:#fff;
+      min-height:20px;
+      line-height:1.4;
+    }
+
+    .msg.error{color:#ffd1d9}
+    .msg.ok{color:#c7ffe9}
+    .msg.warn{color:#ffe7ac}
+
+    .info-card{
+      margin-bottom:14px;
+    }
+
+    .info-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .panel-box{
+      border-radius:20px;
+      padding:14px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      min-height:180px;
+    }
+
+    .panel-box h4{
+      margin-bottom:10px;
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      color:var(--muted);
+    }
+
+    .legend-list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      font-size:.87rem;
+      color:#fff;
+      line-height:1.45;
+    }
+
+    .legend-item{
+      padding:9px 10px;
+      border-radius:14px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .legend-item strong{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1rem;
+    }
+
+    .history-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .history-chip{
+      padding:6px 9px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:.82rem;
+      color:#fff;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .history-chip.win{background:rgba(25,211,141,.18);border-color:rgba(25,211,141,.20)}
+    .history-chip.loss{background:rgba(255,91,122,.18);border-color:rgba(255,91,122,.20)}
+    .history-chip.cashout{background:rgba(255,204,102,.18);border-color:rgba(255,204,102,.20)}
+
+    .side-stats{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .mini-stat{
+      border-radius:18px;
+      padding:12px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      text-align:left;
+    }
+
+    .mini-stat span{
+      display:block;
+      color:var(--muted);
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      margin-bottom:6px;
+      font-weight:800;
+    }
+
+    .mini-stat strong{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.2rem;
+      color:#fff;
+    }
+
+    .status-box{
+      margin-top:12px;
+      padding:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      line-height:1.5;
+      color:#fff;
+      font-size:.9rem;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%) translateY(20px);
+      opacity:0;
+      pointer-events:none;
+      background:#1a1234;
+      color:#fff;
+      padding:12px 14px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      transition:opacity .2s, transform .2s;
+      z-index:1000;
+      font-size:.9rem;
+      font-weight:700;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    .hidden-blur{
+      filter:blur(10px);
+      user-select:none;
+    }
+
+    @media (max-width: 980px){
+      .layout{grid-template-columns:1fr}
+      .info-grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 520px){
+      .wallet-grid,
+      .form-grid,
+      .side-stats{
+        grid-template-columns:1fr;
+      }
+
+      .board{
+        grid-template-columns:repeat(5, 1fr);
+        grid-template-rows:repeat(4, 92px);
+        gap:6px;
+      }
+
+      .tile{
+        border-radius:16px;
+        padding:8px;
+      }
+
+      .wallet-value{font-size:1.85rem}
+      .action-btn{min-width:100%}
+      .topbar{align-items:flex-start}
+      .brand-title{font-size:1rem}
+      .wallet-switch{justify-content:flex-start}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">N</div>
+        <div>
+          <div class="brand-title">NUBIA SNAKE & LADDER</div>
+          <span class="brand-sub">1 roll = 1000 coin • win gate 15%</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="pill-btn" id="authBtn" type="button">Login Google</button>
+        <button class="pill-btn" id="goHomeBtn" type="button">🏠 Home</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <section class="card wallet-card">
+          <div class="wallet-head">
+            <div>
+              <div class="wallet-title">Wallet NUBIASTORE</div>
+              <div class="wallet-desc">UID user dipakai sebagai identitas akun. Semua hadiah dan biaya diproses ke `nubiPayCoin`.</div>
+            </div>
+            <div class="wallet-switch">
+              <button class="chip primary" id="refreshBtn" type="button">Refresh</button>
+              <button class="chip" id="toggleBlurBtn" type="button">Sembunyikan</button>
+            </div>
+          </div>
+
+          <div class="wallet-grid">
+            <div class="wallet-box">
+              <div class="wallet-label">NUBIAPAY COIN</div>
+              <div class="wallet-value" id="coinValue">0.00</div>
+            </div>
+            <div class="wallet-box">
+              <div class="wallet-label">NUBIAPAY BALANCE</div>
+              <div class="wallet-value" id="balanceValue">Rp 0</div>
+            </div>
+          </div>
+
+          <div class="wallet-uid">
+            <span class="uid-pill" id="uidTxt">UID: -</span>
+            <button class="copy-btn" id="copyUidBtn" type="button" title="Copy UID">📋</button>
+          </div>
+
+          <div class="wallet-note" id="walletNote">
+            Login dulu untuk sinkron saldo dan mulai bermain.
+          </div>
+        </section>
+
+        <section class="card control-card">
+          <div class="control-head">
+            <div>
+              <div class="control-title">Giliran Kamu</div>
+              <div class="control-desc">Bayar 1000 coin untuk 1x kocok dadu. Kena tangga, ular, hadiah, dan bot penalty otomatis.</div>
+            </div>
+            <div class="gate-badge">Win Gate 15%</div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="betAmount">Biaya Roll</label>
+              <input class="input" id="betAmount" type="number" value="1000" step="1" min="1000" readonly>
+            </div>
+            <div class="field">
+              <label for="statusMode">Mode</label>
+              <input class="input" id="statusMode" type="text" value="Melawan bot" readonly>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="action-btn" id="rollBtn" type="button">Kocok Dadu</button>
+            <button class="action-btn secondary" id="resetBtn" type="button" disabled>Reset Game</button>
+          </div>
+
+          <div class="msg" id="actionMsg"></div>
+        </section>
+      </div>
+
+      <div>
+        <section class="card board-card">
+          <div class="board-top">
+            <div>
+              <div class="board-title">Board 20 Kotak</div>
+              <div class="board-desc">Tangga, ular, hadiah coin, dan jackpot 1.000.000 coin di kotak terakhir.</div>
+            </div>
+            <div class="gate-badge" id="turnBadge">ROUND 1</div>
+          </div>
+
+          <div class="board-wrap">
+            <div class="board" id="board"></div>
+          </div>
+
+          <div class="side-stats">
+            <div class="mini-stat">
+              <span>User Pos</span>
+              <strong id="userPosTxt">1</strong>
+            </div>
+            <div class="mini-stat">
+              <span>Bot Pos</span>
+              <strong id="botPosTxt">1</strong>
+            </div>
+            <div class="mini-stat">
+              <span>Chance</span>
+              <strong>15%</strong>
+            </div>
+            <div class="mini-stat">
+              <span>Jackpot</span>
+              <strong>1JT</strong>
+            </div>
+          </div>
+
+          <div class="status-box" id="boardStatus">
+            Siap mulai. User di kotak 1, bot juga di kotak 1.
+          </div>
+        </section>
+
+        <section class="card info-card">
+          <div class="info-head">
+            <div>
+              <div class="info-title">Peta Ular, Tangga, Hadiah</div>
+              <div class="info-desc">Semua hasil disusun supaya board terasa seperti game klasik standar.</div>
+            </div>
+          </div>
+
+          <div class="info-grid">
+            <div class="panel-box">
+              <h4>Rules Board</h4>
+              <div class="legend-list">
+                <div class="legend-item"><strong>Roll Cost:</strong> 1000 NUBIAPAY COIN</div>
+                <div class="legend-item"><strong>Bot Cross:</strong> user -5000 coin</div>
+                <div class="legend-item"><strong>Snake Head:</strong> user -2500 coin</div>
+                <div class="legend-item"><strong>Final Gate:</strong> 15% chance menang di 20</div>
+              </div>
+            </div>
+
+            <div class="panel-box">
+              <h4>Recent Events</h4>
+              <div class="history-list" id="historyValues"></div>
+              <div class="mini-note" id="recentNote">
+                Event terakhir akan tampil di sini.
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">UID disalin</div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore, doc, getDoc, runTransaction, serverTimestamp, collection, addDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+      authDomain: "zestoreid-f9e85.firebaseapp.com",
+      projectId: "zestoreid-f9e85",
+      storageBucket: "zestoreid-f9e85.firebasestorage.app",
+      messagingSenderId: "426093692154",
+      appId: "1:426093692154:web:38c6e9c143af626a623543"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    const boardEl = document.getElementById('board');
+
+    const coinValueEl = document.getElementById('coinValue');
+    const balanceValueEl = document.getElementById('balanceValue');
+    const uidTxt = document.getElementById('uidTxt');
+    const walletNote = document.getElementById('walletNote');
+
+    const authBtn = document.getElementById('authBtn');
+    const goHomeBtn = document.getElementById('goHomeBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const toggleBlurBtn = document.getElementById('toggleBlurBtn');
+    const copyUidBtn = document.getElementById('copyUidBtn');
+    const toastEl = document.getElementById('toast');
+
+    const rollBtn = document.getElementById('rollBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const actionMsgEl = document.getElementById('actionMsg');
+    const recentNoteEl = document.getElementById('recentNote');
+    const boardStatusEl = document.getElementById('boardStatus');
+    const turnBadgeEl = document.getElementById('turnBadge');
+
+    const userPosTxt = document.getElementById('userPosTxt');
+    const botPosTxt = document.getElementById('botPosTxt');
+    const historyValuesEl = document.getElementById('historyValues');
+
+    const ladderMap = {
+      3: 8,
+      6: 12,
+      10: 15
+    };
+
+    const snakeMap = {
+      5: 2,
+      11: 7,
+      17: 9
+    };
+
+    const bonusMap = {
+      4: 2500,
+      9: 5000,
+      13: 15000,
+      16: 25000
+    };
+
+    const jackpotTile = 20;
+    const jackpotAmount = 1000000;
+    const finalWinChance = 0.15;
+    const rollCost = 1000;
+    const botPenalty = 5000;
+    const snakePenalty = 2500;
+    const boardSize = 20;
+
+    let currentUser = null;
+    let walletUnsub = null;
+
+    let currentCoin = 0;
+    let currentBalance = 0;
+    let balanceBlur = false;
+
+    let boardCells = {};
+    let userPos = 1;
+    let botPos = 1;
+    let gameBusy = false;
+    let gameOver = false;
+    let roundNo = 1;
+    let userTotalWin = 0;
+    let botTotalWin = 0;
+    let currentSpinSeed = 0;
+
+    let history = [];
+
+    function round2(n){
+      return Math.round(Number(n || 0) * 100) / 100;
+    }
+
+    function fmtCoin(n){
+      return Number(n || 0).toLocaleString('id-ID', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function fmtRp(n){
+      return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+    }
+
+    function showToast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1400);
+    }
+
+    function setMsg(msg, type = ''){
+      actionMsgEl.textContent = msg || '';
+      actionMsgEl.className = 'msg' + (type ? ` ${type}` : '');
+    }
+
+    function pushHistory(result, label){
+      history.unshift({ result, label });
+      if (history.length > 12) history.pop();
+
+      historyValuesEl.innerHTML = history.map(h => {
+        return `<span class="history-chip ${h.result}">${h.label}</span>`;
+      }).join('');
+
+      recentNoteEl.textContent = history[0]?.label || 'Event terakhir akan tampil di sini.';
+    }
+
+    function updateWalletUI(){
+      coinValueEl.textContent = fmtCoin(currentCoin);
+      balanceValueEl.textContent = fmtRp(currentBalance);
+
+      if (balanceBlur) {
+        coinValueEl.classList.add('hidden-blur');
+        balanceValueEl.classList.add('hidden-blur');
+      } else {
+        coinValueEl.classList.remove('hidden-blur');
+        balanceValueEl.classList.remove('hidden-blur');
+      }
+    }
+
+    function updateTopStats(){
+      userPosTxt.textContent = userPos;
+      botPosTxt.textContent = botPos;
+      turnBadgeEl.textContent = gameOver ? 'GAME OVER' : `ROUND ${roundNo}`;
+      boardStatusEl.innerHTML = gameOver
+        ? 'Game selesai. Tekan Reset untuk mulai ulang.'
+        : `User di <b>${userPos}</b> • Bot di <b>${botPos}</b> • Win gate <b>15%</b>.`;
+    }
+
+    function buildBoard(){
+      boardEl.innerHTML = '';
+      boardCells = {};
+
+      for (let n = 1; n <= boardSize; n++) {
+        const rowFromBottom = Math.floor((n - 1) / 5);
+        const colIndex = (n - 1) % 5;
+        const visualRow = 3 - rowFromBottom;
+        const visualCol = rowFromBottom % 2 === 0 ? colIndex + 1 : 5 - colIndex;
+
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.dataset.num = String(n);
+        tile.style.gridRow = String(visualRow + 1);
+        tile.style.gridColumn = String(visualCol);
+
+        let tag = '';
+        if (n === jackpotTile) {
+          tag = '🏆 JACKPOT 1JT';
+        } else if (ladderMap[n]) {
+          tag = `🪜 ${n}→${ladderMap[n]}`;
+        } else if (snakeMap[n]) {
+          tag = `🐍 ${n}→${snakeMap[n]}`;
+        } else if (bonusMap[n]) {
+          tag = `🎁 +${fmtCoin(bonusMap[n])}`;
+        } else {
+          tag = '•';
+        }
+
+        tile.innerHTML = `
+          <div class="tile-num">${n}</div>
+          <div class="tile-tag">${tag}</div>
+          <div class="tile-pawns"></div>
+        `;
+
+        boardEl.appendChild(tile);
+        boardCells[n] = tile;
+      }
+
+      updateBoardUI();
+    }
+
+    function renderPawns(cell, cellNum){
+      const pawnsWrap = cell.querySelector('.tile-pawns');
+      const pawnList = [];
+
+      if (userPos === cellNum) {
+        pawnList.push(`<span class="pawn user" title="User">U</span>`);
+      }
+      if (botPos === cellNum) {
+        pawnList.push(`<span class="pawn bot" title="Bot">B</span>`);
+      }
+
+      pawnsWrap.innerHTML = pawnList.join('');
+      cell.classList.toggle('active-user', userPos === cellNum && botPos !== cellNum);
+      cell.classList.toggle('active-bot', botPos === cellNum && userPos !== cellNum);
+      cell.classList.toggle('active-both', userPos === cellNum && botPos === cellNum);
+    }
+
+    function updateBoardUI(){
+      for (let n = 1; n <= boardSize; n++) {
+        const cell = boardCells[n];
+        if (!cell) continue;
+        renderPawns(cell, n);
+      }
+      updateTopStats();
+    }
+
+    function updateControls(){
+      rollBtn.disabled = gameBusy || gameOver || !currentUser;
+      resetBtn.disabled = gameBusy ? true : false;
+      rollBtn.textContent = gameOver ? 'Game Over' : 'Kocok Dadu';
+    }
+
+    function animateBotSeed(){
+      currentSpinSeed += 360;
+      return currentSpinSeed;
+    }
+
+    async function adjustCoin(delta, type, meta = {}) {
+      if (!currentUser) throw new Error('Login dulu.');
+
+      const userRef = doc(db, 'users', currentUser.uid);
+      const txRef = doc(collection(db, 'users', currentUser.uid, 'transactions'));
+
+      await runTransaction(db, async (tx) => {
+        const snap = await tx.get(userRef);
+        const coin = Number(snap.exists() ? snap.data().nubiPayCoin || 0 : 0);
+        const next = Math.max(0, round2(coin + delta));
+
+        tx.set(userRef, { nubiPayCoin: next }, { merge: true });
+        tx.set(txRef, {
+          type,
+          delta: round2(delta),
+          balanceAfter: next,
+          ...meta,
+          createdAt: serverTimestamp()
+        });
+      });
+    }
+
+    function applyTileEffects(position, forBot = false){
+      let pos = position;
+      let delta = 0;
+      const notes = [];
+
+      let safety = 0;
+      while (safety < 5) {
+        safety++;
+
+        if (ladderMap[pos]) {
+          const to = ladderMap[pos];
+          notes.push(`🪜 Tangga ${pos} → ${to}`);
+          pos = to;
+          continue;
+        }
+
+        if (snakeMap[pos]) {
+          const to = snakeMap[pos];
+          notes.push(`🐍 Ular ${pos} → ${to}`);
+          if (!forBot) delta -= snakePenalty;
+          pos = to;
+          continue;
+        }
+
+        break;
+      }
+
+      if (!forBot && bonusMap[pos]) {
+        const bonus = bonusMap[pos];
+        delta += bonus;
+        notes.push(`🎁 Bonus +${fmtCoin(bonus)} coin`);
+      }
+
+      return { pos, delta, notes };
+    }
+
+    async function resolveBotCrossPenalty(startPos, endPos){
+      if (!currentUser) return;
+      const crossed = userPos > startPos && userPos <= endPos;
+      if (crossed) {
+        await adjustCoin(-botPenalty, 'snake_ladder_bot_penalty', {
+          round: roundNo,
+          botStart: startPos,
+          botEnd: endPos,
+          userPos
+        });
+        pushHistory('loss', `Bot lewat → -${fmtCoin(botPenalty)}`);
+        setMsg(`Bot melangkahi pion kamu. -${fmtCoin(botPenalty)} coin.`, 'warn');
+      }
+    }
+
+    async function botTurn(){
+      if (gameOver) return;
+
+      const botRoll = Math.floor(Math.random() * 6) + 1;
+      const start = botPos;
+      let rawEnd = Math.min(boardSize, botPos + botRoll);
+
+      setMsg(`Giliran bot... bot kocok ${botRoll}.`, 'warn');
+      boardStatusEl.innerHTML = `Bot sedang bergerak dari <b>${start}</b> ke <b>${rawEnd}</b>.`;
+
+      await new Promise(r => setTimeout(r, 850));
+
+      await resolveBotCrossPenalty(start, rawEnd);
+
+      let resolved = applyTileEffects(rawEnd, true);
+      botPos = resolved.pos;
+
+      if (botPos >= boardSize) {
+        gameOver = true;
+        botTotalWin++;
+        setMsg('Bot sampai finish duluan. Kamu kalah ronde ini.', 'error');
+        pushHistory('loss', `Bot finish di ${boardSize}`);
+        boardStatusEl.innerHTML = 'Bot menang. Tekan Reset untuk main lagi.';
+        updateBoardUI();
+        updateControls();
+        return;
+      }
+
+      if (resolved.notes.length) {
+        setMsg(`Bot: ${resolved.notes.join(' • ')}`, 'ok');
+      } else {
+        setMsg(`Bot berhenti di kotak ${botPos}.`, 'ok');
+      }
+
+      pushHistory('cashout', `Bot di ${botPos}`);
+      updateBoardUI();
+      updateControls();
+      boardStatusEl.innerHTML = `Giliran bot selesai. Bot di <b>${botPos}</b>.`;
+    }
+
+    async function userTurn(){
+      if (!currentUser) {
+        setMsg('Login dulu untuk bermain.', 'error');
+        return;
+      }
+      if (gameBusy || gameOver) return;
+
+      const cost = 1000;
+      if (currentCoin < cost) {
+        setMsg('NUBIAPAY COIN tidak cukup untuk kocok dadu.', 'error');
+        return;
+      }
+
+      gameBusy = true;
+      updateControls();
+      setMsg('Memproses roll...', 'warn');
+
+      try {
+        await adjustCoin(-cost, 'snake_ladder_roll', {
+          round: roundNo,
+          fee: cost,
+          userPos,
+          botPos
+        });
+
+        pushHistory('loss', `Roll -${fmtCoin(cost)}`);
+        const dice = Math.floor(Math.random() * 6) + 1;
+        const start = userPos;
+        let rawEnd = Math.min(boardSize, userPos + dice);
+
+        boardStatusEl.innerHTML = `User kocok dadu <b>${dice}</b> dan bergerak dari <b>${start}</b> ke <b>${rawEnd}</b>.`;
+        setMsg(`Kamu kocok ${dice}.`, 'ok');
+
+        await new Promise(r => setTimeout(r, 700));
+
+        let resolved = applyTileEffects(rawEnd, false);
+        let finalPos = resolved.pos;
+        let netDelta = resolved.delta;
+
+        if (finalPos >= boardSize) {
+          const gate = Math.random() < finalWinChance;
+          if (gate) {
+            finalPos = boardSize;
+            netDelta += jackpotAmount;
+            userTotalWin += jackpotAmount;
+            await adjustCoin(netDelta, 'snake_ladder_jackpot', {
+              round: roundNo,
+              dice,
+              from: start,
+              to: finalPos,
+              note: 'Jackpot 15% gate'
+            });
+
+            userPos = finalPos;
+            updateBoardUI();
+            pushHistory('win', `JACKPOT +${fmtCoin(jackpotAmount)}`);
+            setMsg(`Jackpot! Kamu menang +${fmtCoin(jackpotAmount)} coin.`, 'ok');
+            boardStatusEl.innerHTML = `Jackpot masuk. Kamu menang di kotak <b>20</b>.`;
+            gameOver = true;
+            updateControls();
+            resetBtn.disabled = false;
+            return;
+          } else {
+            finalPos = 19;
+            resolved.notes.push('Gate 15% menolak, balik ke 19');
+          }
+        }
+
+        if (netDelta !== 0) {
+          await adjustCoin(netDelta, 'snake_ladder_tile_effect', {
+            round: roundNo,
+            dice,
+            from: start,
+            to: finalPos,
+            notes: resolved.notes
+          });
+        }
+
+        userPos = finalPos;
+        updateBoardUI();
+
+        if (resolved.notes.length) {
+          setMsg(`User: ${resolved.notes.join(' • ')}`, 'ok');
+          resolved.notes.forEach(n => {
+            if (n.includes('Ular')) pushHistory('loss', n);
+            else if (n.includes('Tangga')) pushHistory('win', n);
+            else if (n.includes('Bonus')) pushHistory('cashout', n);
+          });
+        } else {
+          setMsg(`Kamu berhenti di kotak ${userPos}.`, 'ok');
+        }
+
+        if (userPos >= boardSize) {
+          gameOver = true;
+          updateControls();
+          boardStatusEl.innerHTML = 'Kamu berhasil mencapai finish.';
+          return;
+        }
+
+        roundNo++;
+        updateBoardUI();
+        updateControls();
+
+        await botTurn();
+
+      } catch (e) {
+        console.error(e);
+        setMsg(e.message || 'Gagal memproses turn.', 'error');
+      } finally {
+        gameBusy = false;
+        updateControls();
+      }
+    }
+
+    function resetGame(){
+      userPos = 1;
+      botPos = 1;
+      gameBusy = false;
+      gameOver = false;
+      roundNo = 1;
+      userTotalWin = 0;
+      botTotalWin = 0;
+      history = [];
+      historyValuesEl.innerHTML = '';
+      recentNoteEl.textContent = 'Event terakhir akan tampil di sini.';
+      boardStatusEl.innerHTML = 'Siap mulai. User di kotak 1, bot juga di kotak 1.';
+      setMsg('Game di-reset.', 'ok');
+      updateBoardUI();
+      updateControls();
+    }
+
+    async function refreshWallet(uid){
+      try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          currentCoin = Number(data.nubiPayCoin || 0);
+          currentBalance = Number(data.nubiPayBalance || 0);
+        } else {
+          currentCoin = 0;
+          currentBalance = 0;
+        }
+        updateWalletUI();
+      } catch (e) {
+        console.error(e);
+        walletNote.textContent = 'Wallet gagal dimuat.';
+      }
+    }
+
+    function subscribeWallet(uid){
+      if (walletUnsub) {
+        try { walletUnsub(); } catch {}
+        walletUnsub = null;
+      }
+
+      walletUnsub = new Proxy({}, {
+        get() { return null; }
+      });
+
+      const unsub = onSnapshot(doc(db, 'users', uid), (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          currentCoin = Number(data.nubiPayCoin || 0);
+          currentBalance = Number(data.nubiPayBalance || 0);
+        } else {
+          currentCoin = 0;
+          currentBalance = 0;
+        }
+        updateWalletUI();
+        updateControls();
+      }, (err) => {
+        console.error(err);
+        walletNote.textContent = 'Sinkron wallet gagal.';
+      });
+
+      walletUnsub = unsub;
+    }
+
+    function updateWalletUI(){
+      coinValueEl.textContent = fmtCoin(currentCoin);
+      balanceValueEl.textContent = fmtRp(currentBalance);
+
+      if (balanceBlur) {
+        coinValueEl.classList.add('hidden-blur');
+        balanceValueEl.classList.add('hidden-blur');
+      } else {
+        coinValueEl.classList.remove('hidden-blur');
+        balanceValueEl.classList.remove('hidden-blur');
+      }
+    }
+
+    function showBoardSetup(){
+      userPosTxt.textContent = userPos;
+      botPosTxt.textContent = botPos;
+      updateTopStats();
+      updateControls();
+    }
+
+    authBtn.onclick = async () => {
+      if (currentUser) {
+        await signOut(auth);
+        return;
+      }
+      const provider = new GoogleAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (e) {
+        console.error(e);
+        setMsg('Login gagal.', 'error');
+      }
+    };
+
+    goHomeBtn.onclick = () => window.location.href = '/';
+    refreshBtn.onclick = async () => {
+      if (currentUser) await refreshWallet(currentUser.uid);
+      showToast('Wallet disegarkan');
+    };
+
+    toggleBlurBtn.onclick = () => {
+      balanceBlur = !balanceBlur;
+      updateWalletUI();
+      toggleBlurBtn.textContent = balanceBlur ? 'Tampilkan' : 'Sembunyikan';
+    };
+
+    copyUidBtn.onclick = async () => {
+      if (!currentUser) return;
+      try {
+        await navigator.clipboard.writeText(currentUser.uid);
+        showToast('UID disalin');
+      } catch {
+        showToast('Gagal menyalin UID');
+      }
+    };
+
+    rollBtn.onclick = () => userTurn();
+    resetBtn.onclick = () => resetGame();
+
+    function enableGameButtons(){
+      updateControls();
+      rollBtn.disabled = !currentUser || gameBusy || gameOver;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+
+      if (walletUnsub) {
+        try { walletUnsub(); } catch {}
+        walletUnsub = null;
+      }
+
+      if (user) {
+        authBtn.textContent = 'Logout';
+        uidTxt.textContent = `UID: ${user.uid}`;
+        walletNote.textContent = 'Wallet tersinkron realtime ke Firestore.';
+        await refreshWallet(user.uid);
+        subscribeWallet(user.uid);
+      } else {
+        authBtn.textContent = 'Login Google';
+        uidTxt.textContent = 'UID: -';
+        currentCoin = 0;
+        currentBalance = 0;
+        walletNote.textContent = 'Login dulu untuk sinkron saldo dan mulai bermain.';
+        updateWalletUI();
+      }
+
+      updateControls();
+    });
+
+    buildBoard();
+    updateWalletUI();
+    showBoardSetup();
+    enableGameButtons();
+  </script>
+</body>
+</html>
