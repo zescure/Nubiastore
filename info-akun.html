@@ -22,16 +22,6 @@
     button,input{font:inherit}
 
 ```
-    html, body {
-  height: 100%;
-  margin: 0;
-  overflow: hidden; /* kunci scroll saat loading */
-}
-
-body.loaded {
-  overflow-x: hidden;
-  overflow-y: auto; /* baru buka scroll setelah loader hilang */
-}
 /* PAGE LOADER */
 #pageLoader{position:fixed;inset:0;background:linear-gradient(160deg,#052e16,#064e3b 45%,#14532d);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .55s,visibility .55s}
 #pageLoader.hide{opacity:0;visibility:hidden;pointer-events:none}
@@ -491,31 +481,10 @@ const TURNOVER_TARGET=655000;   // profit 25× yang harus dicapai
 let currentUser=null,balHidden=false,cvMode='bal_to_coin',convBarTimer=null;
 let S={nubiPayBalance:0,nubiPayCoin:0,nubiPayBonusCoin:0,bonusClaimed:false,turnoverProfit:0,turnoverDone:false};
 
-
-history.scrollRestoration = 'manual';
-window.scrollTo(0, 0);
-document.documentElement.style.overflow = 'hidden';
-document.body.style.overflow = 'hidden';
-
-window.addEventListener('pageshow', () => {
-  window.scrollTo(0, 0);
-});
-  // ── PAGE LOADER ──
+// ── PAGE LOADER ──
 let pct=0;
 const ldInt=setInterval(()=>{pct+=Math.random()*18;if(pct>94)pct=94;$('ldPct').textContent=Math.floor(pct)+'%';},200);
-function hideLoader(){
-  pct = 100;
-  ldPctEl.textContent = '100%';
-  clearInterval(ldInterval);
-
-  setTimeout(() => {
-    pgLoader.classList.add('hide');
-    document.body.classList.add('loaded');
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-    window.scrollTo(0, 0);
-  }, 400);
-}
+function hideLoader(){pct=100;$('ldPct').textContent='100%';clearInterval(ldInt);setTimeout(()=>$('pageLoader').classList.add('hide'),400);}
 
 // ── TOP BAR ──
 function runTopBar(){const tb=$('topBar');tb.style.opacity='1';tb.style.width='0%';setTimeout(()=>tb.style.width='65%',80);setTimeout(()=>tb.style.width='88%',600);setTimeout(()=>{tb.style.width='100%';setTimeout(()=>{tb.style.opacity='0';tb.style.width='0%';},350);},1500);}
