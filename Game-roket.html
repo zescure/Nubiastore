@@ -1,1301 +1,554 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NUBIACRASH — Mini Game</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUBIA ROCKET</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#080614;
-      --bg2:#120d23;
-      --card:rgba(255,255,255,.08);
-      --card2:rgba(255,255,255,.12);
-      --border:rgba(255,255,255,.10);
-      --text:#f5f3ff;
-      --muted:#b9b2d6;
-      --accent:#7c4dff;
-      --accent2:#31c4ff;
-      --accent3:#19d38d;
-      --danger:#ff5b7a;
-      --warn:#ffcc66;
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-      --radius:24px;
+    :root {
+      --bg:     #04030f;
+      --panel:  rgba(255,255,255,.04);
+      --border: rgba(255,255,255,.08);
+      --text:   #ddd8ff;
+      --muted:  #5c5890;
+      --green:  #00ff88;
+      --red:    #ff3355;
+      --gold:   #ffcc22;
+      --purple: #8855ff;
+      --blue:   #33aaff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      display: flex; flex-direction: column;
+      min-height: 100%; overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    input  { font: inherit; }
+
+    /* ─── HEADER ─────────────────────────────────────── */
+    .hdr {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; position: relative; z-index: 20;
+      background: rgba(4,3,15,.9);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-family: 'Orbitron', monospace; font-size: .88rem;
+      font-weight: 900; letter-spacing: 2.5px; flex: 1;
+      color: #fff;
+    }
+    .logo em { color: var(--green); font-style: normal; }
+    .bal-pill {
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 13px; border-radius: 999px;
+      background: rgba(255,255,255,.06); border: 1px solid var(--border);
+      font-weight: 700; font-size: .85rem;
+    }
+    .bal-num {
+      font-family: 'Orbitron', monospace; font-size: .85rem;
+      color: var(--green); transition: filter .2s; min-width: 70px;
+    }
+    .blr { filter: blur(6px); user-select: none; }
+    .hbtn {
+      border-radius: 999px; padding: 7px 13px; font-weight: 700;
+      font-size: .78rem; background: rgba(255,255,255,.08); color: var(--text);
+      transition: background .14s;
+    }
+    .hbtn:hover { background: rgba(255,255,255,.16); }
+    .hbtn.primary { background: linear-gradient(135deg,var(--purple),var(--blue)); color:#fff; }
+    .uid-row { width:100%; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+    .uid-txt  { font-size:.65rem; color:var(--muted); word-break:break-all; max-width:300px; }
+    .uid-copy { padding:3px 8px; border-radius:6px; background:rgba(255,255,255,.08); color:var(--text); font-size:.65rem; font-weight:700; }
+    .eye-btn  { color:var(--muted); font-size:.78rem; padding:0 2px; }
+
+    /* ─── CANVAS AREA ────────────────────────────────── */
+    .canvas-wrap {
+      position: relative; width: 100%;
+      flex: 1; min-height: 280px; max-height: 420px;
+      overflow: hidden; background: #04030f;
+    }
+    #gc { display:block; width:100%; height:100%; }
+
+    /* Overlays sit on top of canvas */
+    .mult-wrap {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      pointer-events: none; gap: 6px;
+    }
+    .mult {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.6rem, 8vw, 4.2rem);
+      font-weight: 900; line-height: 1;
+      color: var(--green);
+      text-shadow: 0 0 40px rgba(0,255,136,.5), 0 0 80px rgba(0,255,136,.15);
+      transition: color .12s, text-shadow .12s;
+    }
+    .mult.crashed {
+      color: var(--red);
+      text-shadow: 0 0 40px rgba(255,51,85,.6);
+      animation: crashJolt .35s ease;
+    }
+    .mult.cashed {
+      color: var(--gold);
+      text-shadow: 0 0 40px rgba(255,204,34,.5);
+    }
+    @keyframes crashJolt {
+      0%,100% { transform:scale(1); }
+      40%      { transform:scale(1.18) rotate(-2deg); }
+    }
+    .state-lbl {
+      font-size: .7rem; font-weight: 800; letter-spacing: 3px;
+      text-transform: uppercase; color: rgba(255,255,255,.45);
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{min-height:100%}
-    body{
-      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 20% 10%, rgba(124,77,255,.28), transparent 28%),
-        radial-gradient(circle at 85% 0%, rgba(49,196,255,.22), transparent 24%),
-        radial-gradient(circle at 50% 100%, rgba(25,211,141,.14), transparent 24%),
-        linear-gradient(180deg, #090617 0%, #120d23 100%);
-      overflow-x:hidden;
+    /* Countdown overlay */
+    .cd-wrap {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(4,3,15,.55);
+      backdrop-filter: blur(3px);
+      pointer-events: none;
+      transition: opacity .4s;
+    }
+    .cd-wrap.gone { opacity: 0; pointer-events: none; }
+    .cd-big {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(3.5rem, 12vw, 6.5rem);
+      font-weight: 900; color: var(--green);
+      text-shadow: 0 0 50px rgba(0,255,136,.55);
+      line-height: 1;
+    }
+    .cd-sub {
+      margin-top: 8px; font-size: .72rem; font-weight: 800;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--muted);
     }
 
-    a{color:inherit;text-decoration:none}
-    button,input{font:inherit}
+    /* Green win flash overlay */
+    .win-flash {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0;
+      background: radial-gradient(ellipse, rgba(0,255,136,.18) 0%, transparent 70%);
+      transition: opacity .2s;
+    }
+    .win-flash.on { opacity: 1; }
 
-    .app{
-      width:min(100%, 1100px);
-      margin:0 auto;
-      padding:16px 14px 28px;
+    /* Red crash flash */
+    .crash-flash {
+      position: absolute; inset: 0; pointer-events: none;
+      background: rgba(255,30,50,.0);
+      transition: background .1s;
     }
 
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:16px;
+    /* ─── POOL / FEED BAR ────────────────────────────── */
+    .pool-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 13px;
+      background: rgba(0,0,0,.3); border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .pool-col { flex-shrink:0; }
+    .pool-lbl { font-size:.6rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); }
+    .pool-num { font-family:'Orbitron',monospace; font-size:.78rem; color:var(--gold); font-weight:700; }
+    .sep-line  { width:1px; height:24px; background:var(--border); flex-shrink:0; }
+    .feed-mask {
+      flex:1; overflow:hidden;
+      -webkit-mask-image: linear-gradient(to right,transparent,black 8%,black 92%,transparent);
+      mask-image: linear-gradient(to right,transparent,black 8%,black 92%,transparent);
+    }
+    .feed-track {
+      display:flex; gap:8px; width:max-content;
+      animation: feedScroll 28s linear infinite;
+    }
+    @keyframes feedScroll {
+      0%   { transform:translateX(0); }
+      100% { transform:translateX(-50%); }
+    }
+    .fc {
+      white-space:nowrap; font-size:.7rem; font-weight:700;
+      padding:3px 8px; border-radius:6px; flex-shrink:0;
+    }
+    .fc.bet  { background:rgba(51,170,255,.12); color:var(--blue); }
+    .fc.cash { background:rgba(0,255,136,.12);  color:var(--green); }
+    .fc.lose { background:rgba(255,51,85,.12);  color:var(--red); }
+
+    /* ─── BET PANEL ──────────────────────────────────── */
+    .bet-panel {
+      padding: 13px 13px 18px;
+      background: rgba(255,255,255,.02);
+      display: flex; flex-direction: column; gap: 9px;
+      flex-shrink: 0;
     }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:800;
-      letter-spacing:.2px;
+    .field-row { display:flex; gap:9px; align-items:flex-end; }
+    .field { flex:1; position:relative; display:flex; flex-direction:column; gap:5px; }
+    .field-lbl {
+      font-size:.62rem; font-weight:800; text-transform:uppercase;
+      letter-spacing:1.3px; color:var(--muted);
     }
+    .finput {
+      width:100%; padding:11px 13px; border-radius:13px;
+      border:1.5px solid var(--border);
+      background:rgba(255,255,255,.05); color:#fff;
+      font-family:'Orbitron',monospace; font-size:.9rem; font-weight:700;
+      outline:none; transition:border-color .15s;
+    }
+    .finput:focus { border-color:rgba(136,85,255,.5); }
+    .finput:disabled { opacity:.4; }
 
-    .brand-mark{
-      width:38px;height:38px;border-radius:12px;
-      display:grid;place-items:center;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      color:#fff;
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.05rem;
-      box-shadow:0 10px 22px rgba(124,77,255,.32);
-      flex-shrink:0;
+    .quick-row { display:flex; gap:6px; flex-wrap:wrap; }
+    .qb {
+      padding:6px 10px; border-radius:9px;
+      background:rgba(255,255,255,.07); color:var(--text);
+      font-size:.74rem; font-weight:800;
+      transition:background .13s;
     }
+    .qb:hover { background:rgba(255,255,255,.16); }
 
-    .brand-title{
-      font-size:1.08rem;
-      line-height:1;
+    .auto-row { display:flex; align-items:center; gap:9px; }
+    .toggle-wrap { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .tgl-lbl { font-size:.72rem; font-weight:700; color:var(--muted); white-space:nowrap; }
+    .tgl {
+      width:34px; height:18px; border-radius:9px;
+      background:rgba(255,255,255,.12); position:relative;
+      cursor:pointer; transition:background .18s;
     }
-    .brand-sub{
-      display:block;
-      font-size:.72rem;
-      color:var(--muted);
-      font-weight:600;
-      margin-top:3px;
+    .tgl.on { background:var(--purple); }
+    .tgl-k {
+      position:absolute; top:2px; left:2px;
+      width:14px; height:14px; border-radius:50%;
+      background:#fff; transition:left .18s;
     }
+    .tgl.on .tgl-k { left:18px; }
 
-    .top-actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
+    /* Main action button */
+    .act-btn {
+      width:100%; padding:15px; border-radius:15px;
+      font-weight:900; font-size:1rem; letter-spacing:.5px;
+      color:#fff; transition:all .15s; position:relative; overflow:hidden;
     }
-
-    .pill-btn{
-      border:none;
-      border-radius:999px;
-      padding:10px 14px;
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      cursor:pointer;
-      box-shadow:var(--shadow);
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-weight:700;
+    .act-btn::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);
     }
-
-    .layout{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:14px;
-      align-items:start;
+    .act-btn.s-bet {
+      background:linear-gradient(135deg,#7744ee,#33aaff);
+      box-shadow:0 10px 32px rgba(119,68,238,.3);
     }
-
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      backdrop-filter: blur(18px);
-      overflow:hidden;
-      position:relative;
+    .act-btn.s-cashout {
+      background:linear-gradient(135deg,#00cc66,#00ff88);
+      color:#002215;
+      box-shadow:0 10px 32px rgba(0,204,102,.35);
+      animation:cashPulse 1.1s ease-in-out infinite;
     }
-
-    .wallet-card{
-      padding:18px;
+    @keyframes cashPulse {
+      0%,100% { box-shadow:0 10px 32px rgba(0,204,102,.35); transform:scale(1); }
+      50%      { box-shadow:0 14px 44px rgba(0,255,136,.5);  transform:scale(1.015); }
     }
-
-    .wallet-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
+    .act-btn.s-cancel {
+      background:rgba(255,255,255,.09);
+      box-shadow:none;
     }
-
-    .wallet-title{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.1rem;
-      font-weight:800;
-      letter-spacing:.3px;
+    .act-btn.s-wait {
+      background:rgba(255,255,255,.05);
+      box-shadow:none; color:var(--muted); cursor:default;
     }
+    .act-btn:disabled { opacity:.4; cursor:not-allowed; animation:none; transform:none; }
 
-    .wallet-desc{
-      margin-top:4px;
-      font-size:.84rem;
-      color:var(--muted);
-      line-height:1.4;
+    .stat-msg {
+      text-align:center; font-size:.8rem; font-weight:600;
+      color:var(--muted); min-height:17px; line-height:1.4;
     }
+    .stat-msg.ok   { color:var(--green); }
+    .stat-msg.err  { color:var(--red); }
+    .stat-msg.warn { color:var(--gold); }
 
-    .wallet-switch{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
+    /* ─── WIN POPUP ──────────────────────────────────── */
+    .win-popup {
+      position:fixed; inset:0; z-index:200;
+      display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.75); backdrop-filter:blur(5px);
     }
-
-    .chip{
-      border:none;
-      border-radius:999px;
-      padding:8px 12px;
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      cursor:pointer;
-      font-weight:700;
-      font-size:.82rem;
-    }
-
-    .chip.primary{
-      background:linear-gradient(135deg, var(--accent), var(--accent2));
-      color:#fff;
-    }
-
-    .wallet-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-bottom:12px;
-    }
-
-    .wallet-box{
-      border-radius:20px;
-      padding:14px;
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .wallet-label{
-      font-size:.7rem;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:1.6px;
-      color:var(--muted);
-      margin-bottom:8px;
-    }
-
-    .wallet-value{
-      font-family:'Rajdhani',sans-serif;
-      font-size:2rem;
-      line-height:1;
-      font-weight:800;
-      letter-spacing:.3px;
-      color:#fff;
-      text-shadow:0 0 18px rgba(124,77,255,.2);
-    }
-
-    .wallet-value.small{
-      font-size:1.35rem;
-      color:#e8e5ff;
-    }
-
-    .wallet-uid{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-top:12px;
-      color:#efeaff;
-      flex-wrap:wrap;
-    }
-
-    .uid-pill{
-      font-family:'Rajdhani',sans-serif;
-      font-weight:700;
-      letter-spacing:.2px;
-      color:#fff;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.10);
-      padding:8px 12px;
-      border-radius:14px;
-      word-break:break-all;
-    }
-
-    .copy-btn{
-      border:none;
-      width:38px;height:38px;
-      border-radius:12px;
-      background:rgba(255,255,255,.10);
-      color:#fff;
-      cursor:pointer;
-      flex-shrink:0;
-    }
-
-    .wallet-note{
-      margin-top:12px;
-      font-size:.82rem;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .stage-card{
-      padding:18px;
-      min-height:100%;
-    }
-
-    .stage-top{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:14px;
-    }
-
-    .stage-title{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.15rem;
-      font-weight:800;
-      letter-spacing:.4px;
-    }
-
-    .stage-badge{
-      font-size:.75rem;
-      font-weight:800;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(25,211,141,.16);
-      color:#8ff8d2;
-      border:1px solid rgba(25,211,141,.18);
-    }
-
-    .rocket-scene{
+    .win-popup.show { display:flex; }
+    .win-box {
+      text-align:center; padding:36px 42px;
       border-radius:28px;
-      padding:20px 18px 18px;
-      background:
-        radial-gradient(circle at center, rgba(255,255,255,.12), transparent 36%),
-        linear-gradient(180deg, rgba(124,77,255,.22), rgba(49,196,255,.12));
-      border:1px solid rgba(255,255,255,.10);
-      position:relative;
-      overflow:hidden;
+      background:linear-gradient(160deg,#140e38,#0a0620);
+      border:1.5px solid rgba(0,255,136,.28);
+      box-shadow:0 0 70px rgba(0,255,136,.12), 0 28px 60px rgba(0,0,0,.6);
+      animation:wpop .42s cubic-bezier(.2,.7,.3,1.3);
+      max-width:320px; width:90%;
     }
-
-    .rocket-scene::before{
-      content:'';
-      position:absolute;
-      inset:-30px;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(255,255,255,.10), transparent 12%),
-        radial-gradient(circle at 75% 20%, rgba(255,255,255,.14), transparent 10%),
-        radial-gradient(circle at 60% 70%, rgba(255,255,255,.08), transparent 14%);
-      opacity:.9;
-      pointer-events:none;
+    @keyframes wpop {
+      0%   { transform:scale(.65); opacity:0; }
+      100% { transform:scale(1);   opacity:1; }
     }
-
-    .rocket-emoji{
-      font-size:3rem;
-      line-height:1;
-      display:inline-block;
-      margin-bottom:10px;
-      filter:drop-shadow(0 10px 20px rgba(0,0,0,.22));
-      animation:floaty 2.8s ease-in-out infinite;
+    .wp-emo  { font-size:2.8rem; margin-bottom:10px; }
+    .wp-title { font-family:'Orbitron',monospace; font-size:1.1rem; font-weight:900; color:var(--green); letter-spacing:2px; }
+    .wp-amt   { font-family:'Orbitron',monospace; font-size:2rem; font-weight:900; color:var(--gold); margin:10px 0 5px; }
+    .wp-sub   { font-size:.82rem; color:var(--muted); }
+    .wp-close {
+      margin-top:20px; padding:11px 28px; border-radius:13px;
+      background:rgba(255,255,255,.12); color:#fff; font-weight:800;
+      font-size:.88rem; transition:background .13s;
     }
+    .wp-close:hover { background:rgba(255,255,255,.22); }
 
-    @keyframes floaty{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-8px)}
-    }
-
-    .multiplier{
-      font-family:'Rajdhani',sans-serif;
-      font-size:3.2rem;
-      font-weight:800;
-      line-height:1;
-      letter-spacing:-.8px;
-      margin-bottom:8px;
-    }
-
-    .status{
-      font-weight:700;
-      color:#eef0ff;
-      margin-bottom:14px;
-      font-size:.98rem;
-    }
-
-    .progress-wrap{
-      height:12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.10);
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.08);
-      margin-bottom:12px;
-    }
-
-    .progress-fill{
-      height:100%;
-      width:0%;
-      background:linear-gradient(90deg,var(--accent3),var(--accent2),var(--accent3));
-      border-radius:999px;
-      transition:width .1s linear;
-    }
-
-    .mini-stats{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-      margin-top:14px;
-    }
-
-    .mini-stat{
-      border-radius:18px;
-      padding:12px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .mini-stat span{
-      display:block;
-      color:var(--muted);
-      font-size:.72rem;
-      text-transform:uppercase;
-      letter-spacing:1.4px;
-      margin-bottom:6px;
-      font-weight:800;
-    }
-
-    .mini-stat strong{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.2rem;
-      color:#fff;
-    }
-
-    .control-card{
-      margin-top:14px;
-      padding:16px;
-      border-radius:24px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .control-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:12px;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .control-title{
-      font-family:'Rajdhani',sans-serif;
-      font-weight:800;
-      font-size:1.05rem;
-    }
-
-    .control-sub{
-      color:var(--muted);
-      font-size:.84rem;
-      line-height:1.4;
-    }
-
-    .form-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .field label{
-      font-size:.72rem;
-      font-weight:800;
-      letter-spacing:1.3px;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
-
-    .input{
-      width:100%;
-      padding:13px 14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      outline:none;
-      background:rgba(10,7,22,.45);
-      color:#fff;
-      font-weight:700;
-    }
-
-    .input::placeholder{color:rgba(255,255,255,.45)}
-
-    .btn-row{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-      flex-wrap:wrap;
-    }
-
-    .action-btn{
-      flex:1;
-      min-width:140px;
-      border:none;
-      border-radius:16px;
-      padding:14px 16px;
-      cursor:pointer;
-      font-weight:900;
-      letter-spacing:.2px;
-      color:#fff;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      box-shadow:0 14px 24px rgba(124,77,255,.24);
-    }
-
-    .action-btn.secondary{
-      background:rgba(255,255,255,.10);
-      box-shadow:none;
-    }
-
-    .action-btn:disabled{
-      cursor:not-allowed;
-      opacity:.55;
-      box-shadow:none;
-    }
-
-    .msg{
-      margin-top:10px;
-      font-size:.88rem;
-      color:#fff;
-      min-height:20px;
-      line-height:1.4;
-    }
-
-    .msg.error{color:#ffd1d9}
-    .msg.ok{color:#c7ffe9}
-
-    .feed-card{
-      margin-top:14px;
-      padding:16px;
-    }
-
-    .feed-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:12px;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .feed-title{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.05rem;
-      font-weight:800;
-    }
-
-    .feed-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-
-    .panel-box{
-      border-radius:20px;
-      padding:14px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-      min-height:180px;
-    }
-
-    .panel-box h4{
-      margin-bottom:10px;
-      font-size:.8rem;
-      text-transform:uppercase;
-      letter-spacing:1.4px;
-      color:var(--muted);
-    }
-
-    .history-list{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-
-    .history-chip{
-      padding:6px 9px;
-      border-radius:999px;
-      font-weight:800;
-      font-size:.82rem;
-      color:#fff;
-      background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.10);
-    }
-
-    .history-chip.low{background:rgba(255,91,122,.18);border-color:rgba(255,91,122,.20)}
-    .history-chip.high{background:rgba(25,211,141,.18);border-color:rgba(25,211,141,.20)}
-    .history-chip.mid{background:rgba(255,204,102,.18);border-color:rgba(255,204,102,.20)}
-
-    .fake-list{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .fake-item{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:9px 10px;
-      border-radius:14px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-      color:#fff;
-      font-size:.88rem;
-    }
-
-    .fake-name{
-      font-weight:800;
-    }
-
-    .fake-x{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1rem;
-      font-weight:800;
-      color:#d6e8ff;
-    }
-
-    .biggest{
-      margin-top:12px;
-      font-weight:700;
-      color:#f0ecff;
-      font-size:.92rem;
-      line-height:1.5;
-    }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:18px;
-      transform:translateX(-50%) translateY(20px);
-      opacity:0;
-      pointer-events:none;
-      background:#1a1234;
-      color:#fff;
-      padding:12px 14px;
-      border-radius:999px;
-      box-shadow:var(--shadow);
+    /* ─── TOAST ──────────────────────────────────────── */
+    .toast {
+      position:fixed; bottom:20px; left:50%;
+      transform:translateX(-50%) translateY(14px);
+      opacity:0; pointer-events:none;
+      background:#110c2e; color:#fff;
+      padding:10px 20px; border-radius:999px;
+      box-shadow:0 12px 40px rgba(0,0,0,.4);
       transition:opacity .2s, transform .2s;
-      z-index:1000;
-      font-size:.9rem;
-      font-weight:700;
+      z-index:9999; font-size:.85rem; font-weight:700;
     }
+    .toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
 
-    .toast.show{
-      opacity:1;
-      transform:translateX(-50%) translateY(0);
-    }
-
-    .ghost{
-      opacity:.85;
-    }
-
-    .hidden-blur{
-      filter:blur(10px);
-      user-select:none;
-    }
-
-    @media (max-width: 920px){
-      .layout{grid-template-columns:1fr}
-      .feed-grid{grid-template-columns:1fr}
-    }
-
-    @media (max-width: 520px){
-      .wallet-grid,.mini-stats,.form-grid{grid-template-columns:1fr}
-      .multiplier{font-size:2.7rem}
-      .rocket-emoji{font-size:2.5rem}
-      .action-btn{min-width:100%}
-      .topbar{align-items:flex-start}
-      .brand-title{font-size:1rem}
-      .wallet-switch{justify-content:flex-start}
+    @media(max-width:480px) {
+      .canvas-wrap { min-height:240px; max-height:340px; }
+      .cd-big { font-size: 3rem; }
     }
   </style>
 </head>
 <body>
 
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-mark">N</div>
-        <div>
-          <div class="brand-title">NUBIACRASH</div>
-          <span class="brand-sub">Stake pakai NUBIAPAY COIN</span>
-        </div>
-      </div>
-      <div class="top-actions">
-        <button class="pill-btn" id="goHomeBtn" type="button">🏠 Home</button>
-        <button class="pill-btn" id="toggleBlurBtn" type="button">👁 Wallet</button>
-      </div>
-    </div>
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo">NUBIA <em>ROCKET</em></div>
+  <div class="bal-pill">
+    🚀&nbsp;<span class="bal-num" id="balNum">0.00</span>&nbsp;coin
+    <button class="eye-btn" id="eyeBtn">👁</button>
+  </div>
+  <button class="hbtn primary" id="authBtn">Login Google</button>
+  <button class="hbtn" id="homeBtn">🏠</button>
+  <div class="uid-row" id="uidRow" style="display:none">
+    <span class="uid-txt" id="uidTxt">–</span>
+    <button class="uid-copy" id="copyBtn">📋 Salin</button>
+  </div>
+</header>
 
-    <div class="layout">
-      <div>
-        <section class="card wallet-card">
-          <div class="wallet-head">
-            <div>
-              <div class="wallet-title">Wallet NUBIASTORE</div>
-              <div class="wallet-desc">UID user dipakai sebagai identitas akun, saldo game memakai NUBIAPAY COIN.</div>
-            </div>
-            <div class="wallet-switch">
-              <button class="chip primary" id="convertPageBtn" type="button">Konversi ↔</button>
-              <button class="chip" id="refreshBtn" type="button">Refresh</button>
-            </div>
-          </div>
+<!-- CANVAS AREA -->
+<div class="canvas-wrap" id="canvasWrap">
+  <canvas id="gc"></canvas>
+  <div class="mult-wrap">
+    <div class="mult" id="multEl">1.00×</div>
+    <div class="state-lbl" id="stateLbl">MENUNGGU...</div>
+  </div>
+  <div class="cd-wrap" id="cdWrap">
+    <div class="cd-big" id="cdNum">10</div>
+    <div class="cd-sub">Segera terbang</div>
+  </div>
+  <div class="win-flash" id="winFlash"></div>
+  <div class="crash-flash" id="crashFlash"></div>
+</div>
 
-          <div class="wallet-grid">
-            <div class="wallet-box">
-              <div class="wallet-label">NUBIAPAY COIN</div>
-              <div class="wallet-value" id="coinValue">0.00</div>
-            </div>
-            <div class="wallet-box">
-              <div class="wallet-label">NUBIAPAY BALANCE</div>
-              <div class="wallet-value small" id="balanceValue">Rp 0</div>
-            </div>
-          </div>
+<!-- POOL / FEED BAR -->
+<div class="pool-bar">
+  <div class="pool-col">
+    <div class="pool-lbl">POOL</div>
+    <div class="pool-num" id="poolNum">–</div>
+  </div>
+  <div class="sep-line"></div>
+  <div class="feed-mask">
+    <div class="feed-track" id="feedTrack"></div>
+  </div>
+</div>
 
-          <div class="wallet-uid">
-            <span class="uid-pill" id="uidTxt">UID: -</span>
-            <button class="copy-btn" id="copyUidBtn" type="button" title="Copy UID">📋</button>
-          </div>
+<!-- BET PANEL -->
+<div class="bet-panel">
 
-          <div class="wallet-note" id="walletNote">
-            Login dulu untuk sinkron saldo dan mulai bermain.
-          </div>
-        </section>
-
-        <section class="card stage-card" style="margin-top:14px;">
-          <div class="stage-top">
-            <div>
-              <div class="stage-title">Live Crash Engine</div>
-              <div class="wallet-desc">Probabilitas crash lama dipertahankan, tetapi transaksi sekarang memakai NUBIAPAY COIN.</div>
-            </div>
-            <div class="stage-badge" id="roundBadge">ROUND 1</div>
-          </div>
-
-          <div class="rocket-scene">
-            <div class="ghost">🚀</div>
-            <div class="rocket-emoji">🚀</div>
-            <div class="multiplier" id="multiplier">x1.00</div>
-            <div class="status" id="status">Menunggu ronde berikutnya...</div>
-            <div class="progress-wrap">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-
-            <div class="mini-stats">
-              <div class="mini-stat">
-                <span>Tertinggi</span>
-                <strong id="bestWin">x0.00</strong>
-              </div>
-              <div class="mini-stat">
-                <span>Round</span>
-                <strong id="roundCount">#1</strong>
-              </div>
-              <div class="mini-stat">
-                <span>Mode</span>
-                <strong id="phaseText">Idle</strong>
-              </div>
-            </div>
-          </div>
-
-          <div class="control-card">
-            <div class="control-head">
-              <div>
-                <div class="control-title">Taruh NUBIACOIN</div>
-                <div class="control-sub">Masukkan coin yang mau dipakai, lalu set auto cashout kalau mau aman.</div>
-              </div>
-              <div class="control-sub" id="queueInfo">Belum ada taruhan.</div>
-            </div>
-
-            <div class="form-grid">
-              <div class="field">
-                <label for="betAmount">Bet Amount (Coin)</label>
-                <input class="input" id="betAmount" type="number" step="0.01" min="0.01" placeholder="Contoh: 10">
-              </div>
-              <div class="field">
-                <label for="autoCashout">Auto Cashout</label>
-                <input class="input" id="autoCashout" type="number" step="0.01" min="1.01" placeholder="Contoh: 2.00">
-              </div>
-            </div>
-
-            <div class="btn-row">
-              <button class="action-btn" id="placeBetBtn" type="button">Pasang Taruhan</button>
-              <button class="action-btn secondary" id="cashOutBtn" type="button" disabled>Cash Out</button>
-            </div>
-
-            <div class="msg" id="actionMsg"></div>
-          </div>
-        </section>
-      </div>
-
-      <div>
-        <section class="card feed-card">
-          <div class="feed-head">
-            <div class="feed-title">Live Feed</div>
-            <div class="wallet-desc">Riwayat crash dan pemain bot untuk rasa mini game yang lebih hidup.</div>
-          </div>
-
-          <div class="feed-grid">
-            <div class="panel-box">
-              <h4>Crash History</h4>
-              <div class="history-list" id="historyValues"></div>
-              <div class="biggest" id="biggestWinText">Penerbangan terbesar: -</div>
-            </div>
-
-            <div class="panel-box">
-              <h4>Fake Players</h4>
-              <div class="fake-list" id="fakePlayers"></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card feed-card">
-          <div class="feed-head">
-            <div class="feed-title">Statistik Ronde</div>
-            <div class="wallet-desc">Data visual dibuat supaya terasa seperti lobby profesional.</div>
-          </div>
-          <div class="panel-box" style="min-height:auto;">
-            <div class="wallet-desc" id="roundSummary">
-              Siap menunggu ronde aktif.
-            </div>
-          </div>
-        </section>
-      </div>
+  <div class="field-row">
+    <div class="field">
+      <div class="field-lbl">Taruhan (coin)</div>
+      <input class="finput" type="number" id="betInput" value="1000" min="100" step="100">
     </div>
   </div>
 
-  <div class="toast" id="toast">UID disalin</div>
+  <div class="quick-row">
+    <button class="qb" data-v="500">500</button>
+    <button class="qb" data-v="1000">1K</button>
+    <button class="qb" data-v="5000">5K</button>
+    <button class="qb" data-v="10000">10K</button>
+    <button class="qb" data-v="50000">50K</button>
+    <button class="qb" id="halfBtn">½</button>
+    <button class="qb" id="doubleBtn">×2</button>
+    <button class="qb" id="maxBtn">MAX</button>
+  </div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import {
-      getFirestore, doc, getDoc, onSnapshot, runTransaction, serverTimestamp, collection
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  <div class="auto-row">
+    <div class="field" style="flex:1">
+      <div class="field-lbl">Auto Cashout</div>
+      <input class="finput" type="number" id="autoInput" value="2.00" min="1.01" step="0.01">
+    </div>
+    <div class="toggle-wrap">
+      <span class="tgl-lbl">Auto</span>
+      <div class="tgl" id="autoTgl"><div class="tgl-k"></div></div>
+    </div>
+  </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-      authDomain: "zestoreid-f9e85.firebaseapp.com",
-      projectId: "zestoreid-f9e85",
-      storageBucket: "zestoreid-f9e85.firebasestorage.app",
-      messagingSenderId: "426093692154",
-      appId: "1:426093692154:web:38c6e9c143af626a623543"
-    };
+  <button class="act-btn s-bet" id="actBtn" disabled>PASANG TARUHAN</button>
+  <div class="stat-msg" id="statMsg">Login untuk mulai bermain</div>
 
-    const app  = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
+</div>
 
-    const coinValueEl = document.getElementById('coinValue');
-    const balanceValueEl = document.getElementById('balanceValue');
-    const uidTxt = document.getElementById('uidTxt');
-    const walletNote = document.getElementById('walletNote');
+<!-- WIN POPUP -->
+<div class="win-popup" id="winPopup">
+  <div class="win-box">
+    <div class="wp-emo">🚀💰</div>
+    <div class="wp-title">CASHOUT!</div>
+    <div class="wp-amt" id="wpAmt">+0</div>
+    <div class="wp-sub" id="wpSub">pada 1.00×</div>
+    <button class="wp-close" id="wpClose">Lanjut</button>
+  </div>
+</div>
 
-    const statusEl = document.getElementById('status');
-    const multiplierEl = document.getElementById('multiplier');
-    const progressFillEl = document.getElementById('progressFill');
-    const roundBadgeEl = document.getElementById('roundBadge');
-    const roundCountEl = document.getElementById('roundCount');
-    const phaseTextEl = document.getElementById('phaseText');
-    const bestWinEl = document.getElementById('bestWin');
-    const biggestWinTextEl = document.getElementById('biggestWinText');
-    const roundSummaryEl = document.getElementById('roundSummary');
+<div class="toast" id="toastEl"></div>
 
-    const historyValuesEl = document.getElementById('historyValues');
-    const fakePlayersEl = document.getElementById('fakePlayers');
+<!-- ════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, onSnapshot, runTransaction, serverTimestamp, collection }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    const betAmountEl = document.getElementById('betAmount');
-    const autoCashoutEl = document.getElementById('autoCashout');
-    const placeBetBtn = document.getElementById('placeBetBtn');
-    const cashOutBtn = document.getElementById('cashOutBtn');
-    const queueInfoEl = document.getElementById('queueInfo');
-    const actionMsgEl = document.getElementById('actionMsg');
+/* ── Firebase ──────────────────────────────────────── */
+const fb = initializeApp({
+  apiKey:'AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc',
+  authDomain:'zestoreid-f9e85.firebaseapp.com',
+  projectId:'zestoreid-f9e85',
+  storageBucket:'zestoreid-f9e85.firebasestorage.app',
+  messagingSenderId:'426093692154',
+  appId:'1:426093692154:web:38c6e9c143af626a623543'
+});
+const auth = getAuth(fb);
+const db   = getFirestore(fb);
 
-    const copyUidBtn = document.getElementById('copyUidBtn');
-    const goHomeBtn = document.getElementById('goHomeBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const convertPageBtn = document.getElementById('convertPageBtn');
-    const toggleBlurBtn = document.getElementById('toggleBlurBtn');
-    const toastEl = document.getElementById('toast');
+/* ── DOM ───────────────────────────────────────────── */
+const $        = id => document.getElementById(id);
+const canvas   = $('gc');
+const ctx      = canvas.getContext('2d');
+const balNum   = $('balNum');
+const eyeBtn   = $('eyeBtn');
+const authBtn  = $('authBtn');
+const uidRow   = $('uidRow');
+const uidTxt   = $('uidTxt');
+const copyBtn  = $('copyBtn');
+const multEl   = $('multEl');
+const stateLbl = $('stateLbl');
+const cdWrap   = $('cdWrap');
+const cdNum    = $('cdNum');
+const winFlash = $('winFlash');
+const crashFlashEl = $('crashFlash');
+const poolNum  = $('poolNum');
+const feedTrack= $('feedTrack');
+const betInput = $('betInput');
+const autoInput= $('autoInput');
+const autoTgl  = $('autoTgl');
+const actBtn   = $('actBtn');
+const statMsg  = $('statMsg');
+const winPopup = $('winPopup');
+const wpAmt    = $('wpAmt');
+const wpSub    = $('wpSub');
+const wpClose  = $('wpClose');
+const toastEl  = $('toastEl');
 
-    let currentUser = null;
-    let walletUnsub = null;
+/* ── FAKE PLAYER POOL (300 random IDs) ─────────────── */
+const _al  = 'abcdefghijklmnopqrstuvwxyz';
+const _aln = _al + '0123456789';
+const FP_IDS = Array.from({length:300}, () => {
+  const a = Array.from({length:2}, ()=> _al[Math.random()*26|0]).join('');
+  const b = Array.from({length:4}, ()=> _aln[Math.random()*36|0]).join('');
+  return `${a}_${b}`;
+});
 
-    let currentCoin = 0;
-    let currentBalance = 0;
-    let balanceBlur = false;
+/* ── CONSTANTS ─────────────────────────────────────── */
+const COUNTDOWN='countdown', FLYING='flying', CRASHED='crashed';
+const MIN_BET = 100;
+const HIGH_BET_RATIO = 0.20;   // threshold: bet > 20% of balance
 
-    let inGame = false;
-    let isCooldown = false;
-    let playerIn = false;
-    let queuedBet = null;
-    let betAmount = 0;
-    let autoCashoutTarget = null;
-    let cashOutLock = false;
+/* ── STATE ─────────────────────────────────────────── */
+let currentUser = null;
+let walletUnsub = null;
+let coin        = 0;
+let blurred     = false;
+let gState      = CRASHED;  // start in crashed so first round is natural
+let hasBet      = false;
+let betAmt      = 0;
+let originalBal = 0;   // balance before bet (for ratio calc)
+let crashPoint  = 2.0;
+let currentMult = 1.0;
+let flightStart = 0;
+let cdSec       = 10;
+let cdTimer     = null;
+let roundNo     = 1;
+let totalPool   = 0;
+let autoEnabled = false;
+let autoCashAt  = 2.0;
+let fakeBetsPool  = [];
+let feedItems     = [];    // current feed chips (doubled for marquee)
+let animFrame   = null;
+let stars       = [];
+let particles   = [];
+let trailPts    = [];
+let rxLast=0, ryLast=0;   // last rocket pixel pos
+let crashX=0, crashY=0;   // crash position on canvas
+let cShake = 0;
+let crashFlashA = 0;
+let preLaunchT  = 0;
 
-    let multiplier = 1.00;
-    let crashPoint = 1.50;
-    let gameInterval = null;
-    let roundCount = 1;
-    let biggestWin = 0;
-    let autoStartGame = true;
-    let cooldown = 5000;
-    let crashHistory = [];
-    let roundPeak = 0;
+/* ── Utils ─────────────────────────────────────────── */
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const r2    = n  => Math.round(Number(n||0)*100)/100;
+const fmtC  = n  => Number(n||0).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
+function fmtShort(n) {
+  if(n>=1e9)  return (n/1e9).toFixed(1)+'B';
+  if(n>=1e6)  return (n/1e6).toFixed(1)+'M';
+  if(n>=1000) return (n/1000).toFixed(1)+'K';
+  return String(Math.floor(n));
+}
 
-    function round2(n){
-      return Math.round(Number(n || 0) * 100) / 100;
+function toast(msg, dur=1700) {
+  toastEl.textContent=msg; toastEl.classList.add('on');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>toastEl.classList.remove('on'),dur);
+}
+function setMsg(msg,type='') {
+  statMsg.textContent=msg||''; statMsg.className='stat-msg'+(type?' '+type:'');
+}
+
+/* ── PROBABILITY ENGINE ────────────────────────────────
+   High bet (>20% balance): 85% crash ≤1.40×, 15% higher
+   Low bet  (≤20% balance): 30% crash ≤1.30×, 70% higher
+   "Higher" for low bets still skews toward 1.6-4x,
+   human greed prevents cashing out → balance drains slowly
+──────────────────────────────────────────────────────── */
+function generateCrashPoint(bet, balance) {
+  const ratio = bet / Math.max(balance, 1);
+  const r = Math.random();
+
+  if (ratio > HIGH_BET_RATIO) {
+    // High stake → mostly instant death
+    if (r < 0.85) {
+      // Crash at 1.01 – 1.40× (lose bet immediately)
+      return 1.01 + Math.random() * 0.39;
+    } else {
+      // Rare chance – but skewed toward low
+      const t = Math.random();
+      return 1.4 + Math.pow(t, 1.8) * 8.6; // mostly near 1.4
     }
-
-    function fmtCoin(n){
-      return Number(n || 0).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    function fmtRp(n){
-      return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
-    }
-
-    function setMsg(msg, type = ''){
-      actionMsgEl.textContent = msg || '';
-      actionMsgEl.className = 'msg' + (type ? ` ${type}` : '');
-    }
-
-    function setStatus(text, mode = 'idle'){
-      statusEl.textContent = text;
-      const classes = {
-        idle: 'stage-badge',
-        live: 'stage-badge',
-        wait: 'stage-badge',
-        crash: 'stage-badge',
-        queue: 'stage-badge'
-      };
-      phaseTextEl.textContent =
-        mode === 'live' ? 'Running' :
-        mode === 'wait' ? 'Queued' :
-        mode === 'crash' ? 'Crash' :
-        'Idle';
-    }
-
-    function showToast(msg){
-      toastEl.textContent = msg;
-      toastEl.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1400);
-    }
-
-    function setWalletUI(){
-      coinValueEl.textContent = fmtCoin(currentCoin);
-      balanceValueEl.textContent = fmtRp(currentBalance);
-      if (balanceBlur) {
-        coinValueEl.classList.add('hidden-blur');
-        balanceValueEl.classList.add('hidden-blur');
-      } else {
-        coinValueEl.classList.remove('hidden-blur');
-        balanceValueEl.classList.remove('hidden-blur');
-      }
-    }
-
-    function updateQueueInfo(){
-      if (playerIn && inGame) {
-        queueInfoEl.textContent = `Aktif • Bet ${fmtCoin(betAmount)} coin`;
-      } else if (queuedBet) {
-        queueInfoEl.textContent = `Antri ronde berikutnya • Bet ${fmtCoin(queuedBet.amount)} coin`;
-      } else {
-        queueInfoEl.textContent = 'Belum ada taruhan.';
-      }
-    }
-
-    function updateTopStats(){
-      roundCountEl.textContent = `#${roundCount}`;
-      roundBadgeEl.textContent = `ROUND ${roundCount}`;
-      bestWinEl.textContent = `x${roundPeak.toFixed(2)}`;
-      biggestWinTextEl.textContent = biggestWin > 0
-        ? `Penerbangan terbesar: Coin ${fmtCoin(biggestWin)}`
-        : 'Penerbangan terbesar: -';
-      roundSummaryEl.innerHTML =
-        `Round aktif: <b>${roundCount}</b><br>
-         Crash point tersembunyi: <b>x${crashPoint.toFixed(2)}</b><br>
-         Status pemain: <b>${playerIn ? 'ikut ronde ini' : queuedBet ? 'menunggu ronde berikutnya' : 'idle'}</b>`;
-    }
-
-    function updateMultiplierUI(){
-      multiplierEl.textContent = `x${multiplier.toFixed(2)}`;
-      const progressMax = Math.max(crashPoint - 1, 0.1);
-      const progress = Math.min(((multiplier - 1) / progressMax) * 100, 100);
-      progressFillEl.style.width = `${Math.max(0, progress)}%`;
-    }
-
-    function updateCrashHistory(val){
-      crashHistory.unshift(val);
-      if (crashHistory.length > 12) crashHistory.pop();
-
-      historyValuesEl.innerHTML = crashHistory.map(v => {
-        let cls = 'mid';
-        if (v < 2) cls = 'low';
-        else if (v >= 3.5) cls = 'high';
-        return `<span class="history-chip ${cls}">x${v.toFixed(2)}</span>`;
-      }).join('');
-    }
-
-    function updateFakePlayers(){
-      const names = ['Nova', 'Luna', 'Orion', 'Ares', 'Mika', 'Echo', 'Zen', 'Kira'];
-      const picks = [];
-      while (picks.length < 5) {
-        const n = names[Math.floor(Math.random() * names.length)];
-        if (!picks.includes(n)) picks.push(n);
-      }
-
-      fakePlayersEl.innerHTML = picks.map(name => {
-        const x = (Math.random() * 4.5 + 1).toFixed(2);
-        const coin = (Math.random() * 120 + 4).toFixed(2);
-        return `
-          <div class="fake-item">
-            <div>
-              <div class="fake-name">${name}</div>
-              <div style="color:#bfb6df;font-size:.76rem;">Bet ${coin} COIN</div>
-            </div>
-            <div class="fake-x">x${x}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function calcCrashPoint(){
-      // probabilitas lama dipertahankan
-      if (currentCoin > 4000 && playerIn) {
-        return parseFloat((Math.random() * 1.5 + 0.5).toFixed(2));
-      }
-      return parseFloat((Math.random() * 10.4 + 1).toFixed(2));
-    }
-
-    async function loadWalletOnce(uid){
-      try {
-        const snap = await getDoc(doc(db, 'users', uid));
-        if (snap.exists()) {
-          const data = snap.data();
-          currentCoin = Number(data.nubiPayCoin || 0);
-          currentBalance = Number(data.nubiPayBalance || 0);
-        } else {
-          currentCoin = 0;
-          currentBalance = 0;
-        }
-        setWalletUI();
-      } catch (e) {
-        console.error(e);
-        walletNote.textContent = 'Gagal memuat wallet.';
-      }
-    }
-
-    function subscribeWallet(uid){
-      if (walletUnsub) {
-        try { walletUnsub(); } catch {}
-        walletUnsub = null;
-      }
-
-      walletUnsub = onSnapshot(doc(db, 'users', uid), (snap) => {
-        if (snap.exists()) {
-          const data = snap.data();
-          currentCoin = Number(data.nubiPayCoin || 0);
-          currentBalance = Number(data.nubiPayBalance || 0);
-        } else {
-          currentCoin = 0;
-          currentBalance = 0;
-        }
-        setWalletUI();
-        updateQueueInfo();
-        updateTopStats();
-      }, (err) => {
-        console.error(err);
-        walletNote.textContent = 'Wallet gagal sinkron.';
-      });
-    }
-
-    async function commitBet(amount, autoTarget){
-      if (!currentUser) throw new Error('Login dulu.');
-      const userRef = doc(db, 'users', currentUser.uid);
-      const logRef = doc(collection(db, 'users', currentUser.uid, 'transactions'));
-
-      await runTransaction(db, async (tx) => {
-        const snap = await tx.get(userRef);
-        const coin = Number(snap.exists() ? snap.data().nubiPayCoin || 0 : 0);
-
-        if (coin < amount) {
-          throw new Error('NUBIAPAY COIN tidak cukup.');
-        }
-
-        tx.set(userRef, {
-          nubiPayCoin: round2(coin - amount)
-        }, { merge: true });
-
-        tx.set(logRef, {
-          type: 'crash_bet',
-          amount: round2(amount),
-          autoCashout: autoTarget ? round2(autoTarget) : null,
-          round: roundCount,
-          createdAt: serverTimestamp()
-        }, { merge: true });
-      });
-    }
-
-    async function cashOut(){
-      if (!currentUser || !playerIn || !inGame || cashOutLock) return;
-
-      cashOutLock = true;
-      cashOutBtn.disabled = true;
-
-      const payout = round2(betAmount * multiplier);
-      const profit = round2(payout - betAmount);
-      const userRef = doc(db, 'users', currentUser.uid);
-      const logRef = doc(collection(db, 'users', currentUser.uid, 'transactions'));
-
-      try {
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(userRef);
-          const coin = Number(snap.exists() ? snap.data().nubiPayCoin || 0 : 0);
-
-          tx.set(userRef, {
-            nubiPayCoin: round2(coin + payout)
-          }, { merge: true });
-
-          tx.set(logRef, {
-            type: 'crash_cashout',
-            bet: round2(betAmount),
-            payout,
-            profit,
-            multiplier: round2(multiplier),
-            round: roundCount,
-            createdAt: serverTimestamp()
-          }, { merge: true });
-        });
-
-        if (payout > biggestWin) {
-          biggestWin = payout;
-        }
-
-        setMsg(`Cash out sukses • +${fmtCoin(payout)} coin`, 'ok');
-        setStatus(`Cash out di x${multiplier.toFixed(2)} • profit ${fmtCoin(profit)} coin`, 'live');
-
-        playerIn = false;
-        betAmount = 0;
-        autoCashoutTarget = null;
-        cashOutLock = false;
-        cashOutBtn.disabled = true;
-        updateQueueInfo();
-        updateTopStats();
-      } catch (e) {
-        console.error(e);
-        setMsg(e.message || 'Cash out gagal.', 'error');
-        cashOutLock = false;
-        cashOutBtn.disabled = false;
-      }
-    }
-
-    function crashRound(){
-      clearInterval(gameInterval);
-      gameInterval = null;
-
-      inGame = false;
-      roundPeak = Math.max(roundPeak, multiplier);
-      updateCrashHistory(multiplier);
-      updateTopStats();
-
-      if (playerIn) {
-        setStatus(`Crash di x${multiplier.toFixed(2)} • bet hangus`, 'crash');
-        setMsg(`Ronde crash di x${multiplier.toFixed(2)}. Kamu tidak sempat cash out.`, 'error');
-        playerIn = false;
-        betAmount = 0;
-        autoCashoutTarget = null;
-        cashOutBtn.disabled = true;
-      } else {
-        setStatus(`Crash di x${multiplier.toFixed(2)} • ronde selesai`, 'crash');
-      }
-
-      isCooldown = true;
-      setTimeout(async () => {
-        isCooldown = false;
-        cashOutLock = false;
-
-        if (queuedBet) {
-          const nextBet = queuedBet;
-          queuedBet = null;
-          try {
-            await commitBet(nextBet.amount, nextBet.autoCashout);
-            betAmount = nextBet.amount;
-            autoCashoutTarget = nextBet.autoCashout;
-            playerIn = true;
-            cashOutBtn.disabled = false;
-            setStatus(`Taruhan masuk ronde ${roundCount + 1}`, 'wait');
-            setMsg(`Taruhan ${fmtCoin(nextBet.amount)} coin terpasang untuk ronde berikutnya.`, 'ok');
-          } catch (e) {
-            playerIn = false;
-            betAmount = 0;
-            autoCashoutTarget = null;
-            setMsg(e.message || 'Taruhan antri gagal.', 'error');
-          }
-        }
-
-        if (autoStartGame) startGame();
-      }, cooldown);
-    }
-
-    function startGame(){
-      clearInterval(gameInterval);
-
-      roundCount++;
-      inGame = true;
-      multiplier = 1.00;
-      crashPoint = calcCrashPoint();
-
-      updateMultiplierUI();
-      updateFakePlayers();
-      updateTopStats();
-
-      if (playerIn) {
-        setStatus('Roket terbang • kamu ikut di ronde ini', 'live');
-      } else if (queuedBet) {
-        setStatus('Ronde aktif • taruhan menunggu', 'wait');
-      } else {
-        setStatus('Roket terbang • menunggu pemain', 'live');
-      }
-
-      gameInterval = setInterval(() => {
-        multiplier = round2(multiplier + 0.04);
-        updateMultiplierUI();
-        updateTopStats();
-
-        if (playerIn && autoCashoutTarget && multiplier >= autoCashoutTarget && !cashOutLock) {
-          cashOut();
-        }
-
-        if (multiplier >= crashPoint) {
-          crashRound();
-        }
-      }, 100);
-    }
-
-    placeBetBtn.onclick = async () => {
-      if (!currentUser) {
-        setMsg('Login dulu untuk main.', 'error');
-        return;
-      }
-
-      if (playerIn || queuedBet) {
-        setMsg('Satu taruhan aktif saja.', 'error');
-        return;
-      }
-
-      const amount = Number(betAmountEl.value);
-      const autoTarget = Number(autoCashoutEl.value || 0);
-
-      if (!amount || amount <= 0) {
-        setMsg('Masukkan bet coin yang valid.', 'error');
-        return;
-      }
-
-      if (autoTarget && autoTarget <= 1.0) {
-        setMsg('Auto cashout harus di atas x1.00.', 'error');
-        return;
-      }
-
-      try {
-        if (inGame || isCooldown) {
-          queuedBet = {
-            amount: round2(amount),
-            autoCashout: autoTarget && autoTarget > 0 ? round2(autoTarget) : null
-          };
-          updateQueueInfo();
-          setStatus('Taruhan masuk antrian ronde berikutnya', 'wait');
-          setMsg(`Taruhan ${fmtCoin(amount)} coin siap dipakai di ronde berikutnya.`, 'ok');
-        } else {
-          await commitBet(round2(amount), autoTarget && autoTarget > 0 ? round2(autoTarget) : null);
-          betAmount = round2(amount);
-          autoCashoutTarget = autoTarget && autoTarget > 0 ? round2(autoTarget) : null;
-          playerIn = true;
-          cashOutBtn.disabled = false;
-          updateQueueInfo();
-          setStatus('Taruhan aktif di ronde ini', 'live');
-          setMsg(`Taruhan ${fmtCoin(amount)} coin terpasang.`, 'ok');
-        }
-
-        betAmountEl.value = '';
-        autoCashoutEl.value = '';
-      } catch (e) {
-        console.error(e);
-        setMsg(e.message || 'Gagal memasang taruhan.', 'error');
-      }
-    };
-
-    cashOutBtn.onclick = () => cashOut();
-
-    copyUidBtn.onclick = async () => {
-      if (!currentUser) return;
-      try {
-        await navigator.clipboard.writeText(currentUser.uid);
-        showToast('UID disalin');
-      } catch {
-        showToast('Gagal menyalin UID');
-      }
-    };
-
-    goHomeBtn.onclick = () => window.location.href = '/';
-    refreshBtn.onclick = async () => {
-      if (currentUser) await loadWalletOnce(currentUser.uid);
-      setMsg('Wallet disegarkan.', 'ok');
-    };
-
-    convertPageBtn.onclick = () => window.location.href = '/';
-    toggleBlurBtn.onclick = () => {
-      balanceBlur = !balanceBlur;
-      setWalletUI();
-    };
-
-    onAuthStateChanged(auth, async (user) => {
-      currentUser = user;
-
-      if (walletUnsub) {
-        try { walletUnsub(); } catch {}
-        walletUnsub = null;
-      }
-
-      if (user) {
-        uidTxt.textContent = `UID: ${user.uid}`;
-        walletNote.textContent = 'Wallet tersinkron realtime ke Firestore.';
-        await loadWalletOnce(user.uid);
-        subscribeWallet(user.uid);
-      } else {
-        uidTxt.textContent = 'UID: -';
-        currentCoin = 0;
-        currentBalance = 0;
-        setWalletUI();
-        walletNote.textContent = 'Login dulu untuk sinkron saldo dan bermain.';
-      }
-    });
-
-    // init visual
-    setWalletUI();
-    updateQueueInfo();
-    updateTopStats();
-    updateMultiplierUI();
-    updateFakePlayers();
-    startGame();
-  </script>
-</body>
-</html>
+  } else {
+    // Low stake
+    if (r < 0.30) {
+      // 30% early crash
+      retur
