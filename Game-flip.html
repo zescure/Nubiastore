@@ -1,1521 +1,1203 @@
 <!doctype html>
+
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NUBIACOIN FLIP</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUBIA COIN FLIP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#070615;
-      --bg2:#130f27;
-      --card:rgba(255,255,255,.08);
-      --card2:rgba(255,255,255,.12);
-      --border:rgba(255,255,255,.10);
-      --text:#f7f4ff;
-      --muted:#bdb5de;
-      --accent:#7c4dff;
-      --accent2:#31c4ff;
-      --accent3:#19d38d;
-      --danger:#ff5b7a;
-      --warn:#ffcc66;
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-      --radius:24px;
-    }
-
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{min-height:100%}
-    body{
-      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 10% 10%, rgba(124,77,255,.24), transparent 22%),
-        radial-gradient(circle at 90% 0%, rgba(49,196,255,.18), transparent 18%),
-        radial-gradient(circle at 50% 100%, rgba(25,211,141,.10), transparent 20%),
-        linear-gradient(180deg, #090617 0%, #120d23 100%);
-      overflow-x:hidden;
-    }
-
-    a{color:inherit;text-decoration:none}
-    button,input{font:inherit}
-
-    .app{
-      width:min(100%, 1160px);
-      margin:0 auto;
-      padding:16px 14px 28px;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:16px;
-      gap:12px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:800;
-    }
-
-    .brand-mark{
-      width:40px;height:40px;border-radius:12px;
-      display:grid;place-items:center;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      color:#fff;
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.08rem;
-      box-shadow:0 10px 22px rgba(124,77,255,.32);
-      flex-shrink:0;
-    }
-
-    .brand-title{
-      font-size:1.08rem;
-      line-height:1;
-    }
-    .brand-sub{
-      display:block;
-      font-size:.72rem;
-      color:var(--muted);
-      margin-top:3px;
-      font-weight:600;
-    }
-
-    .top-actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .pill-btn{
-      border:none;
-      border-radius:999px;
-      padding:10px 14px;
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      cursor:pointer;
-      box-shadow:var(--shadow);
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-weight:700;
-    }
-
-    .layout{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:14px;
-      align-items:start;
-    }
-
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      backdrop-filter: blur(18px);
-      overflow:hidden;
-      position:relative;
-    }
-
-    .wallet-card{
-      padding:18px;
-    }
-
-    .wallet-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
-    }
-
-    .wallet-title{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.15rem;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-
-    .wallet-desc{
-      margin-top:4px;
-      font-size:.84rem;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .wallet-switch{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .chip{
-      border:none;
-      border-radius:999px;
-      padding:8px 12px;
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      cursor:pointer;
-      font-weight:700;
-      font-size:.82rem;
-    }
-
-    .chip.primary{
-      background:linear-gradient(135deg, var(--accent), var(--accent2));
-      color:#fff;
-    }
-
-    .wallet-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-bottom:12px;
-    }
-
-    .wallet-box{
-      border-radius:20px;
-      padding:14px;
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .wallet-label{
-      font-size:.7rem;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:1.6px;
-      color:var(--muted);
-      margin-bottom:8px;
-    }
-
-    .wallet-value{
-      font-family:'Rajdhani',sans-serif;
-      font-size:2rem;
-      line-height:1;
-      font-weight:800;
-      letter-spacing:.3px;
-      color:#fff;
-      text-shadow:0 0 18px rgba(124,77,255,.2);
-    }
-
-    .wallet-uid{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-top:12px;
-      color:#efeaff;
-      flex-wrap:wrap;
-    }
-
-    .uid-pill{
-      font-family:'Rajdhani',sans-serif;
-      font-weight:700;
-      letter-spacing:.2px;
-      color:#fff;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.10);
-      padding:8px 12px;
-      border-radius:14px;
-      word-break:break-all;
-    }
-
-    .copy-btn{
-      border:none;
-      width:38px;height:38px;
-      border-radius:12px;
-      background:rgba(255,255,255,.10);
-      color:#fff;
-      cursor:pointer;
-      flex-shrink:0;
-    }
-
-    .wallet-note{
-      margin-top:12px;
-      font-size:.82rem;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .stage-card{
-      padding:18px;
-    }
-
-    .stage-top{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:14px;
-    }
-
-    .stage-title{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.15rem;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-
-    .stage-badge{
-      font-size:.75rem;
-      font-weight:800;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(25,211,141,.16);
-      color:#8ff8d2;
-      border:1px solid rgba(25,211,141,.18);
-      white-space:nowrap;
-    }
-
-    .coin-scene{
-      border-radius:28px;
-      padding:20px 18px 18px;
-      background:
-        radial-gradient(circle at center, rgba(255,255,255,.12), transparent 36%),
-        linear-gradient(180deg, rgba(124,77,255,.22), rgba(49,196,255,.12));
-      border:1px solid rgba(255,255,255,.10);
-      position:relative;
-      overflow:hidden;
-      text-align:center;
-    }
-
-    .coin-scene::before{
-      content:'';
-      position:absolute;
-      inset:-30px;
-      background:
-        radial-gradient(circle at 18% 28%, rgba(255,255,255,.12), transparent 12%),
-        radial-gradient(circle at 80% 20%, rgba(255,255,255,.14), transparent 10%),
-        radial-gradient(circle at 65% 72%, rgba(255,255,255,.08), transparent 14%);
-      pointer-events:none;
-    }
-
-    .coin-wrap{
-      width:214px;
-      height:214px;
-      margin:0 auto 10px;
-      perspective:1200px;
-      position:relative;
-    }
-
-    .coin{
-      width:100%;
-      height:100%;
-      position:relative;
-      transform-style:preserve-3d;
-      transition:transform 1.2s cubic-bezier(.16,.72,.22,1);
-      transform:rotateY(0deg);
-      filter:drop-shadow(0 16px 28px rgba(0,0,0,.25));
-    }
-
-    .coin-face{
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      backface-visibility:hidden;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      border:1px solid rgba(255,255,255,.16);
-      box-shadow:inset 0 0 0 6px rgba(255,255,255,.05);
-    }
-
-    .coin-front{
-      background:
-        radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 18%),
-        linear-gradient(135deg, #7c4dff, #4e7bff 55%, #31c4ff);
-    }
-
-    .coin-back{
-      background:
-        radial-gradient(circle at 70% 25%, rgba(255,255,255,.30), transparent 18%),
-        linear-gradient(135deg, #19d38d, #14b8a6 55%, #7c4dff);
-      transform:rotateY(180deg);
-    }
-
-    .coin-icon{
-      font-size:3rem;
-      line-height:1;
-      margin-bottom:8px;
-      text-shadow:0 10px 22px rgba(0,0,0,.24);
-    }
-
-    .coin-text{
-      font-family:'Rajdhani',sans-serif;
-      font-weight:800;
-      letter-spacing:1px;
-      font-size:1rem;
-      text-transform:uppercase;
-    }
-
-    .multiplier{
-      font-family:'Rajdhani',sans-serif;
-      font-size:3.25rem;
-      font-weight:800;
-      line-height:1;
-      letter-spacing:-.8px;
-      margin-bottom:8px;
-    }
-
-    .status{
-      font-weight:700;
-      color:#eef0ff;
-      margin-bottom:14px;
-      font-size:.98rem;
-      line-height:1.4;
-      min-height:26px;
-    }
+    :root {
+      --bg:      #04020f;
+      --surface: rgba(255,255,255,.05);
+      --border:  rgba(255,255,255,.08);
+      --text:    #ede8ff;
+      --muted:   #5c5890;
+      --gold:    #ffcc22;
+      --green:   #00ff88;
+      --red:     #ff3355;
+      --purple:  #8855ff;
+      --blue:    #33aaff;
+      --bonus:   #ff9a00;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100%;
+      background-image:
+        radial-gradient(ellipse 70% 45% at 20% 0%,  rgba(136,85,255,.22) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 30% at 85% 5%,  rgba(51,170,255,.14) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 25% at 50% 100%,rgba(255,204,34,.07) 0%, transparent 50%);
+      overflow-x: hidden;
+    }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    input  { font: inherit; }
+
+```
+/* ─── HEADER ─────────────────────────────────────── */
+.hdr {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 10px 14px;
+  background: rgba(4,2,15,.9);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+.logo {
+  font-family: 'Orbitron', monospace; font-size: .85rem;
+  font-weight: 900; letter-spacing: 2.5px; flex: 1; color: #fff;
+}
+.logo em { color: var(--gold); font-style: normal; }
+.wallet-pills { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
+.wpill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border);
+  font-size: .8rem; font-weight: 700;
+}
+.wpill .wnum {
+  font-family: 'Orbitron', monospace; font-size: .82rem;
+  transition: filter .2s; min-width: 55px;
+}
+.wpill.bonus-pill { border-color: rgba(255,154,0,.3); background: rgba(255,154,0,.08); }
+.wpill.bonus-pill .wnum { color: var(--bonus); }
+.wpill.coin-pill  .wnum { color: var(--green); }
+.wblur { filter: blur(6px); user-select: none; }
+.hbtn {
+  border-radius: 999px; padding: 7px 13px; font-weight: 700;
+  font-size: .78rem; background: var(--surface); color: var(--text);
+  transition: background .14s;
+}
+.hbtn:hover { background: rgba(255,255,255,.14); }
+.hbtn.primary { background: linear-gradient(135deg,var(--purple),var(--blue)); color:#fff; }
+.uid-row { width:100%; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.uid-txt  { font-size:.65rem; color:var(--muted); word-break:break-all; max-width:300px; }
+.uid-copy { padding:3px 8px; border-radius:6px; background:var(--surface); color:var(--text); font-size:.65rem; font-weight:700; }
+
+/* ─── MAIN LAYOUT ────────────────────────────────── */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 12px;
+  padding: 14px 12px 36px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media(max-width: 860px) { .main { grid-template-columns: 1fr; } }
+
+/* ─── LIVE FEED BAR ──────────────────────────────── */
+.feed-bar {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 13px;
+  background: rgba(0,0,0,.35); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.feed-dot { width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; animation:fdot 1.5s ease-in-out infinite; }
+@keyframes fdot { 0%,100%{opacity:1} 50%{opacity:.3} }
+.feed-lbl { font-size:.65rem; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1.2px; flex-shrink:0; }
+.feed-mask {
+  flex:1; overflow:hidden;
+  -webkit-mask-image: linear-gradient(to right,transparent,black 5%,black 95%,transparent);
+  mask-image: linear-gradient(to right,transparent,black 5%,black 95%,transparent);
+}
+.feed-track {
+  display:flex; gap:10px; width:max-content;
+  animation: fscroll 30s linear infinite;
+}
+@keyframes fscroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+.fc {
+  white-space:nowrap; font-size:.7rem; font-weight:700;
+  padding:3px 9px; border-radius:6px; flex-shrink:0;
+}
+.fc.win  { background:rgba(0,255,136,.12);  color:var(--green); }
+.fc.loss { background:rgba(255,51,85,.12);   color:var(--red); }
+.fc.big  { background:rgba(255,204,34,.14);  color:var(--gold); }
+
+/* ─── COIN STAGE ─────────────────────────────────── */
+.stage {
+  background: linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+/* Decorative glow blobs */
+.stage::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(136,85,255,.12) 0%, transparent 45%),
+    radial-gradient(circle at 75% 70%, rgba(255,204,34,.07) 0%, transparent 40%);
+}
+
+.stage-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px 0; gap: 10px;
+}
+.stage-title { font-family:'Orbitron',monospace; font-size:.78rem; font-weight:700; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
+.round-badge {
+  font-family:'Orbitron',monospace; font-size:.72rem; font-weight:700;
+  padding:5px 12px; border-radius:999px;
+  background: rgba(136,85,255,.18); border: 1px solid rgba(136,85,255,.3);
+  color: #c4a4ff;
+}
+
+/* Streak fire */
+.streak-bar {
+  display: flex; align-items: center; gap: 5px;
+  padding: 8px 18px 0;
+}
+.streak-dot {
+  width: 22px; height: 22px; border-radius: 7px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.08);
+  display: grid; place-items: center; font-size: .75rem;
+  transition: all .25s;
+}
+.streak-dot.done  { background: rgba(0,255,136,.18); border-color:rgba(0,255,136,.4); }
+.streak-dot.current { background: rgba(136,85,255,.2); border-color:rgba(136,85,255,.5); animation:scurr .9s ease-in-out infinite; }
+.streak-dot.fail  { background: rgba(255,51,85,.2); border-color:rgba(255,51,85,.5); }
+@keyframes scurr { 0%,100%{box-shadow:0 0 0 rgba(136,85,255,0)} 50%{box-shadow:0 0 14px rgba(136,85,255,.5)} }
+
+/* Coin scene */
+.coin-scene {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 22px 18px 16px;
+  position: relative; z-index: 1;
+}
+.coin-arena {
+  width: 200px; height: 200px;
+  perspective: 1000px;
+  position: relative; margin-bottom: 14px;
+}
+
+/* Glow ring behind coin */
+.coin-glow {
+  position: absolute; inset: -14px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(136,85,255,.22) 0%, transparent 70%);
+  transition: background .4s;
+  pointer-events: none;
+}
+.coin-glow.win-glow  { background: radial-gradient(circle, rgba(0,255,136,.3) 0%, transparent 65%); }
+.coin-glow.loss-glow { background: radial-gradient(circle, rgba(255,51,85,.3) 0%, transparent 65%); }
+
+.coin {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1.1s cubic-bezier(.175,.885,.32,1.05);
+}
+.coin-face {
+  position: absolute; inset: 0; border-radius: 50%;
+  backface-visibility: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px;
+}
+.coin-front {
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255,255,255,.45) 0%, transparent 22%),
+    linear-gradient(135deg, #8855ff 0%, #5533cc 55%, #33aaff 100%);
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.12), 0 8px 32px rgba(136,85,255,.4);
+}
+.coin-back {
+  background:
+    radial-gradient(circle at 70% 28%, rgba(255,255,255,.4) 0%, transparent 20%),
+    linear-gradient(135deg, #ffcc22 0%, #ff9900 50%, #ff6600 100%);
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.12), 0 8px 32px rgba(255,204,34,.4);
+  transform: rotateY(180deg);
+}
+.coin-face-lbl {
+  font-family: 'Orbitron', monospace; font-size: .72rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.75);
+}
+.coin-face-ico { font-size: 3.2rem; line-height: 1; filter: drop-shadow(0 6px 12px rgba(0,0,0,.3)); }
+
+/* Near-miss overlay */
+.near-miss-ring {
+  position: absolute; inset: -8px; border-radius: 50%;
+  border: 3px solid transparent; pointer-events: none;
+  transition: border-color .2s;
+}
+.near-miss-ring.pulse { border-color: var(--gold); animation: nmpulse .6s ease-in-out 3; }
+@keyframes nmpulse { 0%,100%{opacity:0} 50%{opacity:1} }
+
+/* Multiplier display */
+.mult-display {
+  text-align: center; margin-bottom: 8px;
+}
+.mult-num {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(2.4rem,8vw,3.4rem); font-weight: 900; line-height: 1;
+  color: var(--gold);
+  text-shadow: 0 0 30px rgba(255,204,34,.4);
+  transition: all .2s;
+}
+.mult-num.green { color: var(--green); text-shadow: 0 0 30px rgba(0,255,136,.4); }
+.mult-num.red   { color: var(--red);   text-shadow: 0 0 30px rgba(255,51,85,.4); animation:jolt .3s ease; }
+@keyframes jolt { 0%,100%{transform:scale(1)} 45%{transform:scale(1.15) rotate(-2deg)} }
+.mult-label { font-size:.7rem; font-weight:800; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-top:4px; }
+
+/* Result message */
+.result-msg {
+  font-size: .9rem; font-weight: 700; min-height: 22px;
+  text-align: center; line-height: 1.4; color: var(--text);
+  transition: color .2s; padding: 0 8px;
+}
+.result-msg.ok   { color: var(--green); }
+.result-msg.err  { color: var(--red); }
+.result-msg.warn { color: var(--gold); }
+
+/* Potential payout */
+.pot-row {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 10px; flex-wrap: wrap;
+}
+.pot-chip {
+  padding: 6px 13px; border-radius: 999px; font-size: .78rem; font-weight: 700;
+  background: rgba(0,255,136,.1); border: 1px solid rgba(0,255,136,.2);
+  color: var(--green);
+}
+.pot-chip.bonus-chip { background:rgba(255,154,0,.1); border-color:rgba(255,154,0,.25); color:var(--bonus); }
+
+/* ─── BET CONTROLS ───────────────────────────────── */
+.bet-panel {
+  padding: 0 14px 18px;
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* Currency toggle */
+.currency-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.curr-btn {
+  padding: 11px 10px; border-radius: 13px; font-weight: 800; font-size: .82rem;
+  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,.05); color: var(--muted);
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: all .18s;
+}
+.curr-btn.active-coin   { background:rgba(0,255,136,.1);  border-color:rgba(0,255,136,.4);  color:var(--green); }
+.curr-btn.active-bonus  { background:rgba(255,154,0,.1);  border-color:rgba(255,154,0,.4);  color:var(--bonus); }
+
+/* Side choice */
+.side-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.side-btn {
+  padding: 12px 10px; border-radius: 13px; font-weight: 800; font-size: .88rem;
+  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,.05); color: var(--muted);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all .18s;
+}
+.side-btn.chosen-heads { background:rgba(136,85,255,.14); border-color:rgba(136,85,255,.5); color:#d4b0ff; }
+.side-btn.chosen-tails { background:rgba(255,204,34,.12); border-color:rgba(255,204,34,.45); color:var(--gold); }
+
+/* Bet amount row */
+.amount-row { display: flex; gap: 8px; align-items: flex-end; }
+.field { display:flex; flex-direction:column; gap:5px; flex:1; }
+.field-lbl { font-size:.62rem; font-weight:800; text-transform:uppercase; letter-spacing:1.3px; color:var(--muted); }
+.finput {
+  width:100%; padding:11px 13px; border-radius:13px;
+  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,.05); color:#fff;
+  font-family:'Orbitron',monospace; font-size:.88rem; font-weight:700;
+  outline:none; transition:border-color .15s;
+}
+.finput:focus { border-color:rgba(136,85,255,.5); }
+.finput:disabled { opacity:.4; }
+
+.quick-row { display:flex; gap:6px; flex-wrap:wrap; }
+.qb {
+  padding:6px 10px; border-radius:9px;
+  background:rgba(255,255,255,.07); color:var(--text);
+  font-size:.73rem; font-weight:800; transition:background .13s;
+}
+.qb:hover { background:rgba(255,255,255,.15); }
+
+/* Action button */
+.act-btn {
+  width:100%; padding: 15px; border-radius: 15px;
+  font-weight: 900; font-size: .98rem; letter-spacing: .4px;
+  color: #fff; transition: all .15s; position:relative; overflow:hidden;
+}
+.act-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.08),transparent); }
+.act-btn.s-flip {
+  background: linear-gradient(135deg,#7733ee,#33aaff);
+  box-shadow: 0 10px 32px rgba(119,51,238,.32);
+}
+.act-btn.s-flip:active { transform:scale(.97); }
+.act-btn.s-flip:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+.act-btn.s-cashout {
+  background: linear-gradient(135deg,#00cc66,#00ff88);
+  color: #002915;
+  box-shadow: 0 10px 32px rgba(0,204,102,.35);
+  animation: cpulse 1.1s ease-in-out infinite;
+}
+@keyframes cpulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.012)} }
+.act-btn.s-continue {
+  background: linear-gradient(135deg,#ff9a00,#ffcc22);
+  color: #1a0e00;
+  box-shadow: 0 10px 32px rgba(255,154,0,.32);
+}
+.act-btn.s-wait { background:rgba(255,255,255,.06); color:var(--muted); cursor:default; }
+.act-btn.s-cancel { background:rgba(255,255,255,.09); color:var(--text); }
+
+/* Double action row */
+.dual-row { display:flex; gap:8px; }
+.dual-row .act-btn { flex:1; }
+.dual-row .act-btn.small { font-size:.82rem; padding:12px 10px; }
+
+/* ─── RIGHT SIDEBAR ──────────────────────────────── */
+.sidebar { display:flex; flex-direction:column; gap:11px; }
+
+.scard {
+  background: linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  border: 1px solid var(--border); border-radius: 18px;
+  padding: 14px;
+}
+.scard-title {
+  font-size:.65rem; font-weight:800; text-transform:uppercase;
+  letter-spacing:1.4px; color:var(--muted); margin-bottom:10px;
+}
+
+/* Ladder */
+.ladder { display:flex; flex-direction:column; gap:5px; }
+.lrow {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 10px; border-radius:10px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.05);
+  transition:all .18s;
+}
+.lrow.lr-current {
+  background:rgba(136,85,255,.14); border-color:rgba(136,85,255,.4);
+  box-shadow:0 0 18px rgba(136,85,255,.12);
+}
+.lrow.lr-done { background:rgba(0,255,136,.07); border-color:rgba(0,255,136,.22); }
+.lrow.lr-fail { background:rgba(255,51,85,.07);  border-color:rgba(255,51,85,.22); opacity:.6; }
+.lr-r { font-family:'Orbitron',monospace; font-size:.65rem; font-weight:700; color:var(--muted); width:24px; flex-shrink:0; }
+.lr-bar { flex:1; height:5px; border-radius:3px; background:rgba(255,255,255,.08); overflow:hidden; }
+.lr-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--purple),var(--blue)); transition:width .3s; }
+.lr-mult { font-family:'Orbitron',monospace; font-size:.7rem; font-weight:700; color:var(--gold); width:36px; text-align:right; flex-shrink:0; }
+.lr-ico  { width:16px; text-align:center; font-size:.75rem; flex-shrink:0; }
+
+/* History chips */
+.hist-wrap { display:flex; flex-wrap:wrap; gap:5px; }
+.hc {
+  padding:4px 8px; border-radius:7px; font-size:.71rem; font-weight:800;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.07);
+}
+.hc.w { background:rgba(0,255,136,.14); border-color:rgba(0,255,136,.22); color:#8fffd0; }
+.hc.l { background:rgba(255,51,85,.14); border-color:rgba(255,51,85,.22);  color:#ffb0c0; }
+.hc.c { background:rgba(255,204,34,.13); border-color:rgba(255,204,34,.22); color:#ffe090; }
+.hc.b { background:rgba(255,154,0,.14);  border-color:rgba(255,154,0,.22);  color:#ffd090; }
+
+/* Stats grid */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.stat-cell {
+  padding:10px 11px; border-radius:12px;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.05);
+}
+.sc-lbl { font-size:.62rem; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin-bottom:4px; }
+.sc-val { font-family:'Orbitron',monospace; font-size:.9rem; font-weight:700; color:var(--text); }
+.sc-val.gold { color:var(--gold); }
+.sc-val.green{ color:var(--green); }
+
+/* ─── WIN POPUP ──────────────────────────────────── */
+.popup-overlay {
+  position:fixed; inset:0; z-index:200; display:none;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.75); backdrop-filter:blur(6px);
+}
+.popup-overlay.show { display:flex; }
+.popup-box {
+  text-align:center; padding:34px 38px; border-radius:28px;
+  background:linear-gradient(160deg,#130e32,#08051a);
+  border:1.5px solid rgba(255,204,34,.3);
+  box-shadow:0 0 70px rgba(255,204,34,.12), 0 30px 60px rgba(0,0,0,.6);
+  animation:ppop .4s cubic-bezier(.2,.7,.3,1.3);
+  max-width:310px; width:90%;
+}
+@keyframes ppop { 0%{transform:scale(.6);opacity:0} 100%{transform:scale(1);opacity:1} }
+.pp-ico   { font-size:2.8rem; margin-bottom:8px; }
+.pp-title { font-family:'Orbitron',monospace; font-size:.9rem; font-weight:900; color:var(--gold); letter-spacing:2px; margin-bottom:6px; }
+.pp-amt   { font-family:'Orbitron',monospace; font-size:2.1rem; font-weight:900; color:var(--green); margin:8px 0 4px; }
+.pp-sub   { font-size:.78rem; color:var(--muted); line-height:1.4; }
+.pp-close {
+  margin-top:18px; padding:11px 28px; border-radius:13px;
+  background:rgba(255,255,255,.12); color:#fff; font-weight:800; font-size:.88rem;
+  transition:background .13s;
+}
+.pp-close:hover { background:rgba(255,255,255,.22); }
+
+/* ─── TOAST ──────────────────────────────────────── */
+.toast {
+  position:fixed; bottom:20px; left:50%;
+  transform:translateX(-50%) translateY(14px); opacity:0; pointer-events:none;
+  background:#0f0824; color:#fff;
+  padding:10px 20px; border-radius:999px;
+  box-shadow:0 12px 40px rgba(0,0,0,.4);
+  transition:opacity .2s, transform .2s;
+  z-index:9999; font-size:.85rem; font-weight:700;
+}
+.toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+
+@media(max-width:520px) {
+  .wallet-pills { gap:5px; }
+  .wpill { padding:4px 9px; font-size:.72rem; }
+  .coin-arena { width:170px; height:170px; }
+  .dual-row { flex-direction:column; }
+}
+```
 
-    .progress-wrap{
-      height:12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.10);
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.08);
-      margin-bottom:12px;
-    }
-
-    .progress-fill{
-      height:100%;
-      width:0%;
-      background:linear-gradient(90deg,var(--accent3),var(--accent2),var(--accent3));
-      border-radius:999px;
-      transition:width .08s linear;
-    }
-
-    .mini-stats{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-      margin-top:14px;
-    }
-
-    .mini-stat{
-      border-radius:18px;
-      padding:12px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-      text-align:left;
-    }
-
-    .mini-stat span{
-      display:block;
-      color:var(--muted);
-      font-size:.72rem;
-      text-transform:uppercase;
-      letter-spacing:1.4px;
-      margin-bottom:6px;
-      font-weight:800;
-    }
-
-    .mini-stat strong{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.2rem;
-      color:#fff;
-    }
-
-    .control-card{
-      margin-top:14px;
-      padding:16px;
-      border-radius:24px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .control-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      margin-bottom:12px;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .control-title{
-      font-family:'Rajdhani',sans-serif;
-      font-weight:800;
-      font-size:1.05rem;
-    }
-
-    .control-sub{
-      color:var(--muted);
-      font-size:.84rem;
-      line-height:1.4;
-      margin-top:4px;
-    }
-
-    .choice-row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin:12px 0;
-    }
-
-    .choice-btn{
-      border:none;
-      border-radius:16px;
-      padding:14px 16px;
-      cursor:pointer;
-      font-weight:900;
-      letter-spacing:.2px;
-      color:#fff;
-      background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .choice-btn.active{
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      box-shadow:0 14px 24px rgba(124,77,255,.24);
-    }
-
-    .form-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .field label{
-      font-size:.72rem;
-      font-weight:800;
-      letter-spacing:1.3px;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
-
-    .input{
-      width:100%;
-      padding:13px 14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      outline:none;
-      background:rgba(10,7,22,.45);
-      color:#fff;
-      font-weight:700;
-    }
-
-    .input::placeholder{color:rgba(255,255,255,.45)}
-
-    .btn-row{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-      flex-wrap:wrap;
-    }
-
-    .action-btn{
-      flex:1;
-      min-width:140px;
-      border:none;
-      border-radius:16px;
-      padding:14px 16px;
-      cursor:pointer;
-      font-weight:900;
-      letter-spacing:.2px;
-      color:#fff;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      box-shadow:0 14px 24px rgba(124,77,255,.24);
-    }
-
-    .action-btn.secondary{
-      background:rgba(255,255,255,.10);
-      box-shadow:none;
-    }
-
-    .action-btn.danger{
-      background:linear-gradient(135deg,#ff5b7a,#ff7f50);
-    }
-
-    .action-btn:disabled{
-      cursor:not-allowed;
-      opacity:.55;
-      box-shadow:none;
-    }
-
-    .msg{
-      margin-top:10px;
-      font-size:.88rem;
-      color:#fff;
-      min-height:20px;
-      line-height:1.4;
-    }
-
-    .msg.error{color:#ffd1d9}
-    .msg.ok{color:#c7ffe9}
-    .msg.warn{color:#ffe7ac}
-
-    .feed-card{
-      margin-top:14px;
-      padding:16px;
-    }
-
-    .feed-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:12px;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .feed-title{
-      font-family:'Rajdhani',sans-serif;
-      font-size:1.05rem;
-      font-weight:800;
-    }
-
-    .feed-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-
-    .panel-box{
-      border-radius:20px;
-      padding:14px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-      min-height:180px;
-    }
-
-    .panel-box h4{
-      margin-bottom:10px;
-      font-size:.8rem;
-      text-transform:uppercase;
-      letter-spacing:1.4px;
-      color:var(--muted);
-    }
-
-    .ladder-list{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .ladder-item{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-      color:#fff;
-      font-size:.88rem;
-      font-weight:700;
-    }
-
-    .ladder-item.active{
-      background:rgba(25,211,141,.16);
-      border-color:rgba(25,211,141,.22);
-    }
-
-    .ladder-right{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-family:'Rajdhani',sans-serif;
-      font-weight:800;
-    }
-
-    .history-list{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-
-    .history-chip{
-      padding:6px 9px;
-      border-radius:999px;
-      font-weight:800;
-      font-size:.82rem;
-      color:#fff;
-      background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.10);
-    }
-
-    .history-chip.low{background:rgba(255,91,122,.18);border-color:rgba(255,91,122,.20)}
-    .history-chip.high{background:rgba(25,211,141,.18);border-color:rgba(25,211,141,.20)}
-    .history-chip.mid{background:rgba(255,204,102,.18);border-color:rgba(255,204,102,.20)}
-
-    .cashout-box{
-      margin-top:12px;
-      padding:12px;
-      border-radius:16px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08);
-      line-height:1.5;
-      color:#fff;
-      font-size:.9rem;
-    }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:18px;
-      transform:translateX(-50%) translateY(20px);
-      opacity:0;
-      pointer-events:none;
-      background:#1a1234;
-      color:#fff;
-      padding:12px 14px;
-      border-radius:999px;
-      box-shadow:var(--shadow);
-      transition:opacity .2s, transform .2s;
-      z-index:1000;
-      font-size:.9rem;
-      font-weight:700;
-    }
-
-    .toast.show{
-      opacity:1;
-      transform:translateX(-50%) translateY(0);
-    }
-
-    .hidden-blur{
-      filter:blur(10px);
-      user-select:none;
-    }
-
-    @media (max-width: 920px){
-      .layout{grid-template-columns:1fr}
-      .feed-grid{grid-template-columns:1fr}
-    }
-
-    @media (max-width: 520px){
-      .wallet-grid,.mini-stats,.form-grid,.choice-row{grid-template-columns:1fr}
-      .multiplier{font-size:2.7rem}
-      .coin-wrap{width:184px;height:184px}
-      .action-btn{min-width:100%}
-      .topbar{align-items:flex-start}
-      .brand-title{font-size:1rem}
-      .wallet-switch{justify-content:flex-start}
-      .mini-stat{text-align:left}
-    }
   </style>
 </head>
 <body>
 
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-mark">N</div>
-        <div>
-          <div class="brand-title">NUBIACOIN FLIP</div>
-          <span class="brand-sub">Hiburan coin-only • voucher-only</span>
-        </div>
-      </div>
-      <div class="top-actions">
-        <button class="pill-btn" id="authBtn" type="button">Login Google</button>
-        <button class="pill-btn" id="goHomeBtn" type="button">🏠 Home</button>
-      </div>
+<!-- HEADER -->
+
+<header class="hdr">
+  <div class="logo">NUBIA <em>FLIP</em></div>
+
+  <div class="wallet-pills">
+    <div class="wpill coin-pill">
+      💎 <span class="wnum" id="coinNum">0.00</span>
     </div>
+    <div class="wpill bonus-pill">
+      🔥 <span class="wnum" id="bonusNum">0.00</span>
+    </div>
+    <button style="color:var(--muted);font-size:.78rem;padding:4px 2px" id="eyeBtn">👁</button>
+  </div>
 
-    <div class="layout">
-      <div>
-        <section class="card wallet-card">
-          <div class="wallet-head">
-            <div>
-              <div class="wallet-title">Wallet NUBIASTORE</div>
-              <div class="wallet-desc">UID user dipakai sebagai identitas akun. Game ini memakai `nubiPayCoin` dari Firestore.</div>
-            </div>
-            <div class="wallet-switch">
-              <button class="chip primary" id="refreshBtn" type="button">Refresh</button>
-              <button class="chip" id="toggleBlurBtn" type="button">Sembunyikan</button>
-            </div>
-          </div>
+<button class="hbtn primary" id="authBtn">Login Google</button>
+<button class="hbtn" id="homeBtn">🏠</button>
 
-          <div class="wallet-grid">
-            <div class="wallet-box">
-              <div class="wallet-label">NUBIAPAY COIN</div>
-              <div class="wallet-value" id="coinValue">0.00</div>
-            </div>
-            <div class="wallet-box">
-              <div class="wallet-label">NUBIAPAY BALANCE</div>
-              <div class="wallet-value" id="balanceValue">Rp 0</div>
-            </div>
-          </div>
+  <div class="uid-row" id="uidRow" style="display:none">
+    <span class="uid-txt" id="uidTxt">–</span>
+    <button class="uid-copy" id="copyBtn">📋 Salin</button>
+  </div>
+</header>
 
-          <div class="wallet-uid">
-            <span class="uid-pill" id="uidTxt">UID: -</span>
-            <button class="copy-btn" id="copyUidBtn" type="button" title="Copy UID">📋</button>
-          </div>
+<!-- MAIN -->
 
-          <div class="wallet-note" id="walletNote">
-            Login dulu untuk sinkron saldo dan mulai main.
-          </div>
-        </section>
+<main class="main">
 
-        <section class="card stage-card" style="margin-top:14px;">
-          <div class="stage-top">
-            <div>
-              <div class="stage-title">Coin Flip Engine</div>
-              <div class="wallet-desc">Tebak depan atau belakang. Jika benar, lu bisa lanjut ronde berikutnya dengan multiplier lebih tinggi.</div>
-            </div>
-            <div class="stage-badge" id="roundBadge">ROUND 1</div>
-          </div>
+  <!-- LIVE FEED -->
 
-          <div class="coin-scene">
-            <div class="coin-wrap">
-              <div class="coin" id="coin">
-                <div class="coin-face coin-front">
-                  <div class="coin-icon">🪙</div>
-                  <div class="coin-text">Depan</div>
-                </div>
-                <div class="coin-face coin-back">
-                  <div class="coin-icon">🪙</div>
-                  <div class="coin-text">Belakang</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="multiplier" id="multiplier">x1.00</div>
-            <div class="status" id="status">Pilih sisi lalu masukkan bet coin.</div>
-
-            <div class="progress-wrap">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-
-            <div class="mini-stats">
-              <div class="mini-stat">
-                <span>Tertinggi</span>
-                <strong id="bestWin">x0.00</strong>
-              </div>
-              <div class="mini-stat">
-                <span>Round</span>
-                <strong id="roundCount">#1</strong>
-              </div>
-              <div class="mini-stat">
-                <span>Chance</span>
-                <strong id="chanceText">65%</strong>
-              </div>
-            </div>
-          </div>
-
-          <div class="control-card">
-            <div class="control-head">
-              <div>
-                <div class="control-title">Pasang Taruhan</div>
-                <div class="control-sub">Stake langsung dipotong dari `nubiPayCoin`. Kalau cash out, payout dikembalikan ke wallet.</div>
-              </div>
-              <div class="control-sub" id="queueInfo">Belum ada sesi.</div>
-            </div>
-
-            <div class="choice-row">
-              <button class="choice-btn" id="sideDepan" type="button">Depan</button>
-              <button class="choice-btn" id="sideBelakang" type="button">Belakang</button>
-            </div>
-
-            <div class="form-grid">
-              <div class="field">
-                <label for="betAmount">Stake Coin</label>
-                <input class="input" id="betAmount" type="number" step="0.01" min="0.01" placeholder="Contoh: 10">
-              </div>
-              <div class="field">
-                <label for="manualNote">Info</label>
-                <input class="input" id="manualNote" type="text" value="Voucher-only entertainment" readonly>
-              </div>
-            </div>
-
-            <div class="btn-row">
-              <button class="action-btn" id="flipBtn" type="button">Mulai & Flip</button>
-              <button class="action-btn secondary" id="continueBtn" type="button" disabled>Ronde Selanjutnya</button>
-              <button class="action-btn danger" id="cashOutBtn" type="button" disabled>Cash Out</button>
-            </div>
-
-            <div class="msg" id="actionMsg"></div>
-          </div>
-        </section>
-      </div>
-
-      <div>
-        <section class="card feed-card">
-          <div class="feed-head">
-            <div class="feed-title">Payout Ladder & Odds</div>
-            <div class="wallet-desc">Multiplier dan peluang sesuai tier ronde yang lu minta.</div>
-          </div>
-
-          <div class="feed-grid">
-            <div class="panel-box">
-              <h4>Round Table</h4>
-              <div class="ladder-list" id="ladderList"></div>
-            </div>
-
-            <div class="panel-box">
-              <h4>Recent Outcomes</h4>
-              <div class="history-list" id="historyValues"></div>
-              <div class="cashout-box" id="cashoutBox">
-                Potensi cashout akan muncul di sini setelah win.
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card feed-card">
-          <div class="feed-head">
-            <div class="feed-title">Statistik Ronde</div>
-            <div class="wallet-desc">Live state, payout sekarang, dan ringkasan sesi.</div>
-          </div>
-          <div class="panel-box" style="min-height:auto;">
-            <div class="wallet-desc" id="roundSummary">
-              Siap menunggu sesi pertama.
-            </div>
-          </div>
-        </section>
-      </div>
+  <div class="feed-bar">
+    <div class="feed-dot"></div>
+    <span class="feed-lbl">LIVE</span>
+    <div class="feed-mask">
+      <div class="feed-track" id="feedTrack"></div>
     </div>
   </div>
 
-  <div class="toast" id="toast">UID disalin</div>
+  <!-- COIN STAGE -->
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import {
-      getFirestore, doc, getDoc, onSnapshot, runTransaction, serverTimestamp, collection, addDoc
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  <section class="stage">
+    <div class="stage-top">
+      <span class="stage-title">COIN FLIP</span>
+      <span class="round-badge" id="roundBadge">ROUND 1 / 10</span>
+    </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-      authDomain: "zestoreid-f9e85.firebaseapp.com",
-      projectId: "zestoreid-f9e85",
-      storageBucket: "zestoreid-f9e85.firebasestorage.app",
-      messagingSenderId: "426093692154",
-      appId: "1:426093692154:web:38c6e9c143af626a623543"
-    };
+```
+<!-- Streak dots -->
+<div class="streak-bar" id="streakBar"></div>
 
-    const app  = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
+<!-- Coin scene -->
+<div class="coin-scene">
+  <div class="coin-arena" id="coinArena">
+    <div class="coin-glow" id="coinGlow"></div>
+    <div class="coin" id="coinEl">
+      <div class="coin-face coin-front">
+        <div class="coin-face-ico">🌟</div>
+        <div class="coin-face-lbl">HEADS</div>
+      </div>
+      <div class="coin-face coin-back">
+        <div class="coin-face-ico">🌙</div>
+        <div class="coin-face-lbl">TAILS</div>
+      </div>
+    </div>
+    <div class="near-miss-ring" id="nearMissRing"></div>
+  </div>
 
-    const coinValueEl = document.getElementById('coinValue');
-    const balanceValueEl = document.getElementById('balanceValue');
-    const uidTxt = document.getElementById('uidTxt');
-    const walletNote = document.getElementById('walletNote');
+  <div class="mult-display">
+    <div class="mult-num" id="multNum">1.00×</div>
+    <div class="mult-label" id="multLabel">MULTIPLIER</div>
+  </div>
 
-    const authBtn = document.getElementById('authBtn');
-    const goHomeBtn = document.getElementById('goHomeBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const toggleBlurBtn = document.getElementById('toggleBlurBtn');
-    const copyUidBtn = document.getElementById('copyUidBtn');
+  <div class="result-msg" id="resultMsg">Pilih sisi dan pasang taruhan.</div>
 
-    const statusEl = document.getElementById('status');
-    const multiplierEl = document.getElementById('multiplier');
-    const progressFillEl = document.getElementById('progressFill');
-    const roundBadgeEl = document.getElementById('roundBadge');
-    const roundCountEl = document.getElementById('roundCount');
-    const chanceTextEl = document.getElementById('chanceText');
-    const bestWinEl = document.getElementById('bestWin');
-    const roundSummaryEl = document.getElementById('roundSummary');
-    const cashoutBoxEl = document.getElementById('cashoutBox');
+  <div class="pot-row" id="potRow" style="display:none">
+    <div class="pot-chip" id="potChip">Potensi: –</div>
+  </div>
+</div>
 
-    const historyValuesEl = document.getElementById('historyValues');
-    const ladderListEl = document.getElementById('ladderList');
+<!-- BET PANEL -->
+<div class="bet-panel">
 
-    const betAmountEl = document.getElementById('betAmount');
-    const flipBtn = document.getElementById('flipBtn');
-    const continueBtn = document.getElementById('continueBtn');
-    const cashOutBtn = document.getElementById('cashOutBtn');
-    const queueInfoEl = document.getElementById('queueInfo');
-    const actionMsgEl = document.getElementById('actionMsg');
+  <!-- Currency selector -->
+  <div>
+    <div class="field-lbl" style="margin-bottom:6px">Gunakan</div>
+    <div class="currency-row">
+      <button class="curr-btn active-coin" id="useCoinBtn">💎 NubiaCoin</button>
+      <button class="curr-btn" id="useBonusBtn">🔥 BonusCoin</button>
+    </div>
+  </div>
 
-    const sideDepanBtn = document.getElementById('sideDepan');
-    const sideBelakangBtn = document.getElementById('sideBelakang');
-    const coinEl = document.getElementById('coin');
-    const toastEl = document.getElementById('toast');
+  <!-- Side choice -->
+  <div>
+    <div class="field-lbl" style="margin-bottom:6px">Pilih sisi</div>
+    <div class="side-row">
+      <button class="side-btn" id="headsBtn">🌟 HEADS</button>
+      <button class="side-btn" id="tailsBtn">🌙 TAILS</button>
+    </div>
+  </div>
 
-    const rounds = [
-      { round: 1, multiplier: 1.1, chance: 15 },
-      { round: 2, multiplier: 1.2, chance: 5 },
-      { round: 3, multiplier: 1.6, chance: 2 },
-      { round: 4, multiplier: 2.1, chance: 11 },
-      { round: 5, multiplier: 2.6, chance: 11 },
-      { round: 6, multiplier: 3.3, chance: 11 },
-      { round: 7, multiplier: 4.0, chance: 11 },
-      { round: 8, multiplier: 5.0, chance: 11 },
-      { round: 9, multiplier: 6.0, chance: 11 },
-      { round: 10, multiplier: 8.0, chance: 12 }
-    ];
+  <!-- Amount -->
+  <div class="amount-row">
+    <div class="field">
+      <div class="field-lbl">Jumlah taruhan</div>
+      <input class="finput" type="number" id="betInput" value="1000" min="100" step="100">
+    </div>
+  </div>
+  <div class="quick-row">
+    <button class="qb" data-v="500">500</button>
+    <button class="qb" data-v="1000">1K</button>
+    <button class="qb" data-v="5000">5K</button>
+    <button class="qb" data-v="10000">10K</button>
+    <button class="qb" data-v="50000">50K</button>
+    <button class="qb" id="halfBtn">½</button>
+    <button class="qb" id="maxBtn">MAX</button>
+  </div>
 
-    let currentUser = null;
-    let walletUnsub = null;
-    let currentCoin = 0;
-    let currentBalance = 0;
-    let balanceBlur = false;
+  <!-- Main action -->
+  <button class="act-btn s-flip" id="actBtn" disabled>🪙 FLIP SEKARANG</button>
 
-    let gameState = 'idle'; // idle | locked | animating | awaiting_continue
-    let selectedSide = null; // 'depan' | 'belakang'
-    let currentRound = 1;
-    let stake = 0;
-    let currentPotential = 0;
-    let biggestWin = 0;
-    let crashHistory = [];
-    let currentSpinSeed = 0;
-    let coinFacing = 'depan';
+  <!-- Cashout + Continue -->
+  <div class="dual-row" id="dualRow" style="display:none">
+    <button class="act-btn s-cashout small" id="cashoutBtn">💰 CASHOUT</button>
+    <button class="act-btn s-continue small" id="continueBtn">▶ LANJUT</button>
+  </div>
 
-    function round2(n){
-      return Math.round(Number(n || 0) * 100) / 100;
+</div>
+```
+
+  </section>
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+```
+<!-- Multiplier Ladder -->
+<div class="scard">
+  <div class="scard-title">⚡ Multiplier Path</div>
+  <div class="ladder" id="ladderEl"></div>
+</div>
+
+<!-- History -->
+<div class="scard">
+  <div class="scard-title">📊 Riwayat</div>
+  <div class="hist-wrap" id="histEl">
+    <span style="font-size:.75rem;color:var(--muted)">Belum ada flip.</span>
+  </div>
+</div>
+
+<!-- Session stats -->
+<div class="scard">
+  <div class="scard-title">🏆 Statistik Sesi</div>
+  <div class="stat-grid">
+    <div class="stat-cell"><div class="sc-lbl">Stake</div><div class="sc-val" id="stakeDisplay">–</div></div>
+    <div class="stat-cell"><div class="sc-lbl">Win Terbesar</div><div class="sc-val gold" id="bestWin">0.00</div></div>
+    <div class="stat-cell"><div class="sc-lbl">Total Flip</div><div class="sc-val" id="flipCount">0</div></div>
+    <div class="stat-cell"><div class="sc-lbl">Win Streak</div><div class="sc-val green" id="streakCount">0</div></div>
+  </div>
+</div>
+```
+
+  </aside>
+
+</main>
+
+<!-- WIN POPUP -->
+
+<div class="popup-overlay" id="winPopup">
+  <div class="popup-box">
+    <div class="pp-ico" id="ppIco">💰</div>
+    <div class="pp-title" id="ppTitle">CASHOUT!</div>
+    <div class="pp-amt" id="ppAmt">+0</div>
+    <div class="pp-sub" id="ppSub">–</div>
+    <button class="pp-close" id="ppClose">Lanjut main</button>
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, onSnapshot, runTransaction, serverTimestamp, collection }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* ── Firebase ─────────────────────────────────────── */
+const app  = initializeApp({
+  apiKey:'AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc',
+  authDomain:'zestoreid-f9e85.firebaseapp.com',
+  projectId:'zestoreid-f9e85',
+  storageBucket:'zestoreid-f9e85.firebasestorage.app',
+  messagingSenderId:'426093692154',
+  appId:'1:426093692154:web:38c6e9c143af626a623543'
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+/* ── DOM ──────────────────────────────────────────── */
+const $          = id => document.getElementById(id);
+const authBtn    = $('authBtn');
+const uidRow     = $('uidRow');
+const uidTxt     = $('uidTxt');
+const coinNum    = $('coinNum');
+const bonusNum   = $('bonusNum');
+const eyeBtn     = $('eyeBtn');
+const coinEl     = $('coinEl');
+const coinGlow   = $('coinGlow');
+const nearMiss   = $('nearMissRing');
+const multNum    = $('multNum');
+const multLabel  = $('multLabel');
+const resultMsg  = $('resultMsg');
+const potRow     = $('potRow');
+const potChip    = $('potChip');
+const roundBadge = $('roundBadge');
+const streakBar  = $('streakBar');
+const ladderEl   = $('ladderEl');
+const histEl     = $('histEl');
+const stakeDisp  = $('stakeDisplay');
+const bestWinEl  = $('bestWin');
+const flipCountEl= $('flipCount');
+const streakCountEl=$('streakCount');
+const feedTrack  = $('feedTrack');
+const betInput   = $('betInput');
+const actBtn     = $('actBtn');
+const dualRow    = $('dualRow');
+const cashoutBtn = $('cashoutBtn');
+const continueBtn= $('continueBtn');
+const headsBtn   = $('headsBtn');
+const tailsBtn   = $('tailsBtn');
+const useCoinBtn = $('useCoinBtn');
+const useBonusBtn= $('useBonusBtn');
+const winPopup   = $('winPopup');
+const ppIco=$('ppIco'),ppTitle=$('ppTitle'),ppAmt=$('ppAmt'),ppSub=$('ppSub'),ppClose=$('ppClose');
+const toastEl    = $('toastEl');
+
+/* ── LADDER CONFIG ────────────────────────────────── */
+const ROUNDS = [
+  {r:1,  mult:1.20, bar:12},
+  {r:2,  mult:1.50, bar:20},
+  {r:3,  mult:2.00, bar:30},
+  {r:4,  mult:2.75, bar:42},
+  {r:5,  mult:3.50, bar:54},
+  {r:6,  mult:4.50, bar:65},
+  {r:7,  mult:6.00, bar:75},
+  {r:8,  mult:8.00, bar:84},
+  {r:9,  mult:10.0, bar:91},
+  {r:10, mult:15.0, bar:100},
+];
+
+/* ── FAKE PLAYER IDS ──────────────────────────────── */
+const _a='abcdefghijklmnopqrstuvwxyz',_an=_a+'0123456789';
+const FP = Array.from({length:250},()=>{
+  const p=Array.from({length:2},()=>_a[Math.random()*26|0]).join('');
+  const s=Array.from({length:4},()=>_an[Math.random()*36|0]).join('');
+  return `${p}_${s}`;
+});
+
+/* ── STATE ────────────────────────────────────────── */
+let currentUser = null;
+let walletUnsub = null;
+let coin        = 0;
+let bonusCoin   = 0;
+let blurred     = false;
+let useBonus    = false;
+let chosenSide  = null; // 'heads' | 'tails'
+let stake       = 0;
+let roundIdx    = 0;    // 0..9
+let potential   = 0;
+let gamePhase   = 'idle'; // idle | flipping | awaiting | done
+let coinRot     = 0;
+let winStreak   = 0;
+let totalFlips  = 0;
+let bestWin     = 0;
+let history     = [];  // {type,label}
+let feedItems   = [];
+
+/* ── PROBABILITY ENGINE ─────────────────────────────
+  Uses same philosophy as rocket:
+  HIGH bet (>20% of active wallet): 82% fail on round 1-3, 18% survive
+  LOW bet (≤20%): 35% fail early, 65% get a taste – but after streak≥3 prob drops hard
+  Bonus coin bets: +5% win boost per round (feels "luckier", still burns it)
+  Near-miss on round 5+: partial false-start animation → gold ring pulse
+─────────────────────────────────────────────────────*/
+function winChance(ri, stakeAmt, walletBal, usingBonus, streak) {
+  const ratio = stakeAmt / Math.max(walletBal, 1);
+  const highBet = ratio > 0.20;
+  const bonusBoost = usingBonus ? 0.05 : 0;
+
+  let base;
+  if (highBet) {
+    // High bet: mostly instant death
+    if (ri === 0)      base = 0.18;
+    else if (ri <= 2)  base = 0.14;
+    else if (ri <= 4)  base = 0.11;
+    else if (ri <= 6)  base = 0.09;
+    else               base = 0.07;
+  } else {
+    // Low bet: let them progress, shrink with rounds
+    if (ri === 0)      base = 0.65;
+    else if (ri === 1) base = 0.58;
+    else if (ri === 2) base = 0.50;
+    else if (ri === 3) base = 0.44;
+    else if (ri === 4) base = 0.37;
+    else if (ri === 5) base = 0.31;
+    else if (ri === 6) base = 0.24;
+    else if (ri === 7) base = 0.18;
+    else if (ri === 8) base = 0.13;
+    else               base = 0.08;
+  }
+
+  // Streak penalty: after 3 wins in a row, drop by 10% per extra win
+  if (streak >= 3) base *= Math.max(0.1, 1 - (streak - 2) * 0.10);
+
+  return Math.min(0.92, Math.max(0.04, base + bonusBoost));
+}
+
+/* Near-miss: trigger on rounds 5-9 when user loses on high rounds (feel cruel) */
+function shouldNearMiss(ri) {
+  return ri >= 4 && Math.random() < 0.52;
+}
+
+/* ── UTILS ────────────────────────────────────────── */
+const sleep  = ms => new Promise(r=>setTimeout(r,ms));
+const r2     = n  => Math.round(Number(n||0)*100)/100;
+const fmtC   = n  => Number(n||0).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
+function fmtS(n) {
+  if(n>=1e6) return (n/1e6).toFixed(1)+'M';
+  if(n>=1e3) return (n/1000).toFixed(1)+'K';
+  return String(Math.floor(n));
+}
+function toast(msg,dur=1700) {
+  toastEl.textContent=msg; toastEl.classList.add('on');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>toastEl.classList.remove('on'),dur);
+}
+function setRes(msg,type='') {
+  resultMsg.textContent=msg||'';
+  resultMsg.className='result-msg'+(type?' '+type:'');
+}
+
+/* ── WALLET ───────────────────────────────────────── */
+function updateBalUI() {
+  coinNum.textContent  = fmtC(coin);
+  bonusNum.textContent = fmtC(bonusCoin);
+  const bl = blurred;
+  [coinNum,bonusNum].forEach(el=>el.classList.toggle('wblur',bl));
+}
+async function refreshWallet(uid) {
+  try {
+    const s = await getDoc(doc(db,'users',uid));
+    if(s.exists()) {
+      const d=s.data();
+      coin      = Number(d.nubiPayCoin        || 0);
+      bonusCoin = Number(d.nubiPayBonusCoin   || 0);
+    } else { coin=bonusCoin=0; }
+    updateBalUI();
+  } catch(e){ console.error(e); }
+}
+function subWallet(uid) {
+  if(typeof walletUnsub==='function'){walletUnsub();walletUnsub=null;}
+  walletUnsub=onSnapshot(doc(db,'users',uid),s=>{
+    if(s.exists()){
+      const d=s.data();
+      coin      = Number(d.nubiPayCoin        || 0);
+      bonusCoin = Number(d.nubiPayBonusCoin   || 0);
+    } else { coin=bonusCoin=0; }
+    updateBalUI(); updateCtrl();
+  },e=>console.error(e));
+}
+async function adjCoin(delta, field, type, meta={}) {
+  if(!currentUser) throw new Error('Login dulu.');
+  const uRef  = doc(db,'users',currentUser.uid);
+  const txCol = collection(db,'users',currentUser.uid,'transactions');
+  await runTransaction(db,async tx=>{
+    const s=await tx.get(uRef);
+    const prev=Number(s.exists()?(s.data()[field]||0):0);
+    const next=Math.max(0,r2(prev+delta));
+    tx.set(uRef,{[field]:next},{merge:true});
+    tx.set(doc(txCol),{type,field,delta:r2(delta),balanceAfter:next,...meta,createdAt:serverTimestamp()});
+    if(field==='nubiPayCoin')      coin=next;
+    else if(field==='nubiPayBonusCoin') bonusCoin=next;
+  });
+  updateBalUI(); updateCtrl();
+}
+
+/* ── COIN ANIMATION ───────────────────────────────── */
+function animateCoin(finalHeads, ms=1100) {
+  const spins = 4 + Math.floor(Math.random()*3);
+  coinRot += spins*360 + (finalHeads ? 0 : 180);
+  coinEl.style.transition=`transform ${ms/1000}s cubic-bezier(.175,.885,.32,1.05)`;
+  coinEl.style.transform=`rotateY(${coinRot}deg)`;
+}
+
+/* Near-miss: coin goes almost to wrong side then corrects quickly */
+async function nearMissAnim(finalHeads) {
+  const wrongRot = coinRot + (finalHeads ? 180 : 0) + 1800;
+  coinEl.style.transition=`transform .6s ease-in`;
+  coinEl.style.transform=`rotateY(${wrongRot}deg)`;
+  nearMiss.classList.add('pulse');
+  await sleep(650);
+  nearMiss.classList.remove('pulse');
+  // Then flip back to correct
+  coinRot = wrongRot + 180;
+  coinEl.style.transition=`transform .45s ease-out`;
+  coinEl.style.transform=`rotateY(${coinRot}deg)`;
+  await sleep(480);
+}
+
+/* ── STREAK DOTS ──────────────────────────────────── */
+function renderStreak() {
+  const dots = ROUNDS.map((rd,i) => {
+    let cls='streak-dot';
+    if(i < roundIdx)       cls+=' done';
+    else if(i===roundIdx)  cls+=' current';
+    return `<div class="${cls}">${i<roundIdx?'✓':rd.r}</div>`;
+  }).join('');
+  streakBar.innerHTML=dots;
+}
+
+/* ── LADDER ───────────────────────────────────────── */
+function renderLadder() {
+  ladderEl.innerHTML=ROUNDS.map((rd,i)=>{
+    let cls='lrow';
+    if(i<roundIdx)  cls+=' lr-done';
+    if(i===roundIdx)cls+=' lr-current';
+    const ico = i<roundIdx?'✓':(i===roundIdx?'▶':'');
+    return `<div class="${cls}">
+      <span class="lr-r">R${rd.r}</span>
+      <div class="lr-bar"><div class="lr-fill" style="width:${rd.bar}%"></div></div>
+      <span class="lr-mult">${rd.mult.toFixed(2)}×</span>
+      <span class="lr-ico">${ico}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ── HISTORY ──────────────────────────────────────── */
+function pushHistory(type,label) {
+  history.unshift({type,label});
+  if(history.length>18) history.length=18;
+  histEl.innerHTML=history.map(h=>`<span class="hc ${h.type}">${h.label}</span>`).join('');
+}
+
+/* ── STATS ────────────────────────────────────────── */
+function updateStats() {
+  const rd=ROUNDS[roundIdx];
+  potential = stake>0 ? r2(stake*rd.mult) : 0;
+  stakeDisp.textContent  = stake>0 ? fmtC(stake) : '–';
+  bestWinEl.textContent  = fmtC(bestWin);
+  flipCountEl.textContent= String(totalFlips);
+  streakCountEl.textContent=String(winStreak);
+  multNum.textContent    = rd.mult.toFixed(2)+'×';
+  roundBadge.textContent = `ROUND ${rd.r} / 10`;
+  if(potential>0) {
+    potRow.style.display='flex';
+    potChip.textContent =`Potensi: ${fmtC(potential)} ${useBonus?'bonus':''}coin`;
+    potChip.className   ='pot-chip'+(useBonus?' bonus-chip':'');
+  } else {
+    potRow.style.display='none';
+  }
+  renderStreak();
+  renderLadder();
+}
+
+/* ── CONTROLS ─────────────────────────────────────── */
+function updateCtrl() {
+  const can = !!currentUser && gamePhase==='idle' && chosenSide!==null;
+  actBtn.disabled = !can;
+  actBtn.textContent = gamePhase==='flipping' ? '⏳ Membalik...' : '🪙 FLIP SEKARANG';
+  const showDual = gamePhase==='awaiting';
+  dualRow.style.display = showDual ? 'flex' : 'none';
+  actBtn.style.display  = showDual ? 'none' : 'block';
+}
+
+/* ── CURRENCY SWITCH ──────────────────────────────── */
+function setCurrency(bonus) {
+  useBonus=bonus;
+  useCoinBtn.className ='curr-btn'+(bonus?'':' active-coin');
+  useBonusBtn.className='curr-btn'+(bonus?' active-bonus':'');
+  updateStats();
+}
+
+/* ── SIDE SELECT ──────────────────────────────────── */
+function setSide(side) {
+  if(gamePhase!=='idle') return;
+  chosenSide=side;
+  headsBtn.className='side-btn'+(side==='heads'?' chosen-heads':'');
+  tailsBtn.className='side-btn'+(side==='tails'?' chosen-tails':'');
+  setRes(`Pilihan: ${side==='heads'?'🌟 HEADS':'🌙 TAILS'}. Siap flip!`,'');
+  updateCtrl();
+}
+
+/* ── RESET SESSION ────────────────────────────────── */
+function resetSession(keepStreak=false) {
+  gamePhase='idle'; roundIdx=0; stake=0; potential=0;
+  if(!keepStreak) winStreak=0;
+  chosenSide=null;
+  headsBtn.className='side-btn'; tailsBtn.className='side-btn';
+  coinGlow.className='coin-glow';
+  multNum.className='mult-num';
+  updateStats(); updateCtrl();
+}
+
+/* ── PLACE BET & FLIP ─────────────────────────────── */
+async function doFlip() {
+  if(!currentUser)         { setRes('Login Google dulu.','err'); return; }
+  if(!chosenSide)          { setRes('Pilih sisi dulu!','err'); return; }
+  if(gamePhase!=='idle')   return;
+
+  const amt = Math.floor(Number(betInput.value)||0);
+  const field = useBonus ? 'nubiPayBonusCoin' : 'nubiPayCoin';
+  const bal   = useBonus ? bonusCoin : coin;
+
+  if(amt < 100)  { setRes('Minimum taruhan 100 coin.','err'); return; }
+  if(amt > bal)  { setRes('Saldo tidak cukup.','err'); return; }
+
+  gamePhase='flipping'; updateCtrl();
+  setRes('🎲 Membalik koin...','warn');
+  coinGlow.className='coin-glow';
+
+  try {
+    await adjCoin(-amt, field, 'flip_bet', {round:1, bet:amt, side:chosenSide});
+    stake=amt; roundIdx=0; totalFlips++;
+    updateStats();
+
+    const chance = winChance(0, amt, bal, useBonus, winStreak);
+    const isWin  = Math.random() < chance;
+    const outcome= isWin ? chosenSide : (chosenSide==='heads'?'tails':'heads');
+
+    // Near miss on first round if losing and high round energy
+    if(!isWin && shouldNearMiss(0)) {
+      setRes('⚡ Hampir...','warn');
+      await nearMissAnim(chosenSide==='heads');
+    } else {
+      animateCoin(outcome==='heads');
+      await sleep(1200);
     }
 
-    function fmtCoin(n){
-      return Number(n || 0).toLocaleString('id-ID', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
+    if(isWin) {
+      winStreak++;
+      coinGlow.className='coin-glow win-glow';
+      multNum.className='mult-num green';
+      pushHistory('w',`R1 ✓ ${ROUNDS[0].mult.toFixed(2)}×`);
+      setRes(`✅ ${outcome.toUpperCase()}! Benar!`,'ok');
+      pushFeed('win',`${currentUser.uid.slice(0,8)} R1 ✓ +${fmtS(stake*(ROUNDS[0].mult-1))}`);
+      gamePhase='awaiting'; updateStats(); updateCtrl();
+    } else {
+      winStreak=0;
+      coinGlow.className='coin-glow loss-glow';
+      multNum.className='mult-num red';
+      pushHistory('l',`R1 ✕`);
+      setRes(`❌ ${outcome.toUpperCase()}! Salah. Stake hangus.`,'err');
+      pushFeed('loss',`${currentUser.uid.slice(0,8)} R1 ✕ −${fmtS(amt)}`);
+      await sleep(1200);
+      resetSession();
     }
+  } catch(e) {
+    console.error(e); setRes(e.message||'Gagal flip.','err');
+    gamePhase='idle'; updateCtrl();
+  }
+}
 
-    function fmtRp(n){
-      return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+/* ── CONTINUE NEXT ROUND ──────────────────────────── */
+async function doContinue() {
+  if(gamePhase!=='awaiting' || roundIdx>=9) return;
+  if(!chosenSide) { setRes('Pilih sisi untuk ronde berikutnya!','err'); return; }
+
+  gamePhase='flipping'; updateCtrl();
+  const nextIdx = roundIdx+1;
+  const rd = ROUNDS[nextIdx];
+  const field = useBonus ? 'nubiPayBonusCoin' : 'nubiPayCoin';
+  const bal   = useBonus ? bonusCoin : coin;
+
+  setRes(`Round ${rd.r} — membalik...`,'warn');
+  totalFlips++;
+
+  const chance = winChance(nextIdx, stake, bal+stake, useBonus, winStreak);
+  const isWin  = Math.random() < chance;
+  const outcome= isWin ? chosenSide : (chosenSide==='heads'?'tails':'heads');
+
+  // Near-miss mechanic for higher rounds
+  if(!isWin && shouldNearMiss(nextIdx)) {
+    setRes(`💫 Round ${rd.r} — hampir!`,'warn');
+    await nearMissAnim(chosenSide==='heads');
+  } else {
+    animateCoin(outcome==='heads', 1000);
+    await sleep(1100);
+  }
+
+  if(isWin) {
+    roundIdx=nextIdx; winStreak++;
+    coinGlow.className='coin-glow win-glow';
+    multNum.className='mult-num green';
+    const p=r2(stake*rd.mult);
+    pushHistory('w',`R${rd.r} ✓ ${rd.mult.toFixed(2)}×`);
+    setRes(`✅ Round ${rd.r} benar! Potensi +${fmtC(p)} coin.`,'ok');
+    pushFeed('win',`${currentUser.uid.slice(0,8)} R${rd.r} ✓ ×${rd.mult.toFixed(2)}`);
+    if(roundIdx===9) {
+      // Auto cashout at final round
+      await doCashout(true);
+      return;
     }
+    gamePhase='awaiting'; updateStats(); updateCtrl();
+  } else {
+    winStreak=0;
+    coinGlow.className='coin-glow loss-glow';
+    multNum.className='mult-num red';
+    pushHistory('l',`R${rd.r} ✕`);
+    setRes(`❌ Round ${rd.r} salah! Kamu hangus di ${rd.mult.toFixed(2)}×.`,'err');
+    pushFeed('loss',`${currentUser.uid.slice(0,8)} R${rd.r} ✕ −${fmtS(stake)}`);
+    await sleep(1300);
+    resetSession();
+  }
+}
+
+/* ── CASHOUT ──────────────────────────────────────── */
+async function doCashout(auto=false) {
+  if(gamePhase!=='awaiting' && !auto) return;
+  if(stake===0) return;
+
+  const rd=ROUNDS[roundIdx];
+  const payout=r2(stake*rd.mult);
+  const profit=r2(payout-stake);
+  const field=useBonus?'nubiPayBonusCoin':'nubiPayCoin';
+
+  gamePhase='flipping'; updateCtrl();
+  setRes('⏳ Memproses cashout...','warn');
+
+  try {
+    await adjCoin(payout, field, 'flip_cashout', {round:rd.r,mult:rd.mult,stake,payout,profit});
+    if(payout>bestWin) bestWin=payout;
+
+    pushHistory(useBonus?'b':'c', `R${rd.r} ×${rd.mult.toFixed(2)} +${fmtS(profit)}`);
+    pushFeed('big',`${currentUser.uid.slice(0,8)} CASHOUT ×${rd.mult.toFixed(2)} +${fmtS(profit)}`);
+
+    ppIco.textContent   = profit>0 ? '🎉' : '💰';
+    ppTitle.textContent = 'CASHOUT!';
+    ppAmt.textContent   = `+${fmtC(payout)} ${useBonus?'bonus':''}coin`;
+    ppSub.textContent   = `Pada Round ${rd.r} × ${rd.mult.toFixed(2)} | Profit: +${fmtC(profit)} coin`;
+    winPopup.classList.add('show');
+
+    multNum.className='mult-num';
+    coinGlow.className='coin-glow';
+    setRes(`💰 Cashout sukses! +${fmtC(payout)} coin.`,'ok');
+    resetSession(true);
+  } catch(e) {
+    console.error(e); setRes(e.message||'Cashout gagal.','err');
+    gamePhase='awaiting'; updateCtrl();
+  }
+}
+
+/* ── FAKE PLAYER FEED ─────────────────────────────── */
+function pushFeed(type,label) {
+  feedItems.push({type,label});
+  if(feedItems.length>50) feedItems.shift();
+  const chips=feedItems.map(f=>`<span class="fc ${f.type}">${f.label}</span>`).join('');
+  feedTrack.innerHTML=chips+chips;
+}
+
+/* Spawn fake activity every ~2.5–8s */
+function spawnFakeActivity() {
+  const fp=FP[Math.random()*FP.length|0];
+  const r2=Math.random();
+  if(r2<0.45) {
+    // bet
+    const amt=500+Math.random()*49500|0;
+    pushFeed('win',`${fp} bet ${fmtS(amt)}`);
+  } else if(r2<0.72) {
+    // win
+    const ri=Math.floor(Math.random()*6);
+    const m=ROUNDS[ri].mult;
+    const pr=Math.floor((1000+Math.random()*9000)*(m-1));
+    pushFeed('win',`${fp} R${ri+1} ×${m.toFixed(2)} +${fmtS(pr)}`);
+  } else {
+    // loss
+    const lamt=500+Math.random()*9500|0;
+    pushFeed('loss',`${fp} ✕ −${fmtS(lamt)}`);
+  }
+  setTimeout(spawnFakeActivity, 2500+Math.random()*5500);
+}
+
+/* ── SIDE / CURRENCY / QUICK BUTTONS ─────────────── */
+headsBtn.onclick   = ()=>setSide('heads');
+tailsBtn.onclick   = ()=>setSide('tails');
+useCoinBtn.onclick = ()=>{ if(gamePhase==='idle') setCurrency(false); };
+useBonusBtn.onclick= ()=>{ if(gamePhase==='idle') setCurrency(true); };
+actBtn.onclick     = ()=>doFlip();
+continueBtn.onclick= ()=>doContinue();
+cashoutBtn.onclick = ()=>doCashout();
+ppClose.onclick    = ()=>winPopup.classList.remove('show');
+
+document.querySelectorAll('.qb[data-v]').forEach(btn=>{
+  btn.onclick=()=>{ if(gamePhase==='idle') betInput.value=btn.dataset.v; };
+});
+$('halfBtn').onclick=()=>{ if(gamePhase==='idle') { const b=useBonus?bonusCoin:coin; betInput.value=Math.max(100,Math.floor(b/2)); }};
+$('maxBtn').onclick =()=>{ if(gamePhase==='idle') { const b=useBonus?bonusCoin:coin; betInput.value=Math.floor(b); }};
+
+eyeBtn.onclick=()=>{ blurred=!blurred; eyeBtn.textContent=blurred?'🙈':'👁'; updateBalUI(); };
+authBtn.onclick=async()=>{
+  if(currentUser){ await signOut(auth); }
+  else { try{ await signInWithPopup(auth,new GoogleAuthProvider()); }catch(e){ setRes('Login gagal.','err'); } }
+};
+$('homeBtn').onclick=()=>{ window.location.href='/'; };
+$('copyBtn').onclick=async()=>{
+  if(!currentUser) return;
+  try{ await navigator.clipboard.writeText(currentUser.uid); toast('UID disalin ✓'); }
+  catch{ toast('Gagal menyalin'); }
+};
+
+/* ── AUTH STATE ───────────────────────────────────── */
+onAuthStateChanged(auth,async u=>{
+  currentUser=u;
+  if(typeof walletUnsub==='function'){walletUnsub();walletUnsub=null;}
+  if(u){
+    authBtn.textContent='Logout';
+    uidTxt.textContent=u.uid;
+    uidRow.style.display='flex';
+    await refreshWallet(u.uid);
+    subWallet(u.uid);
+    setRes('Login berhasil. Pilih sisi & flip!','ok');
+  } else {
+    authBtn.textContent='Login Google';
+    uidRow.style.display='none';
+    coin=bonusCoin=0; updateBalUI();
+    setRes('Login untuk mulai bermain.','');
+  }
+  updateCtrl();
+});
+
+/* ── INIT ─────────────────────────────────────────── */
+// Seed initial feed
+const seeds=[
+  ['win','mk_r4x2 R3 ×2.00 +4K'],['loss','td_8vbw ✕ −1.5K'],['win','zq_1np3 R5 ×3.50 +17.5K'],
+  ['loss','hx_99ab ✕ −500'],['big','pp_zzz0 CASHOUT ×6.00 +25K'],['win','rw_4kkm R2 ×1.50 +750'],
+  ['loss','bs_77c1 ✕ −2K'],['win','yy_a3f9 R4 ×2.75 +5.5K'],['big','nk_2mb0 CASHOUT ×10.0 +90K'],
+];
+seeds.forEach((s,i)=>setTimeout(()=>pushFeed(s[0],s[1]),i*200));
+
+setTimeout(spawnFakeActivity, 3000);
+
+updateBalUI();
+updateStats();
+updateCtrl();
+</script>
 
-    function showToast(msg){
-      toastEl.textContent = msg;
-      toastEl.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1400);
-    }
-
-    function setMsg(msg, type = ''){
-      actionMsgEl.textContent = msg || '';
-      actionMsgEl.className = 'msg' + (type ? ` ${type}` : '');
-    }
-
-    function sideLabel(side){
-      return side === 'depan' ? 'Depan' : 'Belakang';
-    }
-
-    function oppositeSide(side){
-      return side === 'depan' ? 'belakang' : 'depan';
-    }
-
-    function setChoice(side){
-      selectedSide = side;
-      sideDepanBtn.classList.toggle('active', side === 'depan');
-      sideBelakangBtn.classList.toggle('active', side === 'belakang');
-      updatePrimaryButtonState();
-      if (gameState === 'idle') {
-        setMsg(`Pilihan aktif: ${sideLabel(side)}.`, 'ok');
-      } else if (gameState === 'locked') {
-        setMsg(`Pilihan ronde ${currentRound}: ${sideLabel(side)}.`, 'ok');
-      }
-    }
-
-    function updateWalletUI(){
-      coinValueEl.textContent = fmtCoin(currentCoin);
-      balanceValueEl.textContent = fmtRp(currentBalance);
-
-      if (balanceBlur) {
-        coinValueEl.classList.add('hidden-blur');
-        balanceValueEl.classList.add('hidden-blur');
-      } else {
-        coinValueEl.classList.remove('hidden-blur');
-        balanceValueEl.classList.remove('hidden-blur');
-      }
-    }
-
-    function updateLadder(){
-      ladderListEl.innerHTML = rounds.map((r, idx) => `
-        <div class="ladder-item ${idx + 1 === currentRound ? 'active' : ''}">
-          <div>R${r.round}</div>
-          <div class="ladder-right">
-            <span>${r.multiplier.toFixed(1)}x</span>
-            <span>•</span>
-            <span>${r.chance.toFixed(2)}%</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function updateHistory(){
-      historyValuesEl.innerHTML = crashHistory.map(v => {
-        const cls = v.result === 'win'
-          ? 'high'
-          : v.result === 'cashout'
-            ? 'mid'
-            : 'low';
-        return `<span class="history-chip ${cls}">${v.label}</span>`;
-      }).join('');
-    }
-
-    function updateStats(){
-      const roundData = rounds[Math.min(currentRound - 1, rounds.length - 1)];
-      roundBadgeEl.textContent = `ROUND ${currentRound}`;
-      roundCountEl.textContent = `#${currentRound}`;
-      chanceTextEl.textContent = `${roundData.chance.toFixed(2)}%`;
-      bestWinEl.textContent = `x${biggestWin.toFixed(2)}`;
-
-      const roundMax = roundData.multiplier;
-      const progress = Math.min(((roundData.multiplier - 1) / (8 - 1)) * 100, 100);
-      progressFillEl.style.width = `${progress}%`;
-
-      roundSummaryEl.innerHTML = `
-        <b>Sesi:</b> ${gameState}<br>
-        <b>Round sekarang:</b> ${currentRound}/10<br>
-        <b>Multiplier target:</b> x${roundData.multiplier.toFixed(1)}<br>
-        <b>Peluang menang:</b> ${roundData.chance.toFixed(2)}%<br>
-        <b>Potensi cashout:</b> ${stake > 0 ? fmtCoin(currentPotential || (stake * roundData.multiplier)) + ' coin' : '-'}
-      `;
-
-      cashoutBoxEl.innerHTML = stake > 0
-        ? `Stake: <b>${fmtCoin(stake)} coin</b><br>Cashout sekarang: <b>${fmtCoin(currentPotential || (stake * roundData.multiplier))} coin</b>`
-        : 'Potensi cashout akan muncul di sini setelah win.';
-    }
-
-    function updateQueueInfo(){
-      if (gameState === 'awaiting_continue') {
-        queueInfoEl.textContent = `Win • cashout siap`;
-      } else if (gameState === 'locked' || gameState === 'animating') {
-        queueInfoEl.textContent = `Stake ${fmtCoin(stake)} coin`;
-      } else {
-        queueInfoEl.textContent = 'Belum ada sesi.';
-      }
-    }
-
-    function updatePrimaryButtonState(){
-      const ready = selectedSide && (gameState === 'idle' || gameState === 'locked');
-      flipBtn.disabled = !ready || gameState === 'animating' || gameState === 'awaiting_continue';
-      flipBtn.textContent = gameState === 'idle'
-        ? 'Mulai & Flip'
-        : `Flip Ronde ${currentRound}`;
-    }
-
-    function resetSessionUI(){
-      gameState = 'idle';
-      selectedSide = null;
-      currentRound = 1;
-      stake = 0;
-      currentPotential = 0;
-
-      sideDepanBtn.classList.remove('active');
-      sideBelakangBtn.classList.remove('active');
-
-      continueBtn.disabled = true;
-      cashOutBtn.disabled = true;
-
-      updatePrimaryButtonState();
-      updateQueueInfo();
-      updateStats();
-    }
-
-    function animateCoin(outcome){
-      coinFacing = outcome;
-      const randomTurns = 6 + Math.floor(Math.random() * 3);
-      const finalFlip = outcome === 'depan' ? 0 : 180;
-      const extraSpin = currentSpinSeed += 360;
-      coinEl.style.transform = `rotateY(${extraSpin + randomTurns * 360 + finalFlip}deg)`;
-    }
-
-    function logTxSafely(type, data = {}){
-      if (!currentUser) return Promise.resolve();
-      return addDoc(collection(db, 'users', currentUser.uid, 'transactions'), {
-        type,
-        ...data,
-        createdAt: serverTimestamp()
-      }).catch(() => {});
-    }
-
-    async function refreshWallet(uid){
-      try {
-        const snap = await getDoc(doc(db, 'users', uid));
-        if (snap.exists()) {
-          const data = snap.data();
-          currentCoin = Number(data.nubiPayCoin || 0);
-          currentBalance = Number(data.nubiPayBalance || 0);
-        } else {
-          currentCoin = 0;
-          currentBalance = 0;
-        }
-        updateWalletUI();
-      } catch (e) {
-        console.error(e);
-        walletNote.textContent = 'Wallet gagal dimuat.';
-      }
-    }
-
-    function subscribeWallet(uid){
-      if (walletUnsub) {
-        try { walletUnsub(); } catch {}
-        walletUnsub = null;
-      }
-
-      walletUnsub = onSnapshot(doc(db, 'users', uid), (snap) => {
-        if (snap.exists()) {
-          const data = snap.data();
-          currentCoin = Number(data.nubiPayCoin || 0);
-          currentBalance = Number(data.nubiPayBalance || 0);
-        } else {
-          currentCoin = 0;
-          currentBalance = 0;
-        }
-        updateWalletUI();
-        updateStats();
-      }, (err) => {
-        console.error(err);
-        walletNote.textContent = 'Sinkron wallet gagal.';
-      });
-    }
-
-    async function lockStakeAndStart(){
-      if (!currentUser) {
-        setMsg('Login dulu untuk bermain.', 'error');
-        return;
-      }
-
-      if (!selectedSide) {
-        setMsg('Pilih depan atau belakang dulu.', 'error');
-        return;
-      }
-
-      const amount = Number(betAmountEl.value);
-      if (!amount || amount <= 0) {
-        setMsg('Masukkan stake coin yang valid.', 'error');
-        return;
-      }
-
-      if (amount > currentCoin) {
-        setMsg('NUBIAPAY COIN tidak cukup.', 'error');
-        return;
-      }
-
-      if (gameState !== 'idle') {
-        setMsg('Sesi masih berjalan.', 'warn');
-        return;
-      }
-
-      gameState = 'animating';
-      updatePrimaryButtonState();
-      continueBtn.disabled = true;
-      cashOutBtn.disabled = true;
-      setMsg('Memproses stake...', 'warn');
-
-      try {
-        const userRef = doc(db, 'users', currentUser.uid);
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(userRef);
-          const coin = Number(snap.exists() ? snap.data().nubiPayCoin || 0 : 0);
-
-          if (coin < amount) {
-            throw new Error('NUBIAPAY COIN tidak cukup.');
-          }
-
-          tx.set(userRef, {
-            nubiPayCoin: round2(coin - amount)
-          }, { merge: true });
-        });
-
-        stake = round2(amount);
-        currentRound = 1;
-        currentPotential = round2(stake * rounds[0].multiplier);
-        gameState = 'locked';
-
-        await logTxSafely('coinflip_bet', {
-          stake,
-          chosenSide: selectedSide,
-          round: currentRound
-        });
-
-        setMsg(`Stake ${fmtCoin(stake)} coin terkunci.`, 'ok');
-        updateQueueInfo();
-        updateStats();
-        await spinCurrentRound();
-      } catch (e) {
-        console.error(e);
-        gameState = 'idle';
-        setMsg(e.message || 'Gagal memasang stake.', 'error');
-        updatePrimaryButtonState();
-        updateQueueInfo();
-        updateStats();
-      }
-    }
-
-    async function spinCurrentRound(){
-      if (!selectedSide) {
-        setMsg('Pilih sisi dulu.', 'error');
-        return;
-      }
-      if (!(gameState === 'locked' || gameState === 'idle')) {
-        return;
-      }
-
-      const roundData = rounds[Math.min(currentRound - 1, rounds.length - 1)];
-      const chance = roundData.chance;
-      const isWin = Math.random() * 100 < chance;
-      const outcome = isWin ? selectedSide : oppositeSide(selectedSide);
-
-      gameState = 'animating';
-      continueBtn.disabled = true;
-      cashOutBtn.disabled = true;
-      flipBtn.disabled = true;
-      updateQueueInfo();
-      updateStats();
-
-      setMsg(`Round ${currentRound} sedang diputar...`, 'warn');
-      animateCoin(outcome);
-
-      setTimeout(async () => {
-        if (isWin) {
-          currentPotential = round2(stake * roundData.multiplier);
-          if (currentPotential > biggestWin) biggestWin = currentPotential;
-
-          crashHistory.unshift({
-            result: 'win',
-            label: `R${currentRound} ✓ ${roundData.multiplier.toFixed(1)}x`
-          });
-          if (crashHistory.length > 12) crashHistory.pop();
-
-          await logTxSafely('coinflip_round_win', {
-            round: currentRound,
-            multiplier: roundData.multiplier,
-            chance,
-            potentialPayout: currentPotential,
-            chosenSide: selectedSide,
-            outcome
-          });
-
-          gameState = 'awaiting_continue';
-          continueBtn.disabled = currentRound >= 10 ? true : false;
-          cashOutBtn.disabled = false;
-          flipBtn.disabled = true;
-
-          const info = `Benar! ${sideLabel(outcome)} • potensi cashout ${fmtCoin(currentPotential)} coin.`;
-          setMsg(info, 'ok');
-          cashoutBoxEl.innerHTML = `Potensi cashout sekarang: <b>${fmtCoin(currentPotential)} coin</b><br>Jika lanjut dan menang lagi, payout naik ke tier berikutnya.`;
-        } else {
-          crashHistory.unshift({
-            result: 'loss',
-            label: `R${currentRound} ✕`
-          });
-          if (crashHistory.length > 12) crashHistory.pop();
-
-          await logTxSafely('coinflip_loss', {
-            round: currentRound,
-            multiplier: roundData.multiplier,
-            chance,
-            stake,
-            chosenSide: selectedSide,
-            outcome
-          });
-
-          setMsg(`Salah tebakan. Coin menunjukkan ${sideLabel(outcome)}. Stake hangus.`, 'error');
-          resetAfterLoss();
-        }
-
-        updateHistory();
-        updateStats();
-        updateQueueInfo();
-      }, 1150);
-    }
-
-    function resetAfterLoss(){
-      gameState = 'idle';
-      selectedSide = null;
-      stake = 0;
-      currentPotential = 0;
-
-      sideDepanBtn.classList.remove('active');
-      sideBelakangBtn.classList.remove('active');
-      continueBtn.disabled = true;
-      cashOutBtn.disabled = true;
-      updatePrimaryButtonState();
-      updateQueueInfo();
-      updateStats();
-
-      betAmountEl.value = '';
-    }
-
-    async function continueNextRound(){
-      if (gameState !== 'awaiting_continue') return;
-
-      if (currentRound >= 10) {
-        setMsg('Sudah mentok di round 10. Cash out sekarang.', 'warn');
-        continueBtn.disabled = true;
-        return;
-      }
-
-      currentRound += 1;
-      selectedSide = null;
-      gameState = 'locked';
-
-      sideDepanBtn.classList.remove('active');
-      sideBelakangBtn.classList.remove('active');
-      flipBtn.disabled = true;
-      continueBtn.disabled = true;
-      cashOutBtn.disabled = false;
-
-      const roundData = rounds[currentRound - 1];
-      currentPotential = round2(stake * roundData.multiplier);
-
-      setMsg(`Ronde ${currentRound} siap. Pilih depan atau belakang.`, 'ok');
-      updateStats();
-      updateQueueInfo();
-      updatePrimaryButtonState();
-    }
-
-    async function cashOut(){
-      if (!currentUser || !(gameState === 'awaiting_continue' || gameState === 'locked')) {
-        setMsg('Belum ada profit yang bisa di-cash out.', 'warn');
-        return;
-      }
-
-      if (!stake || !currentPotential) {
-        setMsg('Tidak ada nilai cash out.', 'warn');
-        return;
-      }
-
-      cashOutBtn.disabled = true;
-      continueBtn.disabled = true;
-      flipBtn.disabled = true;
-      setMsg('Memproses cash out...', 'warn');
-
-      const payout = round2(currentPotential);
-      const profit = round2(payout - stake);
-
-      try {
-        const userRef = doc(db, 'users', currentUser.uid);
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(userRef);
-          const coin = Number(snap.exists() ? snap.data().nubiPayCoin || 0 : 0);
-
-          tx.set(userRef, {
-            nubiPayCoin: round2(coin + payout)
-          }, { merge: true });
-        });
-
-        await logTxSafely('coinflip_cashout', {
-          round: currentRound,
-          stake,
-          payout,
-          profit,
-          multiplier: rounds[Math.min(currentRound - 1, rounds.length - 1)].multiplier
-        });
-
-        crashHistory.unshift({
-          result: 'cashout',
-          label: `R${currentRound} ⇢ ${rounds[currentRound - 1].multiplier.toFixed(1)}x`
-        });
-        if (crashHistory.length > 12) crashHistory.pop();
-        updateHistory();
-
-        setMsg(`Cash out sukses • +${fmtCoin(payout)} coin`, 'ok');
-        biggestWin = Math.max(biggestWin, payout);
-
-        gameState = 'idle';
-        selectedSide = null;
-        stake = 0;
-        currentPotential = 0;
-        currentRound = 1;
-
-        sideDepanBtn.classList.remove('active');
-        sideBelakangBtn.classList.remove('active');
-        betAmountEl.value = '';
-
-        cashoutBoxEl.innerHTML = 'Potensi cashout akan muncul di sini setelah win.';
-        updatePrimaryButtonState();
-        updateQueueInfo();
-        updateStats();
-        roundSummaryEl.innerHTML = 'Sesi selesai. Siap mulai lagi.';
-      } catch (e) {
-        console.error(e);
-        setMsg(e.message || 'Cash out gagal.', 'error');
-        cashOutBtn.disabled = false;
-      }
-    }
-
-    function renderInitial(){
-      updateLadder();
-      updateHistory();
-      updateWalletUI();
-      updateStats();
-      updateQueueInfo();
-      updatePrimaryButtonState();
-    }
-
-    sideDepanBtn.onclick = () => setChoice('depan');
-    sideBelakangBtn.onclick = () => setChoice('belakang');
-    flipBtn.onclick = () => lockStakeAndStart();
-    continueBtn.onclick = () => continueNextRound();
-    cashOutBtn.onclick = () => cashOut();
-
-    authBtn.onclick = async () => {
-      if (currentUser) {
-        await signOut(auth);
-        return;
-      }
-      const provider = new GoogleAuthProvider();
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (e) {
-        console.error(e);
-        setMsg('Login gagal.', 'error');
-      }
-    };
-
-    goHomeBtn.onclick = () => window.location.href = '/';
-    refreshBtn.onclick = async () => {
-      if (currentUser) await refreshWallet(currentUser.uid);
-      showToast('Wallet disegarkan');
-      updateStats();
-    };
-
-    toggleBlurBtn.onclick = () => {
-      balanceBlur = !balanceBlur;
-      updateWalletUI();
-      toggleBlurBtn.textContent = balanceBlur ? 'Tampilkan' : 'Sembunyikan';
-    };
-
-    copyUidBtn.onclick = async () => {
-      if (!currentUser) return;
-      try {
-        await navigator.clipboard.writeText(currentUser.uid);
-        showToast('UID disalin');
-      } catch {
-        showToast('Gagal menyalin UID');
-      }
-    };
-
-    async function handleAuthState(user){
-      currentUser = user;
-
-      if (walletUnsub) {
-        try { walletUnsub(); } catch {}
-        walletUnsub = null;
-      }
-
-      if (user) {
-        authBtn.textContent = 'Logout';
-        uidTxt.textContent = `UID: ${user.uid}`;
-        walletNote.textContent = 'Wallet tersinkron realtime ke Firestore.';
-        await refreshWallet(user.uid);
-        subscribeWallet(user.uid);
-      } else {
-        authBtn.textContent = 'Login Google';
-        uidTxt.textContent = 'UID: -';
-        currentCoin = 0;
-        currentBalance = 0;
-        walletNote.textContent = 'Login dulu untuk sinkron saldo dan mulai bermain.';
-        updateWalletUI();
-      }
-
-      renderInitial();
-    }
-
-    onAuthStateChanged(auth, handleAuthState);
-
-    renderInitial();
-  </script>
 </body>
 </html>
