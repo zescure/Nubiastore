@@ -1,0 +1,36 @@
+<script type="module">
+  import { initializeApp, getApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getFirestore, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  const marketConfig = {
+    apiKey: "API_KEY_1",
+    authDomain: "project-1.firebaseapp.com",
+    projectId: "project-1",
+    appId: "APP_ID_1"
+  };
+
+  const walletConfig = {
+    apiKey: "API_KEY_2",
+    authDomain: "project-2.firebaseapp.com",
+    projectId: "project-2",
+    appId: "APP_ID_2"
+  };
+
+  const marketApp = getApps().some(a => a.name === 'marketApp')
+    ? getApp('marketApp')
+    : initializeApp(marketConfig, 'marketApp');
+
+  const walletApp = getApps().some(a => a.name === 'walletApp')
+    ? getApp('walletApp')
+    : initializeApp(walletConfig, 'walletApp');
+
+  const marketDb = getFirestore(marketApp);
+  const marketAuth = getAuth(marketApp);
+
+  const walletDb = getFirestore(walletApp);
+  const walletAuth = getAuth(walletApp);
+
+  // marketDb -> market/charts
+  // walletDb -> saldo/coin/pnl
+</script>
