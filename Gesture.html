@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Gesture Note — Live Hand to Text</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#10192f;
+      --card:#111a31cc;
+      --card2:#0e162bcc;
+      --line:#223154;
+      --text:#eaf0ff;
+      --muted:#9fb0d0;
+      --accent:#7c9cff;
+      --accent2:#8ff0d3;
+      --danger:#ff6b88;
+      --ok:#69e8a7;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 24px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      min-height:100%;
+      background:
+        radial-gradient(circle at top left, rgba(124,156,255,.16), transparent 24%),
+        radial-gradient(circle at top right, rgba(143,240,211,.12), transparent 20%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      color:var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body{
+      padding:18px;
+    }
+
+    .app{
+      max-width: 1400px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: 1.35fr .9fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(17,26,49,.92), rgba(10,16,31,.9));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      overflow:hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .hero{
+      padding:18px 18px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .title h1{
+      margin:0 0 8px;
+      font-size: clamp(22px, 2.8vw, 34px);
+      letter-spacing:-.03em;
+    }
+
+    .title p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      max-width: 62ch;
+      font-size:14px;
+    }
+
+    .badge-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .pill.good{ border-color: rgba(105,232,167,.25); color: var(--ok); }
+    .pill.warn{ border-color: rgba(255,107,136,.25); color: var(--danger); }
+
+    .stage{
+      position:relative;
+      aspect-ratio: 16/10;
+      background: #050814;
+      overflow:hidden;
+    }
+
+    video, canvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transform: scaleX(-1);
+    }
+
+    .overlay-top{
+      position:absolute;
+      left:14px;
+      top:14px;
+      right:14px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      pointer-events:none;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(8,12,22,.58);
+      border:1px solid rgba(255,255,255,.1);
+      backdrop-filter: blur(8px);
+      font-size:12px;
+      color:var(--text);
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background: #f6c56b;
+      box-shadow:0 0 0 4px rgba(246,197,107,.15);
+    }
+
+    .dot.ok{
+      background: #69e8a7;
+      box-shadow:0 0 0 4px rgba(105,232,167,.14);
+    }
+
+    .dot.bad{
+      background: #ff6b88;
+      box-shadow:0 0 0 4px rgba(255,107,136,.14);
+    }
+
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .card{
+      padding:18px;
+      background: linear-gradient(180deg, rgba(17,26,49,.92), rgba(10,16,31,.9));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .card h2{
+      margin:0 0 10px;
+      font-size:16px;
+      letter-spacing:-.02em;
+    }
+
+    .status-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    .mini{
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.07);
+    }
+
+    .mini .label{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:6px;
+    }
+
+    .mini .value{
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:-.02em;
+      word-break:break-word;
+    }
+
+    .note-box{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    textarea{
+      width:100%;
+      min-height: 320px;
+      resize:vertical;
+      border:1px solid rgba(255,255,255,.1);
+      background: rgba(5,8,20,.65);
+      color:var(--text);
+      border-radius:18px;
+      padding:14px 14px;
+      font: inherit;
+      line-height:1.55;
+      outline:none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    textarea::placeholder{ color: #7390bf; }
+
+    .btn-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:700;
+      color:#07101f;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      cursor:pointer;
+    }
+
+    button.secondary{
+      color:var(--text);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .gesture-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .tag{
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.07);
+      color: var(--muted);
+      font-size:12px;
+    }
+
+    .foot{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.55;
+      margin-top:8px;
+    }
+
+    .history{
+      max-height: 180px;
+      overflow:auto;
+      padding-right:4px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .entry{
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.07);
+      font-size:13px;
+      color: var(--text);
+    }
+
+    .entry small{
+      display:block;
+      color:var(--muted);
+      margin-top:4px;
+      font-size:11px;
+    }
+
+    @media (max-width: 980px){
+      .app{ grid-template-columns:1fr; }
+      .stage{ aspect-ratio: 16/11; }
+      textarea{ min-height: 240px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel">
+      <div class="hero">
+        <div class="title">
+          <h1>Gesture Note</h1>
+          <p>
+            Kamera baca tangan, gesture stabil, lalu teks otomatis masuk ke note.
+            Cocok buat test awal, demo portofolio, atau fondasi produk gesture-to-text.
+          </p>
+        </div>
+        <div class="badge-row">
+          <div class="pill good">Live hand landmarks</div>
+          <div class="pill">Auto append note</div>
+          <div class="pill warn">No backend</div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="output"></canvas>
+
+        <div class="overlay-top">
+          <div class="chip"><span id="statusDot" class="dot"></span><span id="statusText">Menyiapkan kamera...</span></div>
+          <div class="chip">Gesture: <strong id="gestureNow">-</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="card">
+        <h2>State</h2>
+        <div class="status-grid">
+          <div class="mini">
+            <div class="label">Kondisi</div>
+            <div id="stateValue" class="value">Loading</div>
+          </div>
+          <div class="mini">
+            <div class="label">Tangan terdeteksi</div>
+            <div id="handValue" class="value">0</div>
+          </div>
+          <div class="mini">
+            <div class="label">Handedness</div>
+            <div id="handedValue" class="value">-</div>
+          </div>
+          <div class="mini">
+            <div class="label">Stable frames</div>
+            <div id="stableValue" class="value">0</div>
+          </div>
+        </div>
+
+        <div class="gesture-list" id="gestureTags">
+          <div class="tag">👍 thumbs up</div>
+          <div class="tag">✌️ peace</div>
+          <div class="tag">✊ fist</div>
+          <div class="tag">🖐 open palm</div>
+          <div class="tag">👌 ok</div>
+          <div class="tag">☝️ point up</div>
+          <div class="tag">🤘 rock on</div>
+          <div class="tag">🤟 i love you</div>
+          <div class="tag">🤙 call me</div>
+          <div class="tag">🫰 pinch</div>
+          <div class="tag">3️⃣ three</div>
+          <div class="tag">4️⃣ four</div>
+        </div>
+
+        <div class="foot">
+          Gesture akan masuk ke note kalau terdeteksi stabil beberapa frame. Jadi tidak spam saat tangan goyang.
+        </div>
+      </section>
+
+      <section class="card note-box">
+        <h2>Note</h2>
+        <textarea id="note" placeholder="Teks gesture akan muncul di sini..."></textarea>
+        <div class="btn-row">
+          <button id="clearBtn">Clear</button>
+          <button id="copyBtn" class="secondary">Copy note</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>History</h2>
+        <div id="history" class="history"></div>
+      </section>
+    </aside>
+  </main>
+
+  <script>
+    const videoElement = document.getElementById('video');
+    const canvasElement = document.getElementById('output');
+    const canvasCtx = canvasElement.getContext('2d');
+
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const stateValue = document.getElementById('stateValue');
+    const handValue = document.getElementById('handValue');
+    const handedValue = document.getElementById('handedValue');
+    const stableValue = document.getElementById('stableValue');
+    const gestureNow = document.getElementById('gestureNow');
+    const note = document.getElementById('note');
+    const history = document.getElementById('history');
+
+    const clearBtn = document.getElementById('clearBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    const gestureTexts = {
+      THUMBS_UP: "bagus ini bekerja 👍",
+      THUMBS_DOWN: "ada yang salah 👎",
+      PEACE: "aku mencintaimu ✌️",
+      FIST: "stop dulu ✊",
+      OPEN_PALM: "buka tangan ✋",
+      OK: "oke banget 👌",
+      POINT_UP: "fokus ke atas ☝️",
+      ROCK_ON: "gas terus 🤘",
+      I_LOVE_YOU: "aku mencintaimu 🤟",
+      CALL_ME: "hubungi aku 🤙",
+      THREE: "tiga jari terdeteksi 3️⃣",
+      FOUR: "empat jari terdeteksi 4️⃣",
+      PINCH: "pinch / kecil 🫰"
+    };
+
+    let lastGesture = null;
+    let stableFrames = 0;
+    let lastEmitAt = 0;
+    let latestHandedness = "-";
+
+    function setStatus(kind, text) {
+      statusText.textContent = text;
+      statusDot.className = 'dot' + (kind ? ` ${kind}` : '');
+    }
+
+    function dist(a, b) {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return Math.hypot(dx, dy);
+    }
+
+    function fingerUp(landmarks, tip, pip) {
+      return landmarks[tip].y < landmarks[pip].y;
+    }
+
+    function thumbOpen(landmarks, handedness) {
+      // Pada selfie view, kanan/kiri bisa kebaca kebalik tergantung orientasi tangan.
+      // Aturan ini cukup bagus untuk MVP gesture sederhana.
+      if (handedness === 'Left') return landmarks[4].x > landmarks[3].x;
+      if (handedness === 'Right') return landmarks[4].x < landmarks[3].x;
+      return landmarks[4].x < landmarks[3].x;
+    }
+
+    function classifyGesture(lm, handedness) {
+      const thumb = thumbOpen(lm, handedness);
+      const index = fingerUp(lm, 8, 6);
+      const middle = fingerUp(lm, 12, 10);
+      const ring = fingerUp(lm, 16, 14);
+      const pinky = fingerUp(lm, 20, 18);
+
+      const palmSize = Math.max(dist(lm[0], lm[9]), 0.0001);
+      const thumbIndexTouch = dist(lm[4], lm[8]) / palmSize < 0.42;
+
+      const allOpen = thumb && index && middle && ring && pinky;
+      const allClosed = !thumb && !index && !middle && !ring && !pinky;
+
+      if (allClosed) return 'FIST';
+      if (allOpen) return 'OPEN_PALM';
+
+      if (thumb && !index && !middle && !ring && !pinky) {
+        return lm[4].y < lm[2].y ? 'THUMBS_UP' : 'THUMBS_DOWN';
+      }
+
+      if (!thumb && index && middle && !ring && !pinky) return 'PEACE';
+      if (!thumb && index && !middle && !ring && !pinky) return 'POINT_UP';
+
+      if (thumbIndexTouch && !middle && !ring && !pinky) return 'PINCH';
+      if (thumbIndexTouch && middle && ring && pinky) return 'OK';
+
+      if (!thumb && index && middle && ring && !pinky) return 'THREE';
+      if (!thumb && index && middle && ring && pinky) return 'FOUR';
+
+      if (!thumb && index && !middle && !ring && pinky) return 'ROCK_ON';
+      if (thumb && index && !middle && !ring && pinky) return 'I_LOVE_YOU';
+      if (thumb && !index && !middle && !ring && pinky) return 'CALL_ME';
+
+      return null;
+    }
+
+    function pushHistory(label, text) {
+      const item = document.createElement('div');
+      item.className = 'entry';
+      const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      item.innerHTML = `<strong>${label}</strong><small>${time}</small><div>${text}</div>`;
+      history.prepend(item);
+    }
+
+    function appendToNote(gestureKey) {
+      const text = gestureTexts[gestureKey];
+      if (!text) return;
+
+      const current = note.value.trim();
+      note.value = current ? current + '\n' + text : text;
+      note.scrollTop = note.scrollHeight;
+
+      pushHistory(gestureKey, text);
+      lastEmitAt = Date.now();
+    }
+
+    clearBtn.addEventListener('click', () => {
+      note.value = '';
+      history.innerHTML = '';
+      setStatus('ok', 'Note dibersihkan');
+      stateValue.textContent = 'Ready';
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(note.value);
+        setStatus('ok', 'Note disalin');
+        stateValue.textContent = 'Copied';
+      } catch (e) {
+        setStatus('bad', 'Gagal copy');
+        stateValue.textContent = 'Error';
+      }
+    });
+
+    const hands = new Hands({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    });
+
+    hands.setOptions({
+      maxNumHands: 2,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.68,
+      minTrackingConfidence: 0.65
+    });
+
+    hands.onResults((results) => {
+      canvasElement.width = videoElement.videoWidth || 1280;
+      canvasElement.height = videoElement.videoHeight || 720;
+
+      canvasCtx.save();
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+      let detectedCount = 0;
+      let primaryGesture = null;
+      let primaryHandedness = '-';
+
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        detectedCount = results.multiHandLandmarks.length;
+
+        for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+          const landmarks = results.multiHandLandmarks[i];
+          const handed = results.multiHandedness && results.multiHandedness[i]
+            ? results.multiHandedness[i].label
+            : 'Unknown';
+
+          const gesture = classifyGesture(landmarks, handed);
+
+          drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+            color: 'rgba(143,240,211,.95)',
+            lineWidth: 4
+          });
+          drawLandmarks(canvasCtx, landmarks, {
+            color: 'rgba(124,156,255,.95)',
+            lineWidth: 2,
+            radius: 3
+          });
+
+          const wrist = landmarks[0];
+          const px = wrist.x * canvasElement.width;
+          const py = wrist.y * canvasElement.height;
+
+          canvasCtx.save();
+          canvasCtx.font = 'bold 18px Inter, sans-serif';
+          canvasCtx.fillStyle = 'rgba(8,12,22,.85)';
+          canvasCtx.fillRect(px + 10, py - 34, 160, 28);
+          canvasCtx.fillStyle = '#eaf0ff';
+          canvasCtx.fillText(`${handed} ${gesture ? gesture : 'HAND'}`, px + 18, py - 15);
+          canvasCtx.restore();
+
+          if (i === 0) {
+            primaryGesture = gesture;
+            primaryHandedness = handed;
+          }
+        }
+      }
+
+      canvasCtx.restore();
+
+      handValue.textContent = String(detectedCount);
+      handedValue.textContent = primaryHandedness;
+
+      if (!primaryGesture) {
+        gestureNow.textContent = '-';
+        stableFrames = 0;
+        lastGesture = null;
+        stableValue.textContent = '0';
+        setStatus('', detectedCount ? 'Tangan terlihat' : 'Tidak ada tangan');
+        stateValue.textContent = detectedCount ? 'Tracking' : 'Idle';
+        return;
+      }
+
+      gestureNow.textContent = primaryGesture;
+      setStatus('ok', `Gesture ${primaryGesture} terbaca`);
+      stateValue.textContent = 'Tracking';
+
+      if (primaryGesture === lastGesture) {
+        stableFrames += 1;
+      } else {
+        lastGesture = primaryGesture;
+        stableFrames = 1;
+      }
+
+      stableValue.textContent = String(stableFrames);
+
+      const now = Date.now();
+      const stableEnough = stableFrames >= 5;
+      const cooledDown = now - lastEmitAt > 1100;
+
+      if (stableEnough && cooledDown && gestureTexts[primaryGesture]) {
+        appendToNote(primaryGesture);
+      }
+    });
+
+    async function startCamera() {
+      try {
+        const camera = new Camera(videoElement, {
+          onFrame: async () => {
+            await hands.send({ image: videoElement });
+          },
+          width: 1280,
+          height: 720
+        });
+
+        await camera.start();
+        setStatus('ok', 'Kamera aktif');
+        stateValue.textContent = 'Live';
+      } catch (err) {
+        console.error(err);
+        setStatus('bad', 'Kamera gagal');
+        stateValue.textContent = 'Error';
+        gestureNow.textContent = 'permission / device issue';
+      }
+    }
+
+    window.addEventListener('load', startCamera);
+  </script>
+</body>
+</html>
