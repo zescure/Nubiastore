@@ -6,512 +6,500 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>PaperStocks — NUBIA Stocks</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-
 <style>
-  :root{
-    --bg:#f5f5f5;--surface:#0b0b0b;--muted:#6b7280;--text:#0b0b0b;
-    --accent:#ffd400;--accent-strong:#f5c300;--danger:#ff5c5c;
-    --card-bg:#ffffff;--glass:rgba(11,11,11,0.06);--shadow:0 4px 20px rgba(11,11,11,0.07);
-    --radius:16px;--green:#16a34a;--green2:#22c55e;--blue:#3b82f6;
-  }
-  *{box-sizing:border-box;font-family:Inter,system-ui,Arial;text-rendering:optimizeLegibility}
-  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-  a{text-decoration:none;color:inherit}
-  button,input,select{font:inherit}
+:root{
+  --bg:#f5f5f5;--surface:#0b0b0b;--muted:#6b7280;--text:#0b0b0b;
+  --accent:#ffd400;--accent-strong:#f5c300;--danger:#ff5c5c;
+  --card-bg:#ffffff;--shadow:0 4px 20px rgba(11,11,11,0.07);
+  --radius:16px;--green:#16a34a;--green2:#22c55e;--blue:#3b82f6;--purple:#8b5cf6;
+}
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial;text-rendering:optimizeLegibility}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}button,input,select{font:inherit}
 
-  .app{max-width:430px;margin:0 auto;padding:14px 14px 100px;display:flex;flex-direction:column;gap:12px}
+.app{max-width:430px;margin:0 auto;padding:14px 14px 100px;display:flex;flex-direction:column;gap:12px}
 
-  /* HEADER */
-  header{
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    background:linear-gradient(160deg,#0b0b0b,#1a1a1a);
-    color:#fff;padding:12px;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,0.18);
-    position:sticky;top:12px;z-index:50;
-  }
-  .logo{display:flex;align-items:center;gap:10px}
-  .logo .brand{
-    height:40px;width:40px;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent),var(--accent-strong));
-    display:flex;align-items:center;justify-content:center;font-weight:900;color:#111;font-size:18px;
-    box-shadow:0 4px 10px rgba(255,212,0,0.3);
-  }
-  .logo h1{margin:0;font-size:16px;font-weight:900;letter-spacing:-.3px}
-  .logo .tag{font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px}
-  .top-actions{display:flex;gap:8px;align-items:center}
-  .user-pill{
-    padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.07);
-    font-weight:700;font-size:11px;color:#fff;max-width:140px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid rgba(255,255,255,0.08);
-  }
-  .btn{height:40px;border-radius:10px;border:0;padding:0 14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px;transition:opacity .15s}
-  .btn:active{opacity:.8}
-  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff}
-  .btn-primary{background:var(--accent);color:#111;box-shadow:0 4px 14px rgba(255,212,0,0.25)}
-  .btn-danger{background:linear-gradient(180deg,#ff7070,#ff3838);color:#fff}
-  .btn-green{background:linear-gradient(180deg,#22c55e,#16a34a);color:#fff}
-  .btn-blue{background:linear-gradient(180deg,#60a5fa,#3b82f6);color:#fff}
-  .btn-outline{background:transparent;border:1.5px solid rgba(11,11,11,0.12);color:var(--text)}
-  .btn:disabled{opacity:.45;cursor:not-allowed}
-  .btn-sm{height:32px;font-size:12px;padding:0 10px;border-radius:8px}
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(160deg,#0b0b0b,#1a1a1a);color:#fff;padding:12px;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,0.18);position:sticky;top:12px;z-index:50}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .brand{height:40px;width:40px;border-radius:10px;background:linear-gradient(135deg,var(–accent),var(–accent-strong));display:flex;align-items:center;justify-content:center;font-weight:900;color:#111;font-size:18px;box-shadow:0 4px 10px rgba(255,212,0,0.3)}
+.logo h1{margin:0;font-size:16px;font-weight:900;letter-spacing:-.3px}
+.logo .tag{font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px}
+.top-actions{display:flex;gap:8px;align-items:center}
+.user-pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.07);font-weight:700;font-size:11px;color:#fff;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid rgba(255,255,255,0.08)}
+.admin-badge{padding:4px 8px;border-radius:999px;background:linear-gradient(135deg,#ffd400,#f5c300);color:#111;font-size:10px;font-weight:900}
 
-  /* CARDS */
-  .card{background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);border:1px solid rgba(11,11,11,0.04)}
-  .card h2{margin:0 0 6px 0;font-size:15px;font-weight:900}
-  .muted{color:var(--muted);font-size:13px}
-  .small-muted{font-size:12px;color:var(--muted)}
+/* BTN */
+.btn{height:40px;border-radius:10px;border:0;padding:0 14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px;transition:all .15s}
+.btn:active{opacity:.8}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff}
+.btn-primary{background:var(–accent);color:#111;box-shadow:0 4px 14px rgba(255,212,0,0.25)}
+.btn-danger{background:linear-gradient(180deg,#ff7070,#ff3838);color:#fff}
+.btn-green{background:linear-gradient(180deg,#22c55e,#16a34a);color:#fff}
+.btn-blue{background:linear-gradient(180deg,#60a5fa,#3b82f6);color:#fff}
+.btn-purple{background:linear-gradient(180deg,#a78bfa,#8b5cf6);color:#fff}
+.btn-outline{background:transparent;border:1.5px solid rgba(11,11,11,0.12);color:var(–text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-sm{height:32px;font-size:12px;padding:0 10px;border-radius:8px}
 
-  /* ACTION GRID */
-  .action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
-  .action-btn{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:10px 6px;border-radius:12px;min-height:62px;cursor:pointer;font-weight:800;
-    color:var(--text);background:#fafafa;border:1px solid rgba(11,11,11,0.05);
-    transition:transform .1s,box-shadow .1s;
-  }
-  .action-btn:active{transform:scale(.96)}
-  .action-btn .icon{font-size:20px;margin-bottom:5px;line-height:1}
-  .action-btn .label{font-size:11px;font-weight:800;text-align:center}
-  .action-btn.primary{background:linear-gradient(150deg,var(--accent),var(--accent-strong));border:0;box-shadow:0 6px 18px rgba(255,212,0,0.2)}
+/* CARDS */
+.card{background:var(–card-bg);border-radius:var(–radius);padding:14px;box-shadow:var(–shadow);border:1px solid rgba(11,11,11,0.04)}
+.card h2{margin:0 0 6px 0;font-size:15px;font-weight:900}
+.muted{color:var(–muted);font-size:13px}
+.small-muted{font-size:12px;color:var(–muted)}
 
-  /* LIST */
-  .list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-  .list-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:#fff;border:1px solid rgba(11,11,11,0.05)}
-  .list-item .meta{display:flex;flex-direction:column;gap:3px;min-width:0}
-  .list-item .price{font-weight:900}
-  .list-item .subsmall{font-size:12px;color:var(--muted)}
-  .list-item .right{text-align:right;min-width:100px}
+/* ACTION GRID */
+.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.action-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 6px;border-radius:12px;min-height:62px;cursor:pointer;font-weight:800;color:var(–text);background:#fafafa;border:1px solid rgba(11,11,11,0.05);transition:transform .1s}
+.action-btn:active{transform:scale(.96)}
+.action-btn .icon{font-size:20px;margin-bottom:5px;line-height:1}
+.action-btn .label{font-size:11px;font-weight:800;text-align:center}
+.action-btn.primary{background:linear-gradient(150deg,var(–accent),var(–accent-strong));border:0;box-shadow:0 6px 18px rgba(255,212,0,0.2)}
 
-  /* CHART */
-  .chart-card{height:240px;border-radius:12px;overflow:hidden;padding:0;background:#fff;display:flex;flex-direction:column}
-  canvas{width:100%;height:100%;display:block;touch-action:none}
-  .timeframe-bar{display:flex;gap:5px;padding:8px 10px 4px}
-  .tf-btn{
-    padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;
-    border:1.5px solid rgba(11,11,11,0.08);background:transparent;cursor:pointer;
-    color:var(--muted);transition:all .15s;
-  }
-  .tf-btn.active{background:var(--surface);border-color:var(--surface);color:#fff}
+/* LIST */
+.list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:#fff;border:1px solid rgba(11,11,11,0.05)}
+.list-item .meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.list-item .price{font-weight:900}
+.list-item .subsmall{font-size:12px;color:var(–muted)}
+.list-item .right{text-align:right;min-width:100px}
 
-  /* TRADE */
-  input[type="number"],input[type="text"],select{
-    width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid rgba(11,11,11,0.08);
-    font-size:14px;background:#fafafa;color:var(--text);outline:none;
-    transition:border-color .15s;
-  }
-  input:focus,select:focus{border-color:var(--accent)}
+/* CHART */
+.chart-card{height:240px;border-radius:12px;overflow:hidden;padding:0;background:#fff;display:flex;flex-direction:column}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+.timeframe-bar{display:flex;gap:5px;padding:8px 10px 4px;flex-wrap:wrap}
+.tf-btn{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;border:1.5px solid rgba(11,11,11,0.08);background:transparent;cursor:pointer;color:var(–muted);transition:all .15s}
+.tf-btn.active{background:var(–surface);border-color:var(–surface);color:#fff}
 
-  /* POSITION */
-  .position-item{
-    padding:12px;border-radius:12px;background:#fff;
-    border:1px solid rgba(11,11,11,0.05);display:flex;flex-direction:column;gap:10px;
-  }
-  .position-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-  .pnl-positive{color:var(--green);font-weight:900}
-  .pnl-negative{color:var(--danger);font-weight:900}
-  .pnl-neutral{color:var(--muted);font-weight:900}
-  .position-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:10px;background:#f8f8f8;border-radius:10px}
-  .stat-box{display:flex;flex-direction:column;gap:2px}
-  .stat-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
-  .stat-val{font-size:13px;font-weight:900}
-  .position-actions{display:flex;gap:6px;flex-wrap:wrap}
+/* INPUTS */
+input[type=“number”],input[type=“text”],input[type=“email”],input[type=“password”],select{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid rgba(11,11,11,0.08);font-size:14px;background:#fafafa;color:var(–text);outline:none;transition:border-color .15s}
+input:focus,select:focus{border-color:var(–accent)}
 
-  /* ORDER BOOK */
-  .orderbook{margin-top:10px;padding:10px;border-radius:12px;border:1px solid rgba(0,0,0,0.04);background:#fafafa}
-  .orderbook-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .orderbook-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .book-side{padding:8px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.04)}
-  .book-header{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid rgba(0,0,0,0.06)}
-  .order-row{display:flex;justify-content:space-between;padding:4px 6px;border-radius:6px;font-weight:700;font-size:12px;margin-bottom:3px;transition:background .3s}
-  .order-row:hover{background:rgba(0,0,0,0.03)}
-  .bid{color:var(--green)}
-  .ask{color:var(--danger)}
-  .ob-bar{height:3px;border-radius:2px;margin-top:2px;opacity:.3}
-  .ob-bar-bid{background:var(--green)}
-  .ob-bar-ask{background:var(--danger)}
+/* POSITION */
+.position-item{padding:12px;border-radius:12px;background:#fff;border:1px solid rgba(11,11,11,0.05);display:flex;flex-direction:column;gap:10px}
+.position-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.pnl-positive{color:var(–green);font-weight:900}
+.pnl-negative{color:var(–danger);font-weight:900}
+.position-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:10px;background:#f8f8f8;border-radius:10px}
+.stat-box{display:flex;flex-direction:column;gap:2px}
+.stat-label{font-size:10px;color:var(–muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.stat-val{font-size:13px;font-weight:900}
+.position-actions{display:flex;gap:6px;flex-wrap:wrap}
 
-  /* RECENT TRADES TICKER */
-  .trades-ticker{overflow:hidden;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.04);margin-top:8px;max-height:100px;overflow-y:auto}
-  .ticker-item{display:flex;justify-content:space-between;align-items:center;padding:5px 10px;font-size:11px;font-weight:700;border-bottom:1px solid rgba(0,0,0,0.03)}
-  .ticker-item:last-child{border-bottom:0}
-  .ticker-buy{color:var(--green)}
-  .ticker-sell{color:var(--danger)}
+/* ORDER BOOK */
+.orderbook{margin-top:10px;padding:10px;border-radius:12px;border:1px solid rgba(0,0,0,0.04);background:#fafafa}
+.orderbook-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.orderbook-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.book-side{padding:8px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.04)}
+.book-header{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.order-row{display:flex;justify-content:space-between;padding:4px 6px;border-radius:6px;font-weight:700;font-size:12px;margin-bottom:3px}
+.bid{color:var(–green)}.ask{color:var(–danger)}
+.ob-bar{height:3px;border-radius:2px;margin-top:2px;opacity:.3}
+.ob-bar-bid{background:var(–green)}.ob-bar-ask{background:var(–danger)}
+.trades-ticker{overflow-y:auto;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.04);margin-top:8px;max-height:90px}
+.ticker-item{display:flex;justify-content:space-between;align-items:center;padding:5px 10px;font-size:11px;font-weight:700;border-bottom:1px solid rgba(0,0,0,0.03)}
+.ticker-buy{color:var(–green)}.ticker-sell{color:var(–danger)}
 
-  /* DEPOSIT PANEL */
-  .deposit-item{
-    padding:12px;border-radius:12px;background:#fff;
-    border:1px solid rgba(11,11,11,0.05);display:flex;flex-direction:column;gap:10px;
-  }
-  .deposit-badge{
-    display:inline-flex;align-items:center;gap:5px;padding:4px 10px;
-    border-radius:999px;font-size:11px;font-weight:800;
-  }
-  .badge-active{background:rgba(34,197,94,0.12);color:var(--green)}
-  .badge-locked{background:rgba(255,92,92,0.12);color:var(--danger)}
-  .badge-matured{background:rgba(255,212,0,0.2);color:#b38600}
-  .interest-box{
-    padding:10px;border-radius:10px;background:linear-gradient(135deg,rgba(255,212,0,0.08),rgba(255,212,0,0.03));
-    border:1px solid rgba(255,212,0,0.2);
-  }
-  .divider{height:1px;background:rgba(0,0,0,0.06);margin:10px 0}
+/* DEPOSIT */
+.deposit-item{padding:12px;border-radius:12px;background:#fff;border:1px solid rgba(11,11,11,0.05);display:flex;flex-direction:column;gap:10px}
+.deposit-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800}
+.badge-active{background:rgba(34,197,94,0.12);color:var(–green)}
+.badge-locked{background:rgba(255,92,92,0.12);color:var(–danger)}
+.badge-matured{background:rgba(255,212,0,0.2);color:#b38600}
+.interest-box{padding:10px;border-radius:10px;background:linear-gradient(135deg,rgba(255,212,0,0.08),rgba(255,212,0,0.03));border:1px solid rgba(255,212,0,0.2)}
+.divider{height:1px;background:rgba(0,0,0,0.06);margin:10px 0}
 
-  /* MODAL OVERLAY */
-  .modal-overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;
-    display:flex;align-items:flex-end;justify-content:center;
-    opacity:0;pointer-events:none;transition:opacity .2s;
-  }
-  .modal-overlay.open{opacity:1;pointer-events:all}
-  .modal-sheet{
-    background:#fff;border-radius:20px 20px 0 0;padding:20px;
-    width:100%;max-width:430px;max-height:82vh;overflow-y:auto;
-    transform:translateY(40px);transition:transform .25s cubic-bezier(.34,1.56,.64,1);
-  }
-  .modal-overlay.open .modal-sheet{transform:translateY(0)}
-  .modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,0.12);margin:0 auto 16px}
-  .modal-title{font-size:17px;font-weight:900;margin-bottom:4px}
-  .modal-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-sheet{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:430px;max-height:82vh;overflow-y:auto;transform:translateY(40px);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.modal-overlay.open .modal-sheet{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,0.12);margin:0 auto 16px}
+.modal-title{font-size:17px;font-weight:900;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(–muted);margin-bottom:16px}
 
-  /* CHIPS & PILLS */
-  .chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-weight:800;font-size:11px}
-  .chip-yellow{background:rgba(255,212,0,0.18);color:#8a6a00}
-  .chip-green{background:rgba(34,197,94,0.12);color:var(--green)}
-  .chip-red{background:rgba(255,92,92,0.12);color:var(--danger)}
-  .section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
-  .pill{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;background:rgba(0,0,0,0.05);font-size:12px;font-weight:800}
+/* LOADING OVERLAY */
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.loading-overlay.show{opacity:1;pointer-events:all}
+.loading-spinner{width:48px;height:48px;border:4px solid rgba(255,212,0,0.3);border-top-color:var(–accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:14px}
+.loading-text{color:#fff;font-weight:800;font-size:15px}
+.loading-sub{color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  /* MISC */
-  .hidden{display:none!important}
-  .hidden-blur{filter:blur(6px);user-select:none}
-  .toast{
-    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(16px);opacity:0;pointer-events:none;
-    background:#111;color:#fff;padding:10px 16px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,0.2);
-    transition:opacity .2s,transform .2s;z-index:1000;font-size:13px;font-weight:800;white-space:nowrap;
-  }
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  .trade-summary{padding:10px 12px;border-radius:10px;background:rgba(0,0,0,0.025);border:1px solid rgba(0,0,0,0.05);font-size:13px;line-height:1.6;margin-top:8px}
-  .trade-summary b{font-weight:900}
-  .status-row{display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:10px;background:#f8f8f8;font-size:13px;margin-top:8px}
-  .price-badge{
-    font-size:22px;font-weight:900;letter-spacing:-.5px;
-    background:linear-gradient(135deg,#0b0b0b,#333);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  }
-  .change-up{color:var(--green);font-weight:800;font-size:13px}
-  .change-dn{color:var(--danger);font-weight:800;font-size:13px}
-  .hlrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-  .hlbox{flex:1;min-width:80px;padding:8px 10px;border-radius:10px;background:#f8f8f8;border:1px solid rgba(0,0,0,0.04)}
-  .hlbox .hl-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
-  .hlbox .hl-val{font-size:14px;font-weight:900;margin-top:2px}
+/* CHIPS & PILLS */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-weight:800;font-size:11px}
+.chip-yellow{background:rgba(255,212,0,0.18);color:#8a6a00}
+.chip-green{background:rgba(34,197,94,0.12);color:var(–green)}
+.chip-red{background:rgba(255,92,92,0.12);color:var(–danger)}
+.chip-blue{background:rgba(59,130,246,0.12);color:var(–blue)}
+.chip-purple{background:rgba(139,92,246,0.12);color:var(–purple)}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.pill{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;background:rgba(0,0,0,0.05);font-size:12px;font-weight:800}
 
-  /* SELL INLINE */
-  .sell-inline{
-    padding:10px;background:#fff6f6;border-radius:10px;
-    border:1px solid rgba(255,92,92,0.15);display:flex;flex-direction:column;gap:8px;
-  }
-  .autoclose-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .autoclose-badge{
-    display:inline-flex;align-items:center;gap:4px;padding:4px 8px;
-    border-radius:999px;font-size:11px;font-weight:800;background:rgba(59,130,246,0.12);color:var(--blue);
-  }
+/* MISC */
+.hidden{display:none!important}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(16px);opacity:0;pointer-events:none;background:#111;color:#fff;padding:10px 16px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,0.2);transition:opacity .2s,transform .2s;z-index:1000;font-size:13px;font-weight:800;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.trade-summary{padding:10px 12px;border-radius:10px;background:rgba(0,0,0,0.025);border:1px solid rgba(0,0,0,0.05);font-size:13px;line-height:1.7;margin-top:8px}
+.trade-summary b{font-weight:900}
+.price-badge{font-size:22px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,#0b0b0b,#333);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.change-up{color:var(–green);font-weight:800;font-size:13px}
+.change-dn{color:var(–danger);font-weight:800;font-size:13px}
+.hlrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.hlbox{flex:1;min-width:80px;padding:8px 10px;border-radius:10px;background:#f8f8f8;border:1px solid rgba(0,0,0,0.04)}
+.hlbox .hl-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(–muted)}
+.hlbox .hl-val{font-size:14px;font-weight:900;margin-top:2px}
+.autoclose-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(59,130,246,0.12);color:var(–blue)}
+.auth-tabs{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1.5px solid rgba(0,0,0,0.08);margin-bottom:14px}
+.auth-tab{flex:1;padding:9px;font-weight:800;font-size:13px;border:0;background:transparent;cursor:pointer;color:var(–muted)}
+.auth-tab.active{background:var(–surface);color:#fff}
 
-  /* AUTH TABS */
-  .auth-tabs{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1.5px solid rgba(0,0,0,0.08);margin-bottom:14px}
-  .auth-tab{flex:1;padding:9px;font-weight:800;font-size:13px;border:0;background:transparent;cursor:pointer;color:var(--muted)}
-  .auth-tab.active{background:var(--surface);color:#fff}
+/* FUNDAMENTAL ANALYSIS */
+.fa-card{padding:12px;border-radius:12px;background:linear-gradient(135deg,#fafafa,#fff);border:1px solid rgba(11,11,11,0.05);margin-top:10px}
+.fa-section{margin-bottom:12px}
+.fa-section-title{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:var(–muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fa-metric{padding:8px 10px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.05)}
+.fa-metric .fa-label{font-size:10px;font-weight:700;color:var(–muted);text-transform:uppercase;letter-spacing:.4px}
+.fa-metric .fa-val{font-size:14px;font-weight:900;margin-top:3px}
+.fa-metric .fa-change{font-size:11px;margin-top:2px;font-weight:700}
+.rating-bar{height:8px;border-radius:4px;background:#f0f0f0;margin-top:6px;overflow:hidden}
+.rating-fill{height:100%;border-radius:4px;transition:width .5s}
+.signal-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.04);font-size:12px;font-weight:700}
+.signal-row:last-child{border-bottom:0}
+.signal-bull{color:var(–green)}
+.signal-bear{color:var(–danger)}
+.signal-neutral{color:var(–muted)}
+.ma-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800}
+.ma-above{background:rgba(34,197,94,0.12);color:var(–green)}
+.ma-below{background:rgba(255,92,92,0.12);color:var(–danger)}
+.analyst-block{padding:10px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.05)}
+.analyst-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.analyst-score{font-size:28px;font-weight:900}
+.analyst-label{font-size:13px;font-weight:800}
+.analyst-count{font-size:11px;color:var(–muted)}
+.consensus-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-top:8px}
 
-  /* PRICE PULSE ANIMATION */
-  @keyframes pricePulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
-  .price-updating{animation:pricePulse .5s ease}
+/* ADMIN PANEL */
+.admin-panel{background:linear-gradient(160deg,#0f0f0f,#1c1410);border-radius:var(–radius);padding:14px;box-shadow:0 8px 28px rgba(0,0,0,0.25);border:1px solid rgba(255,212,0,0.15)}
+.admin-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.admin-icon{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(–accent),var(–accent-strong));display:flex;align-items:center;justify-content:center;font-size:16px}
+.admin-title{color:#fff;font-weight:900;font-size:14px}
+.admin-sub{color:rgba(255,255,255,0.5);font-size:11px;margin-top:1px}
+.admin-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.admin-stat{padding:10px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);text-align:center}
+.admin-stat .as-val{font-size:18px;font-weight:900;color:#fff}
+.admin-stat .as-label{font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px;font-weight:700;text-transform:uppercase}
+.admin-search{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:9px 12px;width:100%;font-size:13px;margin-bottom:10px}
+.admin-search::placeholder{color:rgba(255,255,255,0.3)}
+.admin-search:focus{outline:none;border-color:var(–accent)}
+.admin-user-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px;margin-bottom:8px}
+.auc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.auc-email{color:#fff;font-weight:800;font-size:13px;word-break:break-all}
+.auc-uid{color:rgba(255,255,255,0.4);font-size:10px;font-family:monospace;margin-top:2px}
+.auc-coin{color:var(–accent);font-weight:900;font-size:14px}
+.auc-positions{display:flex;flex-direction:column;gap:5px}
+.auc-pos-row{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:12px;font-weight:700}
+.auc-pos-left{color:rgba(255,255,255,0.8)}
+.auc-pos-right{display:flex;gap:6px;align-items:center}
+.auc-dep-tag{padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;background:rgba(255,212,0,0.15);color:var(–accent)}
+.auc-open-tag{padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;background:rgba(34,197,94,0.15);color:var(–green2)}
+.admin-tabs{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);margin-bottom:10px}
+.admin-tab{flex:1;padding:8px;font-weight:800;font-size:12px;border:0;background:transparent;cursor:pointer;color:rgba(255,255,255,0.4)}
+.admin-tab.active{background:rgba(255,212,0,0.15);color:var(–accent)}
+.admin-empty{color:rgba(255,255,255,0.3);font-size:13px;text-align:center;padding:20px 0}
+.admin-loading{color:rgba(255,255,255,0.5);font-size:12px;text-align:center;padding:16px 0}
 
-  @media(min-width:430px){.app{padding-left:18px;padding-right:18px}}
+/* PRICE PULSE */
+@keyframes pricePulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
+.price-updating{animation:pricePulse .5s ease}
+@keyframes priceUp{0%{color:inherit}50%{color:var(–green)}100%{color:inherit}}
+@keyframes priceDn{0%{color:inherit}50%{color:var(–danger)}100%{color:inherit}}
+.flash-up{animation:priceUp .6s ease}
+.flash-dn{animation:priceDn .6s ease}
+
+@media(min-width:430px){.app{padding-left:18px;padding-right:18px}}
 </style>
 
 </head>
 <body>
 <div class="app">
 
-  <!-- HEADER -->
+<!-- HEADER -->
 
-  <header>
-    <div class="logo">
-      <div class="brand">PS</div>
-      <div>
-        <h1>PaperStocks</h1>
-        <div class="tag">NUBIA Stocks · Lot Trading</div>
-      </div>
-    </div>
-    <div class="top-actions">
-      <div id="userInfo" class="user-pill">Belum Login</div>
-      <button id="btnSignIn" class="btn btn-ghost btn-sm">Login</button>
-      <button id="btnSignOut" class="btn btn-ghost btn-sm hidden">Keluar</button>
-    </div>
-  </header>
-
-  <!-- HOME -->
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-      <div>
-        <h2>Dashboard</h2>
-        <div class="muted">Saldo & ringkasan akun</div>
-      </div>
-      <div style="text-align:right">
-        <div class="small-muted">NUBIAPAY COIN</div>
-        <div id="balCoin" class="price-badge">—</div>
-        <div class="small-muted" style="margin-top:3px">Balance: <span id="balRp">—</span></div>
-      </div>
-    </div>
-    <div class="action-grid">
-      <div class="action-btn primary" id="btnDeposit">
-        <div class="icon">⚡</div>
-        <div class="label">Top Up</div>
-      </div>
-      <div class="action-btn" id="btnWithdraw">
-        <div class="icon">🏦</div>
-        <div class="label">Deposit<br/>Saham</div>
-      </div>
-      <div class="action-btn" id="btnPortfolio">
-        <div class="icon">📦</div>
-        <div class="label">Portfolio</div>
-      </div>
-      <div class="action-btn" id="btnMarkets">
-        <div class="icon">📈</div>
-        <div class="label">Markets</div>
-      </div>
+<header>
+  <div class="logo">
+    <div class="brand">PS</div>
+    <div>
+      <h1>PaperStocks</h1>
+      <div class="tag">NUBIA Stocks · Lot Trading</div>
     </div>
   </div>
+  <div class="top-actions">
+    <div id="adminBadge" class="admin-badge hidden">⚡ ADMIN</div>
+    <div id="userInfo" class="user-pill">Belum Login</div>
+    <button id="btnSignIn" class="btn btn-ghost btn-sm">Login</button>
+    <button id="btnSignOut" class="btn btn-ghost btn-sm hidden">Keluar</button>
+  </div>
+</header>
 
-  <!-- MARKET LIST -->
+<!-- DASHBOARD -->
 
-  <div id="page-home" class="card">
-    <div class="section-title">
-      <div>
-        <div style="font-weight:900">Daftar Market</div>
-        <div class="muted">Pilih untuk lihat chart & trading</div>
-      </div>
-      <div class="pill" id="visibleCountTop">0 market</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+    <div><h2>Dashboard</h2><div class="muted">Saldo & ringkasan akun</div></div>
+    <div style="text-align:right">
+      <div class="small-muted">NUBIAPAY COIN</div>
+      <div id="balCoin" class="price-badge">—</div>
+      <div class="small-muted" style="margin-top:3px">Balance: <span id="balRp">—</span></div>
     </div>
-    <div id="marketList" class="list" style="max-height:320px;overflow:auto"></div>
   </div>
-
-  <!-- MARKET VIEW -->
-
-  <div id="page-market" class="card hidden">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-      <div style="min-width:0">
-        <div id="marketName" style="font-weight:900;font-size:17px">—</div>
-        <div id="marketSymbol" class="muted" style="font-size:13px">—</div>
-        <div id="marketDesc" class="small-muted" style="margin-top:4px">—</div>
-      </div>
-      <div style="text-align:right;flex-shrink:0">
-        <div id="marketPrice" class="price-badge">—</div>
-        <div id="marketChangeDisplay" class="change-up" style="margin-top:2px">—</div>
-        <div id="marketVolDisplay" class="small-muted" style="margin-top:2px">Vol —</div>
-      </div>
-    </div>
-
-```
-<div class="hlrow">
-  <div class="hlbox">
-    <div class="hl-label">Open</div>
-    <div class="hl-val" id="mktOpen">—</div>
-  </div>
-  <div class="hlbox">
-    <div class="hl-label">High</div>
-    <div class="hl-val" id="mktHigh" style="color:var(--green)">—</div>
-  </div>
-  <div class="hlbox">
-    <div class="hl-label">Low</div>
-    <div class="hl-val" id="mktLow" style="color:var(--danger)">—</div>
-  </div>
-  <div class="hlbox">
-    <div class="hl-label">Spread</div>
-    <div class="hl-val" id="mktSpread">—</div>
+  <div class="action-grid">
+    <div class="action-btn primary" id="btnDeposit"><div class="icon">⚡</div><div class="label">Top Up</div></div>
+    <div class="action-btn" id="btnWithdraw"><div class="icon">🏦</div><div class="label">Deposit Saham</div></div>
+    <div class="action-btn" id="btnPortfolio"><div class="icon">📦</div><div class="label">Portfolio</div></div>
+    <div class="action-btn" id="btnMarkets"><div class="icon">📈</div><div class="label">Markets</div></div>
   </div>
 </div>
 
-<!-- CHART -->
-<div class="chart-card" style="margin-top:10px">
-  <div class="timeframe-bar">
-    <button class="tf-btn" data-tf="15">15m</button>
-    <button class="tf-btn" data-tf="60">1H</button>
-    <button class="tf-btn" data-tf="240">4H</button>
-    <button class="tf-btn active" data-tf="400">1D</button>
-    <button class="tf-btn" data-tf="9999">All</button>
+<!-- MARKET LIST -->
+
+<div id="page-home" class="card">
+  <div class="section-title">
+    <div><div style="font-weight:900">Daftar Market</div><div class="muted">Pilih untuk chart & trading</div></div>
+    <div class="pill" id="visibleCountTop">0 market</div>
   </div>
-  <canvas id="chartCanvas" style="flex:1"></canvas>
+  <div id="marketList" class="list" style="max-height:320px;overflow:auto"></div>
 </div>
 
-<!-- BID/ASK ROW -->
-<div style="display:flex;gap:8px;margin-top:10px">
-  <div style="flex:1;padding:10px;background:#f0fff4;border-radius:10px;border:1px solid rgba(34,197,94,0.15)">
-    <div class="hl-label">BID (Beli)</div>
-    <div id="marketBid" style="font-weight:900;color:var(--green);font-size:15px">—</div>
-  </div>
-  <div style="flex:1;padding:10px;background:#fff0f0;border-radius:10px;border:1px solid rgba(255,92,92,0.15)">
-    <div class="hl-label">ASK (Jual)</div>
-    <div id="marketAsk" style="font-weight:900;color:var(--danger);font-size:15px">—</div>
-  </div>
-  <div style="flex:1;padding:10px;background:#f8f8f8;border-radius:10px;border:1px solid rgba(0,0,0,0.05)">
-    <div class="hl-label">Volume</div>
-    <div id="marketVolume" style="font-weight:900;font-size:15px">—</div>
-  </div>
-</div>
+<!-- MARKET VIEW -->
 
-<!-- ORDER BOOK -->
-<div class="orderbook">
-  <div class="orderbook-title">
-    <div style="font-weight:900;font-size:13px">Order Book</div>
-    <div id="orderbookSummary" class="small-muted">—</div>
-  </div>
-  <div class="orderbook-grid">
-    <div class="book-side" id="book-asks"><div class="book-header ask">Asks</div></div>
-    <div class="book-side" id="book-bids"><div class="book-header bid">Bids</div></div>
-  </div>
-  <div style="margin-top:8px">
-    <div class="small-muted" style="margin-bottom:5px;font-weight:700">Recent Trades</div>
-    <div class="trades-ticker" id="recentTradesTicker">
-      <div class="ticker-item"><span style="color:var(--muted)">Belum ada data</span></div>
+<div id="page-market" class="card hidden">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+    <div style="min-width:0">
+      <div id="marketName" style="font-weight:900;font-size:17px">—</div>
+      <div id="marketSymbol" class="muted">—</div>
+      <div id="marketDesc" class="small-muted" style="margin-top:4px">—</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <div id="marketPrice" class="price-badge">—</div>
+      <div id="marketChangeDisplay" class="change-up" style="margin-top:2px">—</div>
+      <div id="marketVolDisplay" class="small-muted" style="margin-top:2px">Vol —</div>
     </div>
   </div>
-</div>
+  <div class="hlrow">
+    <div class="hlbox"><div class="hl-label">Open</div><div class="hl-val" id="mktOpen">—</div></div>
+    <div class="hlbox"><div class="hl-label">High</div><div class="hl-val" id="mktHigh" style="color:var(--green)">—</div></div>
+    <div class="hlbox"><div class="hl-label">Low</div><div class="hl-val" id="mktLow" style="color:var(--danger)">—</div></div>
+    <div class="hlbox"><div class="hl-label">Spread</div><div class="hl-val" id="mktSpread">—</div></div>
+  </div>
 
-<!-- TRADE FORM -->
-<div style="margin-top:12px">
-  <div style="display:flex;gap:8px;align-items:flex-end">
-    <div style="flex:1">
-      <div class="small-muted" style="margin-bottom:5px;font-weight:700">Jumlah Lot</div>
-      <input id="lotInput" type="number" value="1" min="1" step="1"/>
+  <!-- CHART -->
+
+  <div class="chart-card" style="margin-top:10px">
+    <div class="timeframe-bar">
+      <button class="tf-btn" data-tf="15">15m</button>
+      <button class="tf-btn" data-tf="60">1H</button>
+      <button class="tf-btn" data-tf="240">4H</button>
+      <button class="tf-btn active" data-tf="400">1D</button>
+      <button class="tf-btn" data-tf="9999">All</button>
     </div>
-    <div style="flex:1">
-      <div class="small-muted" style="margin-bottom:5px;font-weight:700">= Saham</div>
-      <input id="sharesDisplay" type="text" readonly value="100 lembar"/>
-    </div>
+    <canvas id="chartCanvas" style="flex:1"></canvas>
   </div>
-  <div class="trade-summary" id="tradePreview">Pilih market untuk estimasi harga.</div>
+
+  <!-- BID/ASK -->
+
   <div style="display:flex;gap:8px;margin-top:10px">
-    <button id="btnBuy" class="btn btn-primary" style="flex:1;height:46px;font-size:14px">Beli</button>
-    <button id="btnSell" class="btn btn-danger" style="flex:1;height:46px;font-size:14px">Jual</button>
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- PORTFOLIO -->
-
-  <div id="page-portfolio" class="card hidden">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <div>
-        <div style="font-weight:900;font-size:15px">Portfolio</div>
-        <div class="muted">Posisi & histori transaksi</div>
-      </div>
-      <div style="text-align:right">
-        <div class="small-muted">Unrealized PnL</div>
-        <div id="totalPnl" style="font-weight:900;font-size:18px">—</div>
-      </div>
+    <div style="flex:1;padding:10px;background:#f0fff4;border-radius:10px;border:1px solid rgba(34,197,94,0.15)">
+      <div class="hl-label">BID (Beli)</div>
+      <div id="marketBid" style="font-weight:900;color:var(--green);font-size:15px">—</div>
     </div>
-
-```
-<div class="divider"></div>
-
-<div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-    <div style="font-weight:800;font-size:13px">Posisi Terbuka</div>
-    <div id="posLiveTag" class="chip chip-green" style="font-size:10px">● LIVE</div>
-  </div>
-  <div id="positionsList" class="list"></div>
-</div>
-
-<div class="divider"></div>
-
-<div>
-  <div style="font-weight:800;font-size:13px;margin-bottom:8px">Histori Transaksi</div>
-  <div id="tradesList" class="list" style="max-height:260px;overflow:auto"></div>
-</div>
-```
-
-  </div>
-
-  <!-- DEPOSIT SAHAM PANEL -->
-
-  <div id="page-deposit" class="card hidden">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <div>
-        <div style="font-weight:900;font-size:15px">Deposit Saham</div>
-        <div class="muted">Lock saham, dapat bunga & dividen</div>
-      </div>
-      <div style="text-align:right">
-        <div class="chip chip-yellow">🏦 Staking</div>
-      </div>
+    <div style="flex:1;padding:10px;background:#fff0f0;border-radius:10px;border:1px solid rgba(255,92,92,0.15)">
+      <div class="hl-label">ASK (Jual)</div>
+      <div id="marketAsk" style="font-weight:900;color:var(--danger);font-size:15px">—</div>
     </div>
-
-```
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
-  <div class="hlbox">
-    <div class="hl-label">Bunga / Tahun</div>
-    <div class="hl-val" style="color:var(--green)">3%</div>
-    <div class="small-muted" style="margin-top:2px;font-size:10px">dari nilai koin</div>
-  </div>
-  <div class="hlbox">
-    <div class="hl-label">Dividen / Tahun</div>
-    <div class="hl-val" style="color:var(--blue)">4%</div>
-    <div class="small-muted" style="margin-top:2px;font-size:10px">by lot otomatis</div>
-  </div>
-  <div class="hlbox">
-    <div class="hl-label">Fee Unlock Awal</div>
-    <div class="hl-val" style="color:var(--danger)">1.7%</div>
-    <div class="small-muted" style="margin-top:2px;font-size:10px">dari nilai koin</div>
-  </div>
-  <div class="hlbox">
-    <div class="hl-label">Jatuh Tempo</div>
-    <div class="hl-val">1 Tahun</div>
-    <div class="small-muted" style="margin-top:2px;font-size:10px">auto unlock</div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<div>
-  <div style="font-weight:800;font-size:13px;margin-bottom:8px">Saham Tersedia untuk Deposit</div>
-  <div id="depositAvailList" class="list"></div>
-</div>
-
-<div class="divider"></div>
-
-<div>
-  <div style="font-weight:800;font-size:13px;margin-bottom:8px">Deposit Aktif</div>
-  <div id="depositActiveList" class="list"></div>
-</div>
-```
-
-  </div>
-
-  <!-- EVENTS -->
-
-  <div id="page-events" class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <div>
-        <div style="font-weight:900">Kalender & News</div>
-        <div class="muted">Event market &amp; volatilitas</div>
-      </div>
-      <div class="pill" id="eventsMarketTag">—</div>
-    </div>
-    <div id="eventsList" class="list" style="margin-top:8px;max-height:200px;overflow:auto">
-      <div class="list-item">
-        <div class="meta">
-          <div style="font-weight:800">Belum ada market dipilih</div>
-          <div class="subsmall">Pilih market untuk melihat event.</div>
-        </div>
-      </div>
+    <div style="flex:1;padding:10px;background:#f8f8f8;border-radius:10px;border:1px solid rgba(0,0,0,0.05)">
+      <div class="hl-label">Volume</div>
+      <div id="marketVolume" style="font-weight:900;font-size:15px">—</div>
     </div>
   </div>
+
+  <!-- ORDER BOOK -->
+
+  <div class="orderbook">
+    <div class="orderbook-title">
+      <div style="font-weight:900;font-size:13px">Order Book</div>
+      <div id="orderbookSummary" class="small-muted">—</div>
+    </div>
+    <div class="orderbook-grid">
+      <div class="book-side" id="book-asks"><div class="book-header ask">Asks</div></div>
+      <div class="book-side" id="book-bids"><div class="book-header bid">Bids</div></div>
+    </div>
+    <div style="margin-top:8px">
+      <div class="small-muted" style="margin-bottom:5px;font-weight:700">Recent Trades</div>
+      <div class="trades-ticker" id="recentTradesTicker"><div class="ticker-item"><span style="color:var(--muted)">—</span></div></div>
+    </div>
+  </div>
+
+  <!-- FUNDAMENTAL ANALYSIS -->
+
+  <div id="fundamentalPanel" class="fa-card hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-weight:900;font-size:14px">📊 Analisis Fundamental</div>
+      <div id="faRatingChip" class="chip chip-green">—</div>
+    </div>
+    <!-- Valuation -->
+    <div class="fa-section">
+      <div class="fa-section-title">💰 Valuasi</div>
+      <div class="fa-grid" id="faValuation"></div>
+    </div>
+    <!-- Growth -->
+    <div class="fa-section">
+      <div class="fa-section-title">📈 Pertumbuhan</div>
+      <div class="fa-grid" id="faGrowth"></div>
+    </div>
+    <!-- Technical Signals -->
+    <div class="fa-section">
+      <div class="fa-section-title">⚡ Sinyal Teknikal</div>
+      <div id="faTechnical"></div>
+    </div>
+    <!-- Moving Averages -->
+    <div class="fa-section">
+      <div class="fa-section-title">📉 Moving Average</div>
+      <div id="faMA" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <!-- Analyst Consensus -->
+    <div class="fa-section">
+      <div class="fa-section-title">🧑‍💼 Konsensus Analis</div>
+      <div class="analyst-block" id="faAnalyst"></div>
+    </div>
+    <!-- Risk Metrics -->
+    <div class="fa-section" style="margin-bottom:0">
+      <div class="fa-section-title">🛡️ Risiko</div>
+      <div class="fa-grid" id="faRisk"></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:8px">
+    <button id="btnToggleFA" class="btn btn-purple btn-sm" style="width:100%">📊 Tampilkan Analisis Fundamental</button>
+  </div>
+
+  <!-- TRADE FORM -->
+
+  <div style="margin-top:12px">
+    <div style="display:flex;gap:8px;align-items:flex-end">
+      <div style="flex:1">
+        <div class="small-muted" style="margin-bottom:5px;font-weight:700">Jumlah Lot</div>
+        <input id="lotInput" type="number" value="1" min="1" step="1"/>
+      </div>
+      <div style="flex:1">
+        <div class="small-muted" style="margin-bottom:5px;font-weight:700">= Saham</div>
+        <input id="sharesDisplay" type="text" readonly value="100 lembar"/>
+      </div>
+    </div>
+    <div class="trade-summary" id="tradePreview">Pilih market untuk estimasi.</div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button id="btnBuy" class="btn btn-primary" style="flex:1;height:46px;font-size:14px">Beli</button>
+      <button id="btnSell" class="btn btn-danger" style="flex:1;height:46px;font-size:14px">Jual</button>
+    </div>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+
+<div id="page-portfolio" class="card hidden">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><div style="font-weight:900;font-size:15px">Portfolio</div><div class="muted">Posisi & histori</div></div>
+    <div style="text-align:right">
+      <div class="small-muted">Unrealized PnL</div>
+      <div id="totalPnl" style="font-weight:900;font-size:18px">—</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-weight:800;font-size:13px">Posisi Terbuka</div>
+      <div class="chip chip-green" style="font-size:10px">● LIVE</div>
+    </div>
+    <div id="positionsList" class="list"></div>
+  </div>
+  <div class="divider"></div>
+  <div>
+    <div style="font-weight:800;font-size:13px;margin-bottom:8px">Histori Transaksi</div>
+    <div id="tradesList" class="list" style="max-height:260px;overflow:auto"></div>
+  </div>
+</div>
+
+<!-- DEPOSIT SAHAM -->
+
+<div id="page-deposit" class="card hidden">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><div style="font-weight:900;font-size:15px">Deposit Saham</div><div class="muted">Lock saham, bunga & dividen</div></div>
+    <div class="chip chip-yellow">🏦 Staking</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+    <div class="hlbox"><div class="hl-label">Bunga / Tahun</div><div class="hl-val" style="color:var(--green)">3%</div><div class="small-muted" style="font-size:10px">dari nilai koin</div></div>
+    <div class="hlbox"><div class="hl-label">Dividen / Tahun</div><div class="hl-val" style="color:var(--blue)">4%</div><div class="small-muted" style="font-size:10px">by lot otomatis</div></div>
+    <div class="hlbox"><div class="hl-label">Fee Unlock Awal</div><div class="hl-val" style="color:var(--danger)">1.7%</div><div class="small-muted" style="font-size:10px">dari nilai koin</div></div>
+    <div class="hlbox"><div class="hl-label">Jatuh Tempo</div><div class="hl-val">1 Tahun</div><div class="small-muted" style="font-size:10px">auto unlock</div></div>
+  </div>
+  <div class="divider"></div>
+  <div><div style="font-weight:800;font-size:13px;margin-bottom:8px">Tersedia untuk Deposit</div><div id="depositAvailList" class="list"></div></div>
+  <div class="divider"></div>
+  <div><div style="font-weight:800;font-size:13px;margin-bottom:8px">Deposit Aktif</div><div id="depositActiveList" class="list"></div></div>
+</div>
+
+<!-- EVENTS -->
+
+<div id="page-events" class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><div style="font-weight:900">Kalender & News</div><div class="muted">Event market & volatilitas</div></div>
+    <div class="pill" id="eventsMarketTag">—</div>
+  </div>
+  <div id="eventsList" class="list" style="margin-top:8px;max-height:200px;overflow:auto">
+    <div class="list-item"><div class="meta"><div style="font-weight:800">Pilih market untuk event</div></div></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL (hidden by default, shown only for admin) -->
+
+<div id="page-admin" class="admin-panel hidden">
+  <div class="admin-header">
+    <div class="admin-icon">⚙️</div>
+    <div>
+      <div class="admin-title">Panel Admin</div>
+      <div class="admin-sub">Manajemen user & posisi saham</div>
+    </div>
+  </div>
+
+  <div class="admin-stats">
+    <div class="admin-stat"><div class="as-val" id="adminStatUsers">—</div><div class="as-label">Users</div></div>
+    <div class="admin-stat"><div class="as-val" id="adminStatPositions">—</div><div class="as-label">Posisi</div></div>
+    <div class="admin-stat"><div class="as-val" id="adminStatCoins">—</div><div class="as-label">Total Coin</div></div>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab active" id="atAll" onclick="switchAdminTab('all')">Semua User</button>
+    <button class="admin-tab" id="atPositions" onclick="switchAdminTab('positions')">Ada Posisi</button>
+    <button class="admin-tab" id="atDeposits" onclick="switchAdminTab('deposits')">Ada Deposit</button>
+  </div>
+
+  <input class="admin-search" id="adminSearch" type="text" placeholder="🔍 Cari email atau UID…"/>
+  <div id="adminUserList"><div class="admin-loading">Memuat data user…</div></div>
+</div>
 
 </div><!-- end .app -->
 
 <!-- TOAST -->
 
 <div class="toast" id="toast">OK</div>
+
+<!-- LOADING OVERLAY -->
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">Memproses…</div>
+  <div class="loading-sub" id="loadingSub">Mohon tunggu sebentar</div>
+</div>
 
 <!-- MODAL: LOGIN -->
 
@@ -520,36 +508,29 @@
     <div class="modal-handle"></div>
     <div class="modal-title">Login ke PaperStocks</div>
     <div class="modal-sub">Masuk dengan Google atau Email</div>
-
-```
-<div class="auth-tabs">
-  <button class="auth-tab active" id="tabGoogle" onclick="switchAuthTab('google')">Google</button>
-  <button class="auth-tab" id="tabEmail" onclick="switchAuthTab('email')">Email</button>
-</div>
-
-<div id="authGoogle">
-  <button id="btnGoogleLogin" class="btn btn-outline" style="width:100%;height:46px;gap:8px;font-size:14px">
-    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.96 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-    Lanjutkan dengan Google
-  </button>
-</div>
-
-<div id="authEmail" class="hidden">
-  <div style="display:flex;flex-direction:column;gap:10px">
-    <input type="email" id="emailInput" placeholder="Email" style="height:46px"/>
-    <input type="password" id="passInput" placeholder="Password" style="height:46px"/>
-    <button id="btnEmailLogin" class="btn btn-primary" style="width:100%;height:46px;font-size:14px">Masuk</button>
-    <button id="btnEmailRegister" class="btn btn-outline" style="width:100%;height:46px;font-size:14px">Daftar Akun Baru</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabGoogle" onclick="switchAuthTab('google')">Google</button>
+      <button class="auth-tab" id="tabEmail" onclick="switchAuthTab('email')">Email</button>
+    </div>
+    <div id="authGoogle">
+      <button id="btnGoogleLogin" class="btn btn-outline" style="width:100%;height:46px;gap:8px;font-size:14px">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.96 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Lanjutkan dengan Google
+      </button>
+    </div>
+    <div id="authEmail" class="hidden">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <input type="email" id="emailInput" placeholder="Email" style="height:46px"/>
+        <input type="password" id="passInput" placeholder="Password" style="height:46px"/>
+        <button id="btnEmailLogin" class="btn btn-primary" style="width:100%;height:46px;font-size:14px">Masuk</button>
+        <button id="btnEmailRegister" class="btn btn-outline" style="width:100%;height:46px;font-size:14px">Daftar Akun Baru</button>
+      </div>
+    </div>
+    <button onclick="closeModal('modalLogin')" class="btn btn-outline" style="width:100%;margin-top:12px">Batal</button>
   </div>
 </div>
 
-<button onclick="closeModal('modalLogin')" class="btn btn-outline" style="width:100%;margin-top:12px">Batal</button>
-```
-
-  </div>
-</div>
-
-<!-- MODAL: SELL FROM PORTFOLIO -->
+<!-- MODAL: SELL -->
 
 <div class="modal-overlay" id="modalSell">
   <div class="modal-sheet">
@@ -557,10 +538,7 @@
     <div class="modal-title" id="modalSellTitle">Jual Saham</div>
     <div class="modal-sub" id="modalSellSub">—</div>
     <div style="display:flex;flex-direction:column;gap:10px">
-      <div>
-        <div class="small-muted" style="margin-bottom:5px;font-weight:700">Jumlah Lot yang Dijual</div>
-        <input type="number" id="modalSellLot" value="1" min="1" step="1"/>
-      </div>
+      <div><div class="small-muted" style="margin-bottom:5px;font-weight:700">Jumlah Lot</div><input type="number" id="modalSellLot" value="1" min="1" step="1"/></div>
       <div class="trade-summary" id="modalSellPreview">—</div>
       <div style="display:flex;gap:8px">
         <button id="modalSellConfirm" class="btn btn-danger" style="flex:1;height:46px">Konfirmasi Jual</button>
@@ -576,37 +554,30 @@
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title">Auto-Close Order</div>
-    <div class="modal-sub" id="modalACsub">Set Take Profit / Stop Loss otomatis</div>
-
-```
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-  <div style="padding:10px;background:#f0fff4;border-radius:10px;border:1px solid rgba(34,197,94,0.15)">
-    <div style="font-weight:900;color:var(--green);margin-bottom:8px;font-size:13px">🎯 Take Profit</div>
-    <div class="small-muted" style="margin-bottom:4px">By Harga</div>
-    <input type="number" id="acTPprice" placeholder="0.00" style="margin-bottom:6px"/>
-    <div class="small-muted" style="margin-bottom:4px">atau By %</div>
-    <input type="number" id="acTPpct" placeholder="e.g. 5"/>
-  </div>
-  <div style="padding:10px;background:#fff0f0;border-radius:10px;border:1px solid rgba(255,92,92,0.15)">
-    <div style="font-weight:900;color:var(--danger);margin-bottom:8px;font-size:13px">🛡️ Stop Loss</div>
-    <div class="small-muted" style="margin-bottom:4px">By Harga</div>
-    <input type="number" id="acSLprice" placeholder="0.00" style="margin-bottom:6px"/>
-    <div class="small-muted" style="margin-bottom:4px">atau By %</div>
-    <input type="number" id="acSLpct" placeholder="e.g. 5"/>
-  </div>
-</div>
-<div>
-  <div class="small-muted" style="margin-bottom:5px;font-weight:700">Lot yang di-close (kosongkan = semua)</div>
-  <input type="number" id="acLots" placeholder="e.g. 2"/>
-</div>
-<div class="trade-summary" id="acPreview" style="margin-top:10px">—</div>
-<div style="display:flex;gap:8px;margin-top:12px">
-  <button id="btnSetAC" class="btn btn-blue" style="flex:1;height:46px">Set Auto-Close</button>
-  <button id="btnClearAC" class="btn btn-outline" style="flex:1;height:46px">Hapus</button>
-  <button onclick="closeModal('modalAutoClose')" class="btn btn-outline" style="height:46px;width:46px;padding:0">✕</button>
-</div>
-```
-
+    <div class="modal-sub" id="modalACsub">Set TP / SL otomatis</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="padding:10px;background:#f0fff4;border-radius:10px;border:1px solid rgba(34,197,94,0.15)">
+        <div style="font-weight:900;color:var(--green);margin-bottom:8px;font-size:13px">🎯 Take Profit</div>
+        <div class="small-muted" style="margin-bottom:4px">By Harga</div>
+        <input type="number" id="acTPprice" placeholder="0.00" style="margin-bottom:6px"/>
+        <div class="small-muted" style="margin-bottom:4px">atau By %</div>
+        <input type="number" id="acTPpct" placeholder="e.g. 5"/>
+      </div>
+      <div style="padding:10px;background:#fff0f0;border-radius:10px;border:1px solid rgba(255,92,92,0.15)">
+        <div style="font-weight:900;color:var(--danger);margin-bottom:8px;font-size:13px">🛡️ Stop Loss</div>
+        <div class="small-muted" style="margin-bottom:4px">By Harga</div>
+        <input type="number" id="acSLprice" placeholder="0.00" style="margin-bottom:6px"/>
+        <div class="small-muted" style="margin-bottom:4px">atau By %</div>
+        <input type="number" id="acSLpct" placeholder="e.g. 5"/>
+      </div>
+    </div>
+    <div><div class="small-muted" style="margin-bottom:5px;font-weight:700">Lot (kosong = semua)</div><input type="number" id="acLots" placeholder="e.g. 2"/></div>
+    <div class="trade-summary" id="acPreview" style="margin-top:10px">—</div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button id="btnSetAC" class="btn btn-blue" style="flex:1;height:46px">Set Auto-Close</button>
+      <button id="btnClearAC" class="btn btn-outline" style="flex:1;height:46px">Hapus</button>
+      <button onclick="closeModal('modalAutoClose')" class="btn btn-outline" style="height:46px;width:46px;padding:0">✕</button>
+    </div>
   </div>
 </div>
 
@@ -617,14 +588,11 @@
     <div class="modal-handle"></div>
     <div class="modal-title">Konfirmasi Deposit Saham</div>
     <div class="modal-sub" id="depositConfirmSub">—</div>
-    <div class="trade-summary" id="depositConfirmDetail">—</div>
-    <div style="margin-top:10px">
-      <div class="small-muted" style="margin-bottom:5px;font-weight:700">Jumlah Lot yang di-deposit</div>
-      <input type="number" id="depositLotInput" value="1" min="1" step="1"/>
-    </div>
+    <div class="trade-summary" id="depositConfirmDetail">Saham dikunci 1 tahun · Bunga 3%/thn + Dividen 4%/thn</div>
+    <div style="margin-top:10px"><div class="small-muted" style="margin-bottom:5px;font-weight:700">Jumlah Lot</div><input type="number" id="depositLotInput" value="1" min="1" step="1"/></div>
     <div class="trade-summary" id="depositLotPreview" style="margin-top:8px">—</div>
     <div style="display:flex;gap:8px;margin-top:12px">
-      <button id="btnDepositConfirm" class="btn btn-green" style="flex:1;height:46px">Deposit & Lock</button>
+      <button id="btnDepositConfirm" class="btn btn-green" style="flex:1;height:46px">Deposit & Lock 🔒</button>
       <button onclick="closeModal('modalDepositConfirm')" class="btn btn-outline" style="flex:1;height:46px">Batal</button>
     </div>
   </div>
@@ -639,7 +607,7 @@
     <div class="modal-sub" id="unlockSub">—</div>
     <div class="trade-summary" id="unlockDetail">—</div>
     <div style="display:flex;gap:8px;margin-top:12px">
-      <button id="btnUnlockConfirm" class="btn btn-danger" style="flex:1;height:46px">Unlock (kena fee)</button>
+      <button id="btnUnlockConfirm" class="btn btn-danger" style="flex:1;height:46px">Unlock (kena fee 1.7%)</button>
       <button onclick="closeModal('modalUnlock')" class="btn btn-outline" style="flex:1;height:46px">Batal</button>
     </div>
   </div>
@@ -653,706 +621,638 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   getFirestore, doc, getDoc, setDoc, onSnapshot, runTransaction, serverTimestamp,
-  collection, addDoc, query, orderBy, limit, getDocs, Timestamp
+  collection, query, orderBy, limit, getDocs, Timestamp, collectionGroup
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-/* ── Firebase configs ── */
-const marketConfig = {
-  apiKey:"AIzaSyDVUEZ3ZVmH4ld7LVnEq_L368wEJpEs-l8",
-  authDomain:"zeepaylater-93a94.firebaseapp.com",
-  projectId:"zeepaylater-93a94",
-  storageBucket:"zeepaylater-93a94.appspot.com",
-  messagingSenderId:"358065954807",
-  appId:"1:358065954807:web:66619211fea82a4b2518f2"
-};
-const walletConfig = {
-  apiKey:"AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
-  authDomain:"zestoreid-f9e85.firebaseapp.com",
-  projectId:"zestoreid-f9e85",
-  storageBucket:"zestoreid-f9e85.firebasestorage.app",
-  messagingSenderId:"426093692154",
-  appId:"1:426093692154:web:38c6e9c143af626a623543"
-};
-
-const marketApp = getApps().some(a=>a.name==='marketApp') ? getApp('marketApp') : initializeApp(marketConfig,'marketApp');
-const walletApp = getApps().some(a=>a.name==='walletApp') ? getApp('walletApp') : initializeApp(walletConfig,'walletApp');
-
-const marketDb = getFirestore(marketApp);
-const walletAuth = getAuth(walletApp);
-const walletDb = getFirestore(walletApp);
-
-// Ensure local persistence so email login stays logged in
-setPersistence(walletAuth, browserLocalPersistence).catch(()=>{});
+/* ── Firebase ── */
+const marketConfig={apiKey:"AIzaSyDVUEZ3ZVmH4ld7LVnEq_L368wEJpEs-l8",authDomain:"zeepaylater-93a94.firebaseapp.com",projectId:"zeepaylater-93a94",storageBucket:"zeepaylater-93a94.appspot.com",messagingSenderId:"358065954807",appId:"1:358065954807:web:66619211fea82a4b2518f2"};
+const walletConfig={apiKey:"AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",authDomain:"zestoreid-f9e85.firebaseapp.com",projectId:"zestoreid-f9e85",storageBucket:"zestoreid-f9e85.firebasestorage.app",messagingSenderId:"426093692154",appId:"1:426093692154:web:38c6e9c143af626a623543"};
+const marketApp=getApps().some(a=>a.name==='marketApp')?getApp('marketApp'):initializeApp(marketConfig,'marketApp');
+const walletApp=getApps().some(a=>a.name==='walletApp')?getApp('walletApp'):initializeApp(walletConfig,'walletApp');
+const marketDb=getFirestore(marketApp);
+const walletAuth=getAuth(walletApp);
+const walletDb=getFirestore(walletApp);
+setPersistence(walletAuth,browserLocalPersistence).catch(()=>{});
 
 /* ── Constants ── */
-const LOT_SIZE = 100;
-const BUY_SPREAD = 0.017;
-const SELL_SPREAD = 0.017;
-const ORDER_FEE = 112.5;
-const DEPOSIT_INTEREST = 0.03;   // 3%/year on coin value
-const DIVIDEND_RATE = 0.04;      // 4%/year by lot value
-const UNLOCK_FEE = 0.017;        // 1.7% early unlock fee
-const YEAR_MS = 365 * 24 * 60 * 60 * 1000;
+const LOT_SIZE=100, BUY_SPREAD=0.017, SELL_SPREAD=0.017, ORDER_FEE=112.5;
+const DEPOSIT_INTEREST=0.03, DIVIDEND_RATE=0.04, UNLOCK_FEE=0.017;
+const YEAR_MS=365*24*60*60*1000;
+const ADMIN_UID='8z9b0u1LYfTVM0sCP7qHXbYHvGi1';
 
-/* ── DOM refs ── */
-const $ = id => document.getElementById(id);
-const el = {
-  userInfo:$('userInfo'), btnSignIn:$('btnSignIn'), btnSignOut:$('btnSignOut'),
-  balCoin:$('balCoin'), balRp:$('balRp'), toast:$('toast'),
-  marketList:$('marketList'), visibleCountTop:$('visibleCountTop'),
-  pageHome:$('page-home'), pageMarket:$('page-market'), pagePortfolio:$('page-portfolio'),
-  pageEvents:$('page-events'), pageDeposit:$('page-deposit'),
-  marketName:$('marketName'), marketSymbol:$('marketSymbol'), marketDesc:$('marketDesc'),
-  marketPrice:$('marketPrice'), marketChangeDisplay:$('marketChangeDisplay'),
-  marketVolDisplay:$('marketVolDisplay'), marketBid:$('marketBid'), marketAsk:$('marketAsk'),
-  marketVolume:$('marketVolume'), orderbookSummary:$('orderbookSummary'),
-  bookAsks:$('book-asks'), bookBids:$('book-bids'), recentTicker:$('recentTradesTicker'),
-  lotInput:$('lotInput'), sharesDisplay:$('sharesDisplay'),
-  btnBuy:$('btnBuy'), btnSell:$('btnSell'),
-  btnDeposit:$('btnDeposit'), btnWithdraw:$('btnWithdraw'),
-  btnPortfolio:$('btnPortfolio'), btnMarkets:$('btnMarkets'),
-  positionsList:$('positionsList'), tradesList:$('tradesList'), totalPnl:$('totalPnl'),
-  chartCanvas:$('chartCanvas'), eventsList:$('eventsList'), eventsMarketTag:$('eventsMarketTag'),
+/* ── DOM ── */
+const $=id=>document.getElementById(id);
+const el={
+  userInfo:$('userInfo'),btnSignIn:$('btnSignIn'),btnSignOut:$('btnSignOut'),adminBadge:$('adminBadge'),
+  balCoin:$('balCoin'),balRp:$('balRp'),toast:$('toast'),
+  marketList:$('marketList'),visibleCountTop:$('visibleCountTop'),
+  pageHome:$('page-home'),pageMarket:$('page-market'),pagePortfolio:$('page-portfolio'),
+  pageEvents:$('page-events'),pageDeposit:$('page-deposit'),pageAdmin:$('page-admin'),
+  marketName:$('marketName'),marketSymbol:$('marketSymbol'),marketDesc:$('marketDesc'),
+  marketPrice:$('marketPrice'),marketChangeDisplay:$('marketChangeDisplay'),
+  marketVolDisplay:$('marketVolDisplay'),marketBid:$('marketBid'),marketAsk:$('marketAsk'),
+  marketVolume:$('marketVolume'),orderbookSummary:$('orderbookSummary'),
+  bookAsks:$('book-asks'),bookBids:$('book-bids'),recentTicker:$('recentTradesTicker'),
+  lotInput:$('lotInput'),sharesDisplay:$('sharesDisplay'),
+  btnBuy:$('btnBuy'),btnSell:$('btnSell'),
+  btnDeposit:$('btnDeposit'),btnWithdraw:$('btnWithdraw'),btnPortfolio:$('btnPortfolio'),btnMarkets:$('btnMarkets'),
+  positionsList:$('positionsList'),tradesList:$('tradesList'),totalPnl:$('totalPnl'),
+  chartCanvas:$('chartCanvas'),eventsList:$('eventsList'),eventsMarketTag:$('eventsMarketTag'),
   tradePreview:$('tradePreview'),
-  mktOpen:$('mktOpen'), mktHigh:$('mktHigh'), mktLow:$('mktLow'), mktSpread:$('mktSpread'),
-  depositAvailList:$('depositAvailList'), depositActiveList:$('depositActiveList'),
+  mktOpen:$('mktOpen'),mktHigh:$('mktHigh'),mktLow:$('mktLow'),mktSpread:$('mktSpread'),
+  depositAvailList:$('depositAvailList'),depositActiveList:$('depositActiveList'),
+  fundamentalPanel:$('fundamentalPanel'),btnToggleFA:$('btnToggleFA'),
+  loadingOverlay:$('loadingOverlay'),loadingText:$('loadingText'),loadingSub:$('loadingSub'),
+  adminUserList:$('adminUserList'),adminSearch:$('adminSearch'),
+  adminStatUsers:$('adminStatUsers'),adminStatPositions:$('adminStatPositions'),adminStatCoins:$('adminStatCoins'),
 };
 
 /* ── State ── */
-let currentUser = null;
-let walletUnsub = null, positionUnsub = null, tradesUnsub = null, depositUnsub = null;
-let currentCoin = 0, currentBalance = 0;
-let marketsCache = {};
-let selectedMarketId = null;
-let currentMarketUnsub = null, currentTicksUnsub = null;
-let currentMarket = null;
-let marketHistory = [];
-let marketHistoryFull = [];
-let currentEvents = [];
-let positionsCache = [];
-let tradesCache = [];
-let depositsCache = [];
-let autoCloseOrders = {};   // { marketId: {tpPrice,slPrice,tpPct,slPct,lots} }
-let acTargetMarketId = null;
-let sellModalMarketId = null;
-let depositModalMarketId = null;
-let unlockModalDepositId = null;
-let selectedTF = 400;
-let obInterval = null;
-let recentTradesData = [];
-let obTick = 0;
-let sessionOpenPrices = {};   // { marketId: openPrice }
+let currentUser=null;
+let walletUnsub=null,positionUnsub=null,tradesUnsub=null,depositUnsub=null,adminUnsub=null;
+let currentCoin=0,currentBalance=0;
+let marketsCache={};
+let selectedMarketId=null,currentMarketUnsub=null,currentTicksUnsub=null,currentMarket=null;
+let marketHistoryFull=[];
+let currentEvents=[],positionsCache=[],tradesCache=[],depositsCache=[];
+let autoCloseOrders={};
+let acTargetMarketId=null,sellModalMarketId=null,depositModalMarketId=null,unlockModalDepositId=null;
+let selectedTF=400,obTick=0,recentTradesData=[];
+let sessionOpenPrices={};
+let faVisible=false;
+let adminTab='all';
+let adminUsersCache={};  // uid -> {email, displayName, coin, positions:[]}
+let adminSearchQuery='';
 
-/* ── Chart ── */
-const chartCtx = el.chartCanvas.getContext('2d');
-let DPR = window.devicePixelRatio || 1;
-function resizeCanvas(){
-  const r = el.chartCanvas.getBoundingClientRect();
-  el.chartCanvas.width = Math.max(1, Math.floor(r.width * DPR));
-  el.chartCanvas.height = Math.max(1, Math.floor(r.height * DPR));
-  chartCtx.setTransform(DPR,0,0,DPR,0,0);
-}
-let resizeRAF = null;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeRAF);
-  resizeRAF = setTimeout(() => { DPR = window.devicePixelRatio||1; resizeCanvas(); drawChart(); }, 80);
-});
+/* ── Chart canvas ── */
+const chartCtx=el.chartCanvas.getContext('2d');
+let DPR=window.devicePixelRatio||1;
+function resizeCanvas(){const r=el.chartCanvas.getBoundingClientRect();el.chartCanvas.width=Math.max(1,Math.floor(r.width*DPR));el.chartCanvas.height=Math.max(1,Math.floor(r.height*DPR));chartCtx.setTransform(DPR,0,0,DPR,0,0)}
+let resizeRAF=null;
+window.addEventListener('resize',()=>{clearTimeout(resizeRAF);resizeRAF=setTimeout(()=>{DPR=window.devicePixelRatio||1;resizeCanvas();drawChart()},80)});
 resizeCanvas();
 
 /* ── Utils ── */
-const fmtCoin = n => Number(n||0).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtRp = n => 'Rp '+Number(n||0).toLocaleString('id-ID');
-const round2 = n => Math.round(Number(n||0)*100)/100;
-const round4 = n => Math.round(Number(n||0)*10000)/10000;
-const shortUid = uid => uid ? uid.slice(0,6)+'…'+uid.slice(-4) : '-';
+const fmtCoin=n=>Number(n||0).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtRp=n=>'Rp '+Number(n||0).toLocaleString('id-ID');
+const round2=n=>Math.round(Number(n||0)*100)/100;
+const round4=n=>Math.round(Number(n||0)*10000)/10000;
+const shortUid=uid=>uid?uid.slice(0,8)+'…':'-';
+const seededRand=seed=>{const x=Math.sin(seed+1)*10000;return x-Math.floor(x)};
 
-function toast(msg, dur=1600){
-  el.toast.textContent = msg;
-  el.toast.classList.add('show');
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => el.toast.classList.remove('show'), dur);
+function toast(msg,dur=1600){el.toast.textContent=msg;el.toast.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.toast.classList.remove('show'),dur)}
+function openModal(id){$(id).classList.add('open')}
+function closeModal(id){$(id).classList.remove('open')}
+window.closeModal=closeModal;
+
+function showLoading(text='Memproses…',sub='Mohon tunggu sebentar'){
+  el.loadingText.textContent=text;el.loadingSub.textContent=sub;
+  el.loadingOverlay.classList.add('show');
 }
+function hideLoading(){el.loadingOverlay.classList.remove('show')}
 
-function openModal(id){ $(id).classList.add('open') }
-function closeModal(id){ $(id).classList.remove('open') }
-window.closeModal = closeModal;
-
+/* ── Pages ── */
 function setPage(page){
-  el.pageHome.classList.add('hidden');
-  el.pageMarket.classList.add('hidden');
-  el.pagePortfolio.classList.add('hidden');
-  el.pageDeposit.classList.add('hidden');
-  el.pageEvents.classList.remove('hidden');
-  if(page==='home'){
-    el.pageHome.classList.remove('hidden');
-    el.pageEvents.classList.remove('hidden');
-  } else if(page==='markets'){
-    el.pageHome.classList.remove('hidden');
-    el.pageMarket.classList.remove('hidden');
-    el.pageEvents.classList.remove('hidden');
-  } else if(page==='portfolio'){
-    el.pagePortfolio.classList.remove('hidden');
-    el.pageEvents.classList.add('hidden');
-  } else if(page==='deposit'){
-    el.pageDeposit.classList.remove('hidden');
-    el.pageEvents.classList.add('hidden');
-  }
+  el.pageHome.classList.add('hidden');el.pageMarket.classList.add('hidden');
+  el.pagePortfolio.classList.add('hidden');el.pageDeposit.classList.add('hidden');
+  el.pageEvents.classList.remove('hidden');el.pageAdmin.classList.add('hidden');
+  if(page==='home'){el.pageHome.classList.remove('hidden')}
+  else if(page==='markets'){el.pageHome.classList.remove('hidden');el.pageMarket.classList.remove('hidden')}
+  else if(page==='portfolio'){el.pagePortfolio.classList.remove('hidden');el.pageEvents.classList.add('hidden')}
+  else if(page==='deposit'){el.pageDeposit.classList.remove('hidden');el.pageEvents.classList.add('hidden')}
+  // Admin panel visibility is controlled separately, not by setPage
+  if(currentUser?.uid===ADMIN_UID) el.pageAdmin.classList.remove('hidden');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function deriveBidAsk(m){
-  const price = Number(m.price||0);
-  const vol = Number(m.volatility||1);
-  const spread = Math.max(0.01, price * (0.001 + vol * 0.0002));
-  return {
-    bid: Math.max(0.01, round2(price - spread/2)),
-    ask: round2(price + spread/2),
-    volume: Math.max(1000, Math.round(100000 / Math.max(price,0.1) * (0.8 + seededRand(price+obTick)*0.4)))
-  };
-}
-
-function seededRand(seed){
-  const x = Math.sin(seed + 1) * 10000;
-  return x - Math.floor(x);
-}
-
-function buyCost(price, lots){ return round2(lots * LOT_SIZE * price * (1+BUY_SPREAD) + ORDER_FEE) }
-function sellProceeds(price, lots){ return round2(lots * LOT_SIZE * price * (1-SELL_SPREAD) - ORDER_FEE) }
-
-/* ── Auth Tab Switch ── */
-window.switchAuthTab = function(tab){
-  $('tabGoogle').classList.toggle('active', tab==='google');
-  $('tabEmail').classList.toggle('active', tab==='email');
-  $('authGoogle').classList.toggle('hidden', tab!=='google');
-  $('authEmail').classList.toggle('hidden', tab!=='email');
+window.switchAuthTab=function(tab){
+  $('tabGoogle').classList.toggle('active',tab==='google');
+  $('tabEmail').classList.toggle('active',tab==='email');
+  $('authGoogle').classList.toggle('hidden',tab!=='google');
+  $('authEmail').classList.toggle('hidden',tab!=='email');
+};
+window.switchAdminTab=function(tab){
+  adminTab=tab;
+  ['atAll','atPositions','atDeposits'].forEach(id=>$(id).classList.remove('active'));
+  $({all:'atAll',positions:'atPositions',deposits:'atDeposits'}[tab]).classList.add('active');
+  renderAdminPanel();
 };
 
 /* ── Wallet UI ── */
 function renderWallet(){
   if(currentUser){
-    el.userInfo.textContent = currentUser.displayName || currentUser.email || shortUid(currentUser.uid);
-    el.btnSignIn.classList.add('hidden');
-    el.btnSignOut.classList.remove('hidden');
-  } else {
-    el.userInfo.textContent = 'Belum Login';
-    el.btnSignIn.classList.remove('hidden');
-    el.btnSignOut.classList.add('hidden');
+    el.userInfo.textContent=currentUser.displayName||currentUser.email||shortUid(currentUser.uid);
+    el.btnSignIn.classList.add('hidden');el.btnSignOut.classList.remove('hidden');
+    if(currentUser.uid===ADMIN_UID){el.adminBadge.classList.remove('hidden')}else{el.adminBadge.classList.add('hidden')}
+  }else{
+    el.userInfo.textContent='Belum Login';
+    el.btnSignIn.classList.remove('hidden');el.btnSignOut.classList.add('hidden');
+    el.adminBadge.classList.add('hidden');
   }
-  el.balCoin.textContent = fmtCoin(currentCoin);
-  el.balRp.textContent = fmtRp(currentBalance);
+  el.balCoin.textContent=fmtCoin(currentCoin);el.balRp.textContent=fmtRp(currentBalance);
 }
 
-/* ── Market Header ── */
-function refreshMarketHeader(){
-  const m = currentMarket || (selectedMarketId ? marketsCache[selectedMarketId] : null);
-  if(!m){
-    ['marketName','marketSymbol','marketDesc','marketPrice','marketChangeDisplay',
-     'marketVolDisplay','marketBid','marketAsk','marketVolume','mktOpen','mktHigh','mktLow','mktSpread']
-      .forEach(k => el[k] && (el[k].textContent = '—'));
-    updateOrderbook(null);
-    return;
-  }
-  const d = deriveBidAsk(m);
-  const price = Number(m.price||0);
-  const open = sessionOpenPrices[m.id] || price;
-  if(!sessionOpenPrices[m.id]) sessionOpenPrices[m.id] = price;
-  const chg = round2(price - open);
-  const chgPct = open ? round4((chg/open)*100) : 0;
-  const arr = getFilteredHistory();
-  const high = arr.length ? Math.max(...arr) : price;
-  const low = arr.length ? Math.min(...arr) : price;
-
-  el.marketName.textContent = m.name || m.symbol || m.id;
-  el.marketSymbol.textContent = m.symbol || m.id;
-  el.marketDesc.textContent = m.description || 'Market simulasi saham NUBIA.';
-  el.marketPrice.textContent = fmtCoin(price);
-  el.marketPrice.classList.add('price-updating');
-  setTimeout(()=>el.marketPrice.classList.remove('price-updating'),500);
-  el.marketChangeDisplay.textContent = `${chg>=0?'+':''}${fmtCoin(chg)} (${chgPct>=0?'+':''}${chgPct}%)`;
-  el.marketChangeDisplay.className = chg>=0 ? 'change-up' : 'change-dn';
-  el.marketVolDisplay.textContent = `Vol ×${Number(m.volatility||1).toLocaleString()}`;
-  el.marketBid.textContent = fmtCoin(d.bid);
-  el.marketAsk.textContent = fmtCoin(d.ask);
-  el.marketVolume.textContent = d.volume.toLocaleString();
-  el.mktOpen.textContent = fmtCoin(open);
-  el.mktHigh.textContent = fmtCoin(high);
-  el.mktLow.textContent = fmtCoin(low);
-  el.mktSpread.textContent = fmtCoin(d.ask - d.bid);
-  updateOrderbook(m);
-  updateTradePreview();
-  setMarketButtons();
-  checkAutoClose(m.id, price);
+/* ── Math ── */
+const buyCost=(price,lots)=>round2(lots*LOT_SIZE*price*(1+BUY_SPREAD)+ORDER_FEE);
+const sellProceeds=(price,lots)=>round2(lots*LOT_SIZE*price*(1-SELL_SPREAD)-ORDER_FEE);
+function deriveBidAsk(m){
+  const price=Number(m.price||0),vol=Number(m.volatility||1);
+  const spread=Math.max(0.01,price*(0.001+vol*0.0002));
+  return{bid:Math.max(0.01,round2(price-spread/2)),ask:round2(price+spread/2),volume:Math.max(1000,Math.round(100000/Math.max(price,0.1)*(0.8+seededRand(price+obTick)*0.4)))};
 }
 
-/* ── Orderbook (fake but convincing) ── */
-let obUpdateInterval = null;
+/* ── Fundamental Analysis ── */
+function getFundamentals(m){
+  if(!m) return null;
+  const price=Number(m.price||0);
+  const vol=Number(m.volatility||1);
+  const id=m.id||'x';
+  // Seeded fake but deterministic-ish values based on market ID + price
+  const h=(str)=>{let h=5381;for(let i=0;i<str.length;i++)h=((h<<5)+h)+str.charCodeAt(i);return Math.abs(h)};
+  const seed=h(id);
+  const r=(min,max,s=0)=>{const v=seededRand(seed+s+price*0.01);return round2(min+v*(max-min))};
+  const ri=(min,max,s=0)=>Math.round(r(min,max,s));
 
-function startObInterval(){
-  clearInterval(obUpdateInterval);
-  obUpdateInterval = setInterval(() => {
-    obTick++;
-    const m = currentMarket || (selectedMarketId ? marketsCache[selectedMarketId] : null);
-    if(m){ updateOrderbook(m); addFakeRecentTrade(m); }
-  }, 2800);
+  const pe=r(8,45,1);
+  const eps=round2(price/pe);
+  const roe=r(5,35,2);
+  const debtEq=r(0.1,2.5,3);
+  const revGrowth=r(-5,30,4);
+  const profitMargin=r(3,40,5);
+  const marketCap=round2(price*ri(50,500,6)*1000000);
+  const beta=round2(0.5+vol*0.3+seededRand(seed+7)*0.8);
+  const divYield=r(0,6,8);
+  const currentRatio=r(0.8,3.5,9);
+  const quickRatio=r(0.5,2.5,10);
+  const fcf=round2(eps*r(0.6,1.4,11)*ri(10,100,12)*1000000);
+  const bookVal=round2(price/r(0.8,5,13));
+  const pbRatio=round2(price/bookVal);
+
+  // 52W high/low
+  const w52hi=round2(price*(1+r(0.05,0.45,14)));
+  const w52lo=round2(price*(1-r(0.05,0.40,15)));
+
+  // Moving averages (simulated)
+  const ma5=round2(price*(1+r(-0.02,0.02,16)));
+  const ma20=round2(price*(1+r(-0.05,0.05,17)));
+  const ma50=round2(price*(1+r(-0.10,0.10,18)));
+  const ma200=round2(price*(1+r(-0.20,0.20,19)));
+
+  // RSI
+  const rsi=ri(25,78,20);
+
+  // MACD signal
+  const macdVal=r(-3,3,21);
+  const macdSignal=macdVal>0?'Bullish':'Bearish';
+
+  // Analyst consensus
+  const strongBuy=ri(1,8,22);
+  const buy=ri(2,10,23);
+  const hold=ri(1,7,24);
+  const sell=ri(0,4,25);
+  const strongSell=ri(0,2,26);
+  const totalAnalysts=strongBuy+buy+hold+sell+strongSell;
+  const score=round2((strongBuy*5+buy*4+hold*3+sell*2+strongSell*1)/totalAnalysts);
+  const ratingLabel=score>=4.5?'Strong Buy':score>=3.5?'Buy':score>=2.5?'Hold':score>=1.5?'Sell':'Strong Sell';
+  const ratingColor=score>=4?'green':score>=3?'yellow':score>=2?'red':'red';
+
+  // Technical signals
+  const signals=[
+    {label:'RSI ('+rsi+')',val:rsi>70?'Overbought':rsi<30?'Oversold':'Normal',bull:rsi<70&&rsi>30,bear:rsi>70||rsi<30},
+    {label:'MACD',val:macdSignal,bull:macdVal>0,bear:macdVal<0},
+    {label:'Price vs MA20',val:price>=ma20?'Di Atas':'Di Bawah',bull:price>=ma20,bear:price<ma20},
+    {label:'Price vs MA50',val:price>=ma50?'Di Atas':'Di Bawah',bull:price>=ma50,bear:price<ma50},
+    {label:'Price vs MA200',val:price>=ma200?'Di Atas':'Di Bawah',bull:price>=ma200,bear:price<ma200},
+    {label:'Volume Trend',val:seededRand(seed+27)>0.5?'Meningkat':'Menurun',bull:seededRand(seed+27)>0.5,bear:seededRand(seed+27)<=0.5},
+    {label:'Support',val:fmtCoin(round2(price*r(0.88,0.97,28))),bull:true,bear:false},
+    {label:'Resistance',val:fmtCoin(round2(price*r(1.03,1.15,29))),bull:false,bear:true},
+  ];
+
+  return{pe,eps,roe,debtEq,revGrowth,profitMargin,marketCap,beta,divYield,currentRatio,quickRatio,fcf,bookVal,pbRatio,w52hi,w52lo,ma5,ma20,ma50,ma200,rsi,macdVal,macdSignal,strongBuy,buy,hold,sell,strongSell,totalAnalysts,score,ratingLabel,ratingColor,signals};
 }
 
-function updateOrderbook(m){
-  if(!m){
-    el.bookAsks.innerHTML = '<div class="book-header ask">Asks</div><div class="small-muted" style="padding:6px">—</div>';
-    el.bookBids.innerHTML = '<div class="book-header bid">Bids</div><div class="small-muted" style="padding:6px">—</div>';
-    el.orderbookSummary.textContent = '—';
-    return;
-  }
-  const d = deriveBidAsk(m);
-  const price = Number(m.price||0);
-  const depth = 7;
-  const tick = price > 1000 ? 1 : price > 100 ? 0.5 : 0.1;
-  const asks = [], bids = [];
-  for(let i=0;i<depth;i++){
-    const seed1 = price * 100 + obTick * 17 + i * 37;
-    const seed2 = price * 100 + obTick * 13 + i * 53;
-    const sizeBase = Math.max(100, Math.round(d.volume / (5+i)));
-    const sizeMod = Math.round(sizeBase * (0.7 + seededRand(seed1) * 0.6));
-    asks.push({ price: round2(d.ask + tick * i), size: sizeMod });
-    bids.push({ price: round2(d.bid - tick * i), size: Math.round(sizeBase * (0.7 + seededRand(seed2) * 0.6)) });
-  }
-  const maxSize = Math.max(...asks.map(a=>a.size), ...bids.map(b=>b.size));
-
-  el.bookAsks.innerHTML = '<div class="book-header ask">Asks</div>';
-  asks.forEach(a => {
-    const pct = Math.min(100, (a.size/maxSize)*100);
-    el.bookAsks.innerHTML += `
-      <div class="order-row ask">
-        <span>${fmtCoin(a.price)}</span>
-        <span>${a.size.toLocaleString()}</span>
-      </div>
-      <div class="ob-bar ob-bar-ask" style="width:${pct}%"></div>
-    `;
-  });
-
-  el.bookBids.innerHTML = '<div class="book-header bid">Bids</div>';
-  bids.forEach(b => {
-    const pct = Math.min(100, (b.size/maxSize)*100);
-    el.bookBids.innerHTML += `
-      <div class="order-row bid">
-        <span>${fmtCoin(b.price)}</span>
-        <span>${b.size.toLocaleString()}</span>
-      </div>
-      <div class="ob-bar ob-bar-bid" style="width:${pct}%"></div>
-    `;
-  });
-
-  const totalBid = bids.reduce((s,x)=>s+x.size,0);
-  const totalAsk = asks.reduce((s,x)=>s+x.size,0);
-  el.orderbookSummary.textContent = `B ${totalBid.toLocaleString()} · A ${totalAsk.toLocaleString()}`;
-}
-
-function addFakeRecentTrade(m){
+function renderFundamentals(m){
   if(!m) return;
-  const d = deriveBidAsk(m);
-  const isBuy = seededRand(obTick * 19 + Number(m.price||0) * 3) > 0.45;
-  const price = isBuy ? d.ask : d.bid;
-  const size = Math.round(1 + seededRand(obTick * 11) * 15) * 100;
-  recentTradesData.unshift({ side: isBuy?'BUY':'SELL', price, size, ts: Date.now() });
-  if(recentTradesData.length > 15) recentTradesData.pop();
-  renderRecentTrades();
-}
+  const fa=getFundamentals(m);
+  if(!fa) return;
+  const price=Number(m.price||0);
 
-function renderRecentTrades(){
-  if(!recentTradesData.length){
-    el.recentTicker.innerHTML = '<div class="ticker-item"><span class="muted">Belum ada data</span></div>';
-    return;
-  }
-  el.recentTicker.innerHTML = recentTradesData.slice(0,12).map(t => {
-    const cls = t.side==='BUY' ? 'ticker-buy' : 'ticker-sell';
-    const ago = Math.round((Date.now()-t.ts)/1000);
-    return `<div class="ticker-item">
-      <span class="${cls}">${t.side}</span>
-      <span style="font-weight:800">${fmtCoin(t.price)}</span>
-      <span style="color:var(--muted)">${t.size.toLocaleString()} lbr</span>
-      <span style="color:var(--muted)">${ago}s lalu</span>
-    </div>`;
+  // Rating chip
+  const ratingColors={green:'chip-green',yellow:'chip-yellow',red:'chip-red'};
+  $('faRatingChip').className='chip '+(ratingColors[fa.ratingColor]||'chip-green');
+  $('faRatingChip').textContent=fa.ratingLabel;
+
+  // Valuation metrics
+  $('faValuation').innerHTML=`
+    ${faMetric('P/E Ratio',fa.pe.toFixed(1)+'×','',fa.pe<20?'Murah':fa.pe>35?'Mahal':'Wajar',fa.pe<20?'var(--green)':fa.pe>35?'var(--danger)':'var(--muted)')}
+    ${faMetric('EPS',fmtCoin(fa.eps),'','')}
+    ${faMetric('PBV',fa.pbRatio.toFixed(2)+'×','',fa.pbRatio<2?'Undervalue':'Overvalue',fa.pbRatio<2?'var(--green)':'var(--danger)')}
+    ${faMetric('Mkt Cap',fmtSI(fa.marketCap),'','')}
+    ${faMetric('Book Value',fmtCoin(fa.bookVal),'','')}
+    ${faMetric('Div. Yield',fa.divYield.toFixed(2)+'%','',fa.divYield>3?'Tinggi':'Rendah',fa.divYield>3?'var(--green)':'var(--muted)')}
+  `;
+
+  // Growth
+  $('faGrowth').innerHTML=`
+    ${faMetric('Rev. Growth',fa.revGrowth.toFixed(1)+'%','',fa.revGrowth>10?'Kuat':fa.revGrowth>0?'Positif':'Negatif',fa.revGrowth>0?'var(--green)':'var(--danger)')}
+    ${faMetric('ROE',fa.roe.toFixed(1)+'%','',fa.roe>15?'Baik':'Rendah',fa.roe>15?'var(--green)':'var(--muted)')}
+    ${faMetric('Profit Margin',fa.profitMargin.toFixed(1)+'%','',fa.profitMargin>15?'Sehat':'Tipis',fa.profitMargin>15?'var(--green)':'var(--muted)')}
+    ${faMetric('Debt/Equity',fa.debtEq.toFixed(2),'',fa.debtEq<1?'Aman':'Tinggi',fa.debtEq<1?'var(--green)':'var(--danger)')}
+    ${faMetric('Curr. Ratio',fa.currentRatio.toFixed(2),'',fa.currentRatio>=1?'Likuid':'Seret',fa.currentRatio>=1?'var(--green)':'var(--danger)')}
+    ${faMetric('FCF',fmtSI(fa.fcf),'','')}
+  `;
+
+  // 52W
+  const pos52w=price>0?Math.max(0,Math.min(100,((price-fa.w52lo)/(fa.w52hi-fa.w52lo))*100)):50;
+  $('faGrowth').innerHTML+=`
+    <div class="fa-metric" style="grid-column:span 2">
+      <div class="fa-label">52W Range</div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:800;margin-top:4px">
+        <span style="color:var(--danger)">${fmtCoin(fa.w52lo)}</span>
+        <span style="color:var(--muted)">Sekarang</span>
+        <span style="color:var(--green)">${fmtCoin(fa.w52hi)}</span>
+      </div>
+      <div style="margin-top:4px;height:6px;background:#f0f0f0;border-radius:3px;position:relative">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${pos52w}%;background:linear-gradient(90deg,var(--danger),var(--accent),var(--green));border-radius:3px"></div>
+        <div style="position:absolute;top:-2px;left:${pos52w}%;transform:translateX(-50%);width:10px;height:10px;background:var(--surface);border-radius:50%;border:2px solid #fff"></div>
+      </div>
+    </div>
+  `;
+
+  // Technical signals
+  $('faTechnical').innerHTML=fa.signals.map(s=>`
+    <div class="signal-row">
+      <span>${s.label}</span>
+      <span class="${s.bull?'signal-bull':s.bear?'signal-bear':'signal-neutral'}">${s.val}</span>
+    </div>
+  `).join('');
+
+  // Moving Averages
+  $('faMA').innerHTML=[
+    {label:'MA5',val:fa.ma5},
+    {label:'MA20',val:fa.ma20},
+    {label:'MA50',val:fa.ma50},
+    {label:'MA200',val:fa.ma200},
+  ].map(ma=>{
+    const isAbove=price>=ma.val;
+    return`<div class="ma-tag ${isAbove?'ma-above':'ma-below'}">${ma.label} ${fmtCoin(ma.val)} ${isAbove?'↑':'↓'}</div>`;
   }).join('');
-}
 
-/* ── Chart ── */
-function getFilteredHistory(){
-  const n = selectedTF === 9999 ? marketHistoryFull.length : selectedTF;
-  return marketHistoryFull.slice(-Math.min(n, marketHistoryFull.length));
-}
+  // Analyst consensus
+  const {strongBuy,buy,hold,sell,strongSell,totalAnalysts,score,ratingLabel}=fa;
+  const colorScore=score>=4?'var(--green)':score>=3?'#d97706':'var(--danger)';
+  $('faAnalyst').innerHTML=`
+    <div class="analyst-row">
+      <div class="analyst-score" style="color:${colorScore}">${score.toFixed(1)}</div>
+      <div>
+        <div class="analyst-label">${ratingLabel}</div>
+        <div class="analyst-count">${totalAnalysts} analis</div>
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:700;margin-bottom:5px;color:var(--muted)">Distribusi Rekomendasi</div>
+    <div style="display:flex;flex-direction:column;gap:3px;font-size:11px;font-weight:800">
+      ${[['Strong Buy',strongBuy,'var(--green)'],[' Buy',buy,'#4ade80'],['Hold',hold,'#f59e0b'],['Sell',sell,'#f87171'],['Strong Sell',strongSell,'var(--danger)']].map(([lbl,cnt,clr])=>`
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="width:72px;color:var(--muted)">${lbl}</span>
+          <div style="flex:1;height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${totalAnalysts?Math.round(cnt/totalAnalysts*100):0}%;background:${clr};border-radius:3px"></div>
+          </div>
+          <span style="color:${clr};min-width:18px;text-align:right">${cnt}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
 
-function drawChart(){
-  const W = el.chartCanvas.clientWidth || 10;
-  const H = el.chartCanvas.clientHeight || 10;
-  const ctx = chartCtx;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0,0,W,H);
-
-  const arr = getFilteredHistory();
-  if(!arr.length){
-    ctx.fillStyle = '#9ca3af';
-    ctx.font = '700 13px Inter';
-    ctx.fillText('Pilih market untuk chart', 14, 28);
-    return;
-  }
-
-  const padX=14, padY=20;
-  const min = Math.min(...arr);
-  const max = Math.max(...arr);
-  const range = Math.max(max-min, 0.0001);
-  const lastPrice = arr[arr.length-1];
-  const firstPrice = arr[0];
-  const isUp = lastPrice >= firstPrice;
-
-  const toX = (i) => padX + i * (W - padX*2) / Math.max(arr.length-1,1);
-  const toY = (v) => H - padY - ((v-min)/range)*(H-padY*2);
-
-  // Grid
-  ctx.strokeStyle = 'rgba(0,0,0,0.04)';
-  ctx.lineWidth = 1;
-  for(let i=0;i<5;i++){
-    const y = padY + i*((H-padY*2)/4);
-    ctx.beginPath(); ctx.moveTo(padX,y); ctx.lineTo(W-padX,y); ctx.stroke();
-    const v = max - (max-min)*(i/4);
-    ctx.fillStyle = '#9ca3af'; ctx.font = '600 10px Inter'; ctx.textAlign='left';
-    ctx.fillText(fmtCoin(v), 2, y-3);
-  }
-
-  const pts = arr.map((v,i)=>({x:toX(i),y:toY(v)}));
-
-  // Fill
-  const grad = ctx.createLinearGradient(0,padY,0,H-padY);
-  if(isUp){
-    grad.addColorStop(0,'rgba(34,197,94,0.15)');
-    grad.addColorStop(1,'rgba(34,197,94,0.01)');
-  } else {
-    grad.addColorStop(0,'rgba(255,92,92,0.13)');
-    grad.addColorStop(1,'rgba(255,92,92,0.01)');
-  }
-  ctx.beginPath();
-  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
-  ctx.lineTo(pts[pts.length-1].x,H-padY);
-  ctx.lineTo(pts[0].x,H-padY);
-  ctx.closePath();
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  // Line
-  ctx.beginPath();
-  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
-  ctx.strokeStyle = isUp ? '#16a34a' : '#ff5c5c';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // Last dot
-  const last = pts[pts.length-1];
-  ctx.beginPath(); ctx.arc(last.x,last.y,4.5,0,Math.PI*2);
-  ctx.fillStyle = isUp ? '#16a34a' : '#ff5c5c';
-  ctx.fill();
-  ctx.beginPath(); ctx.arc(last.x,last.y,8,0,Math.PI*2);
-  ctx.fillStyle = isUp ? 'rgba(34,197,94,0.2)' : 'rgba(255,92,92,0.2)';
-  ctx.fill();
-
-  // Current price label
-  ctx.fillStyle = isUp ? '#16a34a' : '#ff5c5c';
-  ctx.font = '700 11px Inter'; ctx.textAlign='right';
-  ctx.fillText(fmtCoin(lastPrice), W-2, last.y-6);
-}
-
-/* ── Timeframe buttons ── */
-document.querySelectorAll('.tf-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedTF = Number(btn.dataset.tf);
-    drawChart();
-  });
-});
-
-/* ── Trade Preview ── */
-function updateTradePreview(){
-  const m = currentMarket || marketsCache[selectedMarketId];
-  const lots = Math.max(1, Math.floor(Number(el.lotInput.value||1)));
-  el.sharesDisplay.value = `${lots * LOT_SIZE} lembar`;
-  if(!m){ el.tradePreview.innerHTML = 'Pilih market untuk estimasi harga.'; return; }
-  const price = Number(m.price||0);
-  const buy = buyCost(price, lots);
-  const sell = sellProceeds(price, lots);
-  el.tradePreview.innerHTML = `
-    <b>${m.name||m.id}</b> · Lot <b>${lots}</b> (${lots*LOT_SIZE} lbr)<br/>
-    💰 Harga beli: <b>${fmtCoin(buy)} coin</b> (Rp ${fmtRp(buy*0.01)})<br/>
-    💸 Harga jual: <b>${fmtCoin(sell)} coin</b><br/>
-    📊 Spread: <b>${fmtCoin(round2(buy-sell))} coin</b>
+  // Risk
+  $('faRisk').innerHTML=`
+    ${faMetric('Beta',fa.beta.toFixed(2),'',fa.beta<1?'Defensif':fa.beta<1.5?'Normal':'Agresif',fa.beta<1?'var(--green)':fa.beta<1.5?'var(--muted)':'var(--danger)')}
+    ${faMetric('RSI',fa.rsi.toString(),'',fa.rsi>70?'Overbought':fa.rsi<30?'Oversold':'Normal',fa.rsi>70||fa.rsi<30?'var(--danger)':'var(--green)')}
+    ${faMetric('Quick Ratio',fa.quickRatio.toFixed(2),'',fa.quickRatio>=1?'Aman':'Hati-hati',fa.quickRatio>=1?'var(--green)':'var(--danger)')}
+    ${faMetric('MACD',fa.macdSignal,'',fa.macdSignal,fa.macdVal>0?'var(--green)':'var(--danger)')}
   `;
 }
 
-/* ── Market Buttons ── */
+function faMetric(label,val,change='',note='',noteColor='var(--muted)'){
+  return`<div class="fa-metric">
+    <div class="fa-label">${label}</div>
+    <div class="fa-val">${val}</div>
+    ${note?`<div class="fa-change" style="color:${noteColor}">${note}</div>`:''}
+  </div>`;
+}
+
+function fmtSI(n){
+  const v=Math.abs(Number(n||0));
+  if(v>=1e12)return(n/1e12).toFixed(1)+'T';
+  if(v>=1e9)return(n/1e9).toFixed(1)+'B';
+  if(v>=1e6)return(n/1e6).toFixed(1)+'M';
+  if(v>=1e3)return(n/1e3).toFixed(1)+'K';
+  return String(n);
+}
+
+el.btnToggleFA.addEventListener('click',()=>{
+  faVisible=!faVisible;
+  el.fundamentalPanel.classList.toggle('hidden',!faVisible);
+  el.btnToggleFA.textContent=faVisible?'📊 Sembunyikan Analisis':'📊 Tampilkan Analisis Fundamental';
+  if(faVisible && currentMarket) renderFundamentals(currentMarket);
+});
+
+/* ── Chart ── */
+function getFilteredHistory(){
+  const n=selectedTF===9999?marketHistoryFull.length:selectedTF;
+  return marketHistoryFull.slice(-Math.min(n,marketHistoryFull.length));
+}
+
+function drawChart(){
+  const W=el.chartCanvas.clientWidth||10,H=el.chartCanvas.clientHeight||10;
+  const ctx=chartCtx;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  const arr=getFilteredHistory();
+  if(!arr.length){ctx.fillStyle='#9ca3af';ctx.font='700 13px Inter';ctx.fillText('Pilih market untuk chart',14,28);return}
+  const padX=14,padY=20,min=Math.min(...arr),max=Math.max(...arr),range=Math.max(max-min,0.0001);
+  const lastPrice=arr[arr.length-1],firstPrice=arr[0],isUp=lastPrice>=firstPrice;
+  const toX=i=>padX+i*(W-padX*2)/Math.max(arr.length-1,1);
+  const toY=v=>H-padY-((v-min)/range)*(H-padY*2);
+  // Grid
+  ctx.strokeStyle='rgba(0,0,0,0.04)';ctx.lineWidth=1;
+  for(let i=0;i<5;i++){
+    const y=padY+i*((H-padY*2)/4);
+    ctx.beginPath();ctx.moveTo(padX,y);ctx.lineTo(W-padX,y);ctx.stroke();
+    const v=max-(max-min)*(i/4);
+    ctx.fillStyle='#9ca3af';ctx.font='600 10px Inter';ctx.textAlign='left';ctx.fillText(fmtCoin(v),2,y-3);
+  }
+  const pts=arr.map((v,i)=>({x:toX(i),y:toY(v)}));
+  const grad=ctx.createLinearGradient(0,padY,0,H-padY);
+  grad.addColorStop(0,isUp?'rgba(34,197,94,0.15)':'rgba(255,92,92,0.13)');
+  grad.addColorStop(1,isUp?'rgba(34,197,94,0.01)':'rgba(255,92,92,0.01)');
+  ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,H-padY);ctx.lineTo(pts[0].x,H-padY);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=isUp?'#16a34a':'#ff5c5c';ctx.lineWidth=2;ctx.stroke();
+  const last=pts[pts.length-1];
+  ctx.beginPath();ctx.arc(last.x,last.y,4.5,0,Math.PI*2);ctx.fillStyle=isUp?'#16a34a':'#ff5c5c';ctx.fill();
+  ctx.beginPath();ctx.arc(last.x,last.y,8,0,Math.PI*2);ctx.fillStyle=isUp?'rgba(34,197,94,0.2)':'rgba(255,92,92,0.2)';ctx.fill();
+  ctx.fillStyle=isUp?'#16a34a':'#ff5c5c';ctx.font='700 11px Inter';ctx.textAlign='right';ctx.fillText(fmtCoin(lastPrice),W-2,last.y-6);
+}
+
+document.querySelectorAll('.tf-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');selectedTF=Number(btn.dataset.tf);drawChart();
+  });
+});
+
+/* ── Market Header ── */
+function refreshMarketHeader(){
+  const m=currentMarket||(selectedMarketId?marketsCache[selectedMarketId]:null);
+  if(!m)return;
+  const d=deriveBidAsk(m);
+  const price=Number(m.price||0);
+  if(!sessionOpenPrices[m.id])sessionOpenPrices[m.id]=price;
+  const open=sessionOpenPrices[m.id];
+  const chg=round2(price-open);
+  const chgPct=open?round4((chg/open)*100):0;
+  const arr=getFilteredHistory();
+  const high=arr.length?Math.max(...arr):price;
+  const low=arr.length?Math.min(...arr):price;
+  el.marketName.textContent=m.name||m.symbol||m.id;
+  el.marketSymbol.textContent=m.symbol||m.id;
+  el.marketDesc.textContent=m.description||'Market simulasi saham NUBIA.';
+  el.marketPrice.textContent=fmtCoin(price);
+  el.marketPrice.classList.add('price-updating');
+  setTimeout(()=>el.marketPrice.classList.remove('price-updating'),500);
+  el.marketChangeDisplay.textContent=`${chg>=0?'+':''}${fmtCoin(chg)} (${chgPct>=0?'+':''}${chgPct}%)`;
+  el.marketChangeDisplay.className=chg>=0?'change-up':'change-dn';
+  el.marketVolDisplay.textContent=`Vol ×${Number(m.volatility||1).toLocaleString()}`;
+  el.marketBid.textContent=fmtCoin(d.bid);
+  el.marketAsk.textContent=fmtCoin(d.ask);
+  el.marketVolume.textContent=d.volume.toLocaleString();
+  el.mktOpen.textContent=fmtCoin(open);
+  el.mktHigh.textContent=fmtCoin(high);
+  el.mktLow.textContent=fmtCoin(low);
+  el.mktSpread.textContent=fmtCoin(d.ask-d.bid);
+  updateOrderbook(m);updateTradePreview();setMarketButtons();
+  checkAutoClose(m.id,price);
+  if(faVisible) renderFundamentals(m);
+}
+
+function updateTradePreview(){
+  const m=currentMarket||marketsCache[selectedMarketId];
+  const lots=Math.max(1,Math.floor(Number(el.lotInput.value||1)));
+  el.sharesDisplay.value=`${lots*LOT_SIZE} lembar`;
+  if(!m){el.tradePreview.innerHTML='Pilih market untuk estimasi.';return}
+  const price=Number(m.price||0);
+  const buy=buyCost(price,lots),sell=sellProceeds(price,lots);
+  el.tradePreview.innerHTML=`<b>${m.name||m.id}</b> · Lot <b>${lots}</b> (${lots*LOT_SIZE} lbr)<br/>💰 Harga beli: <b>${fmtCoin(buy)} coin</b><br/>💸 Harga jual: <b>${fmtCoin(sell)} coin</b><br/>📊 Spread: <b>${fmtCoin(round2(buy-sell))} coin</b>`;
+}
 function setMarketButtons(){
-  const ok = !!currentUser && !!currentMarket;
-  el.btnBuy.disabled = !ok;
-  el.btnSell.disabled = !ok;
+  const ok=!!currentUser&&!!currentMarket;
+  el.btnBuy.disabled=!ok;el.btnSell.disabled=!ok;
+}
+
+/* ── Orderbook ── */
+let obUpdateInterval=null;
+function startObInterval(){
+  clearInterval(obUpdateInterval);
+  obUpdateInterval=setInterval(()=>{
+    obTick++;
+    const m=currentMarket||(selectedMarketId?marketsCache[selectedMarketId]:null);
+    if(m){updateOrderbook(m);addFakeRecentTrade(m)}
+  },2800);
+}
+function updateOrderbook(m){
+  if(!m){el.bookAsks.innerHTML='<div class="book-header ask">Asks</div>';el.bookBids.innerHTML='<div class="book-header bid">Bids</div>';el.orderbookSummary.textContent='—';return}
+  const d=deriveBidAsk(m),price=Number(m.price||0),depth=7;
+  const tick=price>1000?1:price>100?0.5:0.1;
+  const asks=[],bids=[];
+  for(let i=0;i<depth;i++){
+    const s1=price*100+obTick*17+i*37,s2=price*100+obTick*13+i*53;
+    const base=Math.max(100,Math.round(d.volume/(5+i)));
+    asks.push({price:round2(d.ask+tick*i),size:Math.round(base*(0.7+seededRand(s1)*0.6))});
+    bids.push({price:round2(d.bid-tick*i),size:Math.round(base*(0.7+seededRand(s2)*0.6))});
+  }
+  const maxS=Math.max(...asks.map(a=>a.size),...bids.map(b=>b.size));
+  el.bookAsks.innerHTML='<div class="book-header ask">Asks</div>'+asks.map(a=>`<div class="order-row ask"><span>${fmtCoin(a.price)}</span><span>${a.size.toLocaleString()}</span></div><div class="ob-bar ob-bar-ask" style="width:${Math.min(100,(a.size/maxS)*100)}%"></div>`).join('');
+  el.bookBids.innerHTML='<div class="book-header bid">Bids</div>'+bids.map(b=>`<div class="order-row bid"><span>${fmtCoin(b.price)}</span><span>${b.size.toLocaleString()}</span></div><div class="ob-bar ob-bar-bid" style="width:${Math.min(100,(b.size/maxS)*100)}%"></div>`).join('');
+  const tB=bids.reduce((s,x)=>s+x.size,0),tA=asks.reduce((s,x)=>s+x.size,0);
+  el.orderbookSummary.textContent=`B ${tB.toLocaleString()} · A ${tA.toLocaleString()}`;
+}
+function addFakeRecentTrade(m){
+  if(!m)return;
+  const d=deriveBidAsk(m),isBuy=seededRand(obTick*19+Number(m.price||0)*3)>0.45;
+  recentTradesData.unshift({side:isBuy?'BUY':'SELL',price:isBuy?d.ask:d.bid,size:Math.round(1+seededRand(obTick*11)*15)*100,ts:Date.now()});
+  if(recentTradesData.length>15)recentTradesData.pop();
+  renderRecentTrades();
+}
+function renderRecentTrades(){
+  if(!recentTradesData.length){el.recentTicker.innerHTML='<div class="ticker-item"><span style="color:var(--muted)">—</span></div>';return}
+  el.recentTicker.innerHTML=recentTradesData.slice(0,12).map(t=>{
+    const cls=t.side==='BUY'?'ticker-buy':'ticker-sell';
+    const ago=Math.round((Date.now()-t.ts)/1000);
+    return`<div class="ticker-item"><span class="${cls}">${t.side}</span><span style="font-weight:800">${fmtCoin(t.price)}</span><span style="color:var(--muted)">${t.size.toLocaleString()} lbr</span><span style="color:var(--muted)">${ago}s lalu</span></div>`;
+  }).join('');
 }
 
 /* ── Market List ── */
 function renderMarketList(){
-  el.marketList.innerHTML = '';
-  const list = Object.values(marketsCache).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
-  el.visibleCountTop.textContent = `${list.length} market`;
-  if(!list.length){
-    el.marketList.innerHTML = '<div class="list-item"><div class="meta"><div style="font-weight:800">Belum ada market</div></div></div>';
-    return;
-  }
-  list.forEach(m => {
-    const d = deriveBidAsk(m);
-    const price = Number(m.price||0);
-    const open = sessionOpenPrices[m.id] || price;
-    const chgPct = open ? round4(((price-open)/open)*100) : 0;
-    const isUp = price >= open;
-    const item = document.createElement('div');
-    item.className = 'list-item';
-    item.style.cursor='pointer';
-    item.innerHTML = `
+  el.marketList.innerHTML='';
+  const list=Object.values(marketsCache).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+  el.visibleCountTop.textContent=`${list.length} market`;
+  if(!list.length){el.marketList.innerHTML='<div class="list-item"><div class="meta"><div style="font-weight:800">Belum ada market</div></div></div>';return}
+  list.forEach(m=>{
+    const d=deriveBidAsk(m),price=Number(m.price||0);
+    const open=sessionOpenPrices[m.id]||price;
+    const chgPct=open?round4(((price-open)/open)*100):0,isUp=price>=open;
+    const item=document.createElement('div');
+    item.className='list-item';item.style.cursor='pointer';
+    item.innerHTML=`
       <div class="meta">
         <div style="font-weight:900">${m.name||m.id}</div>
         <div class="subsmall">${m.symbol||m.id}</div>
-        <div class="subsmall" style="color:${isUp?'var(--green)':'var(--danger)'}">
-          ${isUp?'▲':'▼'} ${chgPct>=0?'+':''}${chgPct}%
-        </div>
+        <div class="subsmall" style="color:${isUp?'var(--green)':'var(--danger)'}">${isUp?'▲':'▼'} ${chgPct>=0?'+':''}${chgPct}%</div>
       </div>
       <div class="right">
         <div class="price">${fmtCoin(price)}</div>
-        <div class="subsmall" style="color:var(--muted)">Bid ${fmtCoin(d.bid)}</div>
-        <div style="margin-top:5px">
-          <button class="btn btn-outline btn-sm" data-id="${m.id}">View</button>
-        </div>
-      </div>
-    `;
-    item.addEventListener('click', e => { if(e.target.tagName!=='BUTTON') selectMarket(m.id); });
-    item.querySelector('button').addEventListener('click', () => selectMarket(m.id));
+        <div class="subsmall">Bid ${fmtCoin(d.bid)}</div>
+        <div style="margin-top:5px"><button class="btn btn-outline btn-sm" data-id="${m.id}">View</button></div>
+      </div>`;
+    item.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')selectMarket(m.id)});
+    item.querySelector('button').addEventListener('click',()=>selectMarket(m.id));
     el.marketList.appendChild(item);
   });
 }
 
-/* ── Positions (live PnL) ── */
+/* ── Positions (live) ── */
 function renderPositions(){
-  el.positionsList.innerHTML = '';
-  if(!currentUser){
-    el.positionsList.innerHTML = `<div class="list-item"><div class="meta"><div style="font-weight:800">Login dulu</div></div></div>`;
-    el.totalPnl.textContent = '—';
-    return;
-  }
-  const open = positionsCache.filter(p=>(p.status||'open')==='open' && Number(p.lots||0)>0);
-  if(!open.length){
-    el.positionsList.innerHTML = `<div class="list-item"><div class="meta"><div style="font-weight:800">Belum ada posisi</div><div class="subsmall">Beli lot untuk memulai.</div></div></div>`;
-    el.totalPnl.textContent = '+0.00';
-    return;
-  }
-  let totalUnreal = 0;
-  open.forEach(p => {
-    const m = marketsCache[p.marketId];
-    const livePrice = Number(m?.price || p.avgCostPerShare || 0);
-    const costPerShare = Number(p.avgCostPerShare||0);
-    const pnlPerShare = round2(livePrice - costPerShare);
-    const totalPnlPos = round2(pnlPerShare * Number(p.shares||0));
-    const pct = costPerShare ? round4((pnlPerShare/costPerShare)*100) : 0;
-    totalUnreal += totalPnlPos;
-    const depositedLots = Number(p.depositedLots||0);
-    const availLots = Math.max(0, Number(p.lots||0) - depositedLots);
-
-    const ac = autoCloseOrders[p.marketId];
-    let acBadge = '';
-    if(ac){
-      const parts = [];
-      if(ac.tpPrice||ac.tpPct) parts.push(`TP: ${ac.tpPrice ? fmtCoin(ac.tpPrice) : ac.tpPct+'%'}`);
-      if(ac.slPrice||ac.slPct) parts.push(`SL: ${ac.slPrice ? fmtCoin(ac.slPrice) : ac.slPct+'%'}`);
-      if(parts.length) acBadge = `<div class="autoclose-badge">⚙ ${parts.join(' · ')}</div>`;
-    }
-
-    const item = document.createElement('div');
-    item.className = 'position-item';
-    item.innerHTML = `
+  el.positionsList.innerHTML='';
+  if(!currentUser){el.positionsList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">Login dulu</div></div></div>`;el.totalPnl.textContent='—';return}
+  const open=positionsCache.filter(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0);
+  if(!open.length){el.positionsList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">Belum ada posisi</div><div class="subsmall">Beli lot untuk memulai.</div></div></div>`;el.totalPnl.textContent='+0.00';return}
+  let totalUnreal=0;
+  open.forEach(p=>{
+    const m=marketsCache[p.marketId];
+    const livePrice=Number(m?.price||p.avgCostPerShare||0);
+    const costPerShare=Number(p.avgCostPerShare||0);
+    const pnlPerShare=round2(livePrice-costPerShare);
+    const totalPnlPos=round2(pnlPerShare*Number(p.shares||0));
+    const pct=costPerShare?round4((pnlPerShare/costPerShare)*100):0;
+    totalUnreal+=totalPnlPos;
+    const depLots=Number(p.depositedLots||0),availLots=Math.max(0,Number(p.lots||0)-depLots);
+    const ac=autoCloseOrders[p.marketId];
+    let acBadge='';
+    if(ac){const parts=[];if(ac.tpPrice||ac.tpPct)parts.push(`TP: ${ac.tpPrice?fmtCoin(ac.tpPrice):ac.tpPct+'%'}`);if(ac.slPrice||ac.slPct)parts.push(`SL: ${ac.slPrice?fmtCoin(ac.slPrice):ac.slPct+'%'}`);if(parts.length)acBadge=`<div class="autoclose-badge">⚙ ${parts.join(' · ')}</div>`}
+    const item=document.createElement('div');
+    item.className='position-item';
+    item.innerHTML=`
       <div class="position-header">
         <div>
           <div style="font-weight:900;font-size:14px">${p.marketName||p.marketId}</div>
-          <div class="small-muted">${m?.symbol||p.marketId} · ${Number(p.lots||0)} Lot${depositedLots>0?` (${depositedLots} terkunci)`:''}</div>
+          <div class="small-muted">${m?.symbol||p.marketId} · ${Number(p.lots||0)} Lot${depLots>0?` (${depLots} terkunci)`:''}</div>
         </div>
         <div style="text-align:right">
-          <div class="${totalPnlPos>=0?'pnl-positive':'pnl-negative'}" style="font-size:15px">
-            ${totalPnlPos>=0?'+':''}${fmtCoin(totalPnlPos)}
-          </div>
-          <div class="${pct>=0?'pnl-positive':'pnl-negative'}" style="font-size:11px;opacity:.8">
-            ${pct>=0?'+':''}${pct}%
-          </div>
+          <div class="${totalPnlPos>=0?'pnl-positive':'pnl-negative'}" style="font-size:15px">${totalPnlPos>=0?'+':''}${fmtCoin(totalPnlPos)}</div>
+          <div class="${pct>=0?'pnl-positive':'pnl-negative'}" style="font-size:11px;opacity:.8">${pct>=0?'+':''}${pct}%</div>
         </div>
       </div>
       <div class="position-stats">
-        <div class="stat-box">
-          <div class="stat-label">Lot</div>
-          <div class="stat-val">${Number(p.lots||0)}</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Avg Cost</div>
-          <div class="stat-val">${fmtCoin(costPerShare)}</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Harga Live</div>
-          <div class="stat-val" style="color:${livePrice>=costPerShare?'var(--green)':'var(--danger)'}">
-            ${fmtCoin(livePrice)}
-          </div>
-        </div>
+        <div class="stat-box"><div class="stat-label">Lot</div><div class="stat-val">${Number(p.lots||0)}</div></div>
+        <div class="stat-box"><div class="stat-label">Avg Cost</div><div class="stat-val">${fmtCoin(costPerShare)}</div></div>
+        <div class="stat-box"><div class="stat-label">Harga Live</div><div class="stat-val" style="color:${livePrice>=costPerShare?'var(--green)':'var(--danger)'}">${fmtCoin(livePrice)}</div></div>
       </div>
-      ${acBadge ? `<div>${acBadge}</div>` : ''}
+      ${acBadge?`<div>${acBadge}</div>`:''}
       <div class="position-actions">
         ${availLots>0?`<button class="btn btn-danger btn-sm" data-sell="${p.marketId}">Jual</button>`:''}
         <button class="btn btn-blue btn-sm" data-ac="${p.marketId}">Auto-Close</button>
         ${availLots>0?`<button class="btn btn-outline btn-sm" data-deposit="${p.marketId}">Deposit</button>`:''}
-      </div>
-    `;
-    item.querySelector('[data-sell]')?.addEventListener('click', () => openSellModal(p.marketId));
-    item.querySelector('[data-ac]')?.addEventListener('click', () => openACModal(p.marketId));
-    item.querySelector('[data-deposit]')?.addEventListener('click', () => openDepositModal(p.marketId));
+      </div>`;
+    item.querySelector('[data-sell]')?.addEventListener('click',()=>openSellModal(p.marketId));
+    item.querySelector('[data-ac]')?.addEventListener('click',()=>openACModal(p.marketId));
+    item.querySelector('[data-deposit]')?.addEventListener('click',()=>openDepositModal(p.marketId));
     el.positionsList.appendChild(item);
   });
-  el.totalPnl.textContent = `${totalUnreal>=0?'+':''}${fmtCoin(totalUnreal)}`;
+  el.totalPnl.textContent=`${totalUnreal>=0?'+':''}${fmtCoin(totalUnreal)}`;
 }
 
 /* ── Trades ── */
 function renderTrades(){
-  el.tradesList.innerHTML = '';
-  if(!tradesCache.length){
-    el.tradesList.innerHTML = `<div class="list-item"><div class="meta"><div style="font-weight:800">Belum ada histori</div></div></div>`;
-    return;
-  }
-  tradesCache.slice(0,50).forEach(t => {
-    const ts = t.createdAt?.toDate ? t.createdAt.toDate() : null;
-    const pnlV = Number(t.pnl||0);
-    const cls = t.side==='BUY' ? 'pnl-negative' : (pnlV>=0?'pnl-positive':'pnl-negative');
-    const item = document.createElement('div');
-    item.className = 'list-item';
-    item.innerHTML = `
+  el.tradesList.innerHTML='';
+  if(!tradesCache.length){el.tradesList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">Belum ada histori</div></div></div>`;return}
+  tradesCache.slice(0,50).forEach(t=>{
+    const ts=t.createdAt?.toDate?t.createdAt.toDate():null;
+    const pnlV=Number(t.pnl||0),cls=t.side==='BUY'?'pnl-negative':(pnlV>=0?'pnl-positive':'pnl-negative');
+    const item=document.createElement('div');item.className='list-item';
+    item.innerHTML=`
       <div class="meta">
-        <div style="font-weight:900">
-          <span class="${t.side==='BUY'?'pnl-negative':'pnl-positive'}">${t.side}</span>
-          · ${t.marketName||t.marketId}
-        </div>
+        <div style="font-weight:900"><span class="${t.side==='BUY'?'pnl-negative':'pnl-positive'}">${t.side}</span> · ${t.marketName||t.marketId}</div>
         <div class="subsmall">Lot ${Number(t.lots||0)} · Harga ${fmtCoin(t.execPrice||t.price||0)}</div>
         <div class="subsmall">Fee ${fmtCoin(t.fee||0)} · <span class="${cls}">PnL ${pnlV>=0?'+':''}${fmtCoin(pnlV)}</span></div>
       </div>
-      <div class="right">
-        <div class="subsmall">${ts?ts.toLocaleString('id-ID'):''}</div>
-        <div class="subsmall" style="margin-top:3px">${t.status||''}</div>
-      </div>
-    `;
+      <div class="right"><div class="subsmall">${ts?ts.toLocaleString('id-ID'):''}</div><div class="subsmall">${t.status||''}</div></div>`;
     el.tradesList.appendChild(item);
   });
 }
 
 /* ── Events ── */
 function renderEvents(){
-  el.eventsList.innerHTML = '';
-  const m = selectedMarketId ? marketsCache[selectedMarketId] : null;
-  el.eventsMarketTag.textContent = m ? (m.symbol||m.id) : '—';
-  if(!m || !currentEvents.length){
-    el.eventsList.innerHTML = `<div class="list-item"><div class="meta">
-      <div style="font-weight:800">${m?'Belum ada event':'Pilih market dulu'}</div>
-    </div></div>`;
-    return;
-  }
-  currentEvents.forEach(ev => {
-    const start = ev.startTs?.toDate ? ev.startTs.toDate() : null;
-    const end = ev.endTs?.toDate ? ev.endTs.toDate() : null;
-    const item = document.createElement('div');
-    item.className = 'list-item';
-    item.innerHTML = `
-      <div class="meta">
-        <div style="font-weight:900">${ev.title||'Event'}</div>
-        <div class="subsmall">${ev.description||''}</div>
-        <div class="subsmall">${start?start.toLocaleString('id-ID'):'-'} → ${end?end.toLocaleString('id-ID'):'-'}</div>
-      </div>
-      <div class="right"><div class="chip chip-yellow">Vol ×${Number(ev.volMultiplier||1).toFixed(1)}</div></div>
-    `;
+  el.eventsList.innerHTML='';
+  const m=selectedMarketId?marketsCache[selectedMarketId]:null;
+  el.eventsMarketTag.textContent=m?(m.symbol||m.id):'—';
+  if(!m||!currentEvents.length){el.eventsList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">${m?'Belum ada event':'Pilih market dulu'}</div></div></div>`;return}
+  currentEvents.forEach(ev=>{
+    const start=ev.startTs?.toDate?ev.startTs.toDate():null,end=ev.endTs?.toDate?ev.endTs.toDate():null;
+    const item=document.createElement('div');item.className='list-item';
+    item.innerHTML=`<div class="meta"><div style="font-weight:900">${ev.title||'Event'}</div><div class="subsmall">${ev.description||''}</div><div class="subsmall">${start?start.toLocaleString('id-ID'):'-'} → ${end?end.toLocaleString('id-ID'):'-'}</div></div><div class="right"><div class="chip chip-yellow">Vol ×${Number(ev.volMultiplier||1).toFixed(1)}</div></div>`;
     el.eventsList.appendChild(item);
   });
 }
 
 /* ── Deposit Panel ── */
 function renderDepositPanel(){
-  // Available positions to deposit
-  el.depositAvailList.innerHTML = '';
-  const open = positionsCache.filter(p=>(p.status||'open')==='open' && Number(p.lots||0)>0);
-  if(!currentUser || !open.length){
-    el.depositAvailList.innerHTML = `<div class="list-item"><div class="meta">
-      <div style="font-weight:800">${currentUser?'Belum ada posisi':'Login dulu'}</div>
-    </div></div>`;
-  } else {
-    open.forEach(p => {
-      const availLots = Math.max(0, Number(p.lots||0) - Number(p.depositedLots||0));
-      if(!availLots) return;
-      const m = marketsCache[p.marketId];
-      const livePrice = Number(m?.price || p.avgCostPerShare || 0);
-      const coinValue = round2(availLots * LOT_SIZE * livePrice);
-      const annualInterest = round2(coinValue * DEPOSIT_INTEREST);
-      const annualDiv = round2(availLots * LOT_SIZE * livePrice * DIVIDEND_RATE);
-      const item = document.createElement('div');
-      item.className = 'deposit-item';
-      item.innerHTML = `
+  el.depositAvailList.innerHTML='';
+  const open=positionsCache.filter(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0);
+  if(!currentUser||!open.length){el.depositAvailList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">${currentUser?'Belum ada posisi':'Login dulu'}</div></div></div>`}
+  else{
+    let hasAvail=false;
+    open.forEach(p=>{
+      const availLots=Math.max(0,Number(p.lots||0)-Number(p.depositedLots||0));
+      if(!availLots)return;
+      hasAvail=true;
+      const m=marketsCache[p.marketId],livePrice=Number(m?.price||p.avgCostPerShare||0);
+      const coinValue=round2(availLots*LOT_SIZE*livePrice);
+      const item=document.createElement('div');item.className='deposit-item';
+      item.innerHTML=`
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div style="font-weight:900">${p.marketName||p.marketId}</div>
-            <div class="small-muted">Tersedia: ${availLots} Lot · Nilai: ${fmtCoin(coinValue)} coin</div>
-          </div>
+          <div><div style="font-weight:900">${p.marketName||p.marketId}</div><div class="small-muted">Tersedia: ${availLots} Lot · ${fmtCoin(coinValue)} coin</div></div>
           <button class="btn btn-green btn-sm" data-depavail="${p.marketId}">Deposit</button>
         </div>
         <div class="interest-box">
-          <div style="display:flex;gap:16px;flex-wrap:wrap">
-            <div><span class="small-muted">Bunga/thn:</span> <b>+${fmtCoin(annualInterest)}</b></div>
-            <div><span class="small-muted">Dividen/thn:</span> <b>+${fmtCoin(annualDiv)}</b></div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px">
+            <div><span style="color:var(--muted)">Bunga/thn:</span> <b>+${fmtCoin(round2(coinValue*DEPOSIT_INTEREST))}</b></div>
+            <div><span style="color:var(--muted)">Dividen/thn:</span> <b>+${fmtCoin(round2(availLots*LOT_SIZE*livePrice*DIVIDEND_RATE))}</b></div>
           </div>
-        </div>
-      `;
-      item.querySelector('[data-depavail]').addEventListener('click', () => openDepositModal(p.marketId));
+        </div>`;
+      item.querySelector('[data-depavail]').addEventListener('click',()=>openDepositModal(p.marketId));
       el.depositAvailList.appendChild(item);
     });
-    if(!el.depositAvailList.children.length){
-      el.depositAvailList.innerHTML = `<div class="list-item"><div class="meta"><div style="font-weight:800">Semua lot sudah di-deposit</div></div></div>`;
-    }
+    if(!hasAvail)el.depositAvailList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">Semua lot sudah di-deposit</div></div></div>`;
   }
-
-  // Active deposits
-  el.depositActiveList.innerHTML = '';
-  if(!depositsCache.length){
-    el.depositActiveList.innerHTML = `<div class="list-item"><div class="meta">
-      <div style="font-weight:800">Belum ada deposit aktif</div>
-      <div class="subsmall">Deposit saham untuk mulai mendapat bunga.</div>
-    </div></div>`;
-    return;
-  }
-  depositsCache.forEach(dep => {
-    const now = Date.now();
-    const depAt = dep.depositedAt?.toDate ? dep.depositedAt.toDate().getTime() : (dep.depositedAt || 0);
-    const matAt = dep.maturityAt?.toDate ? dep.maturityAt.toDate().getTime() : (depAt + YEAR_MS);
-    const elapsed = Math.max(0, now - depAt);
-    const elapsedFrac = elapsed / YEAR_MS;
-    const isMatured = now >= matAt;
-    const coinVal = Number(dep.coinValue||0);
-    const lots = Number(dep.lots||0);
-    const accrued = round2(coinVal * DEPOSIT_INTEREST * elapsedFrac);
-    const dividend = round2(lots * LOT_SIZE * (marketsCache[dep.marketId]?.price||dep.priceAtDeposit||0) * DIVIDEND_RATE * elapsedFrac);
-    const unlockFeeAmt = round2(coinVal * UNLOCK_FEE);
-    const daysLeft = Math.max(0, Math.round((matAt - now) / 86400000));
-    const status = dep.status||'active';
-    const badgeClass = isMatured ? 'badge-matured' : (status==='active' ? 'badge-active' : 'badge-locked');
-    const badgeText = isMatured ? '✅ Jatuh Tempo' : (status==='active' ? '🔒 Aktif' : '🔓 Unlocked');
-
-    const item = document.createElement('div');
-    item.className = 'deposit-item';
-    item.innerHTML = `
+  el.depositActiveList.innerHTML='';
+  if(!depositsCache.length){el.depositActiveList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">Belum ada deposit aktif</div></div></div>`;return}
+  depositsCache.forEach(dep=>{
+    const now=Date.now();
+    const depAt=dep.depositedAt?.toDate?dep.depositedAt.toDate().getTime():(dep.depositedAt||0);
+    const matAt=dep.maturityAt?.toDate?dep.maturityAt.toDate().getTime():(depAt+YEAR_MS);
+    const elapsedFrac=Math.max(0,now-depAt)/YEAR_MS,isMatured=now>=matAt;
+    const coinVal=Number(dep.coinValue||0),lots=Number(dep.lots||0);
+    const accrued=round2(coinVal*DEPOSIT_INTEREST*elapsedFrac);
+    const dividend=round2(lots*LOT_SIZE*(marketsCache[dep.marketId]?.price||dep.priceAtDeposit||0)*DIVIDEND_RATE*elapsedFrac);
+    const unlockFeeAmt=round2(coinVal*UNLOCK_FEE),daysLeft=Math.max(0,Math.round((matAt-now)/86400000));
+    const status=dep.status||'active';
+    const badgeClass=isMatured?'badge-matured':(status==='active'?'badge-active':'badge-locked');
+    const badgeText=isMatured?'✅ Jatuh Tempo':(status==='active'?'🔒 Aktif':'🔓 Unlocked');
+    const item=document.createElement('div');item.className='deposit-item';
+    item.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div>
-          <div style="font-weight:900">${dep.marketName||dep.marketId}</div>
-          <div class="small-muted">${lots} Lot · ${lots*LOT_SIZE} saham</div>
-        </div>
+        <div><div style="font-weight:900">${dep.marketName||dep.marketId}</div><div class="small-muted">${lots} Lot · ${lots*LOT_SIZE} saham</div></div>
         <div class="deposit-badge ${badgeClass}">${badgeText}</div>
       </div>
       <div class="interest-box">
@@ -1364,581 +1264,474 @@ function renderDepositPanel(){
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${status==='active' ? `<button class="btn btn-sm btn-outline" data-unlock="${dep.id}">Unlock (fee ${fmtCoin(unlockFeeAmt)})</button>` : ''}
-        ${isMatured && status==='active' ? `<button class="btn btn-sm btn-green" data-claim="${dep.id}">Claim Maturity</button>` : ''}
-      </div>
-    `;
-    item.querySelector('[data-unlock]')?.addEventListener('click', () => openUnlockModal(dep.id));
-    item.querySelector('[data-claim]')?.addEventListener('click', () => claimDeposit(dep.id, true));
+        ${status==='active'&&!isMatured?`<button class="btn btn-sm btn-outline" data-unlock="${dep.id}">Unlock (fee ${fmtCoin(unlockFeeAmt)})</button>`:''}
+        ${isMatured&&status==='active'?`<button class="btn btn-sm btn-green" data-claim="${dep.id}">Claim Maturity</button>`:''}
+      </div>`;
+    item.querySelector('[data-unlock]')?.addEventListener('click',()=>openUnlockModal(dep.id));
+    item.querySelector('[data-claim]')?.addEventListener('click',()=>claimDeposit(dep.id,true));
     el.depositActiveList.appendChild(item);
   });
 }
 
-/* ── Modal: Sell ── */
+/* ── ADMIN PANEL ── */
+function renderAdminPanel(){
+  if(currentUser?.uid!==ADMIN_UID){el.pageAdmin.classList.add('hidden');return}
+  el.pageAdmin.classList.remove('hidden');
+  const query=adminSearchQuery.toLowerCase();
+  const allUsers=Object.values(adminUsersCache);
+  let filtered=allUsers;
+  if(adminTab==='positions') filtered=allUsers.filter(u=>u.positions&&u.positions.some(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0));
+  else if(adminTab==='deposits') filtered=allUsers.filter(u=>u.deposits&&u.deposits.length>0);
+  if(query) filtered=filtered.filter(u=>(u.email||'').toLowerCase().includes(query)||(u.uid||'').toLowerCase().includes(query));
+  // Update stats
+  const totalPositions=allUsers.reduce((s,u)=>{const open=u.positions?.filter(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0)||[];return s+open.length},0);
+  const totalCoins=allUsers.reduce((s,u)=>s+Number(u.coin||0),0);
+  el.adminStatUsers.textContent=allUsers.length;
+  el.adminStatPositions.textContent=totalPositions;
+  el.adminStatCoins.textContent=fmtSI(Math.round(totalCoins));
+  if(!filtered.length){el.adminUserList.innerHTML=`<div class="admin-empty">${query?'Tidak ditemukan':'Belum ada user'}</div>`;return}
+  el.adminUserList.innerHTML='';
+  filtered.forEach(u=>{
+    const openPos=(u.positions||[]).filter(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0);
+    const hasDeposits=(u.deposits||[]).length>0;
+    const div=document.createElement('div');div.className='admin-user-card';
+    div.innerHTML=`
+      <div class="auc-top">
+        <div>
+          <div class="auc-email">${u.email||u.displayName||'(no email)'}</div>
+          <div class="auc-uid">${u.uid}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="auc-coin">${fmtCoin(u.coin)}</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:10px;margin-top:2px">COIN</div>
+        </div>
+      </div>
+      <div class="auc-positions">
+        ${openPos.length===0?`<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:4px 0">Tidak ada posisi terbuka</div>`:openPos.map(p=>{
+          const isDeposited=Number(p.depositedLots||0)>0;
+          const m=marketsCache[p.marketId];
+          const livePrice=Number(m?.price||p.avgCostPerShare||0);
+          const pnl=round2((livePrice-Number(p.avgCostPerShare||0))*Number(p.shares||0));
+          return`<div class="auc-pos-row">
+            <div class="auc-pos-left">
+              <span style="font-weight:900">${p.marketName||p.marketId}</span>
+              <span style="color:rgba(255,255,255,0.5)"> · ${Number(p.lots||0)} Lot · Avg ${fmtCoin(p.avgCostPerShare||0)}</span>
+            </div>
+            <div class="auc-pos-right">
+              <span style="color:${pnl>=0?'var(--green2)':'var(--danger)'};font-size:11px">${pnl>=0?'+':''}${fmtCoin(pnl)}</span>
+              ${isDeposited?`<span class="auc-dep-tag">🔒 DEP</span>`:''}
+              <span class="auc-open-tag">OPEN</span>
+            </div>
+          </div>`;
+        }).join('')}
+        ${hasDeposits?`<div style="color:rgba(255,212,0,0.6);font-size:11px;padding:4px 0">🏦 ${(u.deposits||[]).length} deposit aktif</div>`:''}
+      </div>`;
+    el.adminUserList.appendChild(div);
+  });
+}
+
+let adminPositionsUnsub=null, adminDepositsUnsub=null;
+function subscribeAdmin(){
+  if(currentUser?.uid!==ADMIN_UID)return;
+  // Listen to all users
+  onSnapshot(collection(walletDb,'users'),snap=>{
+    snap.forEach(d=>{
+      const data=d.data();
+      if(!adminUsersCache[d.id]) adminUsersCache[d.id]={uid:d.id,positions:[],deposits:[]};
+      adminUsersCache[d.id].email=data.email||data.displayName||'';
+      adminUsersCache[d.id].displayName=data.displayName||'';
+      adminUsersCache[d.id].coin=Number(data.nubiPayCoin||0);
+    });
+    renderAdminPanel();
+    // Subscribe to positions for each user
+    snap.forEach(d=>{
+      const uid=d.id;
+      onSnapshot(collection(walletDb,'users',uid,'positions'),pSnap=>{
+        if(!adminUsersCache[uid]) adminUsersCache[uid]={uid,positions:[],deposits:[],email:'',coin:0};
+        adminUsersCache[uid].positions=[];
+        pSnap.forEach(p=>adminUsersCache[uid].positions.push({id:p.id,...p.data()}));
+        renderAdminPanel();
+      },()=>{});
+      onSnapshot(query(collection(walletDb,'users',uid,'deposits'),limit(50)),dSnap=>{
+        if(!adminUsersCache[uid]) adminUsersCache[uid]={uid,positions:[],deposits:[],email:'',coin:0};
+        adminUsersCache[uid].deposits=[];
+        dSnap.forEach(d=>{ if((d.data().status||'active')==='active') adminUsersCache[uid].deposits.push({id:d.id,...d.data()}) });
+        renderAdminPanel();
+      },()=>{});
+    });
+  },err=>console.error('Admin snap err:',err));
+}
+
+el.adminSearch.addEventListener('input',()=>{adminSearchQuery=el.adminSearch.value;renderAdminPanel()});
+
+/* ── Sell Modal ── */
 function openSellModal(marketId){
-  const pos = positionsCache.find(p=>p.marketId===marketId && (p.status||'open')==='open');
-  if(!pos) return;
-  const m = marketsCache[marketId];
-  const depLots = Number(pos.depositedLots||0);
-  const availLots = Math.max(0, Number(pos.lots||0) - depLots);
-  sellModalMarketId = marketId;
-  $('modalSellTitle').textContent = `Jual ${pos.marketName||marketId}`;
-  $('modalSellSub').textContent = `${availLots} Lot tersedia · Avg cost ${fmtCoin(pos.avgCostPerShare||0)}`;
-  $('modalSellLot').value = '1';
-  $('modalSellLot').max = String(availLots);
-  updateSellModalPreview();
-  openModal('modalSell');
+  const pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');
+  if(!pos)return;
+  const m=marketsCache[marketId],depLots=Number(pos.depositedLots||0);
+  const availLots=Math.max(0,Number(pos.lots||0)-depLots);
+  sellModalMarketId=marketId;
+  $('modalSellTitle').textContent=`Jual ${pos.marketName||marketId}`;
+  $('modalSellSub').textContent=`${availLots} Lot tersedia · Avg ${fmtCoin(pos.avgCostPerShare||0)}`;
+  $('modalSellLot').value='1';$('modalSellLot').max=String(availLots);
+  updateSellModalPreview();openModal('modalSell');
 }
 function updateSellModalPreview(){
-  const pos = positionsCache.find(p=>p.marketId===sellModalMarketId && (p.status||'open')==='open');
-  const m = marketsCache[sellModalMarketId];
-  if(!pos||!m){ $('modalSellPreview').innerHTML='—'; return; }
-  const lots = Math.max(1, Math.floor(Number($('modalSellLot').value||1)));
-  const price = Number(m.price||0);
-  const proceeds = sellProceeds(price, lots);
-  const avg = Number(pos.avgCostPerShare||0);
-  const realCost = round2(avg * lots * LOT_SIZE);
-  const pnl = round2(proceeds - realCost);
-  $('modalSellPreview').innerHTML = `
-    <b>${m.name||m.id}</b> · Lot <b>${lots}</b><br/>
-    💸 Estimasi dapat: <b>${fmtCoin(proceeds)} coin</b><br/>
-    📊 PnL estimasi: <span class="${pnl>=0?'pnl-positive':'pnl-negative'}">${pnl>=0?'+':''}${fmtCoin(pnl)}</span>
-  `;
+  const pos=positionsCache.find(p=>p.marketId===sellModalMarketId&&(p.status||'open')==='open');
+  const m=marketsCache[sellModalMarketId];
+  if(!pos||!m){$('modalSellPreview').innerHTML='—';return}
+  const lots=Math.max(1,Math.floor(Number($('modalSellLot').value||1)));
+  const price=Number(m.price||0),proceeds=sellProceeds(price,lots);
+  const realCost=round2(Number(pos.avgCostPerShare||0)*lots*LOT_SIZE);
+  const pnl=round2(proceeds-realCost);
+  $('modalSellPreview').innerHTML=`<b>${m.name||m.id}</b> · Lot <b>${lots}</b><br/>💸 Estimasi dapat: <b>${fmtCoin(proceeds)} coin</b><br/>📊 PnL: <span class="${pnl>=0?'pnl-positive':'pnl-negative'}">${pnl>=0?'+':''}${fmtCoin(pnl)}</span>`;
 }
-$('modalSellLot').addEventListener('input', updateSellModalPreview);
-$('modalSellConfirm').addEventListener('click', async () => {
-  if(!sellModalMarketId) return;
-  const lots = Math.max(1, Math.floor(Number($('modalSellLot').value||1)));
+$('modalSellLot').addEventListener('input',updateSellModalPreview);
+$('modalSellConfirm').addEventListener('click',async()=>{
+  const lots=Math.max(1,Math.floor(Number($('modalSellLot').value||1)));
   closeModal('modalSell');
-  await sellLotsFor(sellModalMarketId, lots);
+  await sellLotsFor(sellModalMarketId,lots);
 });
 
-/* ── Modal: Auto-Close ── */
+/* ── Auto-Close Modal ── */
 function openACModal(marketId){
-  acTargetMarketId = marketId;
-  const m = marketsCache[marketId];
-  const pos = positionsCache.find(p=>p.marketId===marketId && (p.status||'open')==='open');
-  const ac = autoCloseOrders[marketId] || {};
-  $('modalACsub').textContent = `${m?.name||marketId} · Harga sekarang: ${fmtCoin(m?.price||0)} · Avg: ${fmtCoin(pos?.avgCostPerShare||0)}`;
-  $('acTPprice').value = ac.tpPrice||'';
-  $('acTPpct').value = ac.tpPct||'';
-  $('acSLprice').value = ac.slPrice||'';
-  $('acSLpct').value = ac.slPct||'';
-  $('acLots').value = ac.lots||'';
-  updateACPreview();
-  openModal('modalAutoClose');
+  acTargetMarketId=marketId;
+  const m=marketsCache[marketId],pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');
+  const ac=autoCloseOrders[marketId]||{};
+  $('modalACsub').textContent=`${m?.name||marketId} · Live: ${fmtCoin(m?.price||0)} · Avg: ${fmtCoin(pos?.avgCostPerShare||0)}`;
+  $('acTPprice').value=ac.tpPrice||'';$('acTPpct').value=ac.tpPct||'';
+  $('acSLprice').value=ac.slPrice||'';$('acSLpct').value=ac.slPct||'';
+  $('acLots').value=ac.lots||'';
+  updateACPreview();openModal('modalAutoClose');
 }
 function updateACPreview(){
-  if(!acTargetMarketId){ $('acPreview').innerHTML='—'; return; }
-  const m = marketsCache[acTargetMarketId];
-  const pos = positionsCache.find(p=>p.marketId===acTargetMarketId && (p.status||'open')==='open');
-  const price = Number(m?.price||0);
-  const avg = Number(pos?.avgCostPerShare||0);
-  const tp = Number($('acTPprice').value)||null;
-  const tpPct = Number($('acTPpct').value)||null;
-  const sl = Number($('acSLprice').value)||null;
-  const slPct = Number($('acSLpct').value)||null;
-  const tpReal = tp || (tpPct && avg ? round2(avg*(1+tpPct/100)) : null);
-  const slReal = sl || (slPct && avg ? round2(avg*(1-slPct/100)) : null);
-  $('acPreview').innerHTML = `
-    🎯 TP trigger: <b>${tpReal?fmtCoin(tpReal):'—'}</b><br/>
-    🛡️ SL trigger: <b>${slReal?fmtCoin(slReal):'—'}</b>
-  `;
+  if(!acTargetMarketId){$('acPreview').innerHTML='—';return}
+  const m=marketsCache[acTargetMarketId],pos=positionsCache.find(p=>p.marketId===acTargetMarketId&&(p.status||'open')==='open');
+  const avg=Number(pos?.avgCostPerShare||0);
+  const tp=Number($('acTPprice').value)||null,tpPct=Number($('acTPpct').value)||null;
+  const sl=Number($('acSLprice').value)||null,slPct=Number($('acSLpct').value)||null;
+  const tpReal=tp||(tpPct&&avg?round2(avg*(1+tpPct/100)):null);
+  const slReal=sl||(slPct&&avg?round2(avg*(1-slPct/100)):null);
+  $('acPreview').innerHTML=`🎯 TP trigger: <b>${tpReal?fmtCoin(tpReal):'—'}</b><br/>🛡️ SL trigger: <b>${slReal?fmtCoin(slReal):'—'}</b>`;
 }
 ['acTPprice','acTPpct','acSLprice','acSLpct','acLots'].forEach(id=>$(id).addEventListener('input',updateACPreview));
-$('btnSetAC').addEventListener('click', () => {
-  if(!acTargetMarketId) return;
-  const tp = Number($('acTPprice').value)||null;
-  const tpPct = Number($('acTPpct').value)||null;
-  const sl = Number($('acSLprice').value)||null;
-  const slPct = Number($('acSLpct').value)||null;
-  const lots = Number($('acLots').value)||null;
-  if(!tp && !tpPct && !sl && !slPct){ toast('Isi minimal TP atau SL'); return; }
-  autoCloseOrders[acTargetMarketId] = { tpPrice:tp, tpPct, slPrice:sl, slPct, lots };
-  closeModal('modalAutoClose');
-  toast('Auto-close disimpan');
-  renderPositions();
+$('btnSetAC').addEventListener('click',()=>{
+  if(!acTargetMarketId)return;
+  const tp=Number($('acTPprice').value)||null,tpPct=Number($('acTPpct').value)||null;
+  const sl=Number($('acSLprice').value)||null,slPct=Number($('acSLpct').value)||null;
+  const lots=Number($('acLots').value)||null;
+  if(!tp&&!tpPct&&!sl&&!slPct){toast('Isi minimal TP atau SL');return}
+  autoCloseOrders[acTargetMarketId]={tpPrice:tp,tpPct,slPrice:sl,slPct,lots};
+  closeModal('modalAutoClose');toast('Auto-close disimpan ✅');renderPositions();
 });
-$('btnClearAC').addEventListener('click', () => {
-  if(acTargetMarketId) delete autoCloseOrders[acTargetMarketId];
-  closeModal('modalAutoClose');
-  toast('Auto-close dihapus');
-  renderPositions();
+$('btnClearAC').addEventListener('click',()=>{
+  if(acTargetMarketId)delete autoCloseOrders[acTargetMarketId];
+  closeModal('modalAutoClose');toast('Auto-close dihapus');renderPositions();
 });
 
-/* ── Auto-Close Checker ── */
-async function checkAutoClose(marketId, livePrice){
-  const ac = autoCloseOrders[marketId];
-  if(!ac) return;
-  const pos = positionsCache.find(p=>p.marketId===marketId && (p.status||'open')==='open');
-  if(!pos) return;
-  const avg = Number(pos.avgCostPerShare||0);
-  const tpReal = ac.tpPrice || (ac.tpPct && avg ? round2(avg*(1+ac.tpPct/100)) : null);
-  const slReal = ac.slPrice || (ac.slPct && avg ? round2(avg*(1-ac.slPct/100)) : null);
-  const lots = ac.lots || Number(pos.lots||0);
-  let triggered = false;
-  let reason = '';
-  if(tpReal && livePrice >= tpReal){ triggered=true; reason=`Take Profit @ ${fmtCoin(tpReal)}`; }
-  if(slReal && livePrice <= slReal){ triggered=true; reason=`Stop Loss @ ${fmtCoin(slReal)}`; }
-  if(triggered){
-    delete autoCloseOrders[marketId];
-    toast(`⚡ Auto-Close: ${reason}`, 2500);
-    await sellLotsFor(marketId, Math.min(lots, Number(pos.lots||0)));
-  }
+async function checkAutoClose(marketId,livePrice){
+  const ac=autoCloseOrders[marketId];if(!ac)return;
+  const pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');if(!pos)return;
+  const avg=Number(pos.avgCostPerShare||0);
+  const tpReal=ac.tpPrice||(ac.tpPct&&avg?round2(avg*(1+ac.tpPct/100)):null);
+  const slReal=ac.slPrice||(ac.slPct&&avg?round2(avg*(1-ac.slPct/100)):null);
+  const lots=ac.lots||Number(pos.lots||0);
+  if(tpReal&&livePrice>=tpReal){delete autoCloseOrders[marketId];toast(`⚡ TP @ ${fmtCoin(tpReal)}`,2500);await sellLotsFor(marketId,Math.min(lots,Number(pos.lots||0)))}
+  else if(slReal&&livePrice<=slReal){delete autoCloseOrders[marketId];toast(`🛡️ SL @ ${fmtCoin(slReal)}`,2500);await sellLotsFor(marketId,Math.min(lots,Number(pos.lots||0)))}
 }
 
-/* ── Modal: Deposit ── */
+/* ── Deposit Modal ── */
 function openDepositModal(marketId){
-  depositModalMarketId = marketId;
-  const pos = positionsCache.find(p=>p.marketId===marketId && (p.status||'open')==='open');
-  const m = marketsCache[marketId];
-  if(!pos) return;
-  const depLots = Number(pos.depositedLots||0);
-  const availLots = Math.max(0, Number(pos.lots||0) - depLots);
-  $('depositConfirmSub').textContent = `${m?.name||marketId} · ${availLots} Lot tersedia`;
-  $('depositLotInput').value = String(availLots);
-  $('depositLotInput').max = String(availLots);
-  updateDepositPreview();
-  openModal('modalDepositConfirm');
+  depositModalMarketId=marketId;
+  const pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');
+  const m=marketsCache[marketId];if(!pos)return;
+  const availLots=Math.max(0,Number(pos.lots||0)-Number(pos.depositedLots||0));
+  $('depositConfirmSub').textContent=`${m?.name||marketId} · ${availLots} Lot tersedia`;
+  $('depositLotInput').value=String(availLots);$('depositLotInput').max=String(availLots);
+  updateDepositPreview();openModal('modalDepositConfirm');
 }
 function updateDepositPreview(){
-  if(!depositModalMarketId){ $('depositLotPreview').innerHTML='—'; return; }
-  const m = marketsCache[depositModalMarketId];
-  const pos = positionsCache.find(p=>p.marketId===depositModalMarketId);
-  if(!m||!pos){ $('depositLotPreview').innerHTML='—'; return; }
-  const lots = Math.max(1, Math.floor(Number($('depositLotInput').value||1)));
-  const price = Number(m.price||0);
-  const coinVal = round2(lots * LOT_SIZE * price);
-  const annualInt = round2(coinVal * DEPOSIT_INTEREST);
-  const annualDiv = round2(lots * LOT_SIZE * price * DIVIDEND_RATE);
-  $('depositLotPreview').innerHTML = `
-    Deposit <b>${lots} Lot</b> (${lots*LOT_SIZE} saham)<br/>
-    💰 Nilai: <b>${fmtCoin(coinVal)} coin</b><br/>
-    📈 Bunga/thn: <b style="color:var(--green)">+${fmtCoin(annualInt)}</b><br/>
-    💎 Dividen/thn: <b style="color:var(--blue)">+${fmtCoin(annualDiv)}</b><br/>
-    🔓 Fee unlock awal: <b style="color:var(--danger)">${fmtCoin(round2(coinVal*UNLOCK_FEE))}</b>
-  `;
+  if(!depositModalMarketId){$('depositLotPreview').innerHTML='—';return}
+  const m=marketsCache[depositModalMarketId],pos=positionsCache.find(p=>p.marketId===depositModalMarketId);
+  if(!m||!pos){$('depositLotPreview').innerHTML='—';return}
+  const lots=Math.max(1,Math.floor(Number($('depositLotInput').value||1)));
+  const price=Number(m.price||0),coinVal=round2(lots*LOT_SIZE*price);
+  $('depositLotPreview').innerHTML=`Deposit <b>${lots} Lot</b> (${lots*LOT_SIZE} saham)<br/>💰 Nilai: <b>${fmtCoin(coinVal)} coin</b><br/>📈 Bunga/thn: <b style="color:var(--green)">+${fmtCoin(round2(coinVal*DEPOSIT_INTEREST))}</b><br/>💎 Dividen/thn: <b style="color:var(--blue)">+${fmtCoin(round2(lots*LOT_SIZE*price*DIVIDEND_RATE))}</b><br/>🔓 Fee unlock awal: <b style="color:var(--danger)">${fmtCoin(round2(coinVal*UNLOCK_FEE))}</b>`;
 }
-$('depositLotInput').addEventListener('input', updateDepositPreview);
-$('depositConfirmDetail').innerHTML = 'Saham akan dikunci selama 1 tahun. Mendapat bunga 3%/thn dari nilai koin + dividen 4%/thn by lot.';
-$('btnDepositConfirm').addEventListener('click', async () => {
-  const lots = Math.max(1, Math.floor(Number($('depositLotInput').value||1)));
+$('depositLotInput').addEventListener('input',updateDepositPreview);
+$('btnDepositConfirm').addEventListener('click',async()=>{
+  const lots=Math.max(1,Math.floor(Number($('depositLotInput').value||1)));
   closeModal('modalDepositConfirm');
-  await depositStock(depositModalMarketId, lots);
+  await depositStock(depositModalMarketId,lots);
 });
 
-/* ── Modal: Unlock ── */
+/* ── Unlock Modal ── */
 function openUnlockModal(depositId){
-  const dep = depositsCache.find(d=>d.id===depositId);
-  if(!dep) return;
-  unlockModalDepositId = depositId;
-  const coinVal = Number(dep.coinValue||0);
-  const fee = round2(coinVal * UNLOCK_FEE);
-  const now = Date.now();
-  const depAt = dep.depositedAt?.toDate ? dep.depositedAt.toDate().getTime() : (dep.depositedAt||0);
-  const elapsed = Math.max(0, now - depAt);
-  const elapsedFrac = elapsed / YEAR_MS;
-  const accrued = round2(coinVal * DEPOSIT_INTEREST * elapsedFrac);
-  $('unlockSub').textContent = `${dep.marketName||dep.marketId} · ${dep.lots} Lot`;
-  $('unlockDetail').innerHTML = `
-    Nilai deposit: <b>${fmtCoin(coinVal)}</b><br/>
-    Bunga akrual: <b style="color:var(--green)">+${fmtCoin(accrued)}</b><br/>
-    Fee unlock (1.7%): <b style="color:var(--danger)">-${fmtCoin(fee)}</b><br/>
-    <b>Net diterima: ${fmtCoin(round2(accrued - fee + coinVal))} coin</b>
-  `;
+  const dep=depositsCache.find(d=>d.id===depositId);if(!dep)return;
+  unlockModalDepositId=depositId;
+  const coinVal=Number(dep.coinValue||0),fee=round2(coinVal*UNLOCK_FEE);
+  const now=Date.now(),depAt=dep.depositedAt?.toDate?dep.depositedAt.toDate().getTime():(dep.depositedAt||0);
+  const accrued=round2(coinVal*DEPOSIT_INTEREST*Math.max(0,now-depAt)/YEAR_MS);
+  $('unlockSub').textContent=`${dep.marketName||dep.marketId} · ${dep.lots} Lot`;
+  $('unlockDetail').innerHTML=`Nilai deposit: <b>${fmtCoin(coinVal)}</b><br/>Bunga akrual: <b style="color:var(--green)">+${fmtCoin(accrued)}</b><br/>Fee unlock 1.7%: <b style="color:var(--danger)">-${fmtCoin(fee)}</b><br/><b>Net diterima: ${fmtCoin(round2(accrued-fee+coinVal))} coin</b>`;
   openModal('modalUnlock');
 }
-$('btnUnlockConfirm').addEventListener('click', async () => {
-  closeModal('modalUnlock');
-  if(unlockModalDepositId) await claimDeposit(unlockModalDepositId, false);
-});
+$('btnUnlockConfirm').addEventListener('click',async()=>{closeModal('modalUnlock');if(unlockModalDepositId)await claimDeposit(unlockModalDepositId,false)});
 
-/* ── Firestore: Deposit Stock ── */
-async function depositStock(marketId, lots){
-  if(!currentUser) return toast('Login dulu');
-  const pos = positionsCache.find(p=>p.marketId===marketId && (p.status||'open')==='open');
-  const m = marketsCache[marketId];
-  if(!pos||!m) return toast('Data posisi tidak ditemukan');
-  const availLots = Math.max(0, Number(pos.lots||0) - Number(pos.depositedLots||0));
-  if(lots > availLots) return toast('Lot tidak cukup');
-
-  const price = Number(m.price||0);
-  const coinValue = round2(lots * LOT_SIZE * price);
-  const now = Date.now();
-  const maturityAt = new Date(now + YEAR_MS);
-  const posRef = doc(walletDb, 'users', currentUser.uid, 'positions', marketId);
-  const depRef = doc(collection(walletDb, 'users', currentUser.uid, 'deposits'));
-
+/* ── Firestore: Deposit ── */
+async function depositStock(marketId,lots){
+  if(!currentUser)return toast('Login dulu');
+  const pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');
+  const m=marketsCache[marketId];if(!pos||!m)return toast('Data tidak ditemukan');
+  const availLots=Math.max(0,Number(pos.lots||0)-Number(pos.depositedLots||0));
+  if(lots>availLots)return toast('Lot tidak cukup');
+  const price=Number(m.price||0),coinValue=round2(lots*LOT_SIZE*price);
+  const maturityAt=new Date(Date.now()+YEAR_MS);
+  showLoading('Mendepositokan saham…','Saham akan dikunci selama 1 tahun');
   try{
-    await runTransaction(walletDb, async tx => {
-      const pSnap = await tx.get(posRef);
-      if(!pSnap.exists()) throw new Error('Posisi tidak ditemukan');
-      const p = pSnap.data();
-      const curDepLots = Number(p.depositedLots||0);
-      const curAvail = Math.max(0, Number(p.lots||0) - curDepLots);
-      if(lots > curAvail) throw new Error('Lot tidak cukup');
-      tx.set(posRef, { depositedLots: round2(curDepLots + lots) }, { merge:true });
-      tx.set(depRef, {
-        marketId, marketName: m.name||m.id, lots, shares: lots*LOT_SIZE,
-        coinValue, priceAtDeposit: price,
-        depositedAt: serverTimestamp(),
-        maturityAt: Timestamp.fromDate(maturityAt),
-        status: 'active',
-        interestRate: DEPOSIT_INTEREST,
-        dividendRate: DIVIDEND_RATE,
-        createdAt: serverTimestamp()
-      });
+    const posRef=doc(walletDb,'users',currentUser.uid,'positions',marketId);
+    const depRef=doc(collection(walletDb,'users',currentUser.uid,'deposits'));
+    await runTransaction(walletDb,async tx=>{
+      const pSnap=await tx.get(posRef);if(!pSnap.exists())throw new Error('Posisi tidak ditemukan');
+      const p=pSnap.data(),curDep=Number(p.depositedLots||0),curAvail=Math.max(0,Number(p.lots||0)-curDep);
+      if(lots>curAvail)throw new Error('Lot tidak cukup');
+      tx.set(posRef,{depositedLots:round2(curDep+lots)},{merge:true});
+      tx.set(depRef,{marketId,marketName:m.name||m.id,lots,shares:lots*LOT_SIZE,coinValue,priceAtDeposit:price,depositedAt:serverTimestamp(),maturityAt:Timestamp.fromDate(maturityAt),status:'active',interestRate:DEPOSIT_INTEREST,dividendRate:DIVIDEND_RATE,createdAt:serverTimestamp()});
     });
     toast('Saham berhasil di-deposit 🔒');
-  }catch(e){
-    console.error(e);
-    toast(e.message||'Gagal deposit');
-  }
+  }catch(e){toast(e.message||'Gagal deposit')}
+  finally{hideLoading()}
 }
 
-/* ── Firestore: Claim/Unlock Deposit ── */
-async function claimDeposit(depositId, isMature){
-  if(!currentUser) return toast('Login dulu');
-  const dep = depositsCache.find(d=>d.id===depositId);
-  if(!dep) return toast('Deposit tidak ditemukan');
-  const coinVal = Number(dep.coinValue||0);
-  const now = Date.now();
-  const depAt = dep.depositedAt?.toDate ? dep.depositedAt.toDate().getTime() : (dep.depositedAt||0);
-  const elapsed = Math.max(0, now - depAt);
-  const elapsedFrac = elapsed / YEAR_MS;
-  const accrued = round2(coinVal * DEPOSIT_INTEREST * elapsedFrac);
-  const dividend = round2(Number(dep.lots||0) * LOT_SIZE * (marketsCache[dep.marketId]?.price||dep.priceAtDeposit||0) * DIVIDEND_RATE * elapsedFrac);
-  const fee = isMature ? 0 : round2(coinVal * UNLOCK_FEE);
-  const net = round2(accrued + dividend - fee);
-
-  const userRef = doc(walletDb, 'users', currentUser.uid);
-  const posRef = doc(walletDb, 'users', currentUser.uid, 'positions', dep.marketId);
-  const depRef = doc(walletDb, 'users', currentUser.uid, 'deposits', depositId);
-
+async function claimDeposit(depositId,isMature){
+  if(!currentUser)return toast('Login dulu');
+  const dep=depositsCache.find(d=>d.id===depositId);if(!dep)return toast('Deposit tidak ditemukan');
+  const coinVal=Number(dep.coinValue||0);
+  const now=Date.now(),depAt=dep.depositedAt?.toDate?dep.depositedAt.toDate().getTime():(dep.depositedAt||0);
+  const elapsedFrac=Math.max(0,now-depAt)/YEAR_MS;
+  const accrued=round2(coinVal*DEPOSIT_INTEREST*elapsedFrac);
+  const dividend=round2(Number(dep.lots||0)*LOT_SIZE*(marketsCache[dep.marketId]?.price||dep.priceAtDeposit||0)*DIVIDEND_RATE*elapsedFrac);
+  const fee=isMature?0:round2(coinVal*UNLOCK_FEE);
+  const net=round2(accrued+dividend-fee);
+  showLoading(isMature?'Claiming maturity…':'Unlocking deposit…','Memproses...');
   try{
-    await runTransaction(walletDb, async tx => {
-      const uSnap = await tx.get(userRef);
-      const pSnap = await tx.get(posRef);
-      const coin = Number(uSnap.exists() ? uSnap.data().nubiPayCoin||0 : 0);
-      tx.set(userRef, { nubiPayCoin: round2(coin + net) }, { merge:true });
-      if(pSnap.exists()){
-        const p = pSnap.data();
-        const newDepLots = Math.max(0, round2(Number(p.depositedLots||0) - Number(dep.lots||0)));
-        tx.set(posRef, { depositedLots: newDepLots }, { merge:true });
-      }
-      tx.set(depRef, { status:'unlocked', unlockedAt: serverTimestamp(), feeApplied: fee, netCredited: net }, { merge:true });
+    const userRef=doc(walletDb,'users',currentUser.uid);
+    const posRef=doc(walletDb,'users',currentUser.uid,'positions',dep.marketId);
+    const depRef=doc(walletDb,'users',currentUser.uid,'deposits',depositId);
+    await runTransaction(walletDb,async tx=>{
+      const uSnap=await tx.get(userRef),pSnap=await tx.get(posRef);
+      const coin=Number(uSnap.exists()?uSnap.data().nubiPayCoin||0:0);
+      tx.set(userRef,{nubiPayCoin:round2(coin+net)},{merge:true});
+      if(pSnap.exists()){const p=pSnap.data();tx.set(posRef,{depositedLots:Math.max(0,round2(Number(p.depositedLots||0)-Number(dep.lots||0)))},{merge:true})}
+      tx.set(depRef,{status:'unlocked',unlockedAt:serverTimestamp(),feeApplied:fee,netCredited:net},{merge:true});
     });
     toast(`${isMature?'Maturity':'Unlock'} sukses · +${fmtCoin(net)} coin`);
-  }catch(e){
-    console.error(e);
-    toast(e.message||'Gagal unlock');
-  }
+  }catch(e){toast(e.message||'Gagal unlock')}
+  finally{hideLoading()}
 }
 
-/* ── Firestore: Buy ── */
+/* ── Buy ── */
 async function buyLots(){
-  if(!currentUser) return toast('Login dulu');
-  const m = currentMarket || marketsCache[selectedMarketId];
-  if(!m) return toast('Pilih market dulu');
-  const lots = Math.max(1, Math.floor(Number(el.lotInput.value||1)));
-  const shares = lots * LOT_SIZE;
-  const price = Number(m.price||0);
-  const cost = buyCost(price, lots);
-  if(cost > currentCoin) return toast('Coin tidak cukup');
-
-  const userRef = doc(walletDb, 'users', currentUser.uid);
-  const posRef = doc(walletDb, 'users', currentUser.uid, 'positions', m.id);
-  const tradeRef = doc(collection(walletDb, 'users', currentUser.uid, 'trades'));
-
+  if(!currentUser)return toast('Login dulu');
+  const m=currentMarket||marketsCache[selectedMarketId];if(!m)return toast('Pilih market dulu');
+  const lots=Math.max(1,Math.floor(Number(el.lotInput.value||1)));
+  const shares=lots*LOT_SIZE,price=Number(m.price||0),cost=buyCost(price,lots);
+  if(cost>currentCoin)return toast('Coin tidak cukup');
+  showLoading('Membeli saham…',`${lots} Lot ${m.name||m.id} · ${fmtCoin(cost)} coin`);
+  const userRef=doc(walletDb,'users',currentUser.uid);
+  const posRef=doc(walletDb,'users',currentUser.uid,'positions',m.id);
+  const tradeRef=doc(collection(walletDb,'users',currentUser.uid,'trades'));
   try{
-    await runTransaction(walletDb, async tx => {
-      const uSnap = await tx.get(userRef);
-      const pSnap = await tx.get(posRef);
-      const coin = Number(uSnap.exists() ? uSnap.data().nubiPayCoin||0 : 0);
-      if(coin < cost) throw new Error('Coin tidak cukup');
-      let oldShares=0, oldCost=0, oldLots=0;
-      if(pSnap.exists()){
-        const p = pSnap.data();
-        oldShares=Number(p.shares||0); oldCost=Number(p.costBasis||0); oldLots=Number(p.lots||0);
-      }
-      const newShares = oldShares + shares;
-      const newCostBasis = round2(oldCost + cost);
-      tx.set(userRef, { nubiPayCoin: round2(coin-cost) }, { merge:true });
-      tx.set(posRef, {
-        marketId:m.id, marketName:m.name||m.id,
-        shares:newShares, lots:round2(newShares/LOT_SIZE),
-        lotSize:LOT_SIZE, costBasis:newCostBasis,
-        avgCostPerShare:round2(newCostBasis/newShares),
-        status:'open', updatedAt:serverTimestamp(),
-        createdAt: pSnap.exists() ? (pSnap.data().createdAt||serverTimestamp()) : serverTimestamp()
-      }, { merge:true });
-      tx.set(tradeRef, {
-        side:'BUY', marketId:m.id, marketName:m.name||m.id, lots, shares,
-        price, execPrice:round2(price*(1+BUY_SPREAD)), fee:ORDER_FEE,
-        gross:round2(shares*price*(1+BUY_SPREAD)), net:cost,
-        pnl:round2(-cost), status:'FILLED', createdAt:serverTimestamp()
-      });
+    await runTransaction(walletDb,async tx=>{
+      const uSnap=await tx.get(userRef),pSnap=await tx.get(posRef);
+      const coin=Number(uSnap.exists()?uSnap.data().nubiPayCoin||0:0);
+      if(coin<cost)throw new Error('Coin tidak cukup');
+      let oldShares=0,oldCost=0;
+      if(pSnap.exists()){const p=pSnap.data();oldShares=Number(p.shares||0);oldCost=Number(p.costBasis||0)}
+      const newShares=oldShares+shares,newCostBasis=round2(oldCost+cost);
+      tx.set(userRef,{nubiPayCoin:round2(coin-cost)},{merge:true});
+      tx.set(posRef,{marketId:m.id,marketName:m.name||m.id,shares:newShares,lots:round2(newShares/LOT_SIZE),lotSize:LOT_SIZE,costBasis:newCostBasis,avgCostPerShare:round2(newCostBasis/newShares),status:'open',updatedAt:serverTimestamp(),createdAt:pSnap.exists()?(pSnap.data().createdAt||serverTimestamp()):serverTimestamp()},{merge:true});
+      tx.set(tradeRef,{side:'BUY',marketId:m.id,marketName:m.name||m.id,lots,shares,price,execPrice:round2(price*(1+BUY_SPREAD)),fee:ORDER_FEE,gross:round2(shares*price*(1+BUY_SPREAD)),net:cost,pnl:round2(-cost),status:'FILLED',createdAt:serverTimestamp()});
     });
-    toast('✅ Beli berhasil');
-    el.lotInput.value='1';
-    updateTradePreview();
+    toast('✅ Beli berhasil!');el.lotInput.value='1';updateTradePreview();
     await refreshWallet(currentUser.uid);
-  }catch(e){ toast(e.message||'Gagal beli'); }
+  }catch(e){toast(e.message||'Gagal beli')}
+  finally{hideLoading()}
 }
 
-/* ── Firestore: Sell ── */
-async function sellLotsFor(marketId, sellLotsCount){
-  if(!currentUser) return toast('Login dulu');
-  const m = marketsCache[marketId];
-  if(!m) return toast('Market tidak ditemukan');
-  const posRef = doc(walletDb,'users',currentUser.uid,'positions',marketId);
-  const userRef = doc(walletDb,'users',currentUser.uid);
-  const tradeRef = doc(collection(walletDb,'users',currentUser.uid,'trades'));
+/* ── Sell ── */
+async function sellLotsFor(marketId,sellLotsCount){
+  if(!currentUser)return toast('Login dulu');
+  const m=marketsCache[marketId];if(!m)return toast('Market tidak ditemukan');
+  showLoading('Menjual saham…',`${sellLotsCount} Lot ${m.name||m.id}`);
+  const posRef=doc(walletDb,'users',currentUser.uid,'positions',marketId);
+  const userRef=doc(walletDb,'users',currentUser.uid);
+  const tradeRef=doc(collection(walletDb,'users',currentUser.uid,'trades'));
   try{
-    const pSnap = await getDoc(posRef);
-    if(!pSnap.exists()) return toast('Posisi tidak ditemukan');
-    const p = pSnap.data();
-    const depLots = Number(p.depositedLots||0);
-    const availLots = Math.max(0, Number(p.lots||0) - depLots);
-    if(sellLotsCount > availLots) return toast('Lot tidak cukup (beberapa sedang di-deposit)');
-    const sharesToSell = sellLotsCount * LOT_SIZE;
-    const price = Number(m.price||0);
-    const proceeds = sellProceeds(price, sellLotsCount);
-    const realCostBasis = round2(Number(p.avgCostPerShare||0) * sharesToSell);
-    const pnl = round2(proceeds - realCostBasis);
-
-    await runTransaction(walletDb, async tx => {
-      const uSnap = await tx.get(userRef);
-      const posSnap = await tx.get(posRef);
-      if(!posSnap.exists()) throw new Error('Posisi tidak ditemukan');
-      const up = posSnap.data();
-      const curShares = Number(up.shares||0);
-      if(curShares < sharesToSell) throw new Error('Shares tidak cukup');
-      const coin = Number(uSnap.exists() ? uSnap.data().nubiPayCoin||0 : 0);
-      const nextShares = curShares - sharesToSell;
-      const nextCostBasis = round2(Number(up.costBasis||0) - realCostBasis);
-      tx.set(userRef, { nubiPayCoin: round2(coin+proceeds) }, { merge:true });
-      tx.set(posRef, nextShares<=0 ? {
-        marketId, marketName:m.name||m.id, shares:0, lots:0, lotSize:LOT_SIZE,
-        costBasis:0, avgCostPerShare:0, status:'closed',
-        updatedAt:serverTimestamp(), closedAt:serverTimestamp()
-      } : {
-        shares:nextShares, lots:round2(nextShares/LOT_SIZE),
-        costBasis:nextCostBasis, avgCostPerShare:round2(nextCostBasis/nextShares),
-        status:'open', updatedAt:serverTimestamp()
-      }, { merge:true });
-      tx.set(tradeRef, {
-        side:'SELL', marketId, marketName:m.name||m.id, lots:sellLotsCount,
-        shares:sharesToSell, price, execPrice:round2(price*(1-SELL_SPREAD)),
-        fee:ORDER_FEE, gross:round2(sharesToSell*price*(1-SELL_SPREAD)),
-        net:proceeds, pnl, status:'FILLED', createdAt:serverTimestamp()
-      });
+    const pSnap=await getDoc(posRef);if(!pSnap.exists()){hideLoading();return toast('Posisi tidak ditemukan')}
+    const p=pSnap.data();
+    const depLots=Number(p.depositedLots||0),availLots=Math.max(0,Number(p.lots||0)-depLots);
+    if(sellLotsCount>availLots){hideLoading();return toast('Lot tidak cukup (beberapa sedang di-deposit)')}
+    const sharesToSell=sellLotsCount*LOT_SIZE,price=Number(m.price||0);
+    const proceeds=sellProceeds(price,sellLotsCount);
+    const realCostBasis=round2(Number(p.avgCostPerShare||0)*sharesToSell);
+    const pnl=round2(proceeds-realCostBasis);
+    await runTransaction(walletDb,async tx=>{
+      const uSnap=await tx.get(userRef),posSnap=await tx.get(posRef);
+      if(!posSnap.exists())throw new Error('Posisi tidak ditemukan');
+      const up=posSnap.data(),curShares=Number(up.shares||0);
+      if(curShares<sharesToSell)throw new Error('Shares tidak cukup');
+      const coin=Number(uSnap.exists()?uSnap.data().nubiPayCoin||0:0);
+      const nextShares=curShares-sharesToSell,nextCostBasis=round2(Number(up.costBasis||0)-realCostBasis);
+      tx.set(userRef,{nubiPayCoin:round2(coin+proceeds)},{merge:true});
+      tx.set(posRef,nextShares<=0?{marketId,marketName:m.name||m.id,shares:0,lots:0,lotSize:LOT_SIZE,costBasis:0,avgCostPerShare:0,status:'closed',updatedAt:serverTimestamp(),closedAt:serverTimestamp()}:{shares:nextShares,lots:round2(nextShares/LOT_SIZE),costBasis:nextCostBasis,avgCostPerShare:round2(nextCostBasis/nextShares),status:'open',updatedAt:serverTimestamp()},{merge:true});
+      tx.set(tradeRef,{side:'SELL',marketId,marketName:m.name||m.id,lots:sellLotsCount,shares:sharesToSell,price,execPrice:round2(price*(1-SELL_SPREAD)),fee:ORDER_FEE,gross:round2(sharesToSell*price*(1-SELL_SPREAD)),net:proceeds,pnl,status:'FILLED',createdAt:serverTimestamp()});
     });
-    toast('✅ Jual berhasil');
+    toast('✅ Jual berhasil!');
     await refreshWallet(currentUser.uid);
-  }catch(e){ toast(e.message||'Gagal jual'); }
+  }catch(e){toast(e.message||'Gagal jual')}
+  finally{hideLoading()}
 }
 
 /* ── Market Selection ── */
 async function selectMarket(mid){
-  selectedMarketId = mid;
-  const m = marketsCache[mid];
-  if(!m) return;
-  if(!sessionOpenPrices[mid]) sessionOpenPrices[mid] = Number(m.price||0);
-  currentMarket = m;
-  setPage('markets');
+  selectedMarketId=mid;
+  const m=marketsCache[mid];if(!m)return;
+  if(!sessionOpenPrices[mid])sessionOpenPrices[mid]=Number(m.price||0);
+  currentMarket=m;setPage('markets');
   subscribeMarket(mid);
   await loadTicksFor(mid);
   await loadEvents(mid);
-  refreshMarketHeader();
-  drawChart();
-  renderMarketList();
-  setMarketButtons();
-  startObInterval();
-  recentTradesData = [];
-  renderRecentTrades();
-  for(let i=0;i<8;i++) addFakeRecentTrade(m);
+  refreshMarketHeader();drawChart();renderMarketList();setMarketButtons();
+  startObInterval();recentTradesData=[];renderRecentTrades();
+  for(let i=0;i<8;i++)addFakeRecentTrade(m);
+  if(faVisible)renderFundamentals(m);
 }
 
-/* ── Firebase: ticks ── */
-async function loadTicksFor(mid){
-  marketHistoryFull = [];
-  try{
-    const snap = await getDoc(doc(marketDb,'markets',mid));
-    if(snap.exists()){
-      const d = snap.data();
-      if(Array.isArray(d.history) && d.history.length){
-        marketHistoryFull = d.history.map(Number).filter(n=>!Number.isNaN(n));
-      } else if(typeof d.price==='number') marketHistoryFull=[d.price];
-    }
-    const qTicks = query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(400));
-    const tSnap = await getDocs(qTicks).catch(()=>null);
-    if(tSnap){
-      const arr=[];
-      tSnap.forEach(d=>{ const p=Number(d.data().price); if(!Number.isNaN(p)) arr.push(p); });
-      if(arr.length) marketHistoryFull = arr;
-    }
-    if(!marketHistoryFull.length && currentMarket){
-      const p=Number(currentMarket.price||1);
-      marketHistoryFull=[p*0.97,p*0.98,p*0.99,p*1.01,p*1.00,p*0.995,p];
-    }
-  }catch(e){ console.error(e); }
-}
-
+/* ── Subscribe Market ── */
 function subscribeMarket(mid){
-  if(currentMarketUnsub){ try{currentMarketUnsub();}catch{} currentMarketUnsub=null; }
-  if(currentTicksUnsub){ try{currentTicksUnsub();}catch{} currentTicksUnsub=null; }
-  currentMarketUnsub = onSnapshot(doc(marketDb,'markets',mid), snap=>{
-    if(!snap.exists()) return;
-    const prev = currentMarket ? Number(currentMarket.price||0) : 0;
-    currentMarket = { id:snap.id, ...snap.data() };
-    marketsCache[mid] = currentMarket;
-    if(!sessionOpenPrices[mid]) sessionOpenPrices[mid] = Number(currentMarket.price||0);
-    refreshMarketHeader();
-    renderPositions();
-    drawChart();
+  if(currentMarketUnsub){try{currentMarketUnsub()}catch{}currentMarketUnsub=null}
+  if(currentTicksUnsub){try{currentTicksUnsub()}catch{}currentTicksUnsub=null}
+  currentMarketUnsub=onSnapshot(doc(marketDb,'markets',mid),snap=>{
+    if(!snap.exists())return;
+    const newData={id:snap.id,...snap.data()};
+    const newPrice=Number(newData.price||0);
+    currentMarket=newData;marketsCache[mid]=newData;
+    if(!sessionOpenPrices[mid])sessionOpenPrices[mid]=newPrice;
+    // ── LIVE CHART: append new price to history ──
+    if(newPrice){
+      if(!marketHistoryFull.length||marketHistoryFull[marketHistoryFull.length-1]!==newPrice){
+        marketHistoryFull.push(newPrice);
+        if(marketHistoryFull.length>600)marketHistoryFull.shift();
+      }
+    }
+    refreshMarketHeader();renderPositions();drawChart();
+    if(faVisible)renderFundamentals(newData);
   });
-  const qTicks = query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(400));
-  currentTicksUnsub = onSnapshot(qTicks, snap=>{
-    const arr=[];
-    snap.forEach(d=>{ const p=Number(d.data().price); if(!Number.isNaN(p)) arr.push(p); });
-    if(arr.length){ marketHistoryFull=arr; drawChart(); }
+  const qTicks=query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(400));
+  currentTicksUnsub=onSnapshot(qTicks,snap=>{
+    const arr=[];snap.forEach(d=>{const p=Number(d.data().price);if(!Number.isNaN(p))arr.push(p)});
+    if(arr.length){
+      marketHistoryFull=arr;
+      // Always ensure current live price is the last point
+      const livePr=Number(currentMarket?.price||0);
+      if(livePr&&marketHistoryFull[marketHistoryFull.length-1]!==livePr)marketHistoryFull.push(livePr);
+      drawChart();
+    }
   });
+}
+
+async function loadTicksFor(mid){
+  marketHistoryFull=[];
+  try{
+    const snap=await getDoc(doc(marketDb,'markets',mid));
+    if(snap.exists()){const d=snap.data();if(Array.isArray(d.history)&&d.history.length)marketHistoryFull=d.history.map(Number).filter(n=>!Number.isNaN(n));else if(typeof d.price==='number')marketHistoryFull=[d.price]}
+    const qTicks=query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(400));
+    const tSnap=await getDocs(qTicks).catch(()=>null);
+    if(tSnap){const arr=[];tSnap.forEach(d=>{const p=Number(d.data().price);if(!Number.isNaN(p))arr.push(p)});if(arr.length)marketHistoryFull=arr}
+    if(!marketHistoryFull.length&&currentMarket){const p=Number(currentMarket.price||1);marketHistoryFull=[p*0.97,p*0.985,p*0.99,p*0.995,p*1.0,p*0.998,p*1.002,p]}
+    // Append live price as last point
+    const livePr=Number(currentMarket?.price||0);
+    if(livePr&&(!marketHistoryFull.length||marketHistoryFull[marketHistoryFull.length-1]!==livePr))marketHistoryFull.push(livePr);
+  }catch(e){console.error(e)}
 }
 
 async function loadEvents(mid){
   currentEvents=[];
   try{
-    const qEv = query(collection(marketDb,'markets',mid,'events'),orderBy('startTs','asc'),limit(20));
-    const snap = await getDocs(qEv).catch(()=>null);
-    if(snap) snap.forEach(d=>currentEvents.push({id:d.id,...d.data()}));
+    const qEv=query(collection(marketDb,'markets',mid,'events'),orderBy('startTs','asc'),limit(20));
+    const snap=await getDocs(qEv).catch(()=>null);
+    if(snap)snap.forEach(d=>currentEvents.push({id:d.id,...d.data()}));
   }catch{}
   renderEvents();
 }
 
 /* ── Wallet ── */
 async function ensureWalletDoc(uid){
-  const ref = doc(walletDb,'users',uid);
-  const snap = await getDoc(ref);
-  if(!snap.exists()){
-    await setDoc(ref,{ displayName:currentUser?.displayName||'', email:currentUser?.email||'',
-      nubiPayBalance:0, nubiPayCoin:0, nubiPayCoinBonus:0, createdAt:serverTimestamp() });
-  } else {
-    const d=snap.data()||{};
-    const patch={};
-    if(typeof d.nubiPayBalance!=='number') patch.nubiPayBalance=0;
-    if(typeof d.nubiPayCoin!=='number') patch.nubiPayCoin=0;
-    if(!d.email && currentUser?.email) patch.email=currentUser.email;
-    if(Object.keys(patch).length) await setDoc(ref,patch,{merge:true});
-  }
+  const ref=doc(walletDb,'users',uid);const snap=await getDoc(ref);
+  if(!snap.exists()){await setDoc(ref,{displayName:currentUser?.displayName||'',email:currentUser?.email||'',nubiPayBalance:0,nubiPayCoin:0,nubiPayCoinBonus:0,createdAt:serverTimestamp()})}
+  else{const d=snap.data()||{},patch={};if(typeof d.nubiPayBalance!=='number')patch.nubiPayBalance=0;if(typeof d.nubiPayCoin!=='number')patch.nubiPayCoin=0;if(!d.email&&currentUser?.email)patch.email=currentUser.email;if(Object.keys(patch).length)await setDoc(ref,patch,{merge:true})}
 }
 async function refreshWallet(uid){
-  try{
-    const snap = await getDoc(doc(walletDb,'users',uid));
-    if(snap.exists()){
-      const d=snap.data();
-      currentCoin=Number(d.nubiPayCoin||0);
-      currentBalance=Number(d.nubiPayBalance||0);
-    } else { currentCoin=0; currentBalance=0; }
-    renderWallet();
-  }catch(e){ console.error(e); }
+  try{const snap=await getDoc(doc(walletDb,'users',uid));if(snap.exists()){const d=snap.data();currentCoin=Number(d.nubiPayCoin||0);currentBalance=Number(d.nubiPayBalance||0)}else{currentCoin=0;currentBalance=0}renderWallet()}catch(e){console.error(e)}
 }
 function subscribeWallet(uid){
-  if(walletUnsub){ try{walletUnsub();}catch{} walletUnsub=null; }
-  walletUnsub = onSnapshot(doc(walletDb,'users',uid), snap=>{
-    if(snap.exists()){
-      const d=snap.data();
-      currentCoin=Number(d.nubiPayCoin||0);
-      currentBalance=Number(d.nubiPayBalance||0);
-    } else { currentCoin=0; currentBalance=0; }
+  if(walletUnsub){try{walletUnsub()}catch{}walletUnsub=null}
+  walletUnsub=onSnapshot(doc(walletDb,'users',uid),snap=>{
+    if(snap.exists()){const d=snap.data();currentCoin=Number(d.nubiPayCoin||0);currentBalance=Number(d.nubiPayBalance||0)}else{currentCoin=0;currentBalance=0}
     renderWallet();
-  }, err=>console.error(err));
+  },err=>console.error(err));
 }
 function subscribePositions(uid){
-  if(positionUnsub){ try{positionUnsub();}catch{} positionUnsub=null; }
+  if(positionUnsub){try{positionUnsub()}catch{}positionUnsub=null}
   const q=query(collection(walletDb,'users',uid,'positions'),orderBy('updatedAt','desc'),limit(100));
-  positionUnsub = onSnapshot(q, snap=>{
-    positionsCache=[];
-    snap.forEach(d=>positionsCache.push({id:d.id,...d.data()}));
-    renderPositions();
-    renderDepositPanel();
-  }, err=>console.error(err));
+  positionUnsub=onSnapshot(q,snap=>{positionsCache=[];snap.forEach(d=>positionsCache.push({id:d.id,...d.data()}));renderPositions();renderDepositPanel()},err=>console.error(err));
 }
 function subscribeTrades(uid){
-  if(tradesUnsub){ try{tradesUnsub();}catch{} tradesUnsub=null; }
+  if(tradesUnsub){try{tradesUnsub()}catch{}tradesUnsub=null}
   const q=query(collection(walletDb,'users',uid,'trades'),orderBy('createdAt','desc'),limit(100));
-  tradesUnsub = onSnapshot(q, snap=>{
-    tradesCache=[];
-    snap.forEach(d=>tradesCache.push({id:d.id,...d.data()}));
-    renderTrades();
-  }, err=>console.error(err));
+  tradesUnsub=onSnapshot(q,snap=>{tradesCache=[];snap.forEach(d=>tradesCache.push({id:d.id,...d.data()}));renderTrades()},err=>console.error(err));
 }
 function subscribeDeposits(uid){
-  if(depositUnsub){ try{depositUnsub();}catch{} depositUnsub=null; }
+  if(depositUnsub){try{depositUnsub()}catch{}depositUnsub=null}
   const q=query(collection(walletDb,'users',uid,'deposits'),orderBy('depositedAt','desc'),limit(50));
-  depositUnsub = onSnapshot(q, snap=>{
-    depositsCache=[];
-    snap.forEach(d=>{ if(d.data().status==='active') depositsCache.push({id:d.id,...d.data()}); });
-    renderDepositPanel();
-  }, err=>console.error(err));
+  depositUnsub=onSnapshot(q,snap=>{depositsCache=[];snap.forEach(d=>{if(d.data().status==='active')depositsCache.push({id:d.id,...d.data()})});renderDepositPanel()},err=>console.error(err));
 }
 
-/* ── Navigation ── */
-el.btnPortfolio.addEventListener('click', ()=>setPage('portfolio'));
-el.btnMarkets.addEventListener('click', ()=>setPage('markets'));
-el.btnDeposit.addEventListener('click', ()=>window.location.href='/topup');
-el.btnWithdraw.addEventListener('click', ()=>setPage('deposit'));
-
-el.lotInput.addEventListener('input', ()=>{
-  if(Number(el.lotInput.value)<1) el.lotInput.value='1';
-  updateTradePreview();
-});
-el.btnBuy.addEventListener('click', buyLots);
-el.btnSell.addEventListener('click', ()=>{
-  const m = currentMarket || marketsCache[selectedMarketId];
-  if(!m) return toast('Pilih market dulu');
-  sellLotsFor(m.id, Math.max(1,Math.floor(Number(el.lotInput.value||1))));
-});
+/* ── Nav ── */
+el.btnPortfolio.addEventListener('click',()=>setPage('portfolio'));
+el.btnMarkets.addEventListener('click',()=>setPage('markets'));
+el.btnDeposit.addEventListener('click',()=>window.location.href='/topup');
+el.btnWithdraw.addEventListener('click',()=>setPage('deposit'));
+el.lotInput.addEventListener('input',()=>{if(Number(el.lotInput.value)<1)el.lotInput.value='1';updateTradePreview()});
+el.btnBuy.addEventListener('click',buyLots);
+el.btnSell.addEventListener('click',()=>{const m=currentMarket||marketsCache[selectedMarketId];if(!m)return toast('Pilih market dulu');sellLotsFor(m.id,Math.max(1,Math.floor(Number(el.lotInput.value||1))))});
 
 /* ── Auth ── */
-el.btnSignIn.addEventListener('click', ()=>openModal('modalLogin'));
-el.btnSignOut.addEventListener('click', async()=>{ await signOut(walletAuth); });
-$('btnGoogleLogin').addEventListener('click', async()=>{
-  const provider = new GoogleAuthProvider();
-  try{ await signInWithPopup(walletAuth, provider); closeModal('modalLogin'); }
-  catch(e){ toast('Login Google gagal'); }
+el.btnSignIn.addEventListener('click',()=>openModal('modalLogin'));
+el.btnSignOut.addEventListener('click',async()=>await signOut(walletAuth));
+$('btnGoogleLogin').addEventListener('click',async()=>{try{await signInWithPopup(walletAuth,new GoogleAuthProvider());closeModal('modalLogin')}catch(e){toast('Login Google gagal')}});
+$('btnEmailLogin').addEventListener('click',async()=>{
+  const email=$('emailInput').value.trim(),pass=$('passInput').value;
+  if(!email||!pass)return toast('Isi email & password');
+  showLoading('Masuk…','Memverifikasi akun');
+  try{await signInWithEmailAndPassword(walletAuth,email,pass);closeModal('modalLogin');toast('Login berhasil ✅')}
+  catch(e){toast('Email/password salah')}finally{hideLoading()}
 });
-$('btnEmailLogin').addEventListener('click', async()=>{
-  const email=$('emailInput').value.trim();
-  const pass=$('passInput').value;
-  if(!email||!pass) return toast('Isi email & password');
-  try{
-    await signInWithEmailAndPassword(walletAuth, email, pass);
-    closeModal('modalLogin');
-    toast('Login berhasil');
-  }catch(e){ toast('Email/password salah'); }
-});
-$('btnEmailRegister').addEventListener('click', async()=>{
-  const email=$('emailInput').value.trim();
-  const pass=$('passInput').value;
-  if(!email||!pass) return toast('Isi email & password');
-  if(pass.length<6) return toast('Password min. 6 karakter');
-  try{
-    await createUserWithEmailAndPassword(walletAuth, email, pass);
-    closeModal('modalLogin');
-    toast('Akun dibuat & login otomatis');
-  }catch(e){ toast(e.code==='auth/email-already-in-use'?'Email sudah terdaftar':'Gagal daftar'); }
+$('btnEmailRegister').addEventListener('click',async()=>{
+  const email=$('emailInput').value.trim(),pass=$('passInput').value;
+  if(!email||!pass)return toast('Isi email & password');
+  if(pass.length<6)return toast('Password min. 6 karakter');
+  showLoading('Membuat akun…','');
+  try{await createUserWithEmailAndPassword(walletAuth,email,pass);closeModal('modalLogin');toast('Akun dibuat ✅')}
+  catch(e){toast(e.code==='auth/email-already-in-use'?'Email sudah terdaftar':'Gagal daftar')}finally{hideLoading()}
 });
 
-// Close modals on backdrop click
-document.querySelectorAll('.modal-overlay').forEach(overlay=>{
-  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.classList.remove('open'); });
-});
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
 
 /* ── Auth State ── */
-onAuthStateChanged(walletAuth, async user=>{
-  currentUser = user||null;
-  renderWallet();
+onAuthStateChanged(walletAuth,async user=>{
+  currentUser=user||null;renderWallet();
   if(currentUser){
     await ensureWalletDoc(currentUser.uid);
     await refreshWallet(currentUser.uid);
@@ -1946,44 +1739,29 @@ onAuthStateChanged(walletAuth, async user=>{
     subscribePositions(currentUser.uid);
     subscribeTrades(currentUser.uid);
     subscribeDeposits(currentUser.uid);
-  } else {
-    currentCoin=0; currentBalance=0;
-    positionsCache=[]; tradesCache=[]; depositsCache=[];
-    renderPositions(); renderTrades(); renderDepositPanel();
+    if(currentUser.uid===ADMIN_UID)subscribeAdmin();
+    else{el.pageAdmin.classList.add('hidden')}
+  }else{
+    currentCoin=0;currentBalance=0;positionsCache=[];tradesCache=[];depositsCache=[];
+    renderPositions();renderTrades();renderDepositPanel();el.pageAdmin.classList.add('hidden');
   }
   setMarketButtons();
 });
 
 /* ── Markets Realtime ── */
-onSnapshot(collection(marketDb,'markets'), snap=>{
-  snap.forEach(d=>{ marketsCache[d.id]={ id:d.id,...d.data() }; });
-  // Remove deleted markets
-  const ids = new Set(snap.docs.map(d=>d.id));
-  Object.keys(marketsCache).forEach(k=>{ if(!ids.has(k)) delete marketsCache[k]; });
+onSnapshot(collection(marketDb,'markets'),snap=>{
+  snap.forEach(d=>{marketsCache[d.id]={id:d.id,...d.data()}});
+  const ids=new Set(snap.docs.map(d=>d.id));
+  Object.keys(marketsCache).forEach(k=>{if(!ids.has(k))delete marketsCache[k]});
   el.visibleCountTop.textContent=`${Object.keys(marketsCache).length} market`;
-  renderMarketList();
-  renderPositions();  // Live PnL update when market prices change
-  if(!selectedMarketId && Object.keys(marketsCache).length){
-    selectMarket(Object.keys(marketsCache)[0]);
-  }
-}, err=>{
-  el.marketList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">Gagal load market</div></div></div>`;
-});
+  renderMarketList();renderPositions();
+  if(!selectedMarketId&&Object.keys(marketsCache).length)selectMarket(Object.keys(marketsCache)[0]);
+},err=>{el.marketList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:800">Gagal load market</div></div></div>`});
 
 /* ── Init ── */
-setPage('home');
-renderWallet();
-renderPositions();
-renderTrades();
-renderDepositPanel();
-setMarketButtons();
-drawChart();
-updateTradePreview();
-
-// Periodically re-render deposit panel (for accrual calculations)
-setInterval(()=>{ if(depositsCache.length) renderDepositPanel(); }, 30000);
-// Periodically update recent trades ticker
-setInterval(()=>{ renderRecentTrades(); }, 5000);
+setPage('home');renderWallet();renderPositions();renderTrades();renderDepositPanel();setMarketButtons();drawChart();updateTradePreview();
+setInterval(()=>{if(depositsCache.length)renderDepositPanel()},30000);
+setInterval(renderRecentTrades,5000);
 </script>
 
 </body>
