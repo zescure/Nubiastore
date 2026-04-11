@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Gesture to Text — Smooth Note</title>
+  <title>Gesture to Text — Guided</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
@@ -12,8 +12,7 @@
   <style>
     :root{
       --bg:#0b1020;
-      --panel:#111a31cc;
-      --panel2:#0d1529cc;
+      --panel:rgba(17,26,49,.94);
       --line:rgba(255,255,255,.08);
       --text:#eef3ff;
       --muted:#9db0d0;
@@ -74,7 +73,7 @@
       margin:0;
       color:var(--muted);
       line-height:1.5;
-      max-width:70ch;
+      max-width:72ch;
       font-size:14px;
     }
 
@@ -124,6 +123,7 @@
       gap:10px;
       pointer-events:none;
       z-index:2;
+      flex-wrap:wrap;
     }
 
     .chip{
@@ -253,6 +253,12 @@
       font-size:12px;
     }
 
+    .tag.active{
+      color:var(--text);
+      border-color:rgba(143,240,211,.25);
+      background:rgba(143,240,211,.10);
+    }
+
     .history{
       max-height:190px;
       overflow:auto;
@@ -298,14 +304,14 @@
         <div>
           <h1>Gesture to Text</h1>
           <p>
-            Kamera di atas, note di bawah. Setiap gesture yang stabil akan ngetik teks pelan satu per satu.
-            Pose yang sama tidak akan nulis ulang sampai gesture berubah lalu balik lagi.
+            Mode demo yang stabil: kamera di atas, note di bawah, gesture harus sesuai urutan.
+            Teks diketik pelan satu-satu, dan pose yang sama tidak akan dobel nulis sampai berubah dulu.
           </p>
         </div>
         <div class="badges">
           <div class="pill good">Smooth typing</div>
-          <div class="pill accent">Anti double create</div>
-          <div class="pill">1 file HTML</div>
+          <div class="pill accent">Sequence locked</div>
+          <div class="pill">No double emit</div>
         </div>
       </div>
 
@@ -316,6 +322,7 @@
         <div class="overlay">
           <div class="chip"><span id="statusDot" class="dot"></span><span id="statusText">Menyiapkan kamera...</span></div>
           <div class="chip">Gesture: <strong id="gestureNow">-</strong></div>
+          <div class="chip">Next: <strong id="nextGesture">-</strong></div>
         </div>
       </div>
     </section>
@@ -331,7 +338,7 @@
         </div>
 
         <div class="foot">
-          Kalau teks kependekan atau gesture sering salah baca, naikkan stable frame jadi 6-8.
+          Kalau masih terlalu sensitif, naikkan stable frame dari 5 ke 6 atau 7.
         </div>
       </div>
 
@@ -357,17 +364,7 @@
         </div>
 
         <h2 style="margin-top:16px;">Urutan gesture</h2>
-        <div class="sequence">
-          <div class="tag">👍 Okee</div>
-          <div class="tag">🖐 hallo</div>
-          <div class="tag">✌️ semua,</div>
-          <div class="tag">✊ kali ini saya akan</div>
-          <div class="tag">👌 melakukan</div>
-          <div class="tag">☝️ uji coba gestur to teks,</div>
-          <div class="tag">🤘 ini proyek latihan untuk presentasi orang berkebutuhan khusus di meeting online,</div>
-          <div class="tag">🤙 terimakasih,</div>
-          <div class="tag">🤟 aku mencintaimu</div>
-        </div>
+        <div class="sequence" id="sequenceList"></div>
 
         <h2 style="margin-top:16px;">History</h2>
         <div id="history" class="history"></div>
@@ -383,31 +380,46 @@
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
     const gestureNow = document.getElementById('gestureNow');
+    const nextGesture = document.getElementById('nextGesture');
     const stateValue = document.getElementById('stateValue');
     const handValue = document.getElementById('handValue');
     const handedValue = document.getElementById('handedValue');
     const stableValue = document.getElementById('stableValue');
     const note = document.getElementById('note');
     const history = document.getElementById('history');
+    const sequenceList = document.getElementById('sequenceList');
 
     const clearBtn = document.getElementById('clearBtn');
     const copyBtn = document.getElementById('copyBtn');
 
-    const gestureSegments = {
-      THUMBS_UP: "Okee ",
-      OPEN_PALM: "hallo ",
-      PEACE: "semua, ",
-      FIST: "kali ini saya akan ",
-      OK: "melakukan ",
-      POINT_UP: "uji coba gestur to teks, ",
-      ROCK_ON: "ini proyek latihan untuk presentasi orang berkebutuhan khusus di meeting online, ",
-      CALL_ME: "terimakasih, ",
-      I_LOVE_YOU: "aku mencintaimu"
+    const sequence = [
+      { gesture: 'THUMBS_UP', text: 'Okee ' },
+      { gesture: 'OPEN_PALM', text: 'hallo ' },
+      { gesture: 'PEACE', text: 'semua, ' },
+      { gesture: 'FIST', text: 'kali ini saya akan ' },
+      { gesture: 'OK', text: 'melakukan ' },
+      { gesture: 'POINT_UP', text: 'uji coba gestur to teks, ' },
+      { gesture: 'ROCK_ON', text: 'ini proyek latihan untuk presentasi orang berkebutuhan khusus di meeting online, ' },
+      { gesture: 'CALL_ME', text: 'terimakasih, ' },
+      { gesture: 'I_LOVE_YOU', text: 'aku mencintaimu' }
+    ];
+
+    const gestureLabel = {
+      THUMBS_UP: '👍',
+      OPEN_PALM: '🖐',
+      PEACE: '✌️',
+      FIST: '✊',
+      OK: '👌',
+      POINT_UP: '☝️',
+      ROCK_ON: '🤘',
+      CALL_ME: '🤙',
+      I_LOVE_YOU: '🤟'
     };
 
-    let lastStableGesture = null;
+    let stepIndex = 0;
     let stableFrames = 0;
-    let lockedGesture = null;    // gesture yang sudah pernah menulis saat pose itu aktif
+    let lastDetected = null;
+    let lockedCurrentGesture = null;
     let lastEmitAt = 0;
 
     let typingQueue = [];
@@ -418,11 +430,21 @@
       statusDot.className = 'dot' + (kind ? ` ${kind}` : '');
     }
 
+    function renderSequence() {
+      sequenceList.innerHTML = '';
+      sequence.forEach((item, idx) => {
+        const el = document.createElement('div');
+        el.className = 'tag' + (idx === stepIndex ? ' active' : '');
+        el.textContent = `${gestureLabel[item.gesture]} ${item.gesture}`;
+        sequenceList.appendChild(el);
+      });
+    }
+
     function pushHistory(gesture, text) {
       const box = document.createElement('div');
       box.className = 'entry';
       const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      box.innerHTML = `<strong>${gesture}</strong><small>${time}</small><div>${text}</div>`;
+      box.innerHTML = `<strong>${gestureLabel[gesture] || ''} ${gesture}</strong><small>${time}</small><div>${text}</div>`;
       history.prepend(box);
     }
 
@@ -441,13 +463,22 @@
       }
     }
 
-    function emitGesture(gesture) {
-      const text = gestureSegments[gesture];
-      if (!text) return;
-
-      enqueueTyping(text);
-      pushHistory(gesture, text);
+    function emitCurrentStep() {
+      const item = sequence[stepIndex];
+      if (!item) return;
+      enqueueTyping(item.text);
+      pushHistory(item.gesture, item.text);
       lastEmitAt = Date.now();
+      stepIndex = Math.min(stepIndex + 1, sequence.length);
+      stableFrames = 0;
+      lockedCurrentGesture = null;
+      renderSequence();
+      updateNextLabel();
+    }
+
+    function updateNextLabel() {
+      const next = sequence[stepIndex];
+      nextGesture.textContent = next ? `${gestureLabel[next.gesture]} ${next.gesture}` : 'Selesai';
     }
 
     function dist(a, b) {
@@ -458,21 +489,24 @@
       return lm[tip].y < lm[pip].y;
     }
 
-    function thumbOpen(lm, handedness) {
-      if (handedness === 'Left') return lm[4].x > lm[3].x;
-      if (handedness === 'Right') return lm[4].x < lm[3].x;
-      return lm[4].x < lm[3].x;
+    function thumbUp(lm) {
+      return lm[4].y < lm[3].y && lm[4].y < lm[2].y && lm[4].y < lm[0].y;
     }
 
-    function classifyGesture(lm, handedness) {
-      const thumb = thumbOpen(lm, handedness);
+    function thumbDown(lm) {
+      return lm[4].y > lm[3].y && lm[4].y > lm[2].y && lm[4].y > lm[0].y;
+    }
+
+    function classifyGesture(lm) {
+      const thumb = thumbUp(lm);
+      const thumbDownState = thumbDown(lm);
       const index = fingerUp(lm, 8, 6);
       const middle = fingerUp(lm, 12, 10);
       const ring = fingerUp(lm, 16, 14);
       const pinky = fingerUp(lm, 20, 18);
 
       const palmSize = Math.max(dist(lm[0], lm[9]), 0.0001);
-      const thumbIndexTouch = dist(lm[4], lm[8]) / palmSize < 0.42;
+      const thumbIndexTouch = dist(lm[4], lm[8]) / palmSize < 0.38;
 
       const allOpen = thumb && index && middle && ring && pinky;
       const allClosed = !thumb && !index && !middle && !ring && !pinky;
@@ -480,15 +514,13 @@
       if (allClosed) return 'FIST';
       if (allOpen) return 'OPEN_PALM';
 
-      if (thumb && !index && !middle && !ring && !pinky) {
-        return lm[4].y < lm[2].y ? 'THUMBS_UP' : 'THUMBS_UP';
-      }
+      if (thumb && !index && !middle && !ring && !pinky) return 'THUMBS_UP';
+      if (thumbDownState && !index && !middle && !ring && !pinky) return 'THUMBS_DOWN';
 
       if (!thumb && index && middle && !ring && !pinky) return 'PEACE';
       if (!thumb && index && !middle && !ring && !pinky) return 'POINT_UP';
 
-      if (thumbIndexTouch && !middle && !ring && !pinky) return 'OK';
-      if (!thumb && index && middle && ring && !pinky) return 'POINT_UP';
+      if (thumbIndexTouch && middle && ring && pinky) return 'OK';
 
       if (!thumb && index && !middle && !ring && pinky) return 'ROCK_ON';
       if (thumb && index && !middle && !ring && pinky) return 'I_LOVE_YOU';
@@ -500,14 +532,17 @@
     clearBtn.addEventListener('click', () => {
       note.value = '';
       history.innerHTML = '';
+      stepIndex = 0;
+      stableFrames = 0;
+      lastDetected = null;
+      lockedCurrentGesture = null;
       typingQueue = [];
       if (typingTimer) {
         clearInterval(typingTimer);
         typingTimer = null;
       }
-      lastStableGesture = null;
-      stableFrames = 0;
-      lockedGesture = null;
+      renderSequence();
+      updateNextLabel();
       setStatus('ok', 'Note dibersihkan');
       stateValue.textContent = 'Ready';
     });
@@ -530,8 +565,8 @@
     hands.setOptions({
       maxNumHands: 1,
       modelComplexity: 1,
-      minDetectionConfidence: 0.68,
-      minTrackingConfidence: 0.66
+      minDetectionConfidence: 0.75,
+      minTrackingConfidence: 0.75
     });
 
     hands.onResults((results) => {
@@ -548,34 +583,32 @@
 
       if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
         detectedCount = results.multiHandLandmarks.length;
-        const landmarks = results.multiHandLandmarks[0];
-        const handed = results.multiHandedness && results.multiHandedness[0]
+        const lm = results.multiHandLandmarks[0];
+        primaryGesture = classifyGesture(lm);
+        primaryHandedness = results.multiHandedness && results.multiHandedness[0]
           ? results.multiHandedness[0].label
           : 'Unknown';
 
-        primaryHandedness = handed;
-        primaryGesture = classifyGesture(landmarks, handed);
-
-        drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+        drawConnectors(canvasCtx, lm, HAND_CONNECTIONS, {
           color: 'rgba(143,240,211,.95)',
           lineWidth: 4
         });
-        drawLandmarks(canvasCtx, landmarks, {
+        drawLandmarks(canvasCtx, lm, {
           color: 'rgba(124,156,255,.95)',
           lineWidth: 2,
           radius: 3
         });
 
-        const wrist = landmarks[0];
+        const wrist = lm[0];
         const px = wrist.x * canvasElement.width;
         const py = wrist.y * canvasElement.height;
 
         canvasCtx.save();
         canvasCtx.font = 'bold 18px Inter, sans-serif';
         canvasCtx.fillStyle = 'rgba(8,12,22,.86)';
-        canvasCtx.fillRect(px + 10, py - 34, 170, 28);
+        canvasCtx.fillRect(px + 10, py - 34, 180, 28);
         canvasCtx.fillStyle = '#eaf0ff';
-        canvasCtx.fillText(`${handed} ${primaryGesture || 'HAND'}`, px + 18, py - 15);
+        canvasCtx.fillText(`${primaryHandedness} ${primaryGesture || 'HAND'}`, px + 18, py - 15);
         canvasCtx.restore();
       }
 
@@ -584,14 +617,18 @@
       handValue.textContent = String(detectedCount);
       handedValue.textContent = primaryHandedness;
 
+      const expected = sequence[stepIndex];
+      updateNextLabel();
+
       if (!primaryGesture) {
         gestureNow.textContent = '-';
         stableFrames = 0;
-        lastStableGesture = null;
-        lockedGesture = null;
+        lastDetected = null;
+        lockedCurrentGesture = null;
         stableValue.textContent = '0';
         setStatus('', detectedCount ? 'Tangan terlihat' : 'Tidak ada tangan');
         stateValue.textContent = detectedCount ? 'Tracking' : 'Idle';
+        renderSequence();
         return;
       }
 
@@ -599,30 +636,34 @@
       stateValue.textContent = 'Tracking';
       setStatus('ok', `Gesture ${primaryGesture} terbaca`);
 
-      if (primaryGesture === lastStableGesture) {
+      if (primaryGesture === lastDetected) {
         stableFrames += 1;
       } else {
-        lastStableGesture = primaryGesture;
+        lastDetected = primaryGesture;
         stableFrames = 1;
       }
-
       stableValue.textContent = String(stableFrames);
 
-      const enoughStable = stableFrames >= 5;
-      const cooldownOk = Date.now() - lastEmitAt > 600;
+      const stableEnough = stableFrames >= 5;
+      const cooldownOk = Date.now() - lastEmitAt > 550;
 
-      // Kunci: gesture yang sama hanya emit sekali selama pose itu masih aktif.
-      // Baru bisa emit lagi kalau pose berubah, lalu kembali ke gesture yang sama.
-      if (enoughStable && cooldownOk) {
-        if (lockedGesture !== primaryGesture && gestureSegments[primaryGesture]) {
-          emitGesture(primaryGesture);
-          lockedGesture = primaryGesture;
-        }
+      // Hanya gesture yang sesuai urutan yang akan dipakai.
+      // Gesture yang sama tidak akan emit ulang selama pose belum berubah.
+      if (
+        expected &&
+        primaryGesture === expected.gesture &&
+        stableEnough &&
+        cooldownOk &&
+        lockedCurrentGesture !== primaryGesture
+      ) {
+        emitCurrentStep();
+        lockedCurrentGesture = primaryGesture;
+        return;
       }
 
-      // Kalau gesture berubah, buka kunci supaya gesture yang sama bisa dipakai lagi nanti.
-      if (lockedGesture && primaryGesture !== lockedGesture) {
-        lockedGesture = null;
+      // Unlock kalau gesture berganti, supaya gesture yang sama bisa dipakai lagi nanti.
+      if (lockedCurrentGesture && primaryGesture !== lockedCurrentGesture) {
+        lockedCurrentGesture = null;
       }
     });
 
@@ -647,6 +688,8 @@
       }
     }
 
+    renderSequence();
+    updateNextLabel();
     window.addEventListener('load', startCamera);
   </script>
 </body>
