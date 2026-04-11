@@ -393,15 +393,15 @@
     const copyBtn = document.getElementById('copyBtn');
 
     const sequence = [
-      { gesture: 'THUMBS_UP',   text: 'Okee ' },
-      { gesture: 'OPEN_PALM',   text: 'hallo ' },
-      { gesture: 'POINT_UP',    text: 'semua, ' },
-      { gesture: 'PEACE',       text: 'kali ini saya akan ' },
-      { gesture: 'FIST',        text: 'melakukan ' },
-      { gesture: 'CALL_ME',     text: 'uji coba gestur to teks, ' },
-      { gesture: 'VULCAN',      text: 'ini proyek latihan untuk presentasi orang berkebutuhan khusus di meeting online, ' },
-      { gesture: 'THUMBS_DOWN', text: 'terimakasih, ' },
-      { gesture: 'I_LOVE_YOU',  text: 'aku mencintaimu' }
+      { gesture: 'THUMBS_UP', text: 'Okee ' },
+      { gesture: 'OPEN_PALM', text: 'hallo ' },
+      { gesture: 'POINT_UP',  text: 'semua, ' },
+      { gesture: 'PEACE',     text: 'kali ini saya akan ' },
+      { gesture: 'FIST',      text: 'melakukan ' },
+      { gesture: 'OPEN_PALM', text: 'uji coba gestur to teks, ' },
+      { gesture: 'THUMBS_UP', text: 'ini proyek latihan untuk presentasi orang berkebutuhan khusus di meeting online, ' },
+      { gesture: 'FIST',      text: 'terimakasih, ' },
+      { gesture: 'POINT_UP',  text: 'aku mencintaimu' }
     ];
 
     const gestureLabel = {
@@ -409,11 +409,7 @@
       OPEN_PALM: '✋',
       POINT_UP: '☝️',
       PEACE: '✌️',
-      FIST: '✊',
-      CALL_ME: '🤙',
-      VULCAN: '🖖',
-      THUMBS_DOWN: '👎',
-      I_LOVE_YOU: '🤟'
+      FIST: '✊'
     };
 
     let stepIndex = 0;
@@ -496,36 +492,22 @@
       return lm[4].y < lm[3].y && lm[4].y < lm[2].y && lm[4].y < lm[0].y;
     }
 
-    function thumbDown(lm) {
-      return lm[4].y > lm[3].y && lm[4].y > lm[2].y && lm[4].y > lm[0].y;
-    }
-
     function classifyGesture(lm) {
       const thumb = thumbUp(lm);
-      const thumbDownState = thumbDown(lm);
       const index = fingerUp(lm, 8, 6);
       const middle = fingerUp(lm, 12, 10);
       const ring = fingerUp(lm, 16, 14);
       const pinky = fingerUp(lm, 20, 18);
 
-      const palmSize = Math.max(dist(lm[0], lm[9]), 0.0001);
-      const thumbIndexTouch = dist(lm[4], lm[8]) / palmSize < 0.38;
-
       const allOpen = thumb && index && middle && ring && pinky;
       const allClosed = !thumb && !index && !middle && !ring && !pinky;
 
       if (allClosed) return 'FIST';
-      if (!thumb && index && middle && ring && pinky) return 'VULCAN';
       if (allOpen) return 'OPEN_PALM';
 
       if (thumb && !index && !middle && !ring && !pinky) return 'THUMBS_UP';
-      if (thumbDownState && !index && !middle && !ring && !pinky) return 'THUMBS_DOWN';
-
       if (!thumb && index && middle && !ring && !pinky) return 'PEACE';
       if (!thumb && index && !middle && !ring && !pinky) return 'POINT_UP';
-
-      if (thumbIndexTouch && !middle && !ring && !pinky) return 'CALL_ME';
-      if (!thumb && index && !middle && !ring && pinky) return 'I_LOVE_YOU';
 
       return null;
     }
