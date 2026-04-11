@@ -685,11 +685,19 @@ let adminUsersCache={};  // uid -> {email, displayName, coin, positions:[]}
 let adminSearchQuery='';
 
 /* ── Chart canvas ── */
-const chartCtx=el.chartCanvas.getContext('2d');
-let DPR=window.devicePixelRatio||1;
-function resizeCanvas(){const r=el.chartCanvas.getBoundingClientRect();el.chartCanvas.width=Math.max(1,Math.floor(r.width*DPR));el.chartCanvas.height=Math.max(1,Math.floor(r.height*DPR));chartCtx.setTransform(DPR,0,0,DPR,0,0)}
-let resizeRAF=null;
-window.addEventListener('resize',()=>{clearTimeout(resizeRAF);resizeRAF=setTimeout(()=>{DPR=window.devicePixelRatio||1;resizeCanvas();drawChart()},80)});
+const chartCtx = el.chartCanvas.getContext('2d');
+let DPR = window.devicePixelRatio || 1;
+function resizeCanvas(){
+  const r = el.chartCanvas.getBoundingClientRect();
+  el.chartCanvas.width = Math.max(1, Math.floor(r.width * DPR));
+  el.chartCanvas.height = Math.max(1, Math.floor(r.height * DPR));
+  chartCtx.setTransform(DPR,0,0,DPR,0,0);
+}
+let resizeRAF = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeRAF);
+  resizeRAF = setTimeout(() => { DPR = window.devicePixelRatio||1; resizeCanvas(); drawChart(); }, 80);
+});
 resizeCanvas();
 
 /* ── Utils ── */
