@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Gesture to Text — Guided</title>
+  <title>Gesture to Text — Smooth Guided</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
@@ -304,8 +304,8 @@
         <div>
           <h1>Gesture to Text</h1>
           <p>
-            Mode demo yang stabil: kamera di atas, note di bawah, gesture harus sesuai urutan.
-            Teks diketik pelan satu-satu, dan pose yang sama tidak akan dobel nulis sampai berubah dulu.
+            Kamera di atas, note di bawah. Gesture harus sesuai urutan.
+            Teks diketik pelan satu per satu, dan pose yang sama tidak akan nulis ulang sampai berubah dulu.
           </p>
         </div>
         <div class="badges">
@@ -393,26 +393,26 @@
     const copyBtn = document.getElementById('copyBtn');
 
     const sequence = [
-      { gesture: 'THUMBS_UP', text: 'Okee ' },
-      { gesture: 'OPEN_PALM', text: 'hallo ' },
-      { gesture: 'PEACE', text: 'semua, ' },
-      { gesture: 'FIST', text: 'kali ini saya akan ' },
-      { gesture: 'OK', text: 'melakukan ' },
-      { gesture: 'POINT_UP', text: 'uji coba gestur to teks, ' },
-      { gesture: 'ROCK_ON', text: 'ini proyek latihan untuk presentasi orang berkebutuhan khusus di meeting online, ' },
-      { gesture: 'CALL_ME', text: 'terimakasih, ' },
-      { gesture: 'I_LOVE_YOU', text: 'aku mencintaimu' }
+      { gesture: 'THUMBS_UP',   text: 'Okee ' },
+      { gesture: 'OPEN_PALM',   text: 'hallo ' },
+      { gesture: 'POINT_UP',    text: 'semua, ' },
+      { gesture: 'PEACE',       text: 'kali ini saya akan ' },
+      { gesture: 'FIST',        text: 'melakukan ' },
+      { gesture: 'CALL_ME',     text: 'uji coba gestur to teks, ' },
+      { gesture: 'VULCAN',      text: 'ini proyek latihan untuk presentasi orang berkebutuhan khusus di meeting online, ' },
+      { gesture: 'THUMBS_DOWN', text: 'terimakasih, ' },
+      { gesture: 'I_LOVE_YOU',  text: 'aku mencintaimu' }
     ];
 
     const gestureLabel = {
       THUMBS_UP: '👍',
-      OPEN_PALM: '🖐',
+      OPEN_PALM: '✋',
+      POINT_UP: '☝️',
       PEACE: '✌️',
       FIST: '✊',
-      OK: '👌',
-      POINT_UP: '☝️',
-      ROCK_ON: '🤘',
       CALL_ME: '🤙',
+      VULCAN: '🖖',
+      THUMBS_DOWN: '👎',
       I_LOVE_YOU: '🤟'
     };
 
@@ -438,6 +438,11 @@
         el.textContent = `${gestureLabel[item.gesture]} ${item.gesture}`;
         sequenceList.appendChild(el);
       });
+    }
+
+    function updateNextLabel() {
+      const next = sequence[stepIndex];
+      nextGesture.textContent = next ? `${gestureLabel[next.gesture]} ${next.gesture}` : 'Selesai';
     }
 
     function pushHistory(gesture, text) {
@@ -466,19 +471,17 @@
     function emitCurrentStep() {
       const item = sequence[stepIndex];
       if (!item) return;
+
       enqueueTyping(item.text);
       pushHistory(item.gesture, item.text);
+
       lastEmitAt = Date.now();
       stepIndex = Math.min(stepIndex + 1, sequence.length);
       stableFrames = 0;
       lockedCurrentGesture = null;
+
       renderSequence();
       updateNextLabel();
-    }
-
-    function updateNextLabel() {
-      const next = sequence[stepIndex];
-      nextGesture.textContent = next ? `${gestureLabel[next.gesture]} ${next.gesture}` : 'Selesai';
     }
 
     function dist(a, b) {
@@ -512,6 +515,7 @@
       const allClosed = !thumb && !index && !middle && !ring && !pinky;
 
       if (allClosed) return 'FIST';
+      if (!thumb && index && middle && ring && pinky) return 'VULCAN';
       if (allOpen) return 'OPEN_PALM';
 
       if (thumb && !index && !middle && !ring && !pinky) return 'THUMBS_UP';
@@ -520,11 +524,8 @@
       if (!thumb && index && middle && !ring && !pinky) return 'PEACE';
       if (!thumb && index && !middle && !ring && !pinky) return 'POINT_UP';
 
-      if (thumbIndexTouch && middle && ring && pinky) return 'OK';
-
-      if (!thumb && index && !middle && !ring && pinky) return 'ROCK_ON';
-      if (thumb && index && !middle && !ring && pinky) return 'I_LOVE_YOU';
-      if (thumb && !index && !middle && !ring && pinky) return 'CALL_ME';
+      if (thumbIndexTouch && !middle && !ring && !pinky) return 'CALL_ME';
+      if (!thumb && index && !middle && !ring && pinky) return 'I_LOVE_YOU';
 
       return null;
     }
@@ -565,8 +566,8 @@
     hands.setOptions({
       maxNumHands: 1,
       modelComplexity: 1,
-      minDetectionConfidence: 0.75,
-      minTrackingConfidence: 0.75
+      minDetectionConfidence: 0.80,
+      minTrackingConfidence: 0.80
     });
 
     hands.onResults((results) => {
@@ -616,9 +617,9 @@
 
       handValue.textContent = String(detectedCount);
       handedValue.textContent = primaryHandedness;
+      updateNextLabel();
 
       const expected = sequence[stepIndex];
-      updateNextLabel();
 
       if (!primaryGesture) {
         gestureNow.textContent = '-';
@@ -647,8 +648,6 @@
       const stableEnough = stableFrames >= 5;
       const cooldownOk = Date.now() - lastEmitAt > 550;
 
-      // Hanya gesture yang sesuai urutan yang akan dipakai.
-      // Gesture yang sama tidak akan emit ulang selama pose belum berubah.
       if (
         expected &&
         primaryGesture === expected.gesture &&
@@ -661,7 +660,6 @@
         return;
       }
 
-      // Unlock kalau gesture berganti, supaya gesture yang sama bisa dipakai lagi nanti.
       if (lockedCurrentGesture && primaryGesture !== lockedCurrentGesture) {
         lockedCurrentGesture = null;
       }
