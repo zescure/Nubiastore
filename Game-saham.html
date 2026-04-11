@@ -966,37 +966,48 @@ el.btnToggleFA.addEventListener('click',()=>{
 
 /* ── Chart ── */
 function getFilteredHistory(){
-  const n = selectedTF === 9999 ? marketHistoryFull.length : selectedTF;
-  return marketHistoryFull.slice(-Math.min(n, marketHistoryFull.length));
+  const n=selectedTF===9999?marketHistoryFull.length:selectedTF;
+  return marketHistoryFull.slice(-Math.min(n,marketHistoryFull.length));
 }
 
 function drawChart(){
-  const W = el.chartCanvas.clientWidth || 10;
-  const H = el.chartCanvas.clientHeight || 10;
-  const ctx = chartCtx;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0,0,W,H);
-
-  const arr = getFilteredHistory();
-  if(!arr.length){
-    ctx.fillStyle = '#9ca3af';
-    ctx.font = '700 13px Inter';
-    ctx.fillText('Pilih market untuk chart', 14, 28);
-    return;
+  const W=el.chartCanvas.clientWidth||10,H=el.chartCanvas.clientHeight||10;
+  const ctx=chartCtx;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  const arr=getFilteredHistory();
+  if(!arr.length){ctx.fillStyle='#9ca3af';ctx.font='700 13px Inter';ctx.fillText('Pilih market untuk chart',14,28);return}
+  const padX=14,padY=20,min=Math.min(...arr),max=Math.max(...arr),range=Math.max(max-min,0.0001);
+  const lastPrice=arr[arr.length-1],firstPrice=arr[0],isUp=lastPrice>=firstPrice;
+  const toX=i=>padX+i*(W-padX*2)/Math.max(arr.length-1,1);
+  const toY=v=>H-padY-((v-min)/range)*(H-padY*2);
+  // Grid
+  ctx.strokeStyle='rgba(0,0,0,0.04)';ctx.lineWidth=1;
+  for(let i=0;i<5;i++){
+    const y=padY+i*((H-padY*2)/4);
+    ctx.beginPath();ctx.moveTo(padX,y);ctx.lineTo(W-padX,y);ctx.stroke();
+    const v=max-(max-min)*(i/4);
+    ctx.fillStyle='#9ca3af';ctx.font='600 10px Inter';ctx.textAlign='left';ctx.fillText(fmtCoin(v),2,y-3);
   }
-
-  const padX=14, padY=20;
-  const min = Math.min(...arr);
-  const max = Math.max(...arr);
-  const range = Math.max(max-min, 0.0001);
-  const lastPrice = arr[arr.length-1];
-  const firstPrice = arr[0];
-  const isUp = lastPrice >= firstPrice;
-
-  const toX = (i) => padX + i * (W - padX*2) / Math.max(arr.length-1,1);
-  const toY = (v) => H - padY - ((v-min)/range)*(H-padY*2);
+  const pts=arr.map((v,i)=>({x:toX(i),y:toY(v)}));
+  const grad=ctx.createLinearGradient(0,padY,0,H-padY);
+  grad.addColorStop(0,isUp?'rgba(34,197,94,0.15)':'rgba(255,92,92,0.13)');
+  grad.addColorStop(1,isUp?'rgba(34,197,94,0.01)':'rgba(255,92,92,0.01)');
+  ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,H-padY);ctx.lineTo(pts[0].x,H-padY);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=isUp?'#16a34a':'#ff5c5c';ctx.lineWidth=2;ctx.stroke();
+  const last=pts[pts.length-1];
+  ctx.beginPath();ctx.arc(last.x,last.y,4.5,0,Math.PI*2);ctx.fillStyle=isUp?'#16a34a':'#ff5c5c';ctx.fill();
+  ctx.beginPath();ctx.arc(last.x,last.y,8,0,Math.PI*2);ctx.fillStyle=isUp?'rgba(34,197,94,0.2)':'rgba(255,92,92,0.2)';ctx.fill();
+  ctx.fillStyle=isUp?'#16a34a':'#ff5c5c';ctx.font='700 11px Inter';ctx.textAlign='right';ctx.fillText(fmtCoin(lastPrice),W-2,last.y-6);
 }
+
+document.querySelectorAll('.tf-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');selectedTF=Number(btn.dataset.tf);drawChart();
+  });
+});
 
 /* ── Market Header ── */
 function refreshMarketHeader(){
