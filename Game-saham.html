@@ -387,13 +387,13 @@ input:focus,select:focus{border-color:var(–accent)}
 
   <div style="margin-top:12px">
     <div style="display:flex;gap:8px;align-items:flex-end">
-      <div style="flex:1">
+      <div style="flex:0 0 110px;min-width:0">
         <div class="small-muted" style="margin-bottom:5px;font-weight:700">Jumlah Lot</div>
-        <input id="lotInput" type="number" value="1" min="1" step="1"/>
+        <input id="lotInput" type="number" value="1" min="1" step="1" style="width:100%"/>
       </div>
-      <div style="flex:1">
+      <div style="flex:1;min-width:0">
         <div class="small-muted" style="margin-bottom:5px;font-weight:700">= Saham</div>
-        <input id="sharesDisplay" type="text" readonly value="100 lembar"/>
+        <input id="sharesDisplay" type="text" readonly value="100 lembar" style="width:100%;background:#f0f0f0"/>
       </div>
     </div>
     <div class="trade-summary" id="tradePreview">Pilih market untuk estimasi.</div>
@@ -685,19 +685,11 @@ let adminUsersCache={};  // uid -> {email, displayName, coin, positions:[]}
 let adminSearchQuery='';
 
 /* ── Chart canvas ── */
-const chartCtx = el.chartCanvas.getContext('2d');
-let DPR = window.devicePixelRatio || 1;
-function resizeCanvas(){
-  const r = el.chartCanvas.getBoundingClientRect();
-  el.chartCanvas.width = Math.max(1, Math.floor(r.width * DPR));
-  el.chartCanvas.height = Math.max(1, Math.floor(r.height * DPR));
-  chartCtx.setTransform(DPR,0,0,DPR,0,0);
-}
-let resizeRAF = null;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeRAF);
-  resizeRAF = setTimeout(() => { DPR = window.devicePixelRatio||1; resizeCanvas(); drawChart(); }, 80);
-});
+const chartCtx=el.chartCanvas.getContext('2d');
+let DPR=window.devicePixelRatio||1;
+function resizeCanvas(){const r=el.chartCanvas.getBoundingClientRect();el.chartCanvas.width=Math.max(1,Math.floor(r.width*DPR));el.chartCanvas.height=Math.max(1,Math.floor(r.height*DPR));chartCtx.setTransform(DPR,0,0,DPR,0,0)}
+let resizeRAF=null;
+window.addEventListener('resize',()=>{clearTimeout(resizeRAF);resizeRAF=setTimeout(()=>{DPR=window.devicePixelRatio||1;resizeCanvas();drawChart()},80)});
 resizeCanvas();
 
 /* ── Utils ── */
@@ -1636,12 +1628,23 @@ function subscribeMarket(mid){
     refreshMarketHeader();renderPositions();drawChart();
     if(faVisible)renderFundamentals(newData);
   });
-  const qTicks=query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(400));
+  const qTicks=query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(1200));
   currentTicksUnsub=onSnapshot(qTicks,snap=>{
     const arr=[];snap.forEach(d=>{const p=Number(d.data().price);if(!Number.isNaN(p))arr.push(p)});
     if(arr.length){
-      marketHistoryFull=arr;
-      // Always ensure current live price is the last point
+      // Merge: if ticks are longer than what we have, use ticks as authoritative
+      // Otherwise keep existing (which may include older history from doc)
+      if(arr.length>=marketHistoryFull.length){
+        marketHistoryFull=arr;
+      } else {
+        // Ticks are a subset — append any new points beyond what we already have
+        const existing=marketHistoryFull.length;
+        // Only replace the tail portion that ticks cover
+        // Simple heuristic: if last tick matches end of our array, just append new tail
+        const overlap=Math.min(arr.length, existing);
+        marketHistoryFull=[...marketHistoryFull.slice(0, existing-overlap), ...arr];
+      }
+      // Always pin current live price as last point
       const livePr=Number(currentMarket?.price||0);
       if(livePr&&marketHistoryFull[marketHistoryFull.length-1]!==livePr)marketHistoryFull.push(livePr);
       drawChart();
@@ -1652,15 +1655,41 @@ function subscribeMarket(mid){
 async function loadTicksFor(mid){
   marketHistoryFull=[];
   try{
+    // 1) Load the market doc — may contain a full 'history' array (all-time prices)
     const snap=await getDoc(doc(marketDb,'markets',mid));
-    if(snap.exists()){const d=snap.data();if(Array.isArray(d.history)&&d.history.length)marketHistoryFull=d.history.map(Number).filter(n=>!Number.isNaN(n));else if(typeof d.price==='number')marketHistoryFull=[d.price]}
-    const qTicks=query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(400));
+    let docHistory=[];
+    if(snap.exists()){
+      const d=snap.data();
+      if(Array.isArray(d.history)&&d.history.length)
+        docHistory=d.history.map(Number).filter(n=>!Number.isNaN(n));
+      else if(typeof d.price==='number')
+        docHistory=[d.price];
+    }
+
+    // 2) Load ticks subcollection (more granular recent data)
+    const qTicks=query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(1200));
     const tSnap=await getDocs(qTicks).catch(()=>null);
-    if(tSnap){const arr=[];tSnap.forEach(d=>{const p=Number(d.data().price);if(!Number.isNaN(p))arr.push(p)});if(arr.length)marketHistoryFull=arr}
-    if(!marketHistoryFull.length&&currentMarket){const p=Number(currentMarket.price||1);marketHistoryFull=[p*0.97,p*0.985,p*0.99,p*0.995,p*1.0,p*0.998,p*1.002,p]}
-    // Append live price as last point
+    let tickArr=[];
+    if(tSnap){tSnap.forEach(d=>{const p=Number(d.data().price);if(!Number.isNaN(p))tickArr.push(p)})}
+
+    // 3) Merge: prefer the longer/more complete source, keep all-time history
+    if(tickArr.length>0 && docHistory.length>0){
+      // Use docHistory as the base (full timeline), append ticks if they extend beyond it
+      // Or if ticks are longer, use them — but prepend the doc history that predates ticks
+      marketHistoryFull = tickArr.length >= docHistory.length ? tickArr : docHistory.concat(tickArr);
+    } else if(tickArr.length>0){
+      marketHistoryFull=tickArr;
+    } else if(docHistory.length>0){
+      marketHistoryFull=docHistory;
+    } else if(currentMarket){
+      const p=Number(currentMarket.price||1);
+      marketHistoryFull=[p*0.97,p*0.985,p*0.99,p*0.995,p*1.0,p*0.998,p*1.002,p];
+    }
+
+    // 4) Always pin the current live price as the last point
     const livePr=Number(currentMarket?.price||0);
-    if(livePr&&(!marketHistoryFull.length||marketHistoryFull[marketHistoryFull.length-1]!==livePr))marketHistoryFull.push(livePr);
+    if(livePr&&(!marketHistoryFull.length||marketHistoryFull[marketHistoryFull.length-1]!==livePr))
+      marketHistoryFull.push(livePr);
   }catch(e){console.error(e)}
 }
 
