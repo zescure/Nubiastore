@@ -17,7 +17,7 @@
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior:smooth; }
 
-```
+
 html, body {
   background: #080f0b;
 }
@@ -699,11 +699,4 @@ body{
   border-color: rgba(239,68,68,0.35);
 }
 
-/* ================================================
-   END AUTH HEADER WIDGET CSS
-   ================================================ */
 
-    
-
-
-  
