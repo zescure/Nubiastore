@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NUBIASTORE – Top up game paling murah, cepat, dan aman. Tanpa biaya tersembunyi, tanpa pajak tambahan.">
+  <title>NUBIASTORE – Top Up Game Termurah & Terpercaya</title>
+  <link rel="icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjhSr75G8JftOBsUq_SZpT8WymuTe6XfwO-p0grgaxZkKsEeNsyyBQxE68vzNCwWxxuOco66YkEVRl6czXadfMRAj3KWfMydAEOA-DD5L0eoTGvrxR0iUZK20eGy86xz9gyxR1PKCm7fVcsnsAALY2BKhd7lrewH3fubrk6-BXC0O82zjtNiH7pAOeFc8Y/s1280/IMG-20260306-WA0000.jpg">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://nubiastore.web.id/">
+  <meta name="google-site-verification" content="SFbxj0nPqNFE34ilNixwNke35fGxHreTrSjt76EIqtI">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <meta property="og:title" content="NUBIASTORE – Top Up Game Termurah">
+  <meta property="og:site_name" content="Nubiastore">
+  <meta property="og:description" content="Top up game cepat, murah, dan aman tanpa biaya tambahan.">
+  <meta property="og:url" content="https://nubiastore.web.id/">
+  <meta property="og:type" content="website">
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Organization",
+ "name": "NUBIASTORE",
+ "url": "https://nubiastore.web.id"
+}
+  </script>
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebSite",
+ "name": "Nubiastore",
+ "url": "https://nubiastore.web.id/"
+}
+  </script>
+  <meta name="monetag" content="215c73deb9cd13b3f43aad6ee8a08d54">
+  <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<!-- BG Orbs -->
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+
+<!-- ══ OVERLAY ══ -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">NUBIA<span>STORE</span></div>
+
+  <!-- ===== AUTH HEADER WIDGET ===== -->
+  <div id="authWidget" class="auth-widget">
+
+    <!-- State: belum login -->
+    <a href="login-register.html" id="authGuest" class="auth-login-btn">
+      👤 Masuk / Daftar
+    </a>
+
+    <!-- State: sudah login (hidden by default) -->
+    <div id="authUser" class="auth-user-wrap" style="display:none">
+      <!-- trigger card (klik untuk buka dropdown) -->
+      <button class="auth-trigger" id="authTrigger" aria-expanded="false">
+        <div class="auth-avatar" id="authAvatar">👤</div>
+        <div class="auth-trigger-text">
+          <span class="auth-trigger-name" id="authTriggerName">User</span>
+          <span class="auth-trigger-arrow" id="authArrow">▾</span>
+        </div>
+      </button>
+
+      <!-- dropdown card -->
+      <div class="auth-dropdown" id="authDropdown">
+        <div class="auth-card-head">
+          <div class="auth-card-avatar" id="authCardAvatar">👤</div>
+          <div>
+            <div class="auth-card-name" id="authCardName">—</div>
+            <div class="auth-card-email" id="authCardEmail">—</div>
+            <div class="auth-card-uid" id="authCardUid">—</div>
+          </div>
+        </div>
+        <div class="auth-card-divider"></div>
+        <div class="auth-card-actions">
+          <a href="akun.html" class="auth-btn-info">👤 Info Akun</a>
+          <button id="authLogoutBtn" class="auth-btn-logout">🚪 Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ===== END AUTH HEADER WIDGET ===== -->
+
+  <!-- ===== SALDO CARD (tempel setelah .menu-header) ===== -->
+  <div class="msc-wrap" id="mscWrap">
+    <!-- Belum login -->
+    <div id="mscGuest" class="msc-guest">
+      <span class="msc-icon">💳</span>
+      <div>
+        <div class="msc-title">NUBIAPAY</div>
+        <div class="msc-sub">Login untuk lihat saldo</div>
+      </div>
+    </div>
+
+    <!-- Sudah login -->
+    <div id="mscUser" class="msc-user" style="display:none">
+      <div class="msc-user-top">
+        <div>
+          <div class="msc-title">NUBIAPAY</div>
+          <div class="msc-uid" id="mscUid">—</div>
+        </div>
+        <span class="msc-icon">💳</span>
+      </div>
+      <div class="msc-divider"></div>
+      <div class="msc-bal-label">Saldo Kamu</div>
+      <div class="msc-amount" id="mscAmount">
+        <span class="msc-dots">•••</span>
+      </div>
+      <a href="nubiapay.html" class="msc-topup-btn">＋ Isi Saldo</a>
+    </div>
+  </div>
+  <!-- ===== END SALDO CARD ===== -->
+
+  <ul>
+    <li><a href="index.html">🏠 Home</a></li>
+    <div class="sidebar-section">Informasi</div>
+    <li><a href="TentangNUBIASTORE.html">ℹ️ Tentang Kami</a></li>
+    <li><a href="cek-invoice.html">⏳ Cek Invoice/Orderan</a></li>
+    <li><a href="kalkulatormlbb.html">📊 Kalkulator WinRate</a></li>
+    <li><a href="https://wa.me/6283816097956">📞 Hubungi Kami</a></li>
+    <div class="sidebar-section">Produk Lainnya</div>
+    <li><a href="zepaylater.html">💳 Convert Shopee Paylater</a></li>
+    <div class="sidebar-section">Games & Hiburan</div>
+    <li><a href="Spin-token.html">🎰 Spin Keberuntungan</a></li>
+    <li><a href="game2.html">🚀 Rocketman Crash 100x</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-left">
+    <button class="menu-btn" id="menuBtn">&#9776;</button>
+    <div class="logo">NUBIA<span>STORE</span></div>
+  </div>
+
+  <div class="header-search">
+    <span class="sicon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Cari game, voucher..." autocomplete="off">
+    <div id="shortcutList"></div>
+  </div>
+
+  <div class="header-right">
+    <div id="avatarArea">
+      <button class="login-btn" id="loginBtn">Login</button>
+      <div class="avatar-btn" id="accountInfo" style="display:none;">
+        <div class="avatar-circle">👤</div>
+        <span id="usernameDisplay"></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile search bar -->
+<div id="headerSearchMobile">
+  <div id="mobileSearchWrap" style="position:relative;">
+    <span class="sicon">🔍</span>
+    <input type="text" id="searchInputMobile" placeholder="Cari game, voucher..." autocomplete="off">
+    <div id="shortcutListMobile"></div>
+  </div>
+</div>
+
+<main>
+  <!-- ══ HERO SLIDER ══ -->
+  <div class="hero">
+    <div class="slides-wrap" id="slidesWrap">
+      <div class="slide">
+        <img src="https://wallpapers-clan.com/wp-content/uploads/2025/11/rick-sanchez-monochrome-art-against-vibrant-green-gif-desktop-wallpaper-preview.gif" alt="Promo 1" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-text"><h2>Top Up Murah & Cepat</h2><p>Harga terbaik, proses instan</p></div>
+      </div>
+      <div class="slide">
+        <img src="https://wallpapercave.com/wp/wp2757956.gif" alt="Promo 2" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-text"><h2>Flash Sale Setiap Hari</h2><p>Diskon hingga 30% untuk semua game</p></div>
+      </div>
+      <div class="slide">
+        <img src="https://i.pinimg.com/originals/ee/16/63/ee1663cdf822962a2c46bfc21aa71e23.gif" alt="Promo 3" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-text"><h2>Tanpa Biaya Tersembunyi</h2><p>Bayar sesuai harga yang tertera</p></div>
+      </div>
+      <div class="slide">
+        <img src="https://i.pinimg.com/originals/ee/16/63/ee1663cdf822962a2c46bfc21aa71e23.gif" alt="Promo 4" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-text"><h2>Ribuan Produk Digital</h2><p>Game, kuota, e-wallet dalam satu tempat</p></div>
+      </div>
+    </div>
+    <button class="slide-nav prev" id="prevBtn">&#8249;</button>
+    <button class="slide-nav next" id="nextBtn">&#8250;</button>
+    <div class="slider-dots" id="sliderDots"></div>
+  </div>
+
+  <!-- ══ PROMO BANNER ══ -->
+  <section style="padding:1.25rem 1.25rem 0;">
+    <div class="promo-banner">
+      <h2>🏪 NUBIASTORE – Top Up Termurah</h2>
+      <p>Kami menyediakan item game favoritmu dengan harga <strong>paling murah</strong> — tanpa pajak tambahan & tanpa biaya tersembunyi saat checkout. Transaksi aman, proses cepat.</p>
+    </div>
+  </section>
+
+  <!-- ══ STATS ══ -->
+  <section style="padding:1.5rem 1.25rem 0;">
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-num">50K+</div><div class="stat-label">Pengguna Aktif</div></div>
+      <div class="stat-item"><div class="stat-num">200+</div><div class="stat-label">Produk Tersedia</div></div>
+      <div class="stat-item"><div class="stat-num">99%</div><div class="stat-label">Sukses Rate</div></div>
+      <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-label">Customer Service</div></div>
+    </div>
+  </section>
+
+  <!-- ══ FLASH SALE ══ -->
+  <section class="flash-section">
+    <div class="section-title">
+      <span class="flash-label">⚡ FLASH SALE</span>
+      Promo Terbatas
+    </div>
+    <div class="promo-scroll" id="promoScroll">
+      <div class="promo-track" id="promoTrack">
+        <!-- Cards injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ GAME LIST ══ -->
+  <section class="games-section">
+    <div class="section-title">🎮 Game Populer</div>
+    <div class="game-grid">
+      <a href="mobile-legends.html" class="game-card">
+        <img src="https://cdn1.codashop.com/S/content/mobile/images/product-tiles/MLBB-2025-tiles-178x178.jpg" alt="MLBB Event">
+        <div class="game-overlay"><span>MLBB EVENT</span></div>
+      </a>
+      <a href="mobile-legends.html" class="game-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOx3LD3UTKsBJbYu2ro95LJAQiIqMJZ5x21e_YwWhrDpar_7wsn92P8WO0&s=10" alt="Mobile Legends">
+        <div class="game-overlay"><span>MOBILE LEGENDS</span></div>
+      </a>
+      <a href="Free-Fire.html" class="game-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW8IQXRmTwim3_Tx-75r3SncaVZzkYBJ2TNw&usqp=CAU" alt="Free Fire">
+        <div class="game-overlay"><span>FREE FIRE</span></div>
+      </a>
+      <a href="PUBGM.html" class="game-card">
+        <img src="https://imgop.itemku.com/?url=https%3A%2F%2Fd1x91p7vw3vuq8.cloudfront.net%2Fgame%2F20231116%2Fy4jqgkdbtbd3zfokbvtknb_thumbnail.jpg&w=96&q=75" alt="PUBG Mobile">
+        <div class="game-overlay"><span>PUBG MOBILE</span></div>
+      </a>
+      <a href="blood-strike.html" class="game-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRwVhLLtdCsPM8Ez8ruuqxKFJNkpSzn7rUW-Q74rSjdw&s=10" alt="Blood Strike">
+        <div class="game-overlay"><span>BLOOD STRIKE</span></div>
+      </a>
+      <a href="gensinnew.html" class="game-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS65SXg_FKzvzKsAFUzQvhur6DD9F-HANwHjA&usqp=CAU" alt="Genshin Impact">
+        <div class="game-overlay"><span>GENSHIN IMPACT</span></div>
+      </a>
+      <a href="hok.html" class="game-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6St6mAnq3z1oIdjfw2L-QHxySJe1tYsIAh5yqzpE1jHcMlmE7Nl-dqyue&s=10" alt="Honor of Kings">
+        <div class="game-overlay"><span>HONOR OF KINGS</span></div>
+      </a>
+      <a href="supersus.html" class="game-card">
+        <img src="https://imgop.itemku.com/?url=https%3A%2F%2Fd1x91p7vw3vuq8.cloudfront.net%2Fgame%2F202421%2Fv63u1dahi1mp7o3nn21s2_thumbnail.webp&w=96&q=75" alt="Super Sus">
+        <div class="game-overlay"><span>SUPERSUS</span></div>
+      </a>
+      <a href="MCGG.html" class="game-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8jzd-vAWwhklQcMTbpQEtJj_12ByL8aXAoNMMQ_goRmRV85HChrO7gKQ&s=10" alt="Magic Chess">
+        <div class="game-overlay"><span>MAGIC CHESS</span></div>
+      </a>
+      <a href="free-fire-max.html" class="game-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQthzbcsOjsCsykuN4uk6-pzsnZLoRzcg-pfTpZL-nVYKgcK7eYinXZx78&s=10" alt="Free Fire Max">
+        <div class="game-overlay"><span>FREE FIRE MAX</span></div>
+      </a>
+      <a href="CODM.html" class="game-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCTrkIfW1COaYXrlEnZAyEikcjQs9SFM6SMw&usqp=CAU" alt="CODM">
+        <div class="game-overlay"><span>CALL OF DUTY</span></div>
+      </a>
+      <a href="#" class="game-card" style="background:linear-gradient(135deg,var(--g4),var(--card));">
+        <img src="https://png.pngtree.com/png-clipart/20230325/original/pngtree-blue-joystick-for-gaming-png-image_9003167.png" alt="Semua Game">
+        <div class="game-overlay" style="opacity:1;"><span>LIHAT SEMUA</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══ E-WALLET ══ -->
+  <section class="alt-bg">
+    <div class="section-title">💰 E-Wallet & Dompet Digital</div>
+    <div class="game-grid">
+      <a href="DanaTopup.html" class="game-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRARD_yGtucjPJFzHVf10Kf8UcUwDqFDdzYhID2OMu_yAg_j6P9AsQ6DnG-&s=10" alt="DANA"><div class="game-overlay"><span>DANA</span></div></a>
+      <a href="OvoTopup.html" class="game-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdwwVM1hSxTmNvyMp77-MIj5aJ_LMhRqbI-8bZSu314HWax0z5YgbWTnEo&s=10" alt="OVO"><div class="game-overlay"><span>OVO</span></div></a>
+      <a href="Gopay-murah.html" class="game-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv6vSSxxyXWMqmK35AONac3m1A6smSuoBZUPowFGxPvYuTlwYjLb7jRDI&s=10" alt="GoPay"><div class="game-overlay"><span>GOPAY</span></div></a>
+      <a href="SpayTopup.html" class="game-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReMUxazQD1HTr1N-1JbcMYQfVPK_mxkHxE-vXAU4_CXftvHhcB3q2HdOE_&s=10" alt="ShopeePay"><div class="game-overlay"><span>SHOPEE PAY</span></div></a>
+      <a href="LinkAjaTopup.html" class="game-card"><img src="https://images.seeklogo.com/logo-png/36/1/link-aja-logo-png_seeklogo-363129.png" alt="LinkAja"><div class="game-overlay"><span>LINK AJA</span></div></a>
+    </div>
+  </section>
+
+  <!-- ══ KUOTA INTERNET ══ -->
+  <section class="games-section">
+    <div class="section-title">📶 Kuota Internet</div>
+    <div class="game-grid">
+      <a href="telkomseldata.html" class="game-card"><img src="https://play-lh.googleusercontent.com/DBzJQ2z8p3n_YPQkmbc6luCfO3OhafRkOZimMoXFXBMoUokLu6RPDRgVM86U_QkRVNE" alt="Telkomsel" style="object-fit:contain;background:#cc0000;padding:12px;"><div class="game-overlay"><span>TELKOMSEL</span></div></a>
+      <a href="xldata.html" class="game-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZTWy3IRjTcevsLqpQNzD6qGg72DDi-SN3wL9MDS8hk78a4AF2vvcJ9EbO&s=10" alt="XL"><div class="game-overlay"><span>KUOTA XL</span></div></a>
+      <a href="axisdata.html" class="game-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbUbSgPVydA-qLdZMF6jV9OQY8nSWmC8pkmBadkDcDCAI_cw7axr0YJl_T&s=10" alt="Axis"><div class="game-overlay"><span>KUOTA AXIS</span></div></a>
+      <a href="indosatdata.html" class="game-card"><img src="https://cdn2.downdetector.com/static/uploads/c/300/ca21b/Ooredoo.png" alt="Indosat" style="object-fit:contain;background:#fff;padding:12px;"><div class="game-overlay"><span>INDOSAT</span></div></a>
+      <a href="tridata.html" class="game-card"><img src="https://images.seeklogo.com/logo-png/17/1/3-logo-png_seeklogo-174303.png" alt="Tri"><div class="game-overlay"><span>KUOTA TRI</span></div></a>
+    </div>
+  </section>
+
+  <!-- ══ PAYMENT CAROUSEL ══ -->
+  <section class="pay-section">
+    <div class="section-title">💳 Metode Pembayaran</div>
+    <div class="pay-track-wrap">
+      <div class="pay-track" id="payTrack">
+        <div class="pay-item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjBQVrjCixCVpTHx3c6JFYDZR7sIU8XuxFtK02qu4UN6d9YYa9Yxy5jc4o&s=10" alt="Transfer Bank"></div>
+        <div class="pay-item"><img src="https://cdn.mobilepulsa.net/img/product/operator_list/140119034905-Dana-01.png" alt="DANA"></div>
+        <div class="pay-item"><img src="https://cdn.mobilepulsa.net/img/logo/pulsa/small/gopay.png" alt="GoPay"></div>
+        <div class="pay-item"><img src="https://cdn.mobilepulsa.net/img/product/operator_list/140119040045-ovo-01.png" alt="OVO"></div>
+        <div class="pay-item"><img src="https://cdn.mobilepulsa.net/img/product/operator_list/021219030403-shopeepay.jpg" alt="ShopeePay"></div>
+        <div class="pay-item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJFvJRhLVMS5jVoyiVxDyIbyPBr3xpRlcbRLpYERezodnY8pYLpYRnSns&s=10" alt="QRIS"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CS BAR ══ -->
+  <div class="cs-bar">
+    <div class="cs-icon">🎧</div>
+    <div class="cs-info">
+      <h4>Customer Service 24/7</h4>
+      <p>Ada kendala? Tim kami siap bantu kapan saja</p>
+    </div>
+    <a href="https://wa.me/6283816097956" class="cs-btn">💬 Hubungi WA</a>
+  </div>
+
+  <!-- ══ CTA SECTION ══ -->
+  <section class="cta-section">
+    <h2>🎰 Coba Spin Keberuntungan!</h2>
+    <p>Putar dan menangkan hadiah menarik dari NUBIASTORE</p>
+    <a href="Spin-token.html" class="cta-btn">🎁 Mulai Spin Sekarang</a>
+  </section>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="f-logo">NUBIA<span>STORE</span></div>
+      <p class="f-desc">NUBIASTORE adalah platform top up game terpercaya dengan harga termurah di Indonesia. Ribuan transaksi sukses setiap hari, tanpa biaya tersembunyi, tanpa pajak tambahan. Cashback, flash sale, dan promo setiap hari!</p>
+      <div class="social-row" style="margin-top:1rem;">
+        <a href="https://www.instagram.com/zestore.zcn" class="social-icon"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8lv-iEOWtRxGDqsOR-Pa1kIiqN298569zVA&s" alt="Instagram"></a>
+        <a href="https://wa.me/6285697747768" class="social-icon"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQz80kPHYo-24g41h-GSvKUa-QJpPlg10aG28ovzacrhlagYU5PevbB6lU6&s=10" alt="WhatsApp"></a>
+        <a href="https://www.tiktok.com/@zeeyaza12" class="social-icon"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjQT_Dyh40TZUX8jAmuw8rhrs50YB7fh8qcw&s" alt="TikTok"></a>
+      </div>
+    </div>
+    <div>
+      <div class="f-title">Informasi</div>
+      <ul>
+        <li><a href="TentangNUBIASTORE.html">Tentang Kami</a></li>
+        <li><a href="https://wa.me/6283816097956">Hubungi Kami</a></li>
+        <li><a href="SpinMlbb12.html">Spin Keberuntungan</a></li>
+        <li><a href="kalkulatormlbb.html">Kalkulator WinRate</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="f-title">Produk Kami</div>
+      <ul>
+        <li><a href="mobile-legends.html">Mobile Legends</a></li>
+        <li><a href="Free-Fire.html">Free Fire</a></li>
+        <li><a href="PUBGM.html">PUBG Mobile</a></li>
+        <li><a href="gensinnew.html">Genshin Impact</a></li>
+        <li><a href="DanaTopup.html">Top Up DANA</a></li>
+        <li><a href="zepaylater.html">Convert Shopee Paylater</a></li>
+      </ul>
+    </div>
+  </div>
+  <hr class="f-divider">
+  <p class="copyright">Copyright &copy; 2026 Cv. NUBIA GAMING STORE — All rights reserved.</p>
+</footer>
+
+<!-- ══ FLOATING GIFT ══ -->
+<div id="floatingGift">
+  <img src="https://images.icon-icons.com/1021/PNG/256/xmas-05_icon-icons.com_75932.png" alt="Gift">
+  <span class="gift-tooltip">🎁 Event & Hadiah</span>
+</div>
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebSite",
+ "name": "Nubiastore",
+ "url": "https://nubiastore.web.id/"
+}
+</script>
+
+<!-- ══════════════════════════════════════════════════════════
+     NUBIASTORE POPUP SYSTEM
+══════════════════════════════════════════════════════════ -->
+
+<!-- ══ POPUP 1 — INFO / PENGUMUMAN ══ -->
+<div class="pop-overlay" id="pop1">
+  <div class="pop-card">
+    <button class="pop-close" onclick="popClose('pop1')">✕</button>
+    <div class="pop-img-area">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEixxDAxybn1eZSteNlqaPaRqi3qNO_rz1XdQOs6BsI6MFvjVXvNOD_spGrLcBLBpFDqFD_yJ8iTaj4WY3MLoYI2srN5RM6G5x03Zq6KI3AYOZviBMA4AP0pGpOVF1HGMeDtodgScfCVPkI2JqR38bHbHq_D7jvv-YfsLBkHE8ItMAfQzhaSm61uHiF7aEE/s500/IMG_20260304_160936.jpg" class="pop-img" alt="png">
+      <div class="pop-sparks">
+        <div class="pop-spark" style="width:8px;height:8px;top:30%;left:15%;animation-delay:0s"></div>
+        <div class="pop-spark" style="width:5px;height:5px;top:60%;left:70%;animation-delay:.6s"></div>
+        <div class="pop-spark" style="width:10px;height:10px;top:20%;left:55%;animation-delay:1.2s"></div>
+        <div class="pop-spark" style="width:6px;height:6px;top:75%;left:30%;animation-delay:.3s"></div>
+      </div>
+      <span class="pop-emoji"></span>
+    </div>
+    <span class="pop-badge">Pengumuman</span>
+    <div class="pop-body">
+      <div class="pop-title">Selamat Datang di NUBIASTORE!</div>
+      <div class="pop-text">
+        Platform top up game favoritmu anti Scam hadir dengan tampilan baru. Lebih cepat, lebih aman, dan lebih banyak pilihan metode bayar. Situs NUBIASTORE 100% Tanpa Biaya Tersembunyi Saat Checkout. Nikmati promo eksklusif setiap hari hanya di sini!
+      </div>
+      <button class="pop-btn-accept" onclick="popClose('pop1')">👍 Saya Mengerti</button>
+    </div>
+    <button class="pop-btn-snooze" onclick="popSnooze()">🔕 Jangan tampilkan selama 24 jam</button>
+  </div>
+</div>
+
+<!-- ══ POPUP 2 — PROMO ITEM GAME ══ -->
+<div class="pop-overlay" id="pop2">
+  <div class="pop-card">
+    <button class="pop-close" onclick="popClose('pop2')">✕</button>
+    <div class="pop-img-area">
+      <img src="https://cdn.unipin.com/images/content_image_pages/1714633621-wdp-ml-pengertian-jumlah-diamond-dan-cara-top-up-termurah.jpg" class="pop-img" alt="png">
+      <span class="pop-promo-tag">🔥 HOT DEAL</span>
+      <span class="pop-emoji"></span>
+    </div>
+    <div class="pop-body">
+      <div class="pop-game-label">Mobile Legends</div>
+      <div class="pop-item-name">Weekly Diamond Pass</div>
+      <div class="pop-price-row">
+        <div>
+          <div class="pop-price-old">Rp 29.899</div>
+          <div class="pop-price-new">Rp 25.326</div>
+        </div>
+        <div class="pop-saving">Hemat 14%</div>
+      </div>
+      <button class="pop-btn-buy" onclick="window.location.href='mobile-legends.html'">⚡ Beli Sekarang</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ POPUP 3 — NUBIAPAY ══ -->
+<div class="pop-overlay" id="pop3">
+  <div class="pop-card">
+    <button class="pop-close" onclick="popClose('pop3')">✕</button>
+    <div class="pop-img-area">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjhSr75G8JftOBsUq_SZpT8WymuTe6XfwO-p0grgaxZkKsEeNsyyBQxE68vzNCwWxxuOco66YkEVRl6czXadfMRAj3KWfMydAEOA-DD5L0eoTGvrxR0iUZK20eGy86xz9gyxR1PKCm7fVcsnsAALY2BKhd7lrewH3fubrk6-BXC0O82zjtNiH7pAOeFc8Y/s1280/IMG-20260306-WA0000.jpg" class="pop-img" alt="png">
+      <div class="pop-glow"></div>
+      <span class="pop-emoji"></span>
+    </div>
+    <div class="pop-body">
+      <div class="pop-glow" style="top:-40px;right:-40px;width:160px;height:160px"></div>
+      <div class="pop-np-logo"><span>⚡ NubiaPay</span></div>
+      <div class="pop-title">Top Up Game Gratis Biaya Admin!</div>
+      <ul class="pop-perks">
+        <li>Gratis biaya admin semua transaksi</li>
+        <li>Proses instan, 24 jam nonstop</li>
+        <li>Tersedia untuk semua game populer</li>
+        <li>Saldo fleksibel, bisa top up kapan saja</li>
+      </ul>
+      <button class="pop-btn-try" onclick="window.location.href='login-register.html'">🔐 Buat Akun NUBIAPAY</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ POPUP 5 — PROMO ITEM GAME ══ -->
+<div class="pop-overlay" id="pop5">
+  <div class="pop-card">
+    <button class="pop-close" onclick="popClose('pop2')">✕</button>
+    <div class="pop-img-area">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSon37kRi5myMRt2g1R_sAGtHq5YEn1tuHWxcA6NXFXn7F3vP79TqUjLZ1Z&s=10" class="pop-img" alt="png">
+      <span class="pop-promo-tag">🔥 EPIC HOT DEAL</span>
+      <span class="pop-emoji"></span>
+    </div>
+    <div class="pop-body">
+      <div class="pop-game-label">Free Fire/Free Fire Max</div>
+      <div class="pop-item-name">Membership Bulanan</div>
+      <div class="pop-price-row">
+        <div>
+          <div class="pop-price-old">Rp 110.599</div>
+          <div class="pop-price-new">Rp 87.785</div>
+        </div>
+        <div class="pop-saving">Hemat 22%</div>
+      </div>
+      <button class="pop-btn-buy" onclick="window.location.href='free-fire.html'">⚡ Beli Sekarang</button>
+      <h5>Klik Area Kosong Dimanapun untuk Menutup Iklan</h5>
+    </div>
+  </div>
+</div>
+
+<!-- ══ POPUP 4 — STOK TERBATAS ══ -->
+<div class="pop-overlay" id="pop4">
+  <div class="pop-card">
+    <button class="pop-close" onclick="popClose('pop4')">✕</button>
+    <div class="pop-img-area">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi3W7RgHdabL_NFXksO4re8D5f8WPjFUYzsAV6JVQ7wHsKLkBB-tPKd9ievGIi5Q_XCyUK0aoaM4-L_E5VUlmpZzujem6yIPg1cIFm2tGahjtu7wOADgmqF7MiJUaHipcmul9ceEG4xiALcuS9KPDXrVX0r2NmWGKvsTn3QpI-TQkYi6QtREDCc1_k0G70/s919/IMG_20260304_160736.jpg" class="pop-img" alt="png">
+      <span class="pop-emoji"></span>
+    </div>
+    <div class="pop-body">
+      <div class="pop-stok-badge">
+        <div class="pop-stok-dot"></div>
+        <span>Stok Terbatas</span>
+      </div>
+      <div class="pop-item-name">Item Game Berlogo ⚡️Stok Terbatas</div>
+      <div class="pop-nubia-only">🔒 Bayar Hanya via NubiaPay</div>
+      <div class="pop-text">
+        Item eksklusif ini hanya tersedia dalam jumlah terbatas dan <strong>limit 20 stok setiap hari mulai pukul 16:00WIB</strong>. Pembayaran wajib menggunakan saldo NubiaPay.
+      </div>
+      <div class="pop-restock-note">
+        <span>📸</span>
+        <span>Info restock & notifikasi stok tersedia — ikuti Instagram kami agar kamu tidak ketinggalan!</span>
+      </div>
+      <div class="pop-action-row">
+        <button class="pop-btn-close" onclick="popClose('pop4')">Tutup</button>
+        <button class="pop-btn-ig" onclick="window.open('https://instagram.com/nubiastore','_blank')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Cek Instagram
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/js/home.js"></script>
+</body>
+</html>
