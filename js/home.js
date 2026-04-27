@@ -174,6 +174,11 @@ document.getElementById('floatingGift')?.addEventListener('click', () => {
   window.location.href = '/undang-teman.html';
 });
 
+// Floating gift
+document.getElementById('floatingGift2')?.addEventListener('click', () => {
+  window.location.href = '/akun.html';
+});
+
 /*
   MENU SALDO CARD â script terpisah
   Menggunakan getApps()[0] agar tidak double-init Firebase.
