@@ -34,12 +34,12 @@ const gamesData = [
 ];
 
 const promoItems = [
-  { title:"ð 10.050 Diamonds", sub:"Mobile Legends", ori:"Rp3.388.177", disc:"Rp2.608.896", badge:"23% OFF", img:"https://cdn1.codashop.com/S/content/mobile/images/product-tiles/MLBB-2025-tiles-178x178.jpg", url:"mobile-legends.html" },
+  { title:"10.050 Diamonds", sub:"Mobile Legends", ori:"Rp3.388.177", disc:"Rp2.608.896", badge:"23% OFF", img:"https://cdn1.codashop.com/S/content/mobile/images/product-tiles/MLBB-2025-tiles-178x178.jpg", url:"mobile-legends.html" },
   { title:"Weekly Pass x3", sub:"Mobile Legends", ori:"Rp95.833", disc:"Rp86.250", badge:"10% OFF", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYD3pq3HTqX8Cr84wKLNwMAtJeXPlMPPPb4axhpZAJdSA5ahk3XIuBsh4&s=10", url:"mobile-legends.html" },
   { title:"Token PLN 100rb", sub:"PLN", ori:"Rp102.540", disc:"Rp100.950", badge:"1% OFF", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlRjVZTo6AiMWOFxV-aq6Su05h-0FL7rCt5g&s", url:"#" },
   { title:"Weekly Pass", sub:"Mobile Legends", ori:"Rp28.898", disc:"Rp24.987", badge:"7% OFF", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYD3pq3HTqX8Cr84wKLNwMAtJeXPlMPPPb4axhpZAJdSA5ahk3XIuBsh4&s=10", url:"mobile-legends.html" },
   { title:"Membership Mingguan", sub:"Free Fire Max", ori:"Rp31.259", disc:"Rp28.259", badge:"10% OFF", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHaOCkL8OLX7Wmp90dV3q9OlPvL-0HK5IpouKf6ueA0wb7FvEJ54KnNr4&s=10", url:"freefiremax.html" },
-  { title:"ð 4.830 Diamonds", sub:"Magic Chess", ori:"Rp1.278.278", disc:"Rp1.090.974", badge:"15% OFF", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8jzd-vAWwhklQcMTbpQEtJj_12ByL8aXAoNMMQ_goRmRV85HChrO7gKQ&s=10", url:"MCGG.html" },
+  { title:"4.830 Diamonds", sub:"Magic Chess", ori:"Rp1.278.278", disc:"Rp1.090.974", badge:"15% OFF", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8jzd-vAWwhklQcMTbpQEtJj_12ByL8aXAoNMMQ_goRmRV85HChrO7gKQ&s=10", url:"MCGG.html" },
 ];
 
 function buildPromo() {
@@ -171,13 +171,10 @@ updateAuth();
 
 // Floating gift
 document.getElementById('floatingGift')?.addEventListener('click', () => {
-  window.location.href = '/undang-teman.html';
-});
-
-// Floating gift
-document.getElementById('floatingGift2')?.addEventListener('click', () => {
   window.location.href = '/akun.html';
 });
+
+
 
 /*
   MENU SALDO CARD â script terpisah
