@@ -1,7 +1,4 @@
 
-
-
-
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -893,8 +890,3 @@ authLogoutBtn.addEventListener('click', async () => {
   }
 
 })();
-</script>
-
-
-<!-- ══ END POPUP SYSTEM ══ -->
-  
