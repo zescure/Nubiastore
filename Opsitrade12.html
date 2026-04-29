@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,27 +7,27 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:       #040810;
-  --s1:       #0a1220;
-  --s2:       #0e1830;
-  --s3:       #122038;
-  --bd:       #182a40;
-  --bd2:      #1e3550;
-  --txt:      #c8d8e8;
-  --dim:      #3a5570;
-  --muted:    #1e3050;
-  --green:    #00e87a;
-  --g-dim:    rgba(0,232,122,0.08);
-  --red:      #ff2255;
-  --r-dim:    rgba(255,34,85,0.08);
-  --amber:    #ffaa00;
-  --a-dim:    rgba(255,170,0,0.08);
-  --blue:     #1e90ff;
-  --b-dim:    rgba(30,144,255,0.08);
-  --fui:      'Barlow', sans-serif;
-  --fnum:     'JetBrains Mono', monospace;
-  --fhd:      'Barlow Condensed', sans-serif;
+:root{
+  --bg:#040810;
+  --s1:#0a1220;
+  --s2:#0e1830;
+  --s3:#122038;
+  --bd:#182a40;
+  --bd2:#1e3550;
+  --txt:#c8d8e8;
+  --dim:#3a5570;
+  --muted:#1e3050;
+  --green:#00e87a;
+  --g-dim:rgba(0,232,122,0.08);
+  --red:#ff2255;
+  --r-dim:rgba(255,34,85,0.08);
+  --amber:#ffaa00;
+  --a-dim:rgba(255,170,0,0.08);
+  --blue:#1e90ff;
+  --b-dim:rgba(30,144,255,0.08);
+  --fui:'Barlow',sans-serif;
+  --fnum:'JetBrains Mono',monospace;
+  --fhd:'Barlow Condensed',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{
@@ -37,12 +37,10 @@ html,body{
   color:var(--txt);
   font-family:var(--fui);
 }
-body{
-  width:100%;
-}
+body{width:100%}
 button{cursor:pointer;font-family:inherit}
 
-/* ─── OVERLAY ─── */
+/* OVERLAY */
 #loginOverlay{
   position:fixed;inset:0;z-index:1000;
   background:var(--bg);
@@ -63,7 +61,7 @@ button{cursor:pointer;font-family:inherit}
 .login-msg{font-size:13px;color:var(--dim)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ─── LAYOUT ─── */
+/* LAYOUT */
 #app{
   height:100vh;
   width:min(100vw,560px);
@@ -126,7 +124,15 @@ header{
   margin-left:auto;
 }
 .bal-lbl{font-size:9px;letter-spacing:2px;color:var(--dim);font-weight:600}
-.bal-val{font-family:var(--fnum);font-size:15px;font-weight:600;color:var(--amber);transition:all .3s}
+.bal-val{
+  font-family:var(--fnum);
+  font-size:15px;
+  font-weight:600;
+  color:var(--green);
+  transition:filter .2s;
+  min-width:70px;
+}
+.coin-blur{filter:blur(6px);user-select:none}
 .hdr-user{
   display:flex;align-items:center;gap:6px;
   margin-left:auto;
@@ -147,7 +153,7 @@ main{
   min-height:0;
 }
 
-/* ─── CHART SECTION ─── */
+/* CHART SECTION */
 .chart-sec{
   flex:1 1 auto;
   display:flex;
@@ -223,7 +229,7 @@ main{
 .tf-btn:hover{border-color:var(--bd2);color:var(--txt)}
 .tf-btn.active{background:var(--b-dim);border-color:var(--blue);color:var(--blue)}
 
-/* ─── TRADE PANEL ─── */
+/* TRADE PANEL */
 .trade-panel{
   width:100%;
   flex:0 0 clamp(300px, 42vh, 430px);
@@ -263,7 +269,7 @@ main{
 .tc-progbar{height:100%;border-radius:1px;transition:width .5s linear}
 .tc-progbar.up{background:var(--green)}.tc-progbar.down{background:var(--red)}
 
-/* ─── TRADE FORM ─── */
+/* TRADE FORM */
 .trade-form{padding:12px;border-top:1px solid var(--bd)}
 .flbl{
   font-family:var(--fhd);font-size:9px;font-weight:600;
@@ -322,7 +328,7 @@ main{
 .hi-res{font-family:var(--fnum);font-size:10px;font-weight:600}
 .hi-res.win{color:var(--green)}.hi-res.loss{color:var(--red)}
 
-/* ─── NOTIFICATION ─── */
+/* NOTIFICATION */
 .notif{
   position:fixed;top:64px;right:16px;z-index:999;
   padding:10px 16px;border-radius:3px;border-left:3px solid;
@@ -334,7 +340,7 @@ main{
 .notif.info{background:var(--s2);border-color:var(--amber);color:var(--amber)}
 @keyframes notifIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
 
-/* ─── MOBILE TUNING ─── */
+/* MOBILE TUNING */
 @media (max-width:480px){
   .hdr-brand{font-size:17px;letter-spacing:3px}
   .brand-xl{font-size:42px;letter-spacing:6px}
@@ -360,7 +366,7 @@ main{
     <div class="mkt-tabs" id="mktTabs"></div>
     <div class="hdr-bal">
       <span class="bal-lbl">NUBIAPAYCOIN</span>
-      <span class="bal-val" id="balDisp">0</span>
+      <span class="bal-val" id="coinDisp">0.00</span>
     </div>
     <div class="hdr-user">
       <span class="user-em" id="userEm"></span>
@@ -420,13 +426,8 @@ main{
 </div>
 
 <script type="module">
-// ══════════════════════════════════════════════
-// FIREBASE INIT
-// ══════════════════════════════════════════════
-import { initializeApp, getApps }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc, addDoc,
   collection, onSnapshot, serverTimestamp, runTransaction,
@@ -445,17 +446,13 @@ const fbApp = getApps().length ? getApps()[0] : initializeApp(FB);
 const auth  = getAuth(fbApp);
 const db    = getFirestore(fbApp);
 
-// ══════════════════════════════════════════════
-// MARKET CONFIG
-// ══════════════════════════════════════════════
 const MARKETS = {
   bull: {
     id:'bull', name:'INDEX BULLMARKET', short:'BULL', dec:2,
     profit:0.80, base:1875, minP:1480, maxP:2350,
     cycles:[[130,5760,0],[60,1440,1.1],[28,360,2.3],[12,90,0.7]],
     noise:[[50,0.012,1001],[24,0.04,1002],[10,0.13,1003],[4,0.42,1004]],
-    drift:0.0012,
-    mrv:0.018,
+    drift:0.0012, mrv:0.018,
     regime:{period:864,highMul:1.7,seed:10011},
     corrW:0.30,
   },
@@ -486,9 +483,6 @@ const TF = {
   '15m':{ lbl:'15M', sec:900, ticks:180, cnt:60  },
 };
 
-// ══════════════════════════════════════════════
-// PRICE ENGINE — FULLY DETERMINISTIC
-// ══════════════════════════════════════════════
 const PE = (() => {
   function h32(n) {
     n = (n ^ 61) ^ (n >>> 16);
@@ -508,7 +502,12 @@ const PE = (() => {
 
   function fbm(x, s) {
     let v=0, a=0.5, fr=1, nm=0;
-    for(let i=0;i<6;i++){v+=vn(x*fr, s+i*997)*a; nm+=a; a*=0.52; fr*=2.07;}
+    for(let i=0;i<6;i++){
+      v+=vn(x*fr, s+i*997)*a;
+      nm+=a;
+      a*=0.52;
+      fr*=2.07;
+    }
     return v/nm;
   }
 
@@ -535,12 +534,10 @@ const PE = (() => {
     const m = MARKETS[mid];
 
     let trend = 0;
-    for(const [A, P, ph] of m.cycles)
-      trend += A * Math.sin(2*Math.PI*t/P + ph);
+    for(const [A, P, ph] of m.cycles) trend += A * Math.sin(2*Math.PI*t/P + ph);
 
     let noise = 0;
-    for(const [A, sc, sd] of m.noise)
-      noise += A * fbm(t*sc, sd);
+    for(const [A, sc, sd] of m.noise) noise += A * fbm(t*sc, sd);
 
     const corr = corrNoise(t) * 18 * m.corrW;
     const vol = regime(t, m.regime);
@@ -572,18 +569,17 @@ const PE = (() => {
     let h = -Infinity, lo = Infinity;
     for(let i=0;i<SAMPLES;i++){
       const p = price(mid, startT + Math.floor(i*(numTicks-1)/(SAMPLES-1)));
-      if(p>h)h=p; if(p<lo)lo=p;
+      if(p>h)h=p;
+      if(p<lo)lo=p;
     }
-    h = Math.max(h,o,c); lo = Math.min(lo,o,c);
+    h = Math.max(h,o,c);
+    lo = Math.min(lo,o,c);
     return {o,h,lo,c};
   }
 
   return { price, tick, subTick, livePrice, candle };
 })();
 
-// ══════════════════════════════════════════════
-// CHART RENDERER
-// ══════════════════════════════════════════════
 const CR = (() => {
   let cv, cx, W, H;
   const PAD = {t:18,r:68,b:36,l:8};
@@ -591,19 +587,20 @@ const CR = (() => {
   let tradeMarkers = [];
 
   const C = {
-    bg:'#040810', grid:'#0a1220', gline:'rgba(24,42,64,.6)',
+    bg:'#040810', gline:'rgba(24,42,64,.6)',
     up:'#00e87a', dn:'#ff2255', upDim:'rgba(0,232,122,.12)',
     dnDim:'rgba(255,34,85,.15)', wick:'#006835', wickDn:'#cc1040',
-    line:'#1e90ff', lineFill:'rgba(30,144,255,.07)',
     pxLine:'#ffaa00', lbl:'rgba(30,80,130,.8)', lbl2:'#2a5070',
     xh:'rgba(180,210,255,.07)', mUp:'#00e87a', mDn:'#ff2255',
   };
 
   function init(el) {
-    cv=el; cx=cv.getContext('2d');
+    cv=el;
+    cx=cv.getContext('2d');
     cv.addEventListener('mousemove',e=>{
       const r=cv.getBoundingClientRect();
-      mx=e.clientX-r.left; my=e.clientY-r.top;
+      mx=e.clientX-r.left;
+      my=e.clientY-r.top;
     });
     cv.addEventListener('mouseleave',()=>{mx=-1;my=-1;});
     resize();
@@ -611,28 +608,50 @@ const CR = (() => {
 
   function resize() {
     const p=cv.parentElement, dpr=devicePixelRatio||1;
-    W=p.clientWidth; H=p.clientHeight;
-    cv.width=W*dpr; cv.height=H*dpr;
-    cv.style.width=W+'px'; cv.style.height=H+'px';
+    W=p.clientWidth;
+    H=p.clientHeight;
+    cv.width=W*dpr;
+    cv.height=H*dpr;
+    cv.style.width=W+'px';
+    cv.style.height=H+'px';
     cx.setTransform(dpr,0,0,dpr,0,0);
   }
 
   function setMarkers(trades, mid) {
-    tradeMarkers = trades.filter(t=>t.market===mid&&t.status==='active').map(t=>({p:t.openPrice,d:t.direction}));
+    tradeMarkers = trades
+      .filter(t=>t.market===mid && t.status==='active')
+      .map(t=>({p:t.openPrice,d:t.direction}));
+  }
+
+  function niceStep(r) {
+    const m = 10**Math.floor(Math.log10(r));
+    const s = r/m;
+    return m*(s<1.5?1:s<3.5?2:s<7.5?5:10);
+  }
+
+  function fmtTime(d, tf) {
+    const H=String(d.getHours()).padStart(2,'0');
+    const M=String(d.getMinutes()).padStart(2,'0');
+    const S=String(d.getSeconds()).padStart(2,'0');
+    return tf==='5s'?`${H}:${M}:${S}`:`${H}:${M}`;
   }
 
   function render(data, tf, curP) {
-    if(!cx||!data||data.length<2) return;
+    if(!cx || !data || data.length<2) return;
+
     cx.clearRect(0,0,W,H);
-    cx.fillStyle=C.bg; cx.fillRect(0,0,W,H);
+    cx.fillStyle=C.bg;
+    cx.fillRect(0,0,W,H);
 
     let mn=Infinity, mx2=-Infinity;
-    for(const d of data) {
-      if(d.lo<mn)mn=d.lo;
-      if(d.h>mx2)mx2=d.h;
+    for(const d of data){
+      if(d.lo<mn) mn=d.lo;
+      if(d.h>mx2) mx2=d.h;
     }
-    const rng = mx2-mn||1;
-    mn -= rng*0.10; mx2 += rng*0.10;
+
+    const rng = mx2-mn || 1;
+    mn -= rng*0.10;
+    mx2 += rng*0.10;
 
     const cW = W-PAD.l-PAD.r;
     const cH = H-PAD.t-PAD.b;
@@ -642,13 +661,14 @@ const CR = (() => {
 
     const step = niceStep(rng/6);
     const gs = Math.ceil(mn/step)*step;
+
     cx.font = '9px JetBrains Mono,monospace';
     cx.textBaseline='middle';
     cx.textAlign='left';
 
-    for(let p=gs; p<=mx2+step; p+=step) {
+    for(let p=gs; p<=mx2+step; p+=step){
       const yp = y(p);
-      if(yp<PAD.t-2||yp>H-PAD.b+2) continue;
+      if(yp<PAD.t-2 || yp>H-PAD.b+2) continue;
       cx.strokeStyle=C.gline;
       cx.lineWidth=1;
       cx.setLineDash([]);
@@ -664,7 +684,8 @@ const CR = (() => {
     cx.fillStyle=C.lbl;
     cx.textAlign='center';
     cx.textBaseline='top';
-    for(let i=0;i<data.length;i+=tStep) {
+
+    for(let i=0;i<data.length;i+=tStep){
       const xp = xCandle(i);
       cx.strokeStyle=C.gline;
       cx.lineWidth=1;
@@ -673,22 +694,27 @@ const CR = (() => {
       cx.moveTo(xp,PAD.t);
       cx.lineTo(xp,H-PAD.b);
       cx.stroke();
-      cx.fillText(fmtTime(data[i].time||new Date(),tf), xp, H-PAD.b+6);
+      cx.fillText(fmtTime(data[i].time || new Date(), tf), xp, H-PAD.b+6);
     }
 
-    for(let i=0;i<data.length;i++) {
+    for(let i=0;i<data.length;i++){
       const d=data[i];
       const xp=xCandle(i);
       const up = d.c>=d.o;
-      const col = up?C.up:C.dn, colDim=up?C.upDim:C.dnDim;
+      const col = up?C.up:C.dn;
+      const colDim=up?C.upDim:C.dnDim;
       const oy=y(d.o), cy2=y(d.c), hy=y(d.h), loy=y(d.lo);
-      const bT=Math.min(oy,cy2), bH=Math.max(1,Math.abs(cy2-oy));
+      const bT=Math.min(oy,cy2);
+      const bH=Math.max(1,Math.abs(cy2-oy));
       const bw = d.isCur ? cW2*1.15 : cW2;
 
       cx.strokeStyle=up?C.wick:C.wickDn;
       cx.lineWidth=1;
       cx.setLineDash([]);
-      cx.beginPath(); cx.moveTo(xp,hy); cx.lineTo(xp,loy); cx.stroke();
+      cx.beginPath();
+      cx.moveTo(xp,hy);
+      cx.lineTo(xp,loy);
+      cx.stroke();
 
       cx.fillStyle=colDim;
       cx.fillRect(xp-bw/2,bT,bw,bH);
@@ -698,11 +724,16 @@ const CR = (() => {
       cx.strokeRect(xp-bw/2,bT,bw,bH);
     }
 
-    for(const m of tradeMarkers) {
-      const yp=y(m.p); if(yp<PAD.t||yp>H-PAD.b) continue;
+    for(const m of tradeMarkers){
+      const yp=y(m.p);
+      if(yp<PAD.t || yp>H-PAD.b) continue;
       cx.strokeStyle=m.d==='up'?C.mUp:C.mDn;
-      cx.lineWidth=1; cx.setLineDash([4,4]);
-      cx.beginPath(); cx.moveTo(PAD.l,yp); cx.lineTo(W-PAD.r-2,yp); cx.stroke();
+      cx.lineWidth=1;
+      cx.setLineDash([4,4]);
+      cx.beginPath();
+      cx.moveTo(PAD.l,yp);
+      cx.lineTo(W-PAD.r-2,yp);
+      cx.stroke();
       cx.setLineDash([]);
       cx.fillStyle=m.d==='up'?C.mUp:C.mDn;
       cx.font='8px Barlow Condensed,sans-serif';
@@ -711,7 +742,7 @@ const CR = (() => {
     }
 
     const py = y(curP);
-    if(py>=PAD.t&&py<=H-PAD.b) {
+    if(py>=PAD.t && py<=H-PAD.b){
       cx.strokeStyle=C.pxLine;
       cx.lineWidth=1;
       cx.setLineDash([3,5]);
@@ -729,7 +760,7 @@ const CR = (() => {
       cx.fillText(curP.toFixed(2),W-PAD.r+34,py);
     }
 
-    if(mx>=PAD.l&&mx<=W-PAD.r&&my>=PAD.t&&my<=H-PAD.b) {
+    if(mx>=PAD.l && mx<=W-PAD.r && my>=PAD.t && my<=H-PAD.b){
       cx.strokeStyle=C.xh;
       cx.lineWidth=1;
       cx.setLineDash([]);
@@ -752,45 +783,97 @@ const CR = (() => {
     }
   }
 
-  function niceStep(r) {
-    const m = 10**Math.floor(Math.log10(r));
-    const s = r/m;
-    return m*(s<1.5?1:s<3.5?2:s<7.5?5:10);
-  }
-
-  function fmtTime(d, tf) {
-    const H=String(d.getHours()).padStart(2,'0');
-    const M=String(d.getMinutes()).padStart(2,'0');
-    const S=String(d.getSeconds()).padStart(2,'0');
-    return tf==='5s'?`${H}:${M}:${S}`:`${H}:${M}`;
-  }
-
   return {init, resize, render, setMarkers};
 })();
 
-// ══════════════════════════════════════════════
-// APP STATE
-// ══════════════════════════════════════════════
 const ST = {
-  user: null,
-  balance: 0,
-  mkt: 'bull',
-  tf: '5s',
-  active: [],
-  history: [],
-  wins: 0,
-  losses: 0,
-  prevPrices: {bull:0,nubia:0,zee:0},
-  unsubs: [],
-  raf: null,
-  isWriter: false,
-  writerTimer: null,
-  lastSyncTick: -1,
+  user:null,
+  balance:0,
+  mkt:'bull',
+  tf:'5s',
+  active:[],
+  history:[],
+  wins:0,
+  losses:0,
+  prevPrices:{bull:0,nubia:0,zee:0},
+  unsubs:[],
+  raf:null,
+  isWriter:false,
+  writerTimer:null,
+  lastSyncTick:-1,
 };
 
-// ══════════════════════════════════════════════
-// FIRESTORE — WRITER ELECTION
-// ══════════════════════════════════════════════
+let user = null;
+let coin = 0;
+let unsub = null;
+let blurred = false;
+
+const $ = id => document.getElementById(id);
+const coinDisp = $('coinDisp');
+
+const fmtC = n => Number(n||0).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
+const r2 = n => Math.round(Number(n||0)*100)/100;
+
+function readWallet(data) {
+  return Number(
+    data?.nubiPayCoin ??
+    data?.nubiapaycoinbalance ??
+    data?.balance ??
+    0
+  );
+}
+
+function updateCoinUI() {
+  coinDisp.textContent = fmtC(coin);
+  coinDisp.classList.toggle('coin-blur', blurred);
+}
+function updateCtrl() {
+  updatePayUI();
+}
+
+async function refreshWallet(uid) {
+  try {
+    const s = await getDoc(doc(db,'users',uid));
+    coin = s.exists() ? readWallet(s.data()) : 0;
+
+    if (s.exists() && s.data()?.nubiPayCoin === undefined && coin > 0) {
+      await setDoc(doc(db,'users',uid), { nubiPayCoin: coin }, { merge:true });
+    }
+
+    ST.balance = coin;
+    updateCoinUI();
+  } catch(e){
+    console.error(e);
+  }
+}
+
+function subWallet(uid) {
+  if (typeof unsub === 'function'){unsub();unsub=null;}
+  unsub = onSnapshot(doc(db,'users',uid), s=>{
+    coin = s.exists() ? readWallet(s.data()) : 0;
+    ST.balance = coin;
+    updateCoinUI();
+    updateCtrl();
+  }, e=>console.error(e));
+}
+
+async function adjCoin(delta, type, meta={}) {
+  if (!user) throw new Error('Login dulu.');
+  const uRef  = doc(db,'users',user.uid);
+  const txCol = collection(db,'users',user.uid,'transactions');
+  await runTransaction(db, async tx=>{
+    const s    = await tx.get(uRef);
+    const prev  = Number(s.exists() ? readWallet(s.data()) : 0);
+    const next  = Math.max(0,r2(prev+delta));
+    tx.set(uRef,{nubiPayCoin:next},{merge:true});
+    tx.set(doc(txCol),{type,delta:r2(delta),balanceAfter:next,...meta,createdAt:serverTimestamp()});
+    coin=next;
+    ST.balance=next;
+  });
+  updateCoinUI();
+  updateCtrl();
+}
+
 async function electWriter() {
   if(!ST.user) return;
   try {
@@ -803,11 +886,13 @@ async function electWriter() {
         ST.isWriter = true;
       }
     });
-  } catch(e) { ST.isWriter = false; }
+  } catch(e) {
+    ST.isWriter = false;
+  }
 }
 
 async function releaseWriter() {
-  if(!ST.isWriter||!ST.user) return;
+  if(!ST.isWriter || !ST.user) return;
   try { await setDoc(doc(db,'sync','writer'),{uid:'',exp:0}); } catch(e){}
   ST.isWriter = false;
 }
@@ -821,50 +906,36 @@ async function writerSync() {
     const batch = writeBatch(db);
     for(const mid of Object.keys(MARKETS)) {
       const p = PE.price(mid, t);
-      batch.set(doc(db,'markets',mid), {
-        p, t, ts: serverTimestamp(),
-      });
+      batch.set(doc(db,'markets',mid), { p, t, ts: serverTimestamp() });
     }
     await batch.commit();
   } catch(e) {}
 }
 
-// ══════════════════════════════════════════════
-// USER / BALANCE
-// ══════════════════════════════════════════════
 async function ensureUser() {
   const ref = doc(db,'users',ST.user.uid);
   const snap = await getDoc(ref);
+
   if(!snap.exists()) {
     await setDoc(ref,{
-      nubiapaycoinbalance:100,
+      nubiPayCoin:100,
       uid:ST.user.uid,
       email:ST.user.email||'',
       createdAt:serverTimestamp()
     });
+    coin = 100;
     ST.balance = 100;
   } else {
     const data = snap.data();
-    ST.balance = data.nubiapaycoinbalance ?? data.balance ?? 0;
-  }
-  updateBalUI();
-}
-
-function subBalance() {
-  const ref = doc(db,'users',ST.user.uid);
-  const unsub = onSnapshot(ref, snap => {
-    if(snap.exists()) {
-      const data = snap.data();
-      ST.balance = data.nubiapaycoinbalance ?? data.balance ?? 0;
-      updateBalUI();
+    coin = readWallet(data);
+    ST.balance = coin;
+    if(data?.nubiPayCoin === undefined && coin > 0) {
+      await setDoc(ref,{ nubiPayCoin:coin },{ merge:true });
     }
-  });
-  ST.unsubs.push(unsub);
+  }
+  updateCoinUI();
 }
 
-// ══════════════════════════════════════════════
-// LOAD PRIOR ACTIVE TRADES ON LOGIN
-// ══════════════════════════════════════════════
 async function loadActiveTrades() {
   try {
     const q = query(collection(db,'trades'), where('uid','==',ST.user.uid), where('status','==','active'));
@@ -901,14 +972,11 @@ async function loadHistory() {
   } catch(e) {}
 }
 
-// ══════════════════════════════════════════════
-// TRADE ENGINE
-// ══════════════════════════════════════════════
 async function placeTrade(dir) {
   if(!ST.user) return;
   const amt = parseInt(document.getElementById('betAmt').value)||0;
   if(amt<=0)  return notify('Enter a valid amount','info');
-  if(amt>ST.balance) return notify('Insufficient NUBIAPAYCOIN','info');
+  if(amt>coin) return notify('Insufficient NUBIAPAYCOIN','info');
 
   const m   = MARKETS[ST.mkt];
   const tf  = TF[ST.tf];
@@ -918,15 +986,33 @@ async function placeTrade(dir) {
   const profit = Math.floor(amt * m.profit);
 
   const uRef = doc(db,'users',ST.user.uid);
+
   try {
     await runTransaction(db, async tx => {
       const s = await tx.get(uRef);
       if(!s.exists()) throw new Error('User not found');
-      const bal = s.data().nubiapaycoinbalance ?? s.data().balance ?? 0;
+      const bal = Number(s.data().nubiPayCoin || 0);
       if(bal < amt) throw new Error('Insufficient balance');
-      tx.update(uRef,{nubiapaycoinbalance:increment(-amt)});
+      tx.update(uRef,{ nubiPayCoin: increment(-amt) });
+      tx.set(doc(collection(db,'users',ST.user.uid,'transactions')),{
+        type:'bet_placed',
+        delta:-amt,
+        balanceAfter:bal-amt,
+        market:ST.mkt,
+        direction:dir,
+        amount:amt,
+        profit,
+        openPrice:op,
+        openTick:t,
+        closeTick,
+        timeframe:ST.tf,
+        tickDuration:tf.ticks,
+        createdAt:serverTimestamp()
+      });
     });
-  } catch(e) { return notify(e.message||'Trade failed','info'); }
+  } catch(e) {
+    return notify(e.message||'Trade failed','info');
+  }
 
   let tid;
   try {
@@ -938,7 +1024,7 @@ async function placeTrade(dir) {
     });
     tid = ref.id;
   } catch(e) {
-    await updateDoc(uRef,{nubiapaycoinbalance:increment(amt)});
+    await updateDoc(uRef,{ nubiPayCoin:increment(amt) });
     return notify('Failed to place trade','info');
   }
 
@@ -974,7 +1060,7 @@ async function resolveTrade(tid, trPreload=null) {
   const tRef  = doc(db,'trades',tid);
   const batch = writeBatch(db);
   batch.update(tRef,{status,closePrice:cp,resolvedAt:serverTimestamp()});
-  if(status==='win') batch.update(uRef,{nubiapaycoinbalance:increment(tr.amount+tr.profit)});
+  if(status==='win') batch.update(uRef,{ nubiPayCoin:increment(tr.amount+tr.profit) });
   await batch.commit().catch(()=>{});
 
   const idx = ST.active.findIndex(t=>t.id===tid);
@@ -997,9 +1083,6 @@ async function resolveTrade(tid, trPreload=null) {
   updateWR();
 }
 
-// ══════════════════════════════════════════════
-// BUILD CHART DATA
-// ══════════════════════════════════════════════
 function buildData(mid, tfKey) {
   const tf = TF[tfKey];
   const cur = PE.tick();
@@ -1041,11 +1124,31 @@ function buildData(mid, tfKey) {
   return items;
 }
 
-// ══════════════════════════════════════════════
-// UI UPDATES
-// ══════════════════════════════════════════════
-function updateBalUI() {
-  document.getElementById('balDisp').textContent = ST.balance.toLocaleString();
+function updateCoinUI(){
+  coinDisp.textContent = fmtC(coin);
+  coinDisp.classList.toggle('coin-blur', blurred);
+}
+
+function updatePayUI() {
+  const amt = parseInt(document.getElementById('betAmt').value)||0;
+  const pft = Math.floor(amt*MARKETS[ST.mkt].profit);
+  document.getElementById('pyDisp').textContent = `+${pft} NUBIAPAYCOIN`;
+}
+function updateMarketMeta() {
+  const m=MARKETS[ST.mkt];
+  document.getElementById('mktFname').textContent = m.name;
+  document.getElementById('profitBadge').textContent = `PROFIT ${m.profit*100}%`;
+}
+function updateWR() {
+  const tot=ST.wins+ST.losses;
+  if(!tot) return;
+  document.getElementById('wrDisplay').textContent = `${Math.round(ST.wins/tot*100)}% WIN`;
+}
+function updateTabPrices() {
+  for(const [id,m] of Object.entries(MARKETS)) {
+    const el = document.querySelector(`.mkt-tab[data-m="${id}"] .tp`);
+    if(el) el.textContent = PE.livePrice(id).toFixed(m.dec);
+  }
 }
 function updatePriceUI(mid, p, prev) {
   if(mid!==ST.mkt) return;
@@ -1065,31 +1168,13 @@ function updatePriceUI(mid, p, prev) {
   document.getElementById('stL').textContent = lo.toFixed(2);
   document.getElementById('stO').textContent = o.toFixed(2);
 }
-function updateTabPrices() {
-  for(const [id,m] of Object.entries(MARKETS)) {
-    const el = document.querySelector(`.mkt-tab[data-m="${id}"] .tp`);
-    if(el) el.textContent = PE.livePrice(id).toFixed(m.dec);
-  }
-}
-function updatePayUI() {
-  const amt = parseInt(document.getElementById('betAmt').value)||0;
-  const pft = Math.floor(amt*MARKETS[ST.mkt].profit);
-  document.getElementById('pyDisp').textContent = `+${pft} NUBIAPAYCOIN`;
-}
-function updateMarketMeta() {
-  const m=MARKETS[ST.mkt];
-  document.getElementById('mktFname').textContent = m.name;
-  document.getElementById('profitBadge').textContent = `PROFIT ${m.profit*100}%`;
-}
-function updateWR() {
-  const tot=ST.wins+ST.losses;
-  if(!tot) return;
-  document.getElementById('wrDisplay').textContent = `${Math.round(ST.wins/tot*100)}% WIN`;
-}
 
 function renderActive() {
   const c=document.getElementById('activeList');
-  if(!ST.active.length){c.innerHTML='<div class="no-trades">No open positions</div>';return;}
+  if(!ST.active.length){
+    c.innerHTML='<div class="no-trades">No open positions</div>';
+    return;
+  }
   c.innerHTML='';
   const now=PE.tick();
   for(const tr of ST.active) {
@@ -1133,22 +1218,6 @@ function tickTimers() {
   }
 }
 
-function renderHistory() {
-  const list=document.getElementById('histList');
-  list.innerHTML='';
-  for(const tr of ST.history.slice(0,12)) {
-    const el=document.createElement('div');
-    el.className='hitem';
-    const win=tr.status==='win';
-    el.innerHTML=`
-      <span class="hi-dir ${tr.direction}">${tr.direction.toUpperCase()}</span>
-      <span class="hi-mkt">${MARKETS[tr.market]?.short||tr.market} ${tr.timeframe}</span>
-      <span class="hi-res ${tr.status}">${win?'+'+tr.profit:'-'+tr.amount} NUBIAPAYCOIN</span>
-    `;
-    list.appendChild(el);
-  }
-}
-
 function notify(msg, type='info') {
   document.querySelectorAll('.notif').forEach(e=>e.remove());
   const el=document.createElement('div');
@@ -1162,9 +1231,6 @@ function notify(msg, type='info') {
   },2800);
 }
 
-// ══════════════════════════════════════════════
-// RENDER LOOP
-// ══════════════════════════════════════════════
 let lastTick=-1;
 function loop() {
   const t = PE.tick();
@@ -1185,9 +1251,6 @@ function loop() {
   ST.raf = requestAnimationFrame(loop);
 }
 
-// ══════════════════════════════════════════════
-// UI INIT
-// ══════════════════════════════════════════════
 function buildUI() {
   const tc=document.getElementById('mktTabs');
   const tfc=document.getElementById('tfBtns');
@@ -1238,22 +1301,23 @@ function buildUI() {
   updatePayUI();
 }
 
-// ══════════════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════════════
-onAuthStateChanged(auth, async user => {
+onAuthStateChanged(auth, async u => {
   const ov=document.getElementById('loginOverlay');
   const ap=document.getElementById('app');
 
-  if(user) {
-    ST.user=user;
+  if(u) {
+    user = u;
+    ST.user = u;
+
     ov.style.display='none';
     ap.style.display='flex';
     ap.style.flexDirection='column';
-    document.getElementById('userEm').textContent=user.email||user.displayName||'User';
+    document.getElementById('userEm').textContent=u.email||u.displayName||'User';
 
     await ensureUser();
-    subBalance();
+    await refreshWallet(u.uid);
+    subWallet(u.uid);
+
     buildUI();
     CR.init(document.getElementById('chartCanvas'));
     window.addEventListener('resize',()=>CR.resize());
@@ -1276,9 +1340,13 @@ onAuthStateChanged(auth, async user => {
       if(ST.raf) cancelAnimationFrame(ST.raf);
       if(ST.writerTimer) clearInterval(ST.writerTimer);
       ST.unsubs.forEach(u=>u());
+      if(typeof unsub === 'function') unsub();
     });
 
   } else {
+    user = null;
+    ST.user = null;
+
     ov.style.display='flex';
     ap.style.display='none';
     ov.innerHTML=`
@@ -1287,12 +1355,18 @@ onAuthStateChanged(auth, async user => {
       <div class="login-msg">You must be logged in to trade.</div>
       <div style="color:var(--dim);font-size:11px;letter-spacing:1px;margin-top:4px">Powered by NubiaPayCoin</div>
     `;
+
     if(ST.raf) cancelAnimationFrame(ST.raf);
     if(ST.writerTimer) clearInterval(ST.writerTimer);
     ST.unsubs.forEach(u=>u());
     ST.unsubs=[];
+    if(typeof unsub === 'function') unsub();
+
     ST.active=[];
     ST.isWriter=false;
+    coin=0;
+    ST.balance=0;
+    updateCoinUI();
   }
 });
 </script>
