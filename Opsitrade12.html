@@ -346,7 +346,6 @@ main{
 </head>
 <body>
 
-<!-- ════ LOGIN OVERLAY ════ -->
 <div id="loginOverlay">
   <div class="brand-xl">NUBIA<span>TRADE</span></div>
   <div class="login-sub">BINARY OPTIONS PLATFORM</div>
@@ -354,7 +353,6 @@ main{
   <div class="spinner"></div>
 </div>
 
-<!-- ════ MAIN APP ════ -->
 <div id="app" style="display:none">
   <header>
     <div class="hdr-brand">NUBIA<span>TRADE</span></div>
@@ -838,10 +836,16 @@ async function ensureUser() {
   const ref = doc(db,'users',ST.user.uid);
   const snap = await getDoc(ref);
   if(!snap.exists()) {
-    await setDoc(ref,{balance:100, uid:ST.user.uid, email:ST.user.email||'', createdAt:serverTimestamp()});
+    await setDoc(ref,{
+      nubiapaycoinbalance:100,
+      uid:ST.user.uid,
+      email:ST.user.email||'',
+      createdAt:serverTimestamp()
+    });
     ST.balance = 100;
   } else {
-    ST.balance = snap.data().balance ?? 0;
+    const data = snap.data();
+    ST.balance = data.nubiapaycoinbalance ?? data.balance ?? 0;
   }
   updateBalUI();
 }
@@ -850,7 +854,8 @@ function subBalance() {
   const ref = doc(db,'users',ST.user.uid);
   const unsub = onSnapshot(ref, snap => {
     if(snap.exists()) {
-      ST.balance = snap.data().balance ?? 0;
+      const data = snap.data();
+      ST.balance = data.nubiapaycoinbalance ?? data.balance ?? 0;
       updateBalUI();
     }
   });
@@ -917,8 +922,9 @@ async function placeTrade(dir) {
     await runTransaction(db, async tx => {
       const s = await tx.get(uRef);
       if(!s.exists()) throw new Error('User not found');
-      if((s.data().balance??0) < amt) throw new Error('Insufficient balance');
-      tx.update(uRef,{balance:increment(-amt)});
+      const bal = s.data().nubiapaycoinbalance ?? s.data().balance ?? 0;
+      if(bal < amt) throw new Error('Insufficient balance');
+      tx.update(uRef,{nubiapaycoinbalance:increment(-amt)});
     });
   } catch(e) { return notify(e.message||'Trade failed','info'); }
 
@@ -932,7 +938,7 @@ async function placeTrade(dir) {
     });
     tid = ref.id;
   } catch(e) {
-    await updateDoc(uRef,{balance:increment(amt)});
+    await updateDoc(uRef,{nubiapaycoinbalance:increment(amt)});
     return notify('Failed to place trade','info');
   }
 
@@ -968,7 +974,7 @@ async function resolveTrade(tid, trPreload=null) {
   const tRef  = doc(db,'trades',tid);
   const batch = writeBatch(db);
   batch.update(tRef,{status,closePrice:cp,resolvedAt:serverTimestamp()});
-  if(status==='win') batch.update(uRef,{balance:increment(tr.amount+tr.profit)});
+  if(status==='win') batch.update(uRef,{nubiapaycoinbalance:increment(tr.amount+tr.profit)});
   await batch.commit().catch(()=>{});
 
   const idx = ST.active.findIndex(t=>t.id===tid);
@@ -1013,9 +1019,10 @@ function buildData(mid, tfKey) {
         isCur:i===0
       });
     }
-    items[items.length-1].c = PE.livePrice(mid);
-    items[items.length-1].h = Math.max(items[items.length-1].h, items[items.length-1].c);
-    items[items.length-1].lo = Math.min(items[items.length-1].lo, items[items.length-1].c);
+    const last = items[items.length-1];
+    last.c = PE.livePrice(mid);
+    last.h = Math.max(last.h,last.c);
+    last.lo = Math.min(last.lo,last.c);
   } else {
     const nc = tf.ticks;
     const cs = Math.floor(cur/nc)*nc;
