@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<title>NubiTrade — Binary Options</title>
+<title>NubiaTrade — Binary Options</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -388,9 +388,9 @@ html,body{
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="loader-logo">NUBI<span style="color:rgba(0,217,126,0.5)">●</span>TRADE</div>
+  <div class="loader-logo">NUBIA<span style="color:rgba(0,217,126,0.5)">●</span>TRADE</div>
   <div class="loader-bar"><div class="loader-fill"></div></div>
-  <div class="loader-txt">Memuat engine trading...</div>
+  <div class="loader-txt">Memuat market trading...</div>
 </div>
 
 <div id="app" style="display:none">
@@ -399,7 +399,7 @@ html,body{
 <div class="topbar">
   <div class="topbar-brand">
     <div class="brand-dot"></div>
-    <div class="brand-name">Nubi<span>Trade</span></div>
+    <div class="brand-name">Nubia<span>Trade</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:7px">
     <div id="bonusCoinBadge">🎁 <span id="bonusCoinVal">0</span></div>
@@ -417,7 +417,7 @@ html,body{
 <div class="streak-bar" id="streakBar">
   <span>🔥</span>
   <span id="streakTxt">Win Streak 0!</span>
-  <span>Terus momentum-nya!</span>
+  <span>Terus pertahankan profitnya!</span>
 </div>
 
 <!-- MARKET SCROLL -->
@@ -449,22 +449,22 @@ html,body{
 
   <div class="dur-row" id="durRow">
     <button class="dur-btn active" data-dur="5" data-payout="85">5s<span class="dur-payout">85%</span></button>
-    <button class="dur-btn" data-dur="15" data-payout="82">15s<span class="dur-payout">82%</span></button>
-    <button class="dur-btn" data-dur="30" data-payout="80">30s<span class="dur-payout">80%</span></button>
-    <button class="dur-btn" data-dur="60" data-payout="78">1m<span class="dur-payout">78%</span></button>
-    <button class="dur-btn" data-dur="300" data-payout="75">5m<span class="dur-payout">75%</span></button>
+    <button class="dur-btn" data-dur="15" data-payout="82">15s<span class="dur-payout">54%</span></button>
+    <button class="dur-btn" data-dur="30" data-payout="80">30s<span class="dur-payout">23%</span></button>
+    <button class="dur-btn" data-dur="60" data-payout="78">1m<span class="dur-payout">82%</span></button>
+    <button class="dur-btn" data-dur="300" data-payout="75">5m<span class="dur-payout">67%</span></button>
   </div>
 
   <div class="amount-wrap">
-    <input type="number" id="betInput" min="1" value="100" placeholder="Nominal...">
+    <input type="number" id="betInput" min="16000" value="16000" placeholder="Nominal...">
     <span class="amount-unit">NubiCoin</span>
   </div>
   <div class="quick-row">
-    <button class="qbtn" data-v="50">+50</button>
-    <button class="qbtn" data-v="100">+100</button>
-    <button class="qbtn" data-v="500">+500</button>
-    <button class="qbtn" data-v="1000">+1K</button>
-    <button class="qbtn" data-v="5000">+5K</button>
+    <button class="qbtn" data-v="5000">+5k</button>
+    <button class="qbtn" data-v="10000">+10k</button>
+    <button class="qbtn" data-v="50000">+50k</button>
+    <button class="qbtn" data-v="100000">+100K</button>
+    <button class="qbtn" data-v="500000">+500K</button>
     <button class="qbtn" data-v="max">MAX</button>
   </div>
 
@@ -615,9 +615,9 @@ let priceSnapMap = {}; // mkt id → { price, prev5s }
 // OTC MARKET DEFS (seeded into Firestore if absent)
 // ═══════════════════════════════════
 const OTC_DEFS = [
-  { id:'OTC_XAUUSD', symbol:'XAU/USD', name:'Gold OTC',   basePrice:2314.80, vol:0.00080, payoutPercent:78, type:'otc' },
-  { id:'OTC_EURUSD', symbol:'EUR/USD', name:'Euro OTC',   basePrice:1.08625, vol:0.00035, payoutPercent:80, type:'otc' },
-  { id:'OTC_GBPUSD', symbol:'GBP/USD', name:'Pound OTC',  basePrice:1.27310, vol:0.00045, payoutPercent:82, type:'otc' },
+  { id:'OTC_XAUUSD', symbol:'XAU/USD', name:'Gold OTC',   basePrice:4557.80, vol:0.00080, payoutPercent:78, type:'otc' },
+  { id:'OTC_EURUSD', symbol:'EUR/USD', name:'Euro OTC',   basePrice:1.17625, vol:0.00035, payoutPercent:80, type:'otc' },
+  { id:'OTC_GBPUSD', symbol:'GBP/USD', name:'Pound OTC',  basePrice:1.35310, vol:0.00045, payoutPercent:82, type:'otc' },
 ];
 
 // ═══════════════════════════════════
