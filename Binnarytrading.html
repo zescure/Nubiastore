@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>NubiTrade — Binary Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060b14;--s1:#0b1320;--s2:#0f1a2c;--s3:#142035;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --text:#dce8f8;--muted:#4a6080;--muted2:#6b84a0;
+  --green:#00d97e;--red:#ff3e5e;--blue:#3b82f6;--gold:#f5a623;--purple:#a259ff;
+  --green-dim:rgba(0,217,126,0.12);--red-dim:rgba(255,62,94,0.12);
+  --glow-g:0 0 20px rgba(0,217,126,0.35);--glow-r:0 0 20px rgba(255,62,94,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{
+  width:100%;min-height:100%;
+  background:var(--bg);color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+.mono{font-family:'Space Mono',monospace}
+
+/* ── LOADER ── */
+#loader{
+  position:fixed;inset:0;z-index:9999;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+}
+.loader-logo{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--green);letter-spacing:2px}
+.loader-bar{width:160px;height:3px;background:var(--s2);border-radius:2px;overflow:hidden}
+.loader-fill{height:100%;width:0%;background:var(--green);border-radius:2px;animation:lf 1.4s ease-in-out forwards}
+@keyframes lf{0%{width:0}60%{width:80%}100%{width:100%}}
+.loader-txt{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;height:54px;
+  background:rgba(6,11,20,0.96);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-brand{display:flex;align-items:center;gap:8px}
+.brand-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.8s ease-in-out infinite;box-shadow:var(--glow-g)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.8)}}
+.brand-name{font-family:'Space Mono',monospace;font-weight:700;font-size:16px;letter-spacing:-1px;color:#fff}
+.brand-name span{color:var(--green)}
+.coin-pill{
+  display:flex;align-items:center;gap:7px;
+  background:linear-gradient(135deg,rgba(0,217,126,0.08),rgba(0,217,126,0.03));
+  border:1px solid rgba(0,217,126,0.25);border-radius:24px;
+  padding:7px 14px;
+}
+.coin-pill-icon{font-size:14px}
+.coin-pill-val{font-family:'Space Mono',monospace;font-weight:700;font-size:13px;color:var(--green)}
+.coin-pill-lbl{font-size:10px;color:var(--muted);font-weight:600}
+#bonusCoinBadge{
+  display:none;align-items:center;gap:4px;
+  background:rgba(162,89,255,0.1);border:1px solid rgba(162,89,255,0.3);
+  border-radius:12px;padding:4px 8px;font-size:10px;font-weight:700;color:var(--purple);
+}
+
+/* ── WIN STREAK BANNER ── */
+.streak-bar{
+  display:none;align-items:center;justify-content:center;gap:8px;
+  padding:7px 14px;
+  background:linear-gradient(90deg,rgba(245,166,35,0.12),rgba(255,62,94,0.08));
+  border-bottom:1px solid rgba(245,166,35,0.2);
+  font-size:12px;font-weight:700;color:var(--gold);
+}
+.streak-bar.show{display:flex}
+
+/* ── MARKET SCROLL ── */
+.market-scroll{
+  display:flex;gap:6px;padding:10px 14px 10px;overflow-x:auto;
+  border-bottom:1px solid var(--border);
+  scrollbar-width:none;
+}
+.market-scroll::-webkit-scrollbar{display:none}
+.mpill{
+  flex-shrink:0;display:flex;align-items:center;gap:5px;
+  padding:6px 12px;border-radius:20px;
+  background:var(--s1);border:1px solid var(--border);
+  cursor:pointer;transition:all .18s;font-size:12px;font-weight:700;
+  font-family:'Space Mono',monospace;white-space:nowrap;
+}
+.mpill:hover{border-color:var(--border2);background:var(--s2)}
+.mpill.active{
+  background:rgba(0,217,126,0.1);
+  border-color:rgba(0,217,126,0.4);color:var(--green);
+}
+.mpill.locked-pill{opacity:0.4;cursor:not-allowed}
+.otc-tag{
+  font-size:8px;font-weight:900;letter-spacing:.5px;
+  color:var(--purple);background:rgba(162,89,255,0.15);
+  border:1px solid rgba(162,89,255,0.35);border-radius:4px;padding:1px 4px;
+}
+.mpill.active .otc-tag{background:rgba(162,89,255,0.2)}
+.mpill-chg{font-size:10px;font-weight:600;font-family:'DM Sans',sans-serif}
+.chg-up{color:var(--green)}.chg-dn{color:var(--red)}
+
+/* ── CHART SECTION ── */
+.chart-section{
+  padding:12px 14px 10px;border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(0,217,126,0.02),transparent 120px);
+}
+.chart-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.ch-left{display:flex;flex-direction:column;gap:2px}
+.ch-name{font-weight:900;font-size:20px;letter-spacing:-1px;font-family:'Space Mono',monospace}
+.ch-sub{font-size:11px;color:var(--muted);font-weight:500}
+.ch-right{text-align:right}
+.ch-price{
+  font-family:'Space Mono',monospace;font-weight:700;
+  font-size:21px;letter-spacing:-1px;
+  transition:color .15s;
+}
+.price-flash-up{color:var(--green) !important}
+.price-flash-dn{color:var(--red) !important}
+.ch-change{font-size:11px;font-weight:700;margin-top:2px;transition:color .2s}
+.up{color:var(--green)}.dn{color:var(--red)}
+
+.tf-row{display:flex;gap:5px;margin-bottom:8px}
+.tf-btn{
+  padding:5px 11px;border-radius:8px;font-size:11px;font-weight:700;
+  border:1px solid var(--border);background:var(--s1);
+  color:var(--muted);cursor:pointer;transition:all .15s;
+  font-family:'Space Mono',monospace;
+}
+.tf-btn:hover:not(.active){background:var(--s2);color:var(--text)}
+.tf-btn.active{background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.4);color:var(--blue)}
+
+#chartWrap{
+  width:100%;height:240px;
+  background:var(--s1);border-radius:10px;overflow:hidden;
+  border:1px solid var(--border);position:relative;
+}
+.chart-overlay-msg{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:var(--muted);pointer-events:none;
+}
+
+/* ── TRADE PANEL ── */
+.trade-panel{padding:14px;border-bottom:1px solid var(--border)}
+.sec-lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.dur-row{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.dur-btn{
+  flex:1;min-width:52px;padding:9px 4px;text-align:center;
+  border-radius:9px;border:1px solid var(--border);background:var(--s1);
+  font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;
+  position:relative;
+}
+.dur-btn:hover:not(.active){background:var(--s2)}
+.dur-btn.active{background:var(--s2);border-color:rgba(59,130,246,0.5);color:var(--blue)}
+.dur-payout{display:block;font-size:9px;color:var(--gold);font-weight:800;margin-top:2px}
+
+.amount-wrap{
+  background:var(--s2);border:1px solid var(--border);border-radius:10px;
+  padding:10px 14px;margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.amount-wrap input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);font-size:18px;font-weight:800;
+  font-family:'Space Mono',monospace;width:0;min-width:0;
+}
+.amount-wrap input::placeholder{color:var(--muted)}
+.amount-unit{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
+
+.quick-row{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.qbtn{
+  padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;
+  border:1px solid var(--border);background:var(--s1);color:var(--muted2);
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.qbtn:hover{background:var(--s2);color:var(--text)}
+
+.trade-summary{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;
+}
+.ts-card{
+  background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:8px 10px;
+}
+.ts-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-bottom:3px}
+.ts-val{font-size:14px;font-weight:800;font-family:'Space Mono',monospace}
+
+.trade-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tbtn{
+  padding:18px 10px;border:none;border-radius:12px;
+  font-size:15px;font-weight:900;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  transition:transform .1s, box-shadow .2s, opacity .1s;
+  letter-spacing:.5px;position:relative;overflow:hidden;
+}
+.tbtn::after{
+  content:'';position:absolute;inset:0;opacity:0;
+  background:rgba(255,255,255,0.15);transition:opacity .1s;
+}
+.tbtn:active::after{opacity:1}
+.tbtn:active{transform:scale(0.97)}
+.tbtn-up{
+  background:linear-gradient(145deg,#059a59,#00d97e);color:#021a0e;
+}
+.tbtn-up:not(:disabled):hover{box-shadow:var(--glow-g)}
+.tbtn-dn{
+  background:linear-gradient(145deg,#c42040,#ff3e5e);color:#fff;
+}
+.tbtn-dn:not(:disabled):hover{box-shadow:var(--glow-r)}
+.tbtn:disabled{opacity:.4;cursor:not-allowed}
+.tbtn small{font-size:10px;opacity:.7;font-family:'Space Mono',monospace;font-weight:400}
+
+/* ── STATS BAR ── */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:6px;padding:10px 14px;border-bottom:1px solid var(--border);
+}
+.stat-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:9px;
+  padding:8px 10px;text-align:center;
+}
+.stat-val{font-size:15px;font-weight:900;font-family:'Space Mono',monospace;margin-bottom:2px}
+.stat-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+
+/* ── TABS ── */
+.tabs-bar{
+  display:flex;border-bottom:1px solid var(--border);
+  padding:0 14px;background:var(--s1);
+  position:sticky;top:54px;z-index:100;
+  overflow-x:auto;scrollbar-width:none;
+}
+.tabs-bar::-webkit-scrollbar{display:none}
+.tab-btn{
+  padding:12px 14px;font-size:12px;font-weight:700;
+  color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;
+  transition:all .15s;white-space:nowrap;flex-shrink:0;
+}
+.tab-btn.active{color:var(--text);border-bottom-color:var(--blue)}
+.tab-cnt{padding:10px 14px 14px;min-height:100px}
+
+/* ── TRADE CARDS ── */
+.trade-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;margin-bottom:7px;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+  transition:border-color .2s;
+}
+.trade-card.winning{border-color:rgba(0,217,126,0.25)}
+.trade-card.losing{border-color:rgba(255,62,94,0.2)}
+.tc-left{flex:1;min-width:0}
+.tc-market{font-size:13px;font-weight:800;font-family:'Space Mono',monospace;display:flex;align-items:center;gap:6px}
+.side-pill{
+  display:inline-flex;align-items:center;gap:2px;
+  padding:2px 7px;border-radius:5px;font-size:10px;font-weight:800;
+  font-family:'DM Sans',sans-serif;letter-spacing:.5px;
+}
+.sp-up{background:rgba(0,217,126,0.12);color:var(--green)}
+.sp-dn{background:rgba(255,62,94,0.1);color:var(--red)}
+.tc-meta{font-size:11px;color:var(--muted);margin-top:4px}
+.tc-pnl{font-size:11px;font-weight:700;margin-top:4px;transition:color .3s}
+.tc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.countdown{
+  font-family:'Space Mono',monospace;font-size:20px;font-weight:700;
+  color:var(--gold);transition:color .3s;
+}
+.crit{color:var(--red) !important}
+.tc-exp{font-size:10px;color:var(--muted)}
+
+/* ── HISTORY ITEMS ── */
+.hist-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+.hist-item:last-child{border:none}
+.hi-sym{font-family:'Space Mono',monospace;font-size:12px;font-weight:700}
+.hi-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.hi-res{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+.hi-win{color:var(--green)}.hi-lose{color:var(--red)}
+
+/* ── RESULT OVERLAY ── */
+.result-overlay{
+  position:fixed;inset:0;z-index:999;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.result-overlay.show{opacity:1;pointer-events:all}
+.result-box{
+  background:var(--s2);border-radius:20px;
+  padding:36px 28px;text-align:center;min-width:270px;
+  transform:scale(.85) translateY(20px);transition:transform .3s;
+  border:2px solid var(--border2);
+  box-shadow:0 20px 60px rgba(0,0,0,.8);
+}
+.result-overlay.show .result-box{transform:scale(1) translateY(0)}
+.res-icon{font-size:72px;margin-bottom:14px;animation:bounce-in .4s .1s both}
+@keyframes bounce-in{0%{transform:scale(.3)}60%{transform:scale(1.1)}100%{transform:scale(1)}}
+.res-title{font-size:30px;font-weight:900;letter-spacing:-1px;margin-bottom:6px}
+.res-amount{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;margin-bottom:4px}
+.res-detail{font-size:12px;color:var(--muted);margin-bottom:20px}
+.res-close{
+  padding:11px 28px;border-radius:10px;border:none;
+  background:var(--s3);color:var(--text);font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:background .15s;
+}
+.res-close:hover{background:rgba(255,255,255,0.1)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:rgba(11,19,32,0.97);backdrop-filter:blur(12px);
+  border:1px solid var(--border2);border-radius:10px;
+  padding:10px 20px;font-size:13px;font-weight:600;z-index:9999;
+  opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;
+  box-shadow:0 8px 32px rgba(0,0,0,.6);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── ADMIN PANEL ── */
+.admin-panel{
+  margin:14px;border-radius:14px;overflow:hidden;
+  border:1px solid rgba(162,89,255,0.3);
+}
+.admin-header{
+  display:flex;align-items:center;gap:8px;padding:13px 16px;
+  background:linear-gradient(90deg,rgba(162,89,255,0.15),rgba(59,130,246,0.08));
+  border-bottom:1px solid rgba(162,89,255,0.2);
+  font-weight:800;font-size:13px;color:#c4a0ff;letter-spacing:.3px;
+}
+.admin-badge{
+  background:rgba(162,89,255,0.15);border:1px solid rgba(162,89,255,0.4);
+  border-radius:6px;padding:2px 8px;font-size:10px;font-weight:800;color:var(--purple);
+}
+.admin-tabs{display:flex;gap:5px;padding:10px 14px;flex-wrap:wrap;background:var(--s1);border-bottom:1px solid var(--border)}
+.atab-btn{
+  padding:6px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border);background:var(--s2);color:var(--muted);
+  transition:all .15s;
+}
+.atab-btn.active{background:#6d28d9;color:#fff;border-color:#7c3aed}
+.admin-content{padding:14px;background:var(--s1)}
+.mkt-edit-card{
+  background:var(--s2);border:1px solid var(--border);border-radius:10px;
+  padding:12px;margin-bottom:8px;
+}
+.mkt-edit-head{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.mkt-edit-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.edit-inp{
+  width:70px;padding:6px 8px;border-radius:7px;
+  background:var(--s1);border:1px solid var(--border);
+  color:var(--text);font-size:12px;font-weight:700;
+  font-family:'Space Mono',monospace;
+}
+.edit-inp-wide{width:90px}
+.btn-save-mkt{
+  padding:6px 12px;border-radius:7px;background:#7c3aed;
+  border:none;color:#fff;font-size:11px;font-weight:700;cursor:pointer;
+}
+.btn-lock{
+  padding:6px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border);background:var(--s3);color:var(--muted);
+  transition:all .15s;
+}
+.btn-lock.locked{background:rgba(255,62,94,0.1);color:var(--red);border-color:rgba(255,62,94,0.35)}
+.admin-trade-row{
+  padding:8px 0;border-bottom:1px solid var(--border);
+  font-size:11px;display:flex;justify-content:space-between;align-items:center;
+}
+.admin-trade-row:last-child{border:none}
+.atu-card{
+  background:var(--s2);border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;margin-bottom:7px;font-size:11px;
+}
+.empty-state{
+  text-align:center;padding:28px 0;color:var(--muted);font-size:12px;
+}
+
+/* ── RESPONSIVE ── */
+@media(min-width:420px){
+  .dur-btn{min-width:60px}
+  .trade-btns{gap:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">NUBI<span style="color:rgba(0,217,126,0.5)">●</span>TRADE</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <div class="loader-txt">Memuat engine trading...</div>
+</div>
+
+<div id="app" style="display:none">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-dot"></div>
+    <div class="brand-name">Nubi<span>Trade</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <div id="bonusCoinBadge">🎁 <span id="bonusCoinVal">0</span></div>
+    <div class="coin-pill">
+      <span class="coin-pill-icon">🪙</span>
+      <div>
+        <div class="coin-pill-val" id="coinDisplay">0</div>
+        <div class="coin-pill-lbl">NubiCoin</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STREAK BANNER -->
+<div class="streak-bar" id="streakBar">
+  <span>🔥</span>
+  <span id="streakTxt">Win Streak 0!</span>
+  <span>Terus momentum-nya!</span>
+</div>
+
+<!-- MARKET SCROLL -->
+<div class="market-scroll" id="marketScroll"></div>
+
+<!-- CHART SECTION -->
+<div class="chart-section">
+  <div class="chart-header">
+    <div class="ch-left">
+      <div class="ch-name" id="chName">—</div>
+      <div class="ch-sub" id="chSub">Memuat...</div>
+    </div>
+    <div class="ch-right">
+      <div class="ch-price mono" id="chPrice">—</div>
+      <div class="ch-change" id="chChange">—</div>
+    </div>
+  </div>
+  <div class="tf-row">
+    <button class="tf-btn active" data-tf="5">5S</button>
+    <button class="tf-btn" data-tf="60">1M</button>
+    <button class="tf-btn" data-tf="300">5M</button>
+  </div>
+  <div id="chartWrap"><div class="chart-overlay-msg">Memuat chart...</div></div>
+</div>
+
+<!-- TRADE PANEL -->
+<div class="trade-panel">
+  <div class="sec-lbl">Durasi & Nominal</div>
+
+  <div class="dur-row" id="durRow">
+    <button class="dur-btn active" data-dur="5" data-payout="85">5s<span class="dur-payout">85%</span></button>
+    <button class="dur-btn" data-dur="15" data-payout="82">15s<span class="dur-payout">82%</span></button>
+    <button class="dur-btn" data-dur="30" data-payout="80">30s<span class="dur-payout">80%</span></button>
+    <button class="dur-btn" data-dur="60" data-payout="78">1m<span class="dur-payout">78%</span></button>
+    <button class="dur-btn" data-dur="300" data-payout="75">5m<span class="dur-payout">75%</span></button>
+  </div>
+
+  <div class="amount-wrap">
+    <input type="number" id="betInput" min="1" value="100" placeholder="Nominal...">
+    <span class="amount-unit">NubiCoin</span>
+  </div>
+  <div class="quick-row">
+    <button class="qbtn" data-v="50">+50</button>
+    <button class="qbtn" data-v="100">+100</button>
+    <button class="qbtn" data-v="500">+500</button>
+    <button class="qbtn" data-v="1000">+1K</button>
+    <button class="qbtn" data-v="5000">+5K</button>
+    <button class="qbtn" data-v="max">MAX</button>
+  </div>
+
+  <div class="trade-summary">
+    <div class="ts-card">
+      <div class="ts-lbl">Modal</div>
+      <div class="ts-val" id="sumStake">100</div>
+    </div>
+    <div class="ts-card">
+      <div class="ts-lbl">Payout</div>
+      <div class="ts-val" id="sumPayout" style="color:var(--gold)">85%</div>
+    </div>
+    <div class="ts-card">
+      <div class="ts-lbl">Jika Menang</div>
+      <div class="ts-val" id="sumWin" style="color:var(--green)">+185</div>
+    </div>
+    <div class="ts-card">
+      <div class="ts-lbl">Jika Kalah</div>
+      <div class="ts-val" id="sumLose" style="color:var(--red)">-100</div>
+    </div>
+  </div>
+
+  <div class="trade-btns">
+    <button class="tbtn tbtn-dn" id="btnDn">
+      ↓ TURUN
+      <small id="btnDnP">—</small>
+    </button>
+    <button class="tbtn tbtn-up" id="btnUp">
+      ↑ NAIK
+      <small id="btnUpP">—</small>
+    </button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-val" id="svWR">0%</div>
+    <div class="stat-lbl">Win Rate</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val" id="svTotal">0</div>
+    <div class="stat-lbl">Total Trade</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val" id="svPnl">+0</div>
+    <div class="stat-lbl">P&L Koin</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tab-btn active" data-tab="open">Terbuka (<span id="openCnt">0</span>)</div>
+  <div class="tab-btn" data-tab="history">Riwayat</div>
+</div>
+<div id="tabOpen" class="tab-cnt">
+  <div class="empty-state" id="openEmpty">Belum ada trade aktif</div>
+  <div id="openList"></div>
+</div>
+<div id="tabHistory" class="tab-cnt" style="display:none">
+  <div id="historyList"><div class="empty-state">Belum ada riwayat</div></div>
+</div>
+
+<!-- ADMIN PANEL (hidden until admin) -->
+<div class="admin-panel" id="adminPanel" style="display:none">
+  <div class="admin-header">
+    🛡️ Admin Panel
+    <span class="admin-badge">SUPER ADMIN</span>
+  </div>
+  <div class="admin-tabs">
+    <button class="atab-btn active" data-atab="markets">Market</button>
+    <button class="atab-btn" data-atab="trades">Semua Trade</button>
+    <button class="atab-btn" data-atab="users">Pengguna</button>
+  </div>
+  <div id="aMarkets" class="admin-content"></div>
+  <div id="aTrades" class="admin-content" style="display:none"></div>
+  <div id="aUsers" class="admin-content" style="display:none"></div>
+</div>
+
+<div style="height:40px"></div>
+</div><!-- #app -->
+
+<!-- RESULT OVERLAY -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-box">
+    <div class="res-icon" id="resIcon">🏆</div>
+    <div class="res-title" id="resTitle">MENANG!</div>
+    <div class="res-amount" id="resAmt">+500</div>
+    <div class="res-detail" id="resDetail">NubiCoin ditambahkan</div>
+    <button class="res-close" onclick="closeResult()">Lanjut Trading →</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- Firebase v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- Lightweight Charts v4 -->
+<script src="https://unpkg.com/lightweight-charts@4.0.0/dist/lightweight-charts.standalone.production.js"></script>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════
+const FB_CONFIG = {
+  apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+  authDomain: "zestoreid-f9e85.firebaseapp.com",
+  projectId: "zestoreid-f9e85",
+  storageBucket: "zestoreid-f9e85.firebasestorage.app",
+  messagingSenderId: "426093692154",
+  appId: "1:426093692154:web:38c6e9c143af626a623543"
+};
+const ADMIN_UID = '8z9b0u1LYfTVM0sCP7qHXbYHvGi1';
+const CG_BASE   = 'https://api.coingecko.com/api/v3';
+
+firebase.initializeApp(FB_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ═══════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════
+let currentUser  = null;
+let isAdmin      = false;
+let nubiPayCoin  = 0;   // from users/{uid}.nubiPayCoin
+let nubiPayBonus = 0;   // from users/{uid}.nubiPayBonusCoin
+
+let markets       = {}; // id → market obj
+let selectedMkt   = null;
+let selectedDur   = 5;
+let selectedPO    = 85; // base payout %
+let activeTab     = 'open';
+let activeATab    = 'markets';
+let currentTF     = 5;  // timeframe seconds
+
+let openTrades  = [];
+let tradeHistory= [];
+let wins = 0, losses = 0, totalPnl = 0;
+let winStreak = 0;
+
+let cgPollTimer = null;
+let priceSnapMap = {}; // mkt id → { price, prev5s }
+
+// ═══════════════════════════════════
+// OTC MARKET DEFS (seeded into Firestore if absent)
+// ═══════════════════════════════════
+const OTC_DEFS = [
+  { id:'OTC_XAUUSD', symbol:'XAU/USD', name:'Gold OTC',   basePrice:2314.80, vol:0.00080, payoutPercent:78, type:'otc' },
+  { id:'OTC_EURUSD', symbol:'EUR/USD', name:'Euro OTC',   basePrice:1.08625, vol:0.00035, payoutPercent:80, type:'otc' },
+  { id:'OTC_GBPUSD', symbol:'GBP/USD', name:'Pound OTC',  basePrice:1.27310, vol:0.00045, payoutPercent:82, type:'otc' },
+];
+
+// ═══════════════════════════════════
+// PRICE ENGINE — Geometric Brownian Motion
+// ═══════════════════════════════════
+const PE = {
+  data: {},   // id → { price, vol, trend, trendEnd, open }
+  tickMs: 500,
+  _timer: null,
+
+  init(id, basePrice, vol) {
+    this.data[id] = { price: basePrice, vol, trend: 0, trendEnd: 0, open: basePrice };
+  },
+
+  setReal(id, real) {
+    if (!this.data[id]) return;
+    // smooth blend: 20% toward real, preserves micro-noise
+    this.data[id].price = this.data[id].price * 0.80 + real * 0.20;
+  },
+
+  _randn() {
+    let u, v;
+    do { u = Math.random(); } while (u === 0);
+    do { v = Math.random(); } while (v === 0);
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  },
+
+  tick() {
+    const now = Date.now();
+    for (const id in this.data) {
+      const m = this.data[id];
+      // Random trend changes every 3-12 seconds
+      if (now > m.trendEnd) {
+        m.trend    = (Math.random() - 0.48) * 0.6; // slight upward bias
+        m.trendEnd = now + 3000 + Math.random() * 9000;
+      }
+      const sigma = m.vol;
+      const dt    = this.tickMs / 3600000; // in "hours" for scaling
+      const z     = this._randn();
+      const logRet = m.trend * 0.00008 + sigma * Math.sqrt(dt * 3600) * z;
+      m.price *= Math.exp(logRet);
+      // Mean reversion: if drifted > 8% from open, pull back
+      const drift = (m.price - m.open) / m.open;
+      if (Math.abs(drift) > 0.08) {
+        m.price *= (1 - drift * 0.015);
+      }
+    }
+  },
+
+  get(id) { return this.data[id] ? this.data[id].price : 0; },
+
+  start() {
+    this._timer = setInterval(() => {
+      this.tick();
+      onPriceTick();
+    }, this.tickMs);
+  }
+};
+
+// ═══════════════════════════════════
+// CHART ENGINE
+// ═══════════════════════════════════
+const CE = {
+  chart: null, series: null, candles: [], tf: 5,
+
+  init(tf) {
+    this.tf = tf;
+    this.candles = [];
+    const wrap = document.getElementById('chartWrap');
+    wrap.innerHTML = '';
+    const w = wrap.clientWidth  || 340;
+    const h = 240;
+
+    this.chart = LightweightCharts.createChart(wrap, {
+      width: w, height: h,
+      layout: { background: { color: '#08101e' }, textColor: '#4a6080' },
+      rightPriceScale: {
+        borderColor: 'rgba(255,255,255,0.04)',
+        scaleMarginTop: 0.1, scaleMarginBottom: 0.05,
+        textColor: '#4a6080',
+      },
+      timeScale: {
+        borderColor: 'rgba(255,255,255,0.04)',
+        timeVisible: true,
+        secondsVisible: tf <= 60,
+        tickMarkFormatter: (t) => {
+          const d = new Date(t * 1000);
+          return tf <= 60
+            ? d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
+            : d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+        }
+      },
+      grid: {
+        vertLines: { color: 'rgba(255,255,255,0.015)' },
+        horzLines: { color: 'rgba(255,255,255,0.015)' }
+      },
+      crosshair: { mode: 1 },
+      handleScroll: { mouseWheel: false, pressedMouseMove: true },
+      handleScale: { mouseWheel: false, pinch: false },
+    });
+
+    this.series = this.chart.addCandlestickSeries({
+      upColor:        '#00d97e',
+      downColor:      '#ff3e5e',
+      borderUpColor:  '#00d97e',
+      borderDownColor:'#ff3e5e',
+      wickUpColor:    '#00a85f',
+      wickDownColor:  '#d42040',
+    });
+
+    // Responsive resize
+    const ro = new ResizeObserver(() => {
+      if (this.chart) this.chart.applyOptions({ width: wrap.clientWidth });
+    });
+    ro.observe(wrap);
+  },
+
+  feed(price) {
+    if (!this.series) return;
+    const bkt = Math.floor(Date.now() / (this.tf * 1000)) * this.tf;
+    const last = this.candles[this.candles.length - 1];
+    if (!last || last.time < bkt) {
+      const open = last ? last.close : price;
+      const nc = { time: bkt, open, high: Math.max(open, price), low: Math.min(open, price), close: price };
+      this.candles.push(nc);
+      if (this.candles.length > 150) this.candles.shift();
+      try { this.series.setData(this.candles); } catch(e) {}
+    } else {
+      last.high  = Math.max(last.high, price);
+      last.low   = Math.min(last.low,  price);
+      last.close = price;
+      try { this.series.update({...last}); } catch(e) {}
+    }
+  },
+
+  destroy() {
+    try { if (this.chart) this.chart.remove(); } catch(e) {}
+    this.chart = null; this.series = null; this.candles = [];
+  }
+};
+
+// ═══════════════════════════════════
+// UTILS
+// ═══════════════════════════════════
+const fmtN = n => Number(n||0).toLocaleString('id-ID');
+
+function fmtPrice(n, mktId) {
+  n = Number(n);
+  if (!isFinite(n)) return '—';
+  const m = markets[mktId];
+  if (!m) return n.toPrecision(6);
+  if (mktId === 'OTC_XAUUSD') return '$' + n.toFixed(2);
+  if (mktId === 'OTC_EURUSD' || mktId === 'OTC_GBPUSD') return n.toFixed(5);
+  if (n >= 10000) return '$' + n.toLocaleString('en-US',{maximumFractionDigits:0});
+  if (n >= 100)   return '$' + n.toFixed(2);
+  if (n >= 1)     return '$' + n.toFixed(4);
+  return '$' + n.toFixed(6);
+}
+
+let _toastT;
+function showToast(msg, ms=2500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastT);
+  _toastT = setTimeout(() => el.classList.remove('show'), ms);
+}
+
+function updateCoinDisplay() {
+  document.getElementById('coinDisplay').textContent = fmtN(Math.floor(nubiPayCoin));
+  // Bonus
+  if (nubiPayBonus > 0) {
+    document.getElementById('bonusCoinBadge').style.display = 'flex';
+    document.getElementById('bonusCoinVal').textContent = fmtN(Math.floor(nubiPayBonus));
+  } else {
+    document.getElementById('bonusCoinBadge').style.display = 'none';
+  }
+}
+
+function flashPrice(up) {
+  const el = document.getElementById('chPrice');
+  el.classList.remove('price-flash-up','price-flash-dn');
+  void el.offsetWidth;
+  el.classList.add(up ? 'price-flash-up' : 'price-flash-dn');
+  setTimeout(() => el.classList.remove('price-flash-up','price-flash-dn'), 400);
+}
+
+// ═══════════════════════════════════
+// MAIN PRICE TICK (called by PE every 500ms)
+// ═══════════════════════════════════
+let _prevPrice = {};
+function onPriceTick() {
+  for (const id in markets) {
+    const price = PE.get(id);
+    if (!price) continue;
+
+    // Chart feed (selected market only)
+    if (id === selectedMkt) {
+      CE.feed(price);
+      updatePriceUI(id, price);
+    }
+
+    // Update market pill change indicators
+    updatePillChange(id, price);
+
+    // Track for snap comparison
+    if (_prevPrice[id] === undefined) _prevPrice[id] = price;
+    _prevPrice[id] = price;
+  }
+
+  // Live P&L on open trades
+  updateOpenTradePnl();
+}
+
+let _priceRef = {};
+let _priceRefTimer = null;
+function updatePriceUI(id, price) {
+  // Flash on direction change
+  const prev = _priceRef[id];
+  if (prev !== undefined && price !== prev) flashPrice(price > prev);
+  _priceRef[id] = price;
+
+  document.getElementById('chPrice').textContent = fmtPrice(price, id);
+
+  // 5s rolling change
+  if (!priceSnapMap[id]) priceSnapMap[id] = { base: price, ts: Date.now() };
+  const snap = priceSnapMap[id];
+  const elapsed = Date.now() - snap.ts;
+  if (elapsed >= 5000) {
+    const pct = ((price - snap.base) / snap.base) * 100;
+    const el = document.getElementById('chChange');
+    const sign = pct >= 0 ? '+' : '';
+    el.textContent = sign + pct.toFixed(3) + '%';
+    el.className = 'ch-change ' + (pct >= 0 ? 'up' : 'dn');
+    snap.base = price;
+    snap.ts = Date.now();
+  }
+
+  // Trade button prices
+  document.getElementById('btnUpP').textContent = fmtPrice(price, id);
+  document.getElementById('btnDnP').textContent = fmtPrice(price, id);
+}
+
+function updatePillChange(id, price) {
+  const el = document.getElementById('pill_chg_' + id);
+  if (!el) return;
+  const snap = priceSnapMap[id];
+  if (!snap) return;
+  const pct = ((price - snap.base) / snap.base) * 100;
+  const sign = pct >= 0 ? '+' : '';
+  el.textContent = sign + pct.toFixed(2) + '%';
+  el.className = 'mpill-chg ' + (pct >= 0 ? 'chg-up' : 'chg-dn');
+}
+
+// ═══════════════════════════════════
+// MARKET SELECTOR
+// ═══════════════════════════════════
+function buildMarketPills() {
+  const scroll = document.getElementById('marketScroll');
+  scroll.innerHTML = '';
+  Object.keys(markets).forEach(id => {
+    const m = markets[id];
+    const pill = document.createElement('div');
+    pill.className = 'mpill' + (id === selectedMkt ? ' active' : '') + (m.locked ? ' locked-pill' : '');
+    pill.id = 'pill_' + id;
+    pill.innerHTML =
+      m.symbol +
+      (m.type === 'otc' ? '<span class="otc-tag">OTC</span>' : '') +
+      '<span class="mpill-chg" id="pill_chg_' + id + '">—</span>';
+    pill.addEventListener('click', () => selectMarket(id));
+    scroll.appendChild(pill);
+  });
+}
+
+function selectMarket(id) {
+  if (markets[id] && markets[id].locked) { showToast('🔒 Market sedang dikunci'); return; }
+  selectedMkt = id;
+  buildMarketPills();
+  const m = markets[id];
+  if (m) {
+    document.getElementById('chName').textContent = m.symbol;
+    document.getElementById('chSub').textContent  = m.name + (m.type === 'otc' ? ' — OTC Simulasi' : ' — CoinGecko');
+    // Payout from market
+    selectedPO = Number(m.payoutPercent || selectedPO);
+    updateSummary();
+  }
+  CE.destroy();
+  CE.init(currentTF);
+  priceSnapMap[id] = { base: PE.get(id), ts: Date.now() };
+  updatePriceUI(id, PE.get(id));
+}
+
+// ═══════════════════════════════════
+// TRADE SUMMARY UPDATE
+// ═══════════════════════════════════
+function updateSummary() {
+  const stake = Number(document.getElementById('betInput').value) || 0;
+  const m  = markets[selectedMkt];
+  const po = m ? Number(m.payoutPercent || selectedPO) : selectedPO;
+  const win = stake + Math.round(stake * po / 100);
+  document.getElementById('sumStake').textContent = fmtN(stake);
+  document.getElementById('sumPayout').textContent = po + '%';
+  document.getElementById('sumWin').textContent   = '+' + fmtN(win);
+  document.getElementById('sumLose').textContent  = '-' + fmtN(stake);
+  document.getElementById('btnUp').disabled = stake < 1 || stake > nubiPayCoin;
+  document.getElementById('btnDn').disabled = stake < 1 || stake > nubiPayCoin;
+}
+
+// ═══════════════════════════════════
+// EXECUTE TRADE
+// ═══════════════════════════════════
+async function placeTrade(side) {
+  if (!currentUser) return showToast('⚠️ Belum login');
+  const stake = Number(document.getElementById('betInput').value) || 0;
+  if (stake < 1)  return showToast('⚠️ Masukkan nominal');
+  if (stake > nubiPayCoin) return showToast('🪙 NubiCoin tidak cukup!');
+  const m = markets[selectedMkt];
+  if (!m) return showToast('⚠️ Pilih market terlebih dahulu');
+  if (m.locked) return showToast('🔒 Market dikunci oleh admin');
+
+  const entryPrice = PE.get(selectedMkt);
+  const expiryTs   = Date.now() + selectedDur * 1000;
+  const payout     = Number(m.payoutPercent || selectedPO);
+
+  // Deduct coin via transaction
+  try {
+    await db.runTransaction(async tx => {
+      const uref = db.collection('users').doc(currentUser.uid);
+      const ud   = await tx.get(uref);
+      if (!ud.exists) throw 'no_user';
+      const coin = Number(ud.data().nubiPayCoin || 0);
+      if (coin < stake) throw 'insufficient';
+      tx.update(uref, { nubiPayCoin: coin - stake });
+    });
+  } catch(e) {
+    if (e === 'insufficient') return showToast('🪙 NubiCoin tidak cukup!');
+    console.error(e);
+    return showToast('❌ Gagal: ' + e);
+  }
+
+  nubiPayCoin = Math.max(0, nubiPayCoin - stake);
+  updateCoinDisplay();
+  updateSummary();
+
+  // Write trade to Firestore
+  const tradeObj = {
+    uid: currentUser.uid, market: selectedMkt, symbol: m.symbol, side, stake,
+    entryPrice, expiryTs, payoutPercent: payout, duration: selectedDur,
+    status: 'open', createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+
+  let tradeId;
+  try {
+    const ref = await db.collection('trades').add(tradeObj);
+    tradeId = ref.id;
+  } catch(e) {
+    // If Firestore write fails, still run locally
+    tradeId = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  }
+
+  const tr = { id: tradeId, ...tradeObj };
+  openTrades.push(tr);
+  renderOpenTrade(tr);
+  updateOpenCnt();
+  scheduleResolution(tr);
+
+  const icon = side === 'UP' ? '↑' : '↓';
+  showToast(`✅ ${icon} Trade terbuka — ${fmtN(stake)} Koin`);
+  // Button pulse
+  const btn = document.getElementById(side === 'UP' ? 'btnUp' : 'btnDn');
+  btn.style.transform = 'scale(0.94)';
+  setTimeout(() => btn.style.transform = '', 180);
+}
+
+// ═══════════════════════════════════
+// RESOLUTION
+// ═══════════════════════════════════
+function scheduleResolution(tr) {
+  const delay = Math.max(0, tr.expiryTs - Date.now());
+  setTimeout(() => resolveTrade(tr.id), delay);
+}
+
+async function resolveTrade(id) {
+  const tr = openTrades.find(t => t.id === id);
+  if (!tr || tr.status !== 'open') return;
+
+  const exitPrice  = PE.get(tr.market);
+  const entryPrice = Number(tr.entryPrice);
+
+  // Tie = LOSS rule
+  let isWin = false;
+  if      (exitPrice > entryPrice) isWin = tr.side === 'UP';
+  else if (exitPrice < entryPrice) isWin = tr.side === 'DOWN';
+  else                             isWin = false; // tie → loss
+
+  const profit = Math.round(tr.stake * tr.payoutPercent / 100);
+  const payout = isWin ? tr.stake + profit : 0;
+
+  // Update Firestore + coin
+  try {
+    await db.runTransaction(async tx => {
+      const tref = db.collection('trades').doc(id);
+      const uref = db.collection('users').doc(currentUser.uid);
+      const ud   = await tx.get(uref);
+      const coin = Number(ud.data().nubiPayCoin || 0);
+      tx.update(tref, {
+        exitPrice, result: isWin ? 'win' : 'lose', payout, status: 'closed',
+        resolvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      if (isWin) tx.update(uref, { nubiPayCoin: coin + payout });
+    });
+    if (isWin) { nubiPayCoin += payout; updateCoinDisplay(); }
+  } catch(e) {
+    // Fallback: update local coin
+    if (isWin) { nubiPayCoin += payout; updateCoinDisplay(); }
+    console.warn('resolve tx err', e);
+  }
+
+  // Update state
+  tr.status = 'closed'; tr.exitPrice = exitPrice;
+  tr.result = isWin ? 'win' : 'lose'; tr.payout = payout;
+  openTrades = openTrades.filter(t => t.id !== id);
+  updateOpenCnt();
+  updateSummary();
+
+  // Stats
+  if (isWin) { wins++; winStreak++; totalPnl += profit; }
+  else { losses++; winStreak = 0; totalPnl -= tr.stake; }
+  refreshStats();
+  updateStreakBar();
+
+  // Result popup
+  showResult(isWin, isWin ? profit : tr.stake, tr.symbol, tr.side, exitPrice, entryPrice);
+
+  // History
+  tradeHistory.unshift({ ...tr, exitPrice, result: tr.result, payout });
+  if (tradeHistory.length > 60) tradeHistory.pop();
+  if (activeTab === 'history') renderHistory();
+
+  // Remove card from DOM
+  setTimeout(() => {
+    const el = document.getElementById('tc_' + id);
+    if (el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(30px)';
+      el.style.transition = 'all .4s';
+      setTimeout(() => el.remove(), 400);
+    }
+  }, 600);
+}
+
+// ═══════════════════════════════════
+// RENDER OPEN TRADE CARD
+// ═══════════════════════════════════
+function renderOpenTrade(tr) {
+  document.getElementById('openEmpty').style.display = 'none';
+  const el = document.createElement('div');
+  el.className = 'trade-card';
+  el.id = 'tc_' + tr.id;
+  el.innerHTML = `
+    <div class="tc-left">
+      <div class="tc-market">
+        ${tr.symbol}
+        <span class="side-pill ${tr.side === 'UP' ? 'sp-up' : 'sp-dn'}">${tr.side === 'UP' ? '↑ NAIK' : '↓ TURUN'}</span>
+      </div>
+      <div class="tc-meta">
+        Modal: <strong>${fmtN(tr.stake)} Koin</strong> &nbsp;|&nbsp; Masuk: <span class="mono" style="font-size:11px">${fmtPrice(tr.entryPrice, tr.market)}</span>
+      </div>
+      <div class="tc-pnl" id="pnl_${tr.id}">Menghitung...</div>
+    </div>
+    <div class="tc-right">
+      <div class="countdown" id="cd_${tr.id}">—</div>
+      <div class="tc-exp">payout ${tr.payoutPercent}%</div>
+    </div>
+  `;
+  document.getElementById('openList').prepend(el);
+
+  // Countdown interval
+  const ivl = setInterval(() => {
+    const rem = Math.max(0, tr.expiryTs - Date.now());
+    const cdEl = document.getElementById('cd_' + tr.id);
+    if (!cdEl) { clearInterval(ivl); return; }
+    const s = Math.ceil(rem / 1000);
+    const mm = Math.floor(s / 60), ss = s % 60;
+    cdEl.textContent = mm > 0 ? mm + 'm' + String(ss).padStart(2,'0') + 's' : ss + 's';
+    cdEl.classList.toggle('crit', s <= 5);
+    if (s <= 0) clearInterval(ivl);
+  }, 200);
+}
+
+function updateOpenTradePnl() {
+  openTrades.forEach(tr => {
+    const el = document.getElementById('pnl_' + tr.id);
+    const card = document.getElementById('tc_' + tr.id);
+    if (!el) return;
+    const cur = PE.get(tr.market);
+    const ent = Number(tr.entryPrice);
+    const winning = cur === ent ? false : (tr.side === 'UP' ? cur > ent : cur < ent);
+    const profit  = Math.round(tr.stake * tr.payoutPercent / 100);
+    if (winning) {
+      el.textContent = `📈 +${fmtN(profit)} Koin (menang)`;
+      el.style.color = 'var(--green)';
+      card && card.classList.replace('losing','winning') || card && card.classList.add('winning');
+    } else {
+      el.textContent = `📉 -${fmtN(tr.stake)} Koin (kalah)`;
+      el.style.color = 'var(--red)';
+      card && card.classList.replace('winning','losing') || card && card.classList.add('losing');
+    }
+  });
+}
+
+function updateOpenCnt() {
+  document.getElementById('openCnt').textContent = openTrades.length;
+  if (openTrades.length === 0) {
+    document.getElementById('openEmpty').style.display = 'block';
+    document.getElementById('openList').innerHTML = '';
+  }
+}
+
+// ═══════════════════════════════════
+// HISTORY RENDER
+// ═══════════════════════════════════
+function renderHistory() {
+  const c = document.getElementById('historyList');
+  if (tradeHistory.length === 0) {
+    c.innerHTML = '<div class="empty-state">Belum ada riwayat</div>';
+    return;
+  }
+  c.innerHTML = '';
+  tradeHistory.slice(0, 40).forEach(tr => {
+    const isWin = tr.result === 'win';
+    const el = document.createElement('div');
+    el.className = 'hist-item';
+    const entFmt = fmtPrice(tr.entryPrice, tr.market);
+    const extFmt = fmtPrice(tr.exitPrice, tr.market);
+    const tStr = tr.expiryTs ? new Date(tr.expiryTs).toLocaleTimeString('id-ID') : '';
+    el.innerHTML = `
+      <div>
+        <div class="hi-sym">${tr.side === 'UP' ? '↑' : '↓'} ${tr.symbol}</div>
+        <div class="hi-meta">${tStr} • ${entFmt} → ${extFmt}</div>
+      </div>
+      <div class="hi-res ${isWin ? 'hi-win' : 'hi-lose'}">
+        ${isWin ? '🏆 +' + fmtN(tr.payout - tr.stake) : '💸 -' + fmtN(tr.stake)} Koin
+      </div>
+    `;
+    c.appendChild(el);
+  });
+}
+
+// ═══════════════════════════════════
+// STATS
+// ═══════════════════════════════════
+function refreshStats() {
+  const total = wins + losses;
+  const wr = total > 0 ? Math.round(wins / total * 100) : 0;
+  const wrEl = document.getElementById('svWR');
+  wrEl.textContent = wr + '%';
+  wrEl.style.color  = wr >= 50 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('svTotal').textContent = total;
+  const pEl = document.getElementById('svPnl');
+  pEl.textContent   = (totalPnl >= 0 ? '+' : '') + fmtN(totalPnl);
+  pEl.style.color   = totalPnl >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
+function updateStreakBar() {
+  const bar = document.getElementById('streakBar');
+  document.getElementById('streakTxt').textContent = 'Win Streak ' + winStreak + (winStreak >= 5 ? '🔥🔥🔥' : '!');
+  bar.classList.toggle('show', winStreak >= 2);
+}
+
+// ═══════════════════════════════════
+// RESULT OVERLAY
+// ═══════════════════════════════════
+let _resAuto;
+function showResult(isWin, amount, sym, side, exit, entry) {
+  const ov = document.getElementById('resultOverlay');
+  document.getElementById('resIcon').textContent   = isWin ? '🏆' : '💸';
+  document.getElementById('resTitle').textContent  = isWin ? 'MENANG!' : 'KALAH';
+  document.getElementById('resTitle').style.color  = isWin ? 'var(--green)' : 'var(--red)';
+  document.getElementById('resAmt').textContent    = (isWin ? '+' : '-') + fmtN(amount) + ' Koin';
+  document.getElementById('resAmt').style.color    = isWin ? 'var(--green)' : 'var(--red)';
+  const sideArrow = side === 'UP' ? '↑ NAIK' : '↓ TURUN';
+  document.getElementById('resDetail').textContent = `${sym} ${sideArrow} • ${fmtPrice(entry, selectedMkt)} → ${fmtPrice(exit, selectedMkt)}`;
+  ov.classList.add('show');
+  clearTimeout(_resAuto);
+  _resAuto = setTimeout(() => ov.classList.remove('show'), 4000);
+}
+function closeResult() { document.getElementById('resultOverlay').classList.remove('show'); }
+
+// ═══════════════════════════════════
+// COINGECKO FETCH
+// ═══════════════════════════════════
+async function loadCGMarkets() {
+  try {
+    const res = await fetch(`${CG_BASE}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=7&page=1&sparkline=false`);
+    if (!res.ok) return;
+    const list = await res.json();
+    list.forEach(coin => {
+      const id = 'CG_' + coin.symbol.toUpperCase();
+      const volMap = { btc:0.0015, eth:0.0018, bnb:0.002, sol:0.003, xrp:0.0025, doge:0.004, ada:0.003 };
+      markets[id] = { id, cgId: coin.id, symbol: coin.symbol.toUpperCase()+'/USD', name: coin.name, type:'cg', payoutPercent:78, locked:false, basePrice: coin.current_price || 1 };
+      PE.init(id, coin.current_price || 1, volMap[coin.symbol.toLowerCase()] || 0.002);
+      priceSnapMap[id] = { base: coin.current_price || 1, ts: Date.now() };
+    });
+  } catch(e) { console.warn('CG load err', e); }
+}
+
+async function pollCGPrices() {
+  try {
+    const ids = Object.values(markets).filter(m => m.type === 'cg' && m.cgId).map(m => m.cgId);
+    if (ids.length === 0) return;
+    const res = await fetch(`${CG_BASE}/simple/price?ids=${ids.join(',')}&vs_currencies=usd`);
+    if (!res.ok) return;
+    const data = await res.json();
+    Object.values(markets).forEach(m => {
+      if (m.cgId && data[m.cgId] && data[m.cgId].usd) {
+        PE.setReal(m.id, Number(data[m.cgId].usd));
+      }
+    });
+  } catch(e) { /* ignore */ }
+  cgPollTimer = setTimeout(pollCGPrices, 8000);
+}
+
+// ═══════════════════════════════════
+// LOAD MARKETS FROM FIRESTORE (OTC + overrides)
+// ═══════════════════════════════════
+async function loadFirestoreMarkets() {
+  // Seed / fetch OTC markets
+  for (const def of OTC_DEFS) {
+    const ref  = db.collection('markets').doc(def.id);
+    const snap = await ref.get().catch(() => null);
+    let data = def;
+    if (snap && snap.exists) {
+      data = { ...def, ...snap.data() };
+    } else {
+      ref.set({ ...def, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(()=>{});
+    }
+    markets[def.id] = { ...data, id: def.id };
+    PE.init(def.id, Number(data.basePrice || def.basePrice), Number(data.vol || def.vol));
+    priceSnapMap[def.id] = { base: Number(data.basePrice || def.basePrice), ts: Date.now() };
+  }
+
+  // Apply Firestore overrides to CG markets
+  try {
+    const snap = await db.collection('markets').get();
+    snap.forEach(doc => {
+      const id = doc.id;
+      if (markets[id]) {
+        const d = doc.data();
+        if (d.payoutPercent !== undefined) markets[id].payoutPercent = Number(d.payoutPercent);
+        if (d.locked       !== undefined) markets[id].locked = Boolean(d.locked);
+        if (d.vol          !== undefined && PE.data[id]) PE.data[id].vol = Number(d.vol);
+      }
+    });
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════
+// USER LISTENER
+// ═══════════════════════════════════
+function startUserListener(uid) {
+  db.collection('users').doc(uid).onSnapshot(snap => {
+    if (!snap.exists) return;
+    const d = snap.data();
+    nubiPayCoin  = Number(d.nubiPayCoin  || 0);
+    nubiPayBonus = Number(d.nubiPayBonusCoin || 0);
+    updateCoinDisplay();
+    updateSummary();
+  });
+}
+
+// ═══════════════════════════════════
+// LOAD EXISTING TRADES FOR SESSION
+// ═══════════════════════════════════
+async function loadSessionTrades(uid) {
+  try {
+    const snap = await db.collection('trades').where('uid','==',uid).orderBy('createdAt','desc').limit(60).get().catch(() => null);
+    if (!snap) return;
+    snap.forEach(doc => {
+      const tr = { id: doc.id, ...doc.data() };
+      if (tr.status === 'open' && !openTrades.find(t => t.id === tr.id)) {
+        openTrades.push(tr);
+        renderOpenTrade(tr);
+        scheduleResolution(tr);
+      }
+      if (tr.status === 'closed') {
+        tradeHistory.push(tr);
+        if (tr.result === 'win') { wins++; totalPnl += (tr.payout - tr.stake); }
+        else { losses++; totalPnl -= tr.stake; }
+      }
+    });
+    updateOpenCnt();
+    refreshStats();
+  } catch(e) { console.warn('load trades err', e); }
+}
+
+// ═══════════════════════════════════
+// ADMIN PANEL
+// ═══════════════════════════════════
+function showAdminPanel() {
+  document.getElementById('adminPanel').style.display = 'block';
+  renderAdminMarkets();
+}
+
+function renderAdminMarkets() {
+  const c = document.getElementById('aMarkets');
+  c.innerHTML = '<div class="sec-lbl" style="margin-bottom:10px">Kelola Market</div>';
+  Object.values(markets).forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'mkt-edit-card';
+    card.innerHTML = `
+      <div class="mkt-edit-head">
+        ${m.symbol}
+        ${m.type === 'otc' ? '<span class="otc-tag">OTC</span>' : '<span style="font-size:9px;color:var(--muted)">CoinGecko</span>'}
+        <span style="font-size:10px;color:var(--muted);font-family:DM Sans,sans-serif;margin-left:auto">Harga: ${fmtPrice(PE.get(m.id), m.id)}</span>
+      </div>
+      <div class="mkt-edit-row">
+        <span style="font-size:11px;color:var(--muted)">Payout%</span>
+        <input class="edit-inp" type="number" id="adm_po_${m.id}" value="${m.payoutPercent||78}" min="1" max="99">
+        <span style="font-size:11px;color:var(--muted)">Volatilitas</span>
+        <input class="edit-inp edit-inp-wide" type="number" id="adm_vol_${m.id}" value="${PE.data[m.id] ? PE.data[m.id].vol.toFixed(5) : (m.vol||0.001)}" step="0.00001" min="0.00001">
+        <button class="btn-save-mkt" onclick="adminSaveMkt('${m.id}')">Simpan</button>
+        <button class="btn-lock${m.locked?' locked':''}" id="adm_lock_${m.id}" onclick="adminToggleLock('${m.id}')">${m.locked ? '🔒 Locked' : '🔓 Buka'}</button>
+      </div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+async function adminSaveMkt(id) {
+  const po  = Number(document.getElementById('adm_po_'+id).value);
+  const vol = Number(document.getElementById('adm_vol_'+id).value);
+  if (!po || po < 1 || po > 99) return showToast('⚠️ Payout 1-99');
+  if (!vol || vol <= 0) return showToast('⚠️ Volatilitas harus > 0');
+  try {
+    await db.collection('markets').doc(id).set({ payoutPercent: po, vol, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    if (markets[id]) { markets[id].payoutPercent = po; }
+    if (PE.data[id]) PE.data[id].vol = vol;
+    showToast('✅ Market ' + id + ' disimpan');
+    if (selectedMkt === id) { selectedPO = po; updateSummary(); }
+  } catch(e) { showToast('❌ Gagal: ' + e.message); }
+}
+
+async function adminToggleLock(id) {
+  const m = markets[id];
+  if (!m) return;
+  const next = !m.locked;
+  try {
+    await db.collection('markets').doc(id).set({ locked: next }, { merge: true });
+    m.locked = next;
+    const btn = document.getElementById('adm_lock_'+id);
+    if (btn) { btn.textContent = next ? '🔒 Locked' : '🔓 Buka'; btn.className = 'btn-lock' + (next ? ' locked' : ''); }
+    buildMarketPills();
+    showToast(next ? '🔒 ' + id + ' dikunci' : '🔓 ' + id + ' dibuka');
+  } catch(e) { showToast('❌ Gagal'); }
+}
+
+async function loadAdminTrades() {
+  const c = document.getElementById('aTrades');
+  c.innerHTML = '<div class="sec-lbl">Semua Trade Aktif</div><div class="empty-state">Memuat...</div>';
+  try {
+    const snap = await db.collection('trades').where('status','==','open').get();
+    c.innerHTML = `<div class="sec-lbl">Trade Aktif (${snap.size})</div>`;
+    if (snap.empty) { c.innerHTML += '<div class="empty-state">Tidak ada trade aktif saat ini</div>'; }
+    else {
+      snap.forEach(doc => {
+        const tr = doc.data();
+        const exp = tr.expiryTs ? new Date(tr.expiryTs).toLocaleTimeString('id-ID') : '-';
+        const div = document.createElement('div'); div.className = 'admin-trade-row';
+        div.innerHTML = `
+          <div>
+            <span style="font-family:Space Mono,monospace;font-weight:700">${tr.symbol||tr.market}</span>
+            <span style="color:${tr.side==='UP'?'var(--green)':'var(--red)'}"> ${tr.side==='UP'?'↑':'↓'}</span>
+            <span style="color:var(--muted)"> — ${fmtN(tr.stake)} Koin</span>
+          </div>
+          <div style="color:var(--muted)">exp: ${exp}<br>${(tr.uid||'').substring(0,10)}…</div>
+        `;
+        c.appendChild(div);
+      });
+    }
+    // Closed trades
+    const hSnap = await db.collection('trades').where('status','==','closed').get();
+    const hDiv = document.createElement('div');
+    hDiv.innerHTML = `<div class="sec-lbl" style="margin-top:16px">Riwayat Terbaru (${hSnap.size})</div>`;
+    let hArr = [];
+    hSnap.forEach(d => hArr.push({ id: d.id, ...d.data() }));
+    hArr.sort((a,b) => (b.expiryTs||0) - (a.expiryTs||0)).slice(0,40).forEach(tr => {
+      const isWin = tr.result === 'win';
+      const row = document.createElement('div'); row.className = 'admin-trade-row';
+      row.innerHTML = `
+        <div>
+          <span style="font-family:Space Mono,monospace;font-weight:700">${tr.symbol||tr.market}</span>
+          <span style="color:${tr.side==='UP'?'var(--green)':'var(--red)'}"> ${tr.side==='UP'?'↑':'↓'}</span>
+          <span> — ${fmtN(tr.stake)} Koin</span>
+          <span style="color:var(--muted)"> ${(tr.uid||'').substring(0,10)}…</span>
+        </div>
+        <div style="color:${isWin?'var(--green)':'var(--red)'};font-weight:800">${isWin?'WIN':'LOSE'}</div>
+      `;
+      hDiv.appendChild(row);
+    });
+    c.appendChild(hDiv);
+  } catch(e) { c.innerHTML += `<div style="color:var(--red);font-size:12px">Error: ${e.message||e}</div>`; }
+}
+
+async function loadAdminUsers() {
+  const c = document.getElementById('aUsers');
+  c.innerHTML = '<div class="sec-lbl">Pengguna (Top by Koin)</div><div class="empty-state">Memuat...</div>';
+  try {
+    const snap = await db.collection('users').limit(30).get();
+    c.innerHTML = `<div class="sec-lbl">Total User: ${snap.size}</div>`;
+    const users = [];
+    snap.forEach(d => users.push({ uid: d.id, ...d.data() }));
+    users.sort((a,b) => (b.nubiPayCoin||0) - (a.nubiPayCoin||0));
+
+    for (const u of users) {
+      // Get their trade summary
+      let uWins=0, uLoss=0, uPnl=0;
+      try {
+        const ts = await db.collection('trades').where('uid','==',u.uid).where('status','==','closed').get();
+        ts.forEach(d => {
+          const tr = d.data();
+          if (tr.result === 'win') { uWins++; uPnl += (tr.payout - tr.stake); }
+          else { uLoss++; uPnl -= tr.stake; }
+        });
+      } catch(e) {}
+      const total = uWins + uLoss;
+      const wr = total > 0 ? Math.round(uWins/total*100) : 0;
+      const card = document.createElement('div'); card.className = 'atu-card';
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-family:Space Mono,monospace;font-size:11px;font-weight:700;word-break:break-all">${u.uid}</div>
+            <div style="color:var(--muted);margin-top:3px">
+              🪙 <strong style="color:var(--green)">${fmtN(Math.floor(u.nubiPayCoin||0))}</strong> Koin
+              &nbsp;|&nbsp; Saldo: ${fmtN(Math.floor(u.nubiPayBalance||0))} Rp
+              ${u.nubiPayBonusCoin > 0 ? '&nbsp;|&nbsp; Bonus: ' + fmtN(Math.floor(u.nubiPayBonusCoin||0)) : ''}
+            </div>
+            <div style="color:var(--muted);margin-top:3px">
+              Trade: ${total} &nbsp;|&nbsp; Win Rate: <span style="color:${wr>=50?'var(--green)':'var(--red)'}">${wr}%</span>
+              &nbsp;|&nbsp; P&L: <span style="color:${uPnl>=0?'var(--green)':'var(--red)'}">${uPnl>=0?'+':''}${fmtN(uPnl)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      c.appendChild(card);
+    }
+  } catch(e) { c.innerHTML += `<div style="color:var(--red);font-size:12px">Error: ${e.message||e}</div>`; }
+}
+
+// ═══════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════
+document.getElementById('btnUp').addEventListener('click', () => placeTrade('UP'));
+document.getElementById('btnDn').addEventListener('click', () => placeTrade('DOWN'));
+document.getElementById('betInput').addEventListener('input', updateSummary);
+
+document.querySelectorAll('.dur-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.dur-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  selectedDur = Number(b.dataset.dur);
+  selectedPO  = Number(b.dataset.payout);
+  updateSummary();
+}));
+
+document.querySelectorAll('.qbtn').forEach(b => b.addEventListener('click', () => {
+  const inp = document.getElementById('betInput');
+  const v = b.dataset.v;
+  if (v === 'max') inp.value = Math.floor(nubiPayCoin);
+  else inp.value = Math.min(Math.floor(nubiPayCoin), (Number(inp.value)||0) + Number(v));
+  updateSummary();
+}));
+
+document.querySelectorAll('.tf-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  currentTF = Number(b.dataset.tf);
+  CE.destroy();
+  CE.init(currentTF);
+}));
+
+document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  activeTab = b.dataset.tab;
+  document.getElementById('tabOpen').style.display    = activeTab === 'open' ? 'block' : 'none';
+  document.getElementById('tabHistory').style.display = activeTab === 'history' ? 'block' : 'none';
+  if (activeTab === 'history') renderHistory();
+}));
+
+document.querySelectorAll('.atab-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.atab-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  activeATab = b.dataset.atab;
+  ['aMarkets','aTrades','aUsers'].forEach(id => document.getElementById(id).style.display = 'none');
+  const map = { markets:'aMarkets', trades:'aTrades', users:'aUsers' };
+  document.getElementById(map[activeATab]).style.display = 'block';
+  if (activeATab === 'markets') renderAdminMarkets();
+  if (activeATab === 'trades')  loadAdminTrades();
+  if (activeATab === 'users')   loadAdminUsers();
+}));
+
+// ═══════════════════════════════════
+// AUTH & BOOTSTRAP
+// ═══════════════════════════════════
+auth.onAuthStateChanged(async user => {
+  if (!user) {
+    auth.signInAnonymously().catch(e => {
+      console.error('anon auth err', e);
+      document.getElementById('loader').innerHTML = '<div style="color:#ef4444;font-size:14px;padding:20px">Gagal login. Periksa koneksi.</div>';
+    });
+    return;
+  }
+
+  currentUser = user;
+  isAdmin = user.uid === ADMIN_UID;
+
+  // Load CoinGecko markets
+  await loadCGMarkets();
+
+  // Load OTC + Firestore overrides
+  await loadFirestoreMarkets();
+
+  // Build market UI
+  buildMarketPills();
+
+  // Select first market
+  const keys = Object.keys(markets);
+  if (keys.length > 0) {
+    selectedMkt = keys[0];
+    const m = markets[selectedMkt];
+    document.getElementById('chName').textContent = m.symbol;
+    document.getElementById('chSub').textContent  = m.name;
+    selectedPO = Number(m.payoutPercent || 78);
+    buildMarketPills();
+    priceSnapMap[selectedMkt] = { base: PE.get(selectedMkt), ts: Date.now() };
+  }
+
+  // Init chart
+  CE.init(currentTF);
+
+  // Start price engine
+  PE.start();
+
+  // Start CG polling
+  pollCGPrices();
+
+  // Ensure user doc exists
+  const uref = db.collection('users').doc(user.uid);
+  const udoc = await uref.get().catch(()=>null);
+  if (udoc && !udoc.exists) {
+    uref.set({ nubiPayCoin: 0, nubiPayBonusCoin: 0, nubiPayBalance: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(()=>{});
+  }
+
+  // Listen to user balance
+  startUserListener(user.uid);
+
+  // Load existing trades
+  await loadSessionTrades(user.uid);
+
+  // Update UI
+  updateSummary();
+  refreshStats();
+
+  // Admin panel
+  if (isAdmin) showAdminPanel();
+
+  // Hide loader
+  setTimeout(() => {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }, 800);
+});
+</script>
+</body>
+</html>
