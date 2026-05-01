@@ -899,7 +899,7 @@ function selectMarket(id) {
   const m = markets[id];
   if (m) {
     document.getElementById('chName').textContent = m.symbol;
-    document.getElementById('chSub').textContent  = m.name + (m.type === 'otc' ? ' — OTC Simulasi' : ' — CoinGecko');
+    document.getElementById('chSub').textContent  = m.name + (m.type === 'otc' ? ' — OTC Market' : ' — CoinGecko');
     // Payout from market
     selectedPO = Number(m.payoutPercent || selectedPO);
     updateSummary();
@@ -936,7 +936,7 @@ async function placeTrade(side) {
   if (stake > nubiPayCoin) return showToast('🪙 NubiCoin tidak cukup!');
   const m = markets[selectedMkt];
   if (!m) return showToast('⚠️ Pilih market terlebih dahulu');
-  if (m.locked) return showToast('🔒 Market dikunci oleh admin');
+  if (m.locked) return showToast('🔒 Market sedang tidak bisa ditransaksikan');
 
   const entryPrice = PE.get(selectedMkt);
   const expiryTs   = Date.now() + selectedDur * 1000;
