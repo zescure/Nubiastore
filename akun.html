@@ -636,7 +636,7 @@ $('bonusClaimBtn').onclick=async()=>{
 // ══════════════════════════════════════════
 function calcConv(amount,mode){
   const src=Number(amount||0);if(!src||src<=0)return null;
-  const fee=0.051;
+  const fee=0.054;
   if(mode==='bal_to_coin'){const g=src*0.5,fa=g*fee,ta=round2(g-fa);return{sf:'nubiPayBalance',tf:'nubiPayCoin',sa:round2(src),ta,fa:round2(fa),ls:'Balance',lt:'Koin Reguler'};}
   const g=src*2,fa=g*fee,ta=round2(g-fa);
   return{sf:'nubiPayCoin',tf:'nubiPayBalance',sa:round2(src),ta,fa:round2(fa),ls:'Koin Reguler',lt:'Balance'};
