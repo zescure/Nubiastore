@@ -1343,8 +1343,14 @@ el.btnUpload.addEventListener('click', ()=>el.fileInput.click());
 el.btnStop.addEventListener('click',   stopCam);
 el.btnNext.addEventListener('click',   openConfirm);
 el.fileInput.addEventListener('change', e=>{ const f=e.target.files?.[0]; if(f) scanFile(f); e.target.value=''; });
-el.btnUseUid.addEventListener('click',  ()=>{
+el.btnUseUid.addEventListener('click', async () => {
   const uid = normalizeUid(el.targetUidInput.value);
+
+  if (!transfer) {
+    toast('Scan QR dulu');
+    return;
+  }
+
   if (!uid) {
     manualTargetUid = '';
     toast('UID target dikosongkan, kembali ke penerima QR');
@@ -1356,10 +1362,11 @@ el.btnUseUid.addEventListener('click',  ()=>{
     toast('UID target dipakai');
   }
 
-  if (transfer) {
-    applyRecipientOverride(transfer);
-    refreshRecipientUI();
-  }
+  applyRecipientOverride(transfer);
+  refreshRecipientUI();
+
+  openConfirm(); // lanjut ke step berikutnya
+
 });
 el.s2Back.addEventListener('click',    popS2);
 el.btnConfirm.addEventListener('click', doTransfer);
