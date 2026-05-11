@@ -6,7 +6,6 @@
   <title>NUBIASTORE — QR Transfer</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=SF+Pro+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <style>
     :root{
       --bg:#f5f6fa;
@@ -17,7 +16,6 @@
       --accent:#2563eb;
       --accent2:#1d4ed8;
       --green:#16a34a;
-      --gold:#f59e0b;
       --shadow:0 18px 50px rgba(17,24,39,.08);
     }
 
@@ -449,12 +447,6 @@
       box-shadow:0 0 0 4px rgba(37,99,235,.08);
     }
 
-    .split{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
     .switch-row{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -590,7 +582,6 @@
       <button class="action-btn" id="refreshBtn">↻</button>
     </div>
 
-    <!-- PANEL ATAS USER -->
     <section class="profile-card">
       <div class="profile-top">
         <div style="min-width:0">
@@ -938,6 +929,7 @@
     async function ensureUserDoc(uid, email, displayName) {
       const ref = doc(db, 'users', uid);
       const snap = await getDoc(ref);
+
       if (!snap.exists()) {
         await setDoc(ref, {
           email: email || '',
@@ -1070,7 +1062,6 @@ Expired: ${new Date(activeTransfer.expiryAtMs).toLocaleString('id-ID')}`;
 
     function setMode(mode) {
       amountMode = mode;
-      updateModeUI();
       if (amountMode === 'static') {
         walletType = 'nubiPayBalance';
       }
@@ -1156,7 +1147,6 @@ Expired: ${new Date(activeTransfer.expiryAtMs).toLocaleString('id-ID')}`;
       }
     });
 
-    // Init default state
     updateModeUI();
 
     const preview = {
