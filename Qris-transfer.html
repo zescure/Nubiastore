@@ -1,405 +1,478 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>NUBIASTORE — Scan QR Transfer</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>NUBIASTORE — Scan QR Transfer</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<style>
-  :root{
-    --bg:#f5f6fa;
-    --card:#ffffff;
-    --card2:#f9fafb;
-    --text:#111827;
-    --muted:#6b7280;
-    --line:rgba(17,24,39,.08);
-    --accent:#2563eb;
-    --accent2:#1d4ed8;
-    --green:#16a34a;
-    --green2:#22c55e;
-    --red:#ef4444;
-    --gold:#f59e0b;
-    --shadow:0 18px 50px rgba(17,24,39,.08);
-    --radius:26px;
-  }
+  <style>
+    :root{
+      --bg:#f5f6fa;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:rgba(17,24,39,.08);
+      --accent:#2563eb;
+      --accent2:#1d4ed8;
+      --green:#16a34a;
+      --red:#ef4444;
+      --gold:#f59e0b;
+      --shadow:0 18px 50px rgba(17,24,39,.08);
+      --radius:26px;
+    }
 
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
-    background:linear-gradient(180deg,#f7f8fc 0%, #eef2ff 100%);
-    color:var(--text);
-    overflow-x:hidden;
-  }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
+      background:linear-gradient(180deg,#f7f8fc 0%, #eef2ff 100%);
+      color:var(--text);
+      overflow-x:hidden;
+    }
 
-  button,input{font:inherit}
-  button{cursor:pointer;border:none;background:none}
-  a{text-decoration:none;color:inherit}
+    button,input{font:inherit}
+    button{cursor:pointer;border:none;background:none}
+    a{text-decoration:none;color:inherit}
 
-  .app{
-    max-width:430px;
-    margin:0 auto;
-    min-height:100vh;
-    padding:14px 14px 28px;
-  }
+    .app{
+      max-width:430px;
+      margin:0 auto;
+      min-height:100vh;
+      padding:14px 14px 28px;
+    }
 
-  .topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:6px 2px 16px;
-    position:sticky;
-    top:0;
-    z-index:20;
-    backdrop-filter:blur(14px);
-  }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:6px 2px 16px;
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(14px);
+    }
 
-  .circle-btn{
-    width:42px;height:42px;border-radius:999px;
-    background:rgba(255,255,255,.82);
-    box-shadow:0 6px 18px rgba(17,24,39,.06);
-    display:flex;align-items:center;justify-content:center;
-    color:#374151;
-    font-weight:900;
-  }
+    .circle-btn{
+      width:42px;height:42px;border-radius:999px;
+      background:rgba(255,255,255,.82);
+      box-shadow:0 6px 18px rgba(17,24,39,.06);
+      display:flex;align-items:center;justify-content:center;
+      color:#374151;
+      font-weight:900;
+    }
 
-  .title-wrap{
-    text-align:center;
-    flex:1;
-    margin:0 10px;
-  }
+    .title-wrap{
+      text-align:center;
+      flex:1;
+      margin:0 10px;
+    }
 
-  .brand{
-    font-size:1.08rem;
-    font-weight:900;
-    letter-spacing:.2px;
-    color:#111827;
-  }
+    .brand{
+      font-size:1.08rem;
+      font-weight:900;
+      letter-spacing:.2px;
+      color:#111827;
+    }
 
-  .subtitle{
-    font-size:.78rem;
-    color:var(--muted);
-    margin-top:2px;
-  }
+    .subtitle{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-top:2px;
+    }
 
-  .section{
-    background:var(--card);
-    border:1px solid rgba(17,24,39,.06);
-    border-radius:28px;
-    box-shadow:var(--shadow);
-    overflow:hidden;
-    margin-bottom:14px;
-  }
+    .section{
+      background:var(--card);
+      border:1px solid rgba(17,24,39,.06);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      margin-bottom:14px;
+    }
 
-  .account-head{
-    padding:16px 16px 14px;
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:10px;
-  }
+    .account-head{
+      padding:16px 16px 14px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
 
-  .account-left{min-width:0;flex:1}
-  .kicker{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:6px 10px;
-    border-radius:999px;
-    background:rgba(37,99,235,.08);
-    color:var(--accent);
-    font-size:.75rem;
-    font-weight:800;
-    margin-bottom:10px;
-  }
+    .account-left{min-width:0;flex:1}
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(37,99,235,.08);
+      color:var(--accent);
+      font-size:.75rem;
+      font-weight:800;
+      margin-bottom:10px;
+    }
 
-  .user-name{
-    font-size:1.18rem;
-    font-weight:900;
-    line-height:1.15;
-    letter-spacing:-.3px;
-  }
+    .user-name{
+      font-size:1.18rem;
+      font-weight:900;
+      line-height:1.15;
+      letter-spacing:-.3px;
+    }
 
-  .user-uid{
-    margin-top:6px;
-    color:var(--muted);
-    font-size:.84rem;
-    word-break:break-all;
-  }
+    .user-uid{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:.84rem;
+      word-break:break-all;
+    }
 
-  .status-chip{
-    flex-shrink:0;
-    padding:9px 12px;
-    border-radius:999px;
-    background:#eef2ff;
-    color:#4338ca;
-    font-size:.76rem;
-    font-weight:800;
-    white-space:nowrap;
-  }
+    .status-chip{
+      flex-shrink:0;
+      padding:9px 12px;
+      border-radius:999px;
+      background:#eef2ff;
+      color:#4338ca;
+      font-size:.76rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
 
-  .bal-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    padding:0 16px 16px;
-  }
+    .bal-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      padding:0 16px 16px;
+    }
 
-  .bal-box{
-    background:#f8fafc;
-    border:1px solid rgba(17,24,39,.06);
-    border-radius:18px;
-    padding:12px 10px;
-  }
+    .bal-box{
+      background:#f8fafc;
+      border:1px solid rgba(17,24,39,.06);
+      border-radius:18px;
+      padding:12px 10px;
+    }
 
-  .bal-k{
-    font-size:.65rem;
-    color:var(--muted);
-    text-transform:uppercase;
-    letter-spacing:1px;
-    font-weight:800;
-    margin-bottom:4px;
-  }
+    .bal-k{
+      font-size:.65rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:1px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
 
-  .bal-v{
-    font-size:1rem;
-    font-weight:900;
-    line-height:1.25;
-  }
+    .bal-v{
+      font-size:1rem;
+      font-weight:900;
+      line-height:1.25;
+    }
 
-  .bal-v.green{color:var(--green)}
-  .bal-v.blue{color:var(--accent)}
-  .bal-v.gold{color:var(--gold)}
+    .bal-v.green{color:var(--green)}
+    .bal-v.blue{color:var(--accent)}
+    .bal-v.gold{color:var(--gold)}
 
-  .scan-card{
-    padding:16px;
-  }
+    .scan-card{
+      padding:16px;
+    }
 
-  .section-title{
-    font-size:.95rem;
-    font-weight:900;
-    margin-bottom:12px;
-    letter-spacing:-.2px;
-  }
+    .section-title{
+      font-size:.95rem;
+      font-weight:900;
+      margin-bottom:12px;
+      letter-spacing:-.2px;
+    }
 
-  .hint{
-    font-size:.82rem;
-    color:var(--muted);
-    line-height:1.5;
-    margin-top:6px;
-  }
+    .scan-panel{
+      background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);
+      border:1px solid rgba(37,99,235,.08);
+      border-radius:26px;
+      padding:14px;
+    }
 
-  .scan-panel{
-    background:linear-gradient(180deg,#ffffff 0%, #f7fbff 100%);
-    border:1px solid rgba(37,99,235,.08);
-    border-radius:26px;
-    padding:14px;
-  }
+    .camera-shell{
+      position:relative;
+      border-radius:24px;
+      overflow:hidden;
+      background:#0f172a;
+      min-height:340px;
+    }
 
-  .camera-shell{
-    position:relative;
-    border-radius:24px;
-    overflow:hidden;
-    background:#0f172a;
-    min-height:340px;
-  }
+    video{
+      width:100%;
+      height:340px;
+      object-fit:cover;
+      display:block;
+      background:#0f172a;
+    }
 
-  video{
-    width:100%;
-    height:340px;
-    object-fit:cover;
-    display:block;
-    background:#0f172a;
-  }
+    .scan-overlay{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(180deg,rgba(15,23,42,.20),rgba(15,23,42,.06));
+    }
 
-  .scan-overlay{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background:
-      linear-gradient(180deg,rgba(15,23,42,.20),rgba(15,23,42,.06));
-  }
+    .scan-frame{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:min(72%, 250px);
+      aspect-ratio:1/1;
+      transform:translate(-50%,-50%);
+      border-radius:22px;
+      border:2px solid rgba(255,255,255,.9);
+      box-shadow:0 0 0 999px rgba(0,0,0,.12);
+    }
 
-  .scan-frame{
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:min(72%, 250px);
-    aspect-ratio:1/1;
-    transform:translate(-50%,-50%);
-    border-radius:22px;
-    border:2px solid rgba(255,255,255,.9);
-    box-shadow:0 0 0 999px rgba(0,0,0,.12);
-  }
+    .scan-frame::before,
+    .scan-frame::after{
+      content:'';
+      position:absolute;
+      inset:-2px;
+      border-radius:22px;
+      border:2px solid rgba(37,99,235,.55);
+      clip-path: inset(0 0 90% 0);
+    }
 
-  .scan-frame::before,
-  .scan-frame::after{
-    content:'';
-    position:absolute;
-    inset:-2px;
-    border-radius:22px;
-    border:2px solid rgba(37,99,235,.55);
-    clip-path: inset(0 0 90% 0);
-  }
+    .scan-frame::after{
+      inset:auto;
+      right:-2px; bottom:-2px; left:auto; top:auto;
+      width:88px; height:88px;
+      border-radius:0 0 22px 0;
+      border-top:none;border-left:none;
+      clip-path:none;
+      opacity:.9;
+    }
 
-  .scan-frame::after{
-    inset:auto;
-    right:-2px; bottom:-2px; left:auto; top:auto;
-    width:88px; height:88px;
-    border-radius:0 0 22px 0;
-    border-top:none;border-left:none;
-    clip-path:none;
-    opacity:.9;
-  }
+    .scan-tip{
+      position:absolute;
+      left:14px;
+      right:14px;
+      bottom:14px;
+      padding:10px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      color:#111827;
+      font-size:.82rem;
+      font-weight:700;
+    }
 
-  .scan-tip{
-    position:absolute;
-    left:14px;
-    right:14px;
-    bottom:14px;
-    padding:10px 12px;
-    border-radius:16px;
-    background:rgba(255,255,255,.88);
-    backdrop-filter:blur(10px);
-    color:#111827;
-    font-size:.82rem;
-    font-weight:700;
-  }
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
 
-  .row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:12px;
-  }
+    .btn{
+      border-radius:18px;
+      padding:14px 14px;
+      font-weight:900;
+      font-size:.95rem;
+      transition:.15s;
+    }
 
-  .btn{
-    border-radius:18px;
-    padding:14px 14px;
-    font-weight:900;
-    font-size:.95rem;
-    transition:.15s;
-  }
+    .btn-primary{
+      background:linear-gradient(180deg,var(--accent),var(--accent2));
+      color:#fff;
+      box-shadow:0 12px 24px rgba(37,99,235,.2);
+    }
 
-  .btn-primary{
-    background:linear-gradient(180deg,var(--accent),var(--accent2));
-    color:#fff;
-    box-shadow:0 12px 24px rgba(37,99,235,.2);
-  }
+    .btn-light{
+      background:#fff;
+      color:#374151;
+      border:1px solid rgba(17,24,39,.08);
+    }
 
-  .btn-light{
-    background:#fff;
-    color:#374151;
-    border:1px solid rgba(17,24,39,.08);
-  }
+    .btn-green{
+      background:linear-gradient(180deg,#22c55e,var(--green));
+      color:#fff;
+      box-shadow:0 12px 24px rgba(22,163,74,.18);
+    }
 
-  .btn-green{
-    background:linear-gradient(180deg,var(--green2),var(--green));
-    color:#fff;
-    box-shadow:0 12px 24px rgba(22,163,74,.18);
-  }
+    .btn-red{
+      background:linear-gradient(180deg,#fb7185,var(--red));
+      color:#fff;
+      box-shadow:0 12px 24px rgba(239,68,68,.16);
+    }
 
-  .btn-red{
-    background:linear-gradient(180deg,#fb7185,var(--red));
-    color:#fff;
-    box-shadow:0 12px 24px rgba(239,68,68,.16);
-  }
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
 
-  .btn:disabled{
-    opacity:.55;
-    cursor:not-allowed;
-  }
+    .detail-card{
+      padding:16px;
+    }
 
-  .detail-card{
-    padding:16px;
-  }
+    .detail-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
 
-  .detail-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
+    .info-box{
+      background:#f8fafc;
+      border:1px solid rgba(17,24,39,.06);
+      border-radius:18px;
+      padding:12px;
+    }
 
-  .info-box{
-    background:#f8fafc;
-    border:1px solid rgba(17,24,39,.06);
-    border-radius:18px;
-    padding:12px;
-  }
+    .info-k{
+      font-size:.65rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:1px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
 
-  .info-k{
-    font-size:.65rem;
-    color:var(--muted);
-    text-transform:uppercase;
-    letter-spacing:1px;
-    font-weight:800;
-    margin-bottom:4px;
-  }
+    .info-v{
+      font-size:.92rem;
+      font-weight:900;
+      line-height:1.25;
+      word-break:break-word;
+    }
 
-  .info-v{
-    font-size:.92rem;
-    font-weight:900;
-    line-height:1.25;
-    word-break:break-word;
-  }
+    .log{
+      margin-top:12px;
+      background:#111827;
+      color:#fff;
+      border-radius:18px;
+      padding:12px;
+      min-height:72px;
+      font-size:.83rem;
+      line-height:1.5;
+    }
 
-  .log{
-    margin-top:12px;
-    background:#111827;
-    color:#fff;
-    border-radius:18px;
-    padding:12px;
-    min-height:72px;
-    font-size:.83rem;
-    line-height:1.5;
-  }
+    .log .ok{color:#86efac}
+    .log .err{color:#fca5a5}
+    .log .warn{color:#fde68a}
 
-  .log .ok{color:#86efac}
-  .log .err{color:#fca5a5}
-  .log .warn{color:#fde68a}
+    .small-note{
+      margin-top:12px;
+      font-size:.8rem;
+      color:var(--muted);
+      line-height:1.5;
+    }
 
-  .small-note{
-    margin-top:12px;
-    font-size:.8rem;
-    color:var(--muted);
-    line-height:1.5;
-  }
+    .hidden{display:none !important}
 
-  .hidden{display:none !important}
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%) translateY(16px);
+      opacity:0;
+      pointer-events:none;
+      background:#111827;
+      color:#fff;
+      padding:11px 16px;
+      border-radius:999px;
+      box-shadow:0 14px 30px rgba(17,24,39,.2);
+      transition:opacity .2s, transform .2s;
+      z-index:100;
+      font-size:.88rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
 
-  .toast{
-    position:fixed;
-    left:50%;
-    bottom:18px;
-    transform:translateX(-50%) translateY(16px);
-    opacity:0;
-    pointer-events:none;
-    background:#111827;
-    color:#fff;
-    padding:11px 16px;
-    border-radius:999px;
-    box-shadow:0 14px 30px rgba(17,24,39,.2);
-    transition:opacity .2s, transform .2s;
-    z-index:100;
-    font-size:.88rem;
-    font-weight:800;
-    white-space:nowrap;
-  }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
 
-  .toast.show{
-    opacity:1;
-    transform:translateX(-50%) translateY(0);
-  }
+    .receipt{
+      position:fixed;
+      inset:0;
+      background:rgba(17,24,39,.58);
+      backdrop-filter:blur(10px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:200;
+      padding:16px;
+    }
 
-  input[type="file"]{display:none}
+    .receipt.show{display:flex}
 
-  @media (max-width:390px){
-    .bal-grid,.detail-grid,.row{grid-template-columns:1fr 1fr}
-    .camera-shell,video{min-height:320px;height:320px}
-  }
-</style>
+    .receipt-card{
+      width:100%;
+      max-width:360px;
+      background:#fff;
+      border-radius:28px;
+      padding:18px;
+      box-shadow:0 24px 60px rgba(0,0,0,.22);
+      text-align:center;
+    }
+
+    .receipt-icon{
+      width:72px;
+      height:72px;
+      border-radius:999px;
+      background:rgba(22,163,74,.12);
+      color:var(--green);
+      margin:0 auto 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:2rem;
+      font-weight:900;
+    }
+
+    .receipt-title{
+      font-size:1.08rem;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .receipt-sub{
+      color:var(--muted);
+      font-size:.84rem;
+      line-height:1.45;
+      margin-bottom:14px;
+    }
+
+    .receipt-box{
+      background:#f8fafc;
+      border:1px solid rgba(17,24,39,.06);
+      border-radius:18px;
+      padding:12px;
+      text-align:left;
+    }
+
+    .receipt-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:7px 0;
+      border-bottom:1px solid rgba(17,24,39,.06);
+      font-size:.88rem;
+    }
+
+    .receipt-row:last-child{border-bottom:none}
+    .receipt-row .k{color:var(--muted);font-weight:700}
+    .receipt-row .v{font-weight:900;text-align:right;word-break:break-word}
+
+    .receipt-close{
+      margin-top:14px;
+      width:100%;
+      border-radius:18px;
+      padding:13px 14px;
+      font-weight:900;
+      background:#111827;
+      color:#fff;
+    }
+
+    input[type="file"]{display:none}
+
+    @media (max-width:390px){
+      .bal-grid,.detail-grid,.row{grid-template-columns:1fr 1fr}
+      .camera-shell,video{min-height:320px;height:320px}
+    }
+  </style>
 </head>
 <body>
   <div class="app">
@@ -461,7 +534,7 @@
         </div>
 
         <div class="small-note">
-          QR yang terbaca harus punya format internal NUBIASTORE. Jika QR statis, penerima otomatis masuk ke <b>NUBIAPAY Balance</b>.
+          QR statis otomatis masuk ke <b>NUBIAPAY Balance</b>. QR dinamis mengikuti jenis saldo yang dipilih pembuat.
         </div>
       </div>
     </section>
@@ -506,14 +579,44 @@
 
   <div class="toast" id="toast"></div>
 
+  <div class="receipt" id="receipt">
+    <div class="receipt-card">
+      <div class="receipt-icon">✓</div>
+      <div class="receipt-title">Transfer berhasil</div>
+      <div class="receipt-sub" id="receiptSub">Saldo berhasil dikirim.</div>
+
+      <div class="receipt-box">
+        <div class="receipt-row">
+          <div class="k">Penerima UID</div>
+          <div class="v" id="rUid">-</div>
+        </div>
+        <div class="receipt-row">
+          <div class="k">Nominal</div>
+          <div class="v" id="rAmount">-</div>
+        </div>
+        <div class="receipt-row">
+          <div class="k">Waktu</div>
+          <div class="v" id="rTime">-</div>
+        </div>
+        <div class="receipt-row">
+          <div class="k">Jenis Saldo</div>
+          <div class="v" id="rWallet">-</div>
+        </div>
+        <div class="receipt-row">
+          <div class="k">Transfer ID</div>
+          <div class="v" id="rTransferId">-</div>
+        </div>
+      </div>
+
+      <button class="receipt-close" id="receiptClose">Tutup</button>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
       getFirestore,
       doc,
@@ -563,7 +666,15 @@
       infoAmount: $("infoAmount"),
       infoExpiry: $("infoExpiry"),
       logBox: $("logBox"),
-      toast: $("toast")
+      toast: $("toast"),
+      receipt: $("receipt"),
+      receiptSub: $("receiptSub"),
+      rUid: $("rUid"),
+      rAmount: $("rAmount"),
+      rTime: $("rTime"),
+      rWallet: $("rWallet"),
+      rTransferId: $("rTransferId"),
+      receiptClose: $("receiptClose")
     };
 
     let currentUser = null;
@@ -574,6 +685,7 @@
     let lastDecoded = null;
     let lastTransfer = null;
     let lastDecodeAt = 0;
+    let detector = null;
 
     const round2 = (n) => Math.round(Number(n || 0) * 100) / 100;
     const fmtRp = (n) => "Rp " + Number(n || 0).toLocaleString("id-ID");
@@ -604,7 +716,7 @@
     function renderWallet() {
       el.userName.textContent = currentUser?.displayName || currentUser?.email || "NUBIASTORE USER";
       el.userUid.textContent = "UID: " + (currentUser?.uid || "-");
-      el.statusChip.textContent = currentUser ? "Login" : "Belum login";
+      el.statusChip.textContent = currentUser ? "Login" : "Menunggu login";
       el.balMoney.textContent = fmtRp(wallet.nubiPayBalance);
       el.balCoin.textContent = fmtCoin(wallet.nubiPayCoin);
       el.balBonus.textContent = fmtCoin(wallet.nubiPayBonusCoin);
@@ -646,17 +758,6 @@
       renderWallet();
     }
 
-    function parseQrPayload(text) {
-      try {
-        const data = JSON.parse(text);
-        if (!data || data.type !== "NUBIASTORE_INTERNAL_QR") return null;
-        if (!data.transferId) return null;
-        return data;
-      } catch {
-        return null;
-      }
-    }
-
     function formatExpiry(ms) {
       if (!ms) return "-";
       const d = new Date(Number(ms));
@@ -683,15 +784,29 @@
       el.infoMode.textContent = data.amountMode === "dynamic" ? "Dinamis" : "Statis";
       el.infoAmount.textContent = data.amountMode === "dynamic"
         ? (data.walletType === "nubiPayCoin" ? fmtCoin(data.amount) + " Coin" : fmtRp(data.amount))
-        : (data.amountMode === "static"
-            ? fmtRp(data.amount)
-            : "-");
+        : fmtRp(data.amount);
       el.infoExpiry.textContent = formatExpiry(data.expiryAt || data.expiryAtMs);
       el.claimBtn.disabled = false;
     }
 
     function setScanTip(text) {
       el.scanTip.textContent = text;
+    }
+
+    function openReceipt(receipt) {
+      el.rUid.textContent = receipt.receiverUid || "-";
+      el.rAmount.textContent = receipt.amountType === "coin"
+        ? fmtCoin(receipt.amount) + " Coin"
+        : fmtRp(receipt.amount);
+      el.rTime.textContent = new Date(receipt.time).toLocaleString("id-ID");
+      el.rWallet.textContent = receipt.walletLabel;
+      el.rTransferId.textContent = receipt.transferId;
+      el.receiptSub.textContent = `Saldo berhasil dikirim ke ${receipt.receiverUid} sebesar ${receipt.amountType === "coin" ? fmtCoin(receipt.amount) + " Coin" : fmtRp(receipt.amount)}.`;
+      el.receipt.classList.add("show");
+    }
+
+    function closeReceipt() {
+      el.receipt.classList.remove("show");
     }
 
     async function stopCamera() {
@@ -717,9 +832,9 @@
         await stopCamera();
         activeStream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: "environment",
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
           },
           audio: false
         });
@@ -731,106 +846,300 @@
         el.stopCamBtn.disabled = false;
         setScanTip("Arahkan QR ke kotak scan.");
 
-        scanTimer = setInterval(() => {
+        scanTimer = setInterval(async () => {
           if (!scanRunning) return;
-          decodeFromVideo();
+          await decodeFromVideo();
         }, 220);
       } catch (e) {
         console.error(e);
         toast("Gagal membuka kamera");
-        setScanTip("Kamera tidak bisa dibuka.");
+        setScanTip("Kamera tidak bisa dibuka. Coba upload gambar.");
       }
     }
 
-    function decodeFromVideo() {
+    function extractTextCandidates(text) {
+      if (!text) return null;
+
+      const trimmed = String(text).trim();
+
+      try {
+        const data = JSON.parse(trimmed);
+        if (data && data.type === "NUBIASTORE_INTERNAL_QR" && data.transferId) {
+          return {
+            source: "json",
+            transferId: String(data.transferId).trim(),
+            token: data.token || "",
+            raw: data
+          };
+        }
+      } catch {}
+
+      if (/^https?:\/\//i.test(trimmed)) {
+        try {
+          const url = new URL(trimmed);
+          const transferId = url.searchParams.get("transferId") || url.searchParams.get("id");
+          if (transferId) {
+            return {
+              source: "url",
+              transferId: String(transferId).trim(),
+              token: url.searchParams.get("token") || "",
+              raw: trimmed
+            };
+          }
+        } catch {}
+      }
+
+      const plainMatch = trimmed.match(/^TRF_[A-Z0-9_]+$/i);
+      if (plainMatch) {
+        return {
+          source: "plain",
+          transferId: plainMatch[0].trim(),
+          token: "",
+          raw: trimmed
+        };
+      }
+
+      return null;
+    }
+
+    async function readQrFromImageData(imageData, width, height) {
+      if (typeof jsQR !== "function") return null;
+
+      const scan1 = jsQR(imageData.data, width, height, {
+        inversionAttempts: "attemptBoth"
+      });
+      if (scan1?.data) return scan1.data;
+
+      const scan2 = jsQR(imageData.data, width, height, {
+        inversionAttempts: "dontInvert"
+      });
+      if (scan2?.data) return scan2.data;
+
+      const scan3 = jsQR(imageData.data, width, height, {
+        inversionAttempts: "onlyInvert"
+      });
+      if (scan3?.data) return scan3.data;
+
+      return null;
+    }
+
+    function thresholdImageData(imageData, threshold = 150) {
+      const d = imageData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i];
+        const g = d[i + 1];
+        const b = d[i + 2];
+        const v = (r * 0.299 + g * 0.587 + b * 0.114) >= threshold ? 255 : 0;
+        d[i] = d[i + 1] = d[i + 2] = v;
+        d[i + 3] = 255;
+      }
+      return imageData;
+    }
+
+    async function scanCanvas(canvas) {
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const full = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      const tryRaw = await readQrFromImageData(full, canvas.width, canvas.height);
+      if (tryRaw) return tryRaw;
+
+      const cloned = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      thresholdImageData(cloned, 155);
+      const tryBW = await readQrFromImageData(cloned, canvas.width, canvas.height);
+      if (tryBW) return tryBW;
+
+      const cropW = Math.floor(canvas.width * 0.72);
+      const cropH = Math.floor(canvas.height * 0.72);
+      const cropX = Math.floor((canvas.width - cropW) / 2);
+      const cropY = Math.floor((canvas.height - cropH) / 2);
+
+      const crop = document.createElement("canvas");
+      crop.width = cropW;
+      crop.height = cropH;
+      const cctx = crop.getContext("2d", { willReadFrequently: true });
+      cctx.drawImage(canvas, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+
+      const cropData = cctx.getImageData(0, 0, cropW, cropH);
+      const tryCrop = await readQrFromImageData(cropData, cropW, cropH);
+      if (tryCrop) return tryCrop;
+
+      const cropBw = cctx.getImageData(0, 0, cropW, cropH);
+      thresholdImageData(cropBw, 155);
+      const tryCropBw = await readQrFromImageData(cropBw, cropW, cropH);
+      if (tryCropBw) return tryCropBw;
+
+      return null;
+    }
+
+    async function decodeFromVideo() {
       if (!scanRunning || !el.video.videoWidth || !el.video.videoHeight) return;
 
       const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
       canvas.width = el.video.videoWidth;
       canvas.height = el.video.videoHeight;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
       ctx.drawImage(el.video, 0, 0, canvas.width, canvas.height);
 
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: "dontInvert" });
+      let data = null;
 
-      if (!code || !code.data) return;
+      if (detector) {
+        try {
+          const codes = await detector.detect(el.video);
+          if (codes && codes.length) {
+            data = codes[0].rawValue || null;
+          }
+        } catch {}
+      }
+
+      if (!data) {
+        data = await scanCanvas(canvas);
+      }
+
+      if (!data) return;
 
       const now = Date.now();
-      if (now - lastDecodeAt < 1500) return;
+      if (now - lastDecodeAt < 1300) return;
       lastDecodeAt = now;
 
-      handleDecodedText(code.data);
+      await handleDecodedText(data);
     }
 
     async function decodeFile(file) {
       if (!file) return;
-      const url = URL.createObjectURL(file);
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+      const bmp = typeof createImageBitmap === "function"
+        ? await createImageBitmap(file)
+        : null;
+
+      const canvas = document.createElement("canvas");
+      if (bmp) {
+        canvas.width = bmp.width;
+        canvas.height = bmp.height;
+      } else {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        await new Promise((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = reject;
+          img.src = url;
+        });
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
         ctx.drawImage(img, 0, 0);
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: "dontInvert" });
         URL.revokeObjectURL(url);
-        if (code?.data) {
-          handleDecodedText(code.data);
-        } else {
-          toast("QR tidak ditemukan");
-          log("QR tidak terbaca dari gambar.", "err");
-        }
+      }
+
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (bmp) {
+        ctx.drawImage(bmp, 0, 0);
+      }
+
+      let data = null;
+
+      if (detector) {
+        try {
+          const codes = await detector.detect(canvas);
+          if (codes && codes.length) {
+            data = codes[0].rawValue || null;
+          }
+        } catch {}
+      }
+
+      if (!data) {
+        data = await scanCanvas(canvas);
+      }
+
+      if (data) {
+        await handleDecodedText(data);
+      } else {
+        toast("QR tidak ditemukan");
+        log("QR tidak terbaca dari gambar.", "err");
+      }
+    }
+
+    async function loadTransferById(transferId) {
+      const snap = await getDoc(doc(db, "qrTransfers", transferId));
+      if (!snap.exists()) throw new Error("QR transfer tidak ditemukan");
+
+      const t = snap.data() || {};
+      return {
+        transferId: snap.id,
+        creatorUid: t.creatorUid || "",
+        creatorName: t.creatorName || "User",
+        creatorEmail: t.creatorEmail || "",
+        walletType: t.walletType || "nubiPayBalance",
+        amountMode: t.amountMode || "static",
+        amount: Number(t.amount || 0),
+        expiryAt: Number(t.expiryAt || t.expiryAtMs || 0),
+        status: t.status || "active",
+        token: t.token || "",
+        raw: t
       };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        toast("Gagal membaca gambar");
-      };
-      img.src = url;
     }
 
     async function handleDecodedText(text) {
       if (text === lastDecoded) return;
       lastDecoded = text;
 
-      const payload = parseQrPayload(text);
-      if (!payload) {
+      const parsed = extractTextCandidates(text);
+      if (!parsed?.transferId) {
         toast("QR tidak valid");
         log("Payload QR tidak cocok dengan format NUBIASTORE internal.", "err");
         setDetailEmpty();
         return;
       }
 
-      lastTransfer = payload;
-      updateDetail(payload);
+      try {
+        const transfer = await loadTransferById(parsed.transferId);
+        lastTransfer = transfer;
+        updateDetail(transfer);
 
-      const expiryAt = Number(payload.expiryAt || payload.expiryAtMs || 0);
-      if (expiryAt && Date.now() > expiryAt) {
-        toast("QR sudah expired");
-        log("QR expired dan tidak bisa diproses.", "err");
+        if (transfer.status !== "active") {
+          toast("QR sudah dipakai");
+          log("Status QR bukan active.", "err");
+          el.claimBtn.disabled = true;
+          return;
+        }
+
+        if (transfer.expiryAt && Date.now() > transfer.expiryAt) {
+          toast("QR sudah expired");
+          log("QR expired dan tidak bisa diproses.", "err");
+          el.claimBtn.disabled = true;
+          return;
+        }
+
+        if (!transfer.creatorUid) {
+          toast("Data QR rusak");
+          log("creatorUid kosong di Firestore.", "err");
+          el.claimBtn.disabled = true;
+          return;
+        }
+
+        setScanTip("QR terbaca. Siap diproses.");
+        log(
+          `QR terbaca: <b>${transfer.transferId}</b><br/>Pembuat: <b>${shortUid(transfer.creatorUid)}</b><br/>Target: <b>${transfer.amountMode === "static" ? "NUBIAPAY BALANCE" : (transfer.walletType === "nubiPayCoin" ? "NUBIAPAY COIN" : "NUBIAPAY BALANCE")}</b><br/>Nominal: <b>${transfer.amountMode === "dynamic" ? (transfer.walletType === "nubiPayCoin" ? fmtCoin(transfer.amount) + " Coin" : fmtRp(transfer.amount)) : fmtRp(transfer.amount)}</b>`,
+          "ok"
+        );
+        el.claimBtn.disabled = false;
+        toast("QR terbaca");
+      } catch (e) {
+        console.error(e);
+        toast(e.message || "QR tidak ditemukan");
+        log(e.message || "QR tidak ditemukan", "err");
+        setDetailEmpty();
         el.claimBtn.disabled = true;
-        return;
       }
+    }
 
-      if (payload.status && payload.status !== "active") {
-        toast("QR sudah dipakai");
-        log("Status QR bukan active.", "err");
-        el.claimBtn.disabled = true;
-        return;
-      }
+    function receiverWalletFieldOf(transfer) {
+      if (transfer.amountMode === "static") return "nubiPayBalance";
+      return transfer.walletType === "nubiPayCoin" ? "nubiPayCoin" : "nubiPayBalance";
+    }
 
-      const targetWallet = payload.amountMode === "static"
-        ? "nubiPayBalance"
-        : (payload.walletType === "nubiPayCoin" ? "nubiPayCoin" : "nubiPayBalance");
-
-      setScanTip("QR terbaca. Siap terima transfer.");
-      log(
-        `QR terbaca: ${payload.transferId}<br/>Target saldo: <b>${targetWallet}</b><br/>Nominal: <b>${payload.amount}</b>`,
-        "ok"
-      );
-      el.claimBtn.disabled = false;
-      toast("QR terbaca");
+    function paymentWalletLabel(field) {
+      if (field === "nubiPayCoin") return "NUBIAPAY COIN";
+      return "NUBIAPAY BALANCE";
     }
 
     async function claimTransfer() {
@@ -845,7 +1154,7 @@
 
       const transferId = lastTransfer.transferId;
       const transferRef = doc(db, "qrTransfers", transferId);
-      const senderRef = doc(db, "users", currentUser.uid);
+      const payerRef = doc(db, "users", currentUser.uid);
       const receiverUid = lastTransfer.creatorUid;
       const receiverRef = doc(db, "users", receiverUid);
 
@@ -860,74 +1169,83 @@
           if (status !== "active") throw new Error("QR sudah dipakai");
           if (expiryAt && Date.now() > expiryAt) throw new Error("QR expired");
           if (!t.creatorUid) throw new Error("Data penerima tidak lengkap");
-          if (t.creatorUid !== receiverUid) throw new Error("Data QR tidak cocok");
 
-          const amount = Number(t.amount || 0);
-          if (!amount || amount <= 0) throw new Error("Nominal tidak valid");
+          const transferAmount = Number(t.amount || 0);
+          if (!transferAmount || transferAmount <= 0) throw new Error("Nominal tidak valid");
 
-          const payField = t.amountMode === "static"
-            ? "nubiPayBalance"
-            : (t.walletType === "nubiPayCoin" ? "nubiPayCoin" : "nubiPayBalance");
+          const payerField = receiverWalletFieldOf({
+            amountMode: t.amountMode,
+            walletType: t.walletType
+          });
 
-          const receiveField = t.amountMode === "static"
-            ? "nubiPayBalance"
-            : (t.walletType === "nubiPayCoin" ? "nubiPayCoin" : "nubiPayBalance");
+          const payerSnap = await tx.get(payerRef);
+          if (!payerSnap.exists()) throw new Error("Akun pengirim tidak ditemukan");
 
-          const sSnap = await tx.get(senderRef);
-          if (!sSnap.exists()) throw new Error("Akun pengirim tidak ditemukan");
+          const payerData = payerSnap.data() || {};
+          const payerBal = Number(payerData[payerField] || 0);
+          if (payerBal < transferAmount) throw new Error("Saldo pengirim tidak cukup");
 
-          const rSnap = await tx.get(receiverRef);
-          if (!rSnap.exists()) throw new Error("Akun penerima tidak ditemukan");
+          const receiverSnap = await tx.get(receiverRef);
+          if (!receiverSnap.exists()) throw new Error("Akun penerima tidak ditemukan");
 
-          const senderData = sSnap.data() || {};
-          const receiverData = rSnap.data() || {};
+          const receiverData = receiverSnap.data() || {};
+          const receiverField = receiverWalletFieldOf({
+            amountMode: t.amountMode,
+            walletType: t.walletType
+          });
 
-          const senderBal = Number(senderData[payField] || 0);
-          if (senderBal < amount) throw new Error("Saldo pengirim tidak cukup");
+          const receiverBal = Number(receiverData[receiverField] || 0);
 
-          const receiverBal = Number(receiverData[receiveField] || 0);
-
-          tx.set(senderRef, {
-            [payField]: round2(senderBal - amount)
+          tx.set(payerRef, {
+            [payerField]: round2(payerBal - transferAmount)
           }, { merge: true });
 
           tx.set(receiverRef, {
-            [receiveField]: round2(receiverBal + amount)
+            [receiverField]: round2(receiverBal + transferAmount)
           }, { merge: true });
 
           tx.set(transferRef, {
             status: "claimed",
-            claimedBy: currentUser.uid,
+            claimedByUid: currentUser.uid,
             claimedByName: currentUser.displayName || currentUser.email || "",
             claimedAt: serverTimestamp(),
-            claimedAmount: amount,
-            claimedWallet: receiveField,
+            claimedAmount: transferAmount,
+            claimedWallet: receiverField,
             payerUid: currentUser.uid,
-            receiverUid: receiverUid,
+            receiverUid: t.creatorUid,
             updatedAt: serverTimestamp()
           }, { merge: true });
 
           return {
-            amount,
-            payField,
-            receiveField
+            amount: transferAmount,
+            receiverUid: t.creatorUid,
+            walletField: receiverField,
+            payerField
           };
         });
 
-        const isStatic = lastTransfer.amountMode === "static";
-        const walletName = isStatic
-          ? "NUBIAPAY BALANCE"
-          : (result.receiveField === "nubiPayCoin" ? "NUBIAPAY COIN" : "NUBIAPAY BALANCE");
+        const walletLabel = paymentWalletLabel(result.walletField);
+        const amountType = result.walletField === "nubiPayCoin" ? "coin" : "money";
 
         toast("Transfer berhasil");
         log(
-          `Transfer sukses ke <b>${walletName}</b> sebanyak <b>${result.amount}</b>.<br/>Status QR: <b>claimed</b>`,
+          `Transfer sukses ke <b>${walletLabel}</b> sebesar <b>${result.amount}</b>.<br/>Status QR: <b>claimed</b>`,
           "ok"
         );
 
+        await loadWallet(currentUser.uid);
+
+        openReceipt({
+          receiverUid: result.receiverUid,
+          amount: result.amount,
+          amountType,
+          walletLabel,
+          transferId,
+          time: Date.now()
+        });
+
         el.claimBtn.disabled = true;
         setScanTip("Transfer berhasil diproses.");
-        await loadWallet(currentUser.uid);
       } catch (e) {
         console.error(e);
         toast(e.message || "Transfer gagal");
@@ -952,6 +1270,10 @@
       e.target.value = "";
     });
     el.claimBtn.addEventListener("click", claimTransfer);
+    el.receiptClose.addEventListener("click", closeReceipt);
+    el.receipt.addEventListener("click", (e) => {
+      if (e.target === el.receipt) closeReceipt();
+    });
 
     el.backBtn.addEventListener("click", () => {
       const back = sessionStorage.getItem("nubiastore_qr_back") || "/";
@@ -962,6 +1284,14 @@
       if (currentUser) await loadWallet(currentUser.uid);
       toast("Data diperbarui");
     });
+
+    if ("BarcodeDetector" in window) {
+      try {
+        detector = new BarcodeDetector({ formats: ["qr_code"] });
+      } catch {
+        detector = null;
+      }
+    }
 
     onAuthStateChanged(auth, async (user) => {
       currentUser = user || null;
