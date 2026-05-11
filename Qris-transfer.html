@@ -367,6 +367,77 @@
       #video,.cam-wrap { height:270px; }
       .amt-val { font-size:1.85rem; }
     }
+    /* tambahkan di bawah style yang sudah ada */
+
+  .manual-card {
+
+    background: var(--card);
+
+    border-radius: var(--r-lg);
+
+    box-shadow: var(--shadow);
+
+    padding: 14px 16px;
+
+    margin-bottom: 12px;
+
+  }
+
+  .manual-title {
+
+    font-size: .78rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: .5px;
+
+    color: var(--text2);
+
+    margin-bottom: 8px;
+
+  }
+
+  .manual-note {
+
+    font-size: .8rem;
+
+    color: var(--text2);
+
+    line-height: 1.4;
+
+    margin-bottom: 10px;
+
+  }
+
+  .manual-input {
+
+    width: 100%;
+
+    padding: 14px 14px;
+
+    border: 1px solid var(--sep);
+
+    border-radius: 12px;
+
+    background: #fff;
+
+    color: var(--text);
+
+    font-size: .92rem;
+
+    outline: none;
+
+  }
+
+  .manual-input:focus {
+
+    border-color: var(--tint);
+
+    box-shadow: 0 0 0 3px rgba(0,122,255,.10);
+
+  }
   </style>
 </head>
 <body>
@@ -420,6 +491,26 @@
       </div>
     </div>
 
+    <div class="manual-card">
+  <div class="manual-title">Opsi 2 — UID Target</div>
+  <div class="manual-note">
+    Masukkan UID user target kalau saldo ingin diarahkan ke akun tertentu.
+    Kalau dikosongkan, tetap pakai penerima dari QR.
+  </div>
+  <input
+    id="targetUidInput"
+    class="manual-input"
+    type="text"
+    placeholder="Masukkan UID target (opsional)"
+    autocomplete="off"
+    autocapitalize="off"
+    spellcheck="false"
+  >
+  <div style="margin-top:10px">
+    <button class="btn btn-sec" id="btnUseUid" style="width:100%">Pakai UID Ini</button>
+  </div>
+</div>
+    
     <!-- Scanner card -->
     <div class="scanner-card">
       <div class="scanner-hd">
@@ -673,7 +764,7 @@ import { initializeApp }           from "https://www.gstatic.com/firebasejs/10.1
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc,
-  runTransaction, serverTimestamp, updateDoc
+  runTransaction, serverTimestamp, updateDoc, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ─── Firebase config ─── */
@@ -704,6 +795,8 @@ const el = {
   qrDetail:$('qrDetail'),
   dTrfId:$('dTrfId'), dCreator:$('dCreator'),
   dAmount:$('dAmount'), dWallet:$('dWallet'), dExpiry:$('dExpiry'),
+  targetUidInput:$('targetUidInput'),
+  btnUseUid:$('btnUseUid'),
   // screen 2
   s2Back:$('s2Back'),
   c2Icon:$('c2Icon'), c2Name:$('c2Name'),
@@ -732,6 +825,7 @@ let decodeAt   = 0;
 let detector   = null;
 let claiming   = false;
 let lastResult = null;  // result of executed transfer (for share)
+let manualTargetUid = ''; // opsi 2
 
 /* ─── Utils ─── */
 const fmtRp   = n => 'Rp ' + Number(n||0).toLocaleString('id-ID');
@@ -751,6 +845,47 @@ function toast(msg) {
 }
 function log(html, t='warn') {
   el.logBox.innerHTML = `<span class="log-${t}">${html}</span>`;
+}
+function normalizeUid(v) {
+  return String(v || '').trim();
+}
+function resolveRecipient(t) {
+  if (manualTargetUid) {
+    return {
+      uid: manualTargetUid,
+      name: 'UID ' + sUid(manualTargetUid),
+      manual: true
+    };
+  }
+  return {
+    uid: t.creatorUid,
+    name: t.creatorName || 'Penerima',
+    manual: false
+  };
+}
+function applyRecipientOverride(t) {
+  const r = resolveRecipient(t);
+  t.receiverUid = r.uid;
+  t.receiverName = r.name;
+  t.receiverManual = r.manual;
+  return r;
+}
+function refreshRecipientUI() {
+  if (!transfer) return;
+  const r = applyRecipientOverride(transfer);
+  const f = wField(transfer);
+  const isCoin = f === 'nubiPayCoin';
+
+  el.dTrfId.textContent    = transfer.transferId;
+  el.dCreator.textContent  = transfer.receiverName + ' · ' + sUid(transfer.receiverUid);
+  el.dAmount.textContent   = isCoin ? fmtCoin(transfer.amount) : fmtRp(transfer.amount);
+  el.dWallet.textContent   = wLabel(f);
+  el.dExpiry.textContent   = transfer.expiryAt ? fmtTs(transfer.expiryAt) : '—';
+
+  el.c2Name.textContent      = transfer.receiverName;
+  el.c2TrfId.textContent     = transfer.transferId;
+  el.c2WalletSub.textContent = wLabel(f) + ' · ' + sUid(transfer.receiverUid);
+  el.c2Amt.textContent       = isCoin ? fmtCoin(transfer.amount) : fmtRp(transfer.amount);
 }
 
 /* ─── Wallet field helper ─── */
@@ -867,12 +1002,9 @@ function readjsQR(id,w,h) {
 async function scanCanvas(cv) {
   const ctx=cv.getContext('2d',{willReadFrequently:true});
   const W=cv.width, H=cv.height;
-  // 1) Full raw
   let r=readjsQR(ctx.getImageData(0,0,W,H),W,H); if(r) return r;
-  // 2) Full thresholded
   const bw=ctx.getImageData(0,0,W,H); threshold(bw);
   r=readjsQR(bw,W,H); if(r) return r;
-  // 3) Center crop 74%
   const cw=Math.floor(W*.74),ch=Math.floor(H*.74);
   const cx=Math.floor((W-cw)/2),cy=Math.floor((H-ch)/2);
   const c2=document.createElement('canvas'); c2.width=cw; c2.height=ch;
@@ -971,32 +1103,29 @@ async function handleQR(text) {
   try {
     const t = await fetchTransfer(parsed.id);
     transfer = t;
+    applyRecipientOverride(transfer);
 
-    // Validasi status
     if (t.status !== 'active') {
       log(`QR ini sudah tidak aktif (status: <b>${t.status}</b>).`,'err');
       toast('QR sudah tidak aktif');
       el.btnNext.disabled = true;
       return;
     }
-    // Validasi expiry
     if (t.expiryAt && Date.now() > t.expiryAt) {
       log('QR sudah expired.','err');
       toast('QR sudah expired');
       el.btnNext.disabled = true;
       return;
     }
-    // Validasi amount
     if (!t.amount || t.amount <= 0) {
       log('Nominal QR tidak valid.','err');
       toast('Nominal QR tidak valid');
       el.btnNext.disabled = true;
       return;
     }
-    // Cegah transfer ke diri sendiri
-    if (user && t.creatorUid === user.uid) {
-      log('Tidak bisa transfer ke QR milik sendiri.','err');
-      toast('QR ini milik Anda sendiri');
+    if (user && t.receiverUid === user.uid) {
+      log('Tidak bisa transfer ke akun sendiri.','err');
+      toast('Tidak bisa transfer ke diri sendiri');
       el.btnNext.disabled = true;
       return;
     }
@@ -1004,17 +1133,16 @@ async function handleQR(text) {
     const f = wField(t);
     const isCoin = f === 'nubiPayCoin';
 
-    // Update detail section
     el.qrDetail.style.display = '';
     el.dTrfId.textContent    = t.transferId;
-    el.dCreator.textContent  = t.creatorName + ' · ' + sUid(t.creatorUid);
+    el.dCreator.textContent  = t.receiverName + ' · ' + sUid(t.receiverUid);
     el.dAmount.textContent   = isCoin ? fmtCoin(t.amount) : fmtRp(t.amount);
     el.dWallet.textContent   = wLabel(f);
     el.dExpiry.textContent   = t.expiryAt ? fmtTs(t.expiryAt) : '—';
 
     el.btnNext.disabled = !user;
     el.camTip.textContent = '✓ QR valid! Tap "Cek & Lanjut"';
-    log(`QR terbaca: <b>${sUid(t.transferId)}</b><br>Penerima: <b>${t.creatorName}</b><br>Nominal: <b>${isCoin?fmtCoin(t.amount):fmtRp(t.amount)}</b>`,'ok');
+    log(`QR terbaca: <b>${sUid(t.transferId)}</b><br>Penerima: <b>${t.receiverName}</b><br>Nominal: <b>${isCoin?fmtCoin(t.amount):fmtRp(t.amount)}</b>`,'ok');
     toast('QR berhasil terbaca');
 
   } catch(e) {
@@ -1030,24 +1158,25 @@ function openConfirm() {
   if (!user)     { toast('Login dulu'); return; }
   if (!transfer) { toast('Scan QR dulu'); return; }
 
+  applyRecipientOverride(transfer);
+
   const t = transfer;
   const f = wField(t);
   const isCoin    = f === 'nubiPayCoin';
   const payerBal  = wallet[f] || 0;
   const hasEnough = payerBal >= t.amount;
-  const name      = t.creatorName || 'User';
+  const name      = t.receiverName || t.creatorName || 'User';
 
-  // Populate
-  el.c2Icon.textContent     = initials(name);
-  el.c2Name.textContent     = name;
-  el.c2TrfId.textContent    = t.transferId;
-  el.c2WalletSub.textContent= wLabel(f) + ' · ' + sUid(t.creatorUid);
-  el.c2Amt.textContent      = isCoin ? fmtCoin(t.amount) : fmtRp(t.amount);
-  el.c2SaldoAv.textContent  = isCoin ? fmtCoin(payerBal) : fmtRp(payerBal);
-  el.c2WarnRow.style.display= hasEnough ? 'none' : '';
+  el.c2Icon.textContent      = initials(name);
+  el.c2Name.textContent      = name;
+  el.c2TrfId.textContent     = t.transferId;
+  el.c2WalletSub.textContent = wLabel(f) + ' · ' + sUid(t.receiverUid);
+  el.c2Amt.textContent       = isCoin ? fmtCoin(t.amount) : fmtRp(t.amount);
+  el.c2SaldoAv.textContent   = isCoin ? fmtCoin(payerBal) : fmtRp(payerBal);
+  el.c2WarnRow.style.display = hasEnough ? 'none' : '';
   el.c2WalletType.textContent = wLabel(f);
-  el.c2Mode.textContent       = t.amountMode==='dynamic' ? 'Dinamis' : 'Statis';
-  el.c2Expiry.textContent     = t.expiryAt ? fmtTs(t.expiryAt) : '—';
+  el.c2Mode.textContent      = t.amountMode==='dynamic' ? 'Dinamis' : 'Statis';
+  el.c2Expiry.textContent    = t.expiryAt ? fmtTs(t.expiryAt) : '—';
 
   el.btnConfirm.disabled    = !hasEnough;
   el.btnConfirm.textContent = hasEnough ? 'Lanjut' : 'Saldo Tidak Cukup';
@@ -1058,24 +1187,34 @@ function openConfirm() {
 /* ─── Execute Firestore transaction ─── */
 async function doTransfer() {
   if (!user || !transfer || claiming) return;
+
+  applyRecipientOverride(transfer);
+
   claiming = true;
   el.btnConfirm.disabled = true;
   el.btnConfirm.innerHTML = '<span class="spin"></span>';
 
   const t           = transfer;
   const f           = wField(t);
+  const receiverUid = t.receiverUid || t.creatorUid;
+
+  if (!receiverUid) {
+    claiming = false;
+    el.btnConfirm.disabled = false;
+    el.btnConfirm.textContent = 'Lanjut';
+    toast('UID penerima tidak valid');
+    return;
+  }
+
   const tRef        = doc(db,'qrTransfers',t.transferId);
   const payerRef    = doc(db,'users',user.uid);
-  const receiverRef = doc(db,'users',t.creatorUid);
+  const receiverRef = doc(db,'users',receiverUid);
 
   try {
     const res = await runTransaction(db, async tx => {
-      // ── All reads first ──
       const tSnap = await tx.get(tRef);
       const pSnap = await tx.get(payerRef);
-      const rSnap = await tx.get(receiverRef);
 
-      // Validate transfer doc
       if (!tSnap.exists()) throw new Error('QR transfer tidak ditemukan');
       const td = tSnap.data()||{};
       if (String(td.status||'active') !== 'active') throw new Error('QR sudah digunakan');
@@ -1086,20 +1225,21 @@ async function doTransfer() {
       const amount = Number(td.amount||0);
       if (!amount || amount <= 0) throw new Error('Nominal tidak valid');
 
-      // Validate payer
       if (!pSnap.exists()) throw new Error('Akun pengirim tidak ditemukan');
       const pData  = pSnap.data()||{};
       const pBal   = Number(pData[f]||0);
       if (pBal < amount) throw new Error('Saldo pengirim tidak mencukupi');
 
-      // Validate receiver
-      if (!rSnap.exists()) throw new Error('Akun penerima tidak ditemukan');
-      const rData  = rSnap.data()||{};
-      const rBal   = Number(rData[f]||0);
+      tx.update(payerRef, {
+        [f]: increment(-amount),
+        updatedAt: serverTimestamp()
+      });
 
-      // ── All writes ──
-      tx.update(payerRef,    { [f]: round2(pBal - amount), updatedAt: serverTimestamp() });
-      tx.update(receiverRef, { [f]: round2(rBal + amount), updatedAt: serverTimestamp() });
+      tx.set(receiverRef, {
+        [f]: increment(amount),
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
       tx.update(tRef, {
         status:        'claimed',
         claimedByUid:  user.uid,
@@ -1115,19 +1255,14 @@ async function doTransfer() {
         field:        f,
         payerUid:     user.uid,
         payerName:    user.displayName || user.email || 'Pengirim',
-        receiverUid:  td.creatorUid,
-        receiverName: td.creatorName || 'Penerima',
+        receiverUid:  receiverUid,
+        receiverName: t.receiverName || t.creatorName || 'Penerima',
         transferId:   t.transferId,
       };
     });
 
-    // Refresh balance
     await loadWallet(user.uid);
-
-    // Save for share
     lastResult = res;
-
-    // Show receipt
     openReceipt(res);
 
   } catch(e) {
@@ -1166,7 +1301,6 @@ function openReceipt(r) {
 function closeReceipt() {
   el.rcptBg.classList.remove('show');
   el.rcptSheet.classList.remove('show');
-  // Reset & go back to scan screen
   popS2();
   transfer  = null;
   lastRaw   = null;
@@ -1209,6 +1343,24 @@ el.btnUpload.addEventListener('click', ()=>el.fileInput.click());
 el.btnStop.addEventListener('click',   stopCam);
 el.btnNext.addEventListener('click',   openConfirm);
 el.fileInput.addEventListener('change', e=>{ const f=e.target.files?.[0]; if(f) scanFile(f); e.target.value=''; });
+el.btnUseUid.addEventListener('click',  ()=>{
+  const uid = normalizeUid(el.targetUidInput.value);
+  if (!uid) {
+    manualTargetUid = '';
+    toast('UID target dikosongkan, kembali ke penerima QR');
+  } else if (uid.length < 10) {
+    toast('UID target tidak valid');
+    return;
+  } else {
+    manualTargetUid = uid;
+    toast('UID target dipakai');
+  }
+
+  if (transfer) {
+    applyRecipientOverride(transfer);
+    refreshRecipientUI();
+  }
+});
 el.s2Back.addEventListener('click',    popS2);
 el.btnConfirm.addEventListener('click', doTransfer);
 el.rcptBg.addEventListener('click',    closeReceipt);
