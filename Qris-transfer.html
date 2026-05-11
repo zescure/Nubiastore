@@ -826,6 +826,7 @@ let detector   = null;
 let claiming   = false;
 let lastResult = null;  // result of executed transfer (for share)
 let manualTargetUid = ''; // opsi 2
+let manualUidMode = false;
 
 /* ─── Utils ─── */
 const fmtRp   = n => 'Rp ' + Number(n||0).toLocaleString('id-ID');
@@ -1206,34 +1207,56 @@ async function doTransfer() {
     return;
   }
 
-  const tRef        = doc(db,'qrTransfers',t.transferId);
+  const tRef = t.transferId
+  ? doc(db,'qrTransfers',t.transferId)
+  : null;
   const payerRef    = doc(db,'users',user.uid);
   const receiverRef = doc(db,'users',receiverUid);
 
   try {
     const res = await runTransaction(db, async tx => {
-      const tSnap = await tx.get(tRef);
+      const tSnap = tRef ? await tx.get(tRef) : null;
       const pSnap = await tx.get(payerRef);
 
-      if (!tSnap.exists()) throw new Error('QR transfer tidak ditemukan');
-      const td = tSnap.data()||{};
-      if (String(td.status||'active') !== 'active') throw new Error('QR sudah digunakan');
-      const exp = Number(td.expiryAt||td.expiryAtMs||0);
-      if (exp && Date.now() > exp) throw new Error('QR sudah expired');
-      if (!td.creatorUid) throw new Error('Data penerima tidak valid');
+      let amount = Number(t.amount || 0);
 
-      const amount = Number(td.amount||0);
-      if (!amount || amount <= 0) throw new Error('Nominal tidak valid');
+if (tRef) {
+
+  if (!tSnap.exists()) throw new Error('QR transfer tidak ditemukan');
+
+  const td = tSnap.data() || {};
+
+  if (String(td.status || 'active') !== 'active')
+    throw new Error('QR sudah digunakan');
+
+  const exp = Number(td.expiryAt || td.expiryAtMs || 0);
+
+  if (exp && Date.now() > exp)
+    throw new Error('QR sudah expired');
+
+  amount = Number(td.amount || 0);
+
+  if (!amount || amount <= 0)
+    throw new Error('Nominal tidak valid');
+
+}
 
       if (!pSnap.exists()) throw new Error('Akun pengirim tidak ditemukan');
       const pData  = pSnap.data()||{};
       const pBal   = Number(pData[f]||0);
       if (pBal < amount) throw new Error('Saldo pengirim tidak mencukupi');
 
-      tx.update(payerRef, {
-        [f]: increment(-amount),
-        updatedAt: serverTimestamp()
-      });
+      if (tRef) {
+  tx.update(tRef,{
+    status:'claimed',
+    claimedByUid:user.uid,
+    claimedByName:user.displayName || user.email || '',
+    claimedAt:serverTimestamp(),
+    claimedAmount:amount,
+    claimedWallet:f,
+    updatedAt:serverTimestamp()
+  });
+}
 
       tx.set(receiverRef, {
         [f]: increment(amount),
@@ -1344,28 +1367,53 @@ el.btnStop.addEventListener('click',   stopCam);
 el.btnNext.addEventListener('click',   openConfirm);
 el.fileInput.addEventListener('change', e=>{ const f=e.target.files?.[0]; if(f) scanFile(f); e.target.value=''; });
 el.btnUseUid.addEventListener('click', async () => {
+
   const uid = normalizeUid(el.targetUidInput.value);
 
-  if (!transfer) {
-    toast('Scan QR dulu');
-    return;
-  }
-
-  if (!uid) {
-    manualTargetUid = '';
-    toast('UID target dikosongkan, kembali ke penerima QR');
-  } else if (uid.length < 10) {
+  if (!uid || uid.length < 10) {
     toast('UID target tidak valid');
     return;
-  } else {
-    manualTargetUid = uid;
-    toast('UID target dipakai');
   }
 
-  applyRecipientOverride(transfer);
-  refreshRecipientUI();
+  if (!user) {
+    toast('Login dulu');
+    return;
+  }
 
-  openConfirm(); // lanjut ke step berikutnya
+  if (uid === user.uid) {
+    toast('Tidak bisa transfer ke UID sendiri');
+    return;
+  }
+
+  try {
+
+    const snap = await getDoc(doc(db,'users',uid));
+
+    if (!snap.exists()) {
+      toast('UID tidak ditemukan');
+      return;
+    }
+
+    const d = snap.data() || {};
+
+    manualUidMode = true;
+
+    transfer = {
+      creatorUid: uid,
+      creatorName: d.displayName || d.email || 'User',
+      walletType: 'nubiPayBalance',
+      amountMode: 'static',
+      amount: 0,
+      expiryAt: 0,
+      status: 'active'
+    };
+
+    openConfirm();
+
+  } catch(e) {
+    console.error(e);
+    toast('Gagal mengambil data UID');
+  }
 
 });
 el.s2Back.addEventListener('click',    popS2);
