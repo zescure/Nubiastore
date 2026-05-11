@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>NUBIASTORE — QR Transfer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=SF+Pro+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f5f6fa;
+      --card:#ffffff;
+      --card2:#f9fafb;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:rgba(17,24,39,.08);
+      --accent:#2563eb;
+      --accent2:#1d4ed8;
+      --green:#16a34a;
+      --green2:#22c55e;
+      --gold:#f59e0b;
+      --shadow:0 18px 50px rgba(17,24,39,.08);
+      --radius:26px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+      background:linear-gradient(180deg,#f7f8fc 0%, #eef2ff 100%);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    button,input,select{font:inherit}
+    button{cursor:pointer;border:none;background:none}
+    a{text-decoration:none;color:inherit}
+
+    .app{
+      max-width:430px;
+      margin:0 auto;
+      min-height:100vh;
+      padding:14px 14px 28px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:6px 2px 16px;
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(14px);
+    }
+
+    .back-btn{
+      width:42px;height:42px;border-radius:999px;
+      background:rgba(255,255,255,.82);
+      box-shadow:0 6px 18px rgba(17,24,39,.06);
+      display:flex;align-items:center;justify-content:center;
+      color:#374151;
+    }
+
+    .title-wrap{
+      text-align:center;
+      flex:1;
+      margin:0 10px;
+    }
+
+    .brand{
+      font-size:1.08rem;
+      font-weight:900;
+      letter-spacing:.2px;
+      color:#111827;
+    }
+
+    .subtitle{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-top:2px;
+    }
+
+    .action-btn{
+      width:42px;height:42px;border-radius:999px;
+      background:rgba(255,255,255,.82);
+      box-shadow:0 6px 18px rgba(17,24,39,.06);
+      display:flex;align-items:center;justify-content:center;
+      color:#2563eb;
+      font-weight:900;
+    }
+
+    .hero-card{
+      background:linear-gradient(180deg,#ffffff 0%, #f8fbff 100%);
+      border:1px solid rgba(37,99,235,.08);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .hero-head{
+      padding:18px 18px 14px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .hero-left{
+      min-width:0;
+    }
+
+    .hero-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(37,99,235,.08);
+      color:var(--accent);
+      font-size:.75rem;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .hero-title{
+      font-size:1.22rem;
+      font-weight:900;
+      line-height:1.15;
+      letter-spacing:-.3px;
+    }
+
+    .hero-sub{
+      margin-top:6px;
+      font-size:.9rem;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .status-chip{
+      flex-shrink:0;
+      padding:9px 12px;
+      border-radius:999px;
+      background:#eef2ff;
+      color:#4338ca;
+      font-size:.76rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .qr-shell{
+      padding:0 18px 18px;
+    }
+
+    .qr-card{
+      background:linear-gradient(180deg,#ffffff 0%, #f7fafc 100%);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(17,24,39,.05);
+    }
+
+    .qr-preview{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      background:linear-gradient(135deg,#1d4ed8 0%, #2563eb 45%, #3b82f6 100%);
+      padding:18px;
+      color:#fff;
+      min-height:420px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .qr-preview::before,
+    .qr-preview::after{
+      content:'';
+      position:absolute;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      pointer-events:none;
+      filter:blur(2px);
+      opacity:.35;
+    }
+    .qr-preview::before{
+      left:-70px; top:90px;
+      background:radial-gradient(circle,rgba(255,255,255,.5) 0%, transparent 70%);
+    }
+    .qr-preview::after{
+      right:-70px; bottom:40px;
+      background:radial-gradient(circle,rgba(255,255,255,.35) 0%, transparent 70%);
+    }
+
+    .qr-preview-top{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .qr-logo{
+      font-weight:900;
+      letter-spacing:.5px;
+      font-size:1rem;
+    }
+
+    .qr-pill{
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.16);
+      font-size:.72rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .merchant{
+      position:relative;
+      z-index:1;
+      text-align:center;
+      margin-top:8px;
+    }
+
+    .merchant-name{
+      font-size:1.2rem;
+      font-weight:900;
+      letter-spacing:.2px;
+      margin-bottom:4px;
+    }
+
+    .merchant-sub{
+      font-size:.85rem;
+      opacity:.92;
+    }
+
+    .qr-box-wrap{
+      position:relative;
+      z-index:1;
+      margin:18px auto 0;
+      width:min(100%, 272px);
+      background:#fff;
+      border-radius:22px;
+      padding:12px 12px 8px;
+      box-shadow:0 14px 30px rgba(0,0,0,.14);
+    }
+
+    .qr-box{
+      width:100%;
+      aspect-ratio:1/1;
+      border-radius:18px;
+      background:#fff;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .qr-code{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .qr-token{
+      text-align:center;
+      color:#6b7280;
+      font-size:.8rem;
+      font-weight:700;
+      letter-spacing:3px;
+      margin-top:8px;
+      user-select:all;
+    }
+
+    .qr-meta{
+      position:relative;
+      z-index:1;
+      margin-top:16px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:18px;
+      padding:14px;
+      backdrop-filter:blur(10px);
+    }
+
+    .qr-meta-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .meta-box{
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:10px 12px;
+    }
+
+    .meta-label{
+      font-size:.68rem;
+      text-transform:uppercase;
+      letter-spacing:1.2px;
+      opacity:.82;
+      margin-bottom:5px;
+      font-weight:800;
+    }
+
+    .meta-value{
+      font-size:.92rem;
+      font-weight:900;
+      line-height:1.25;
+    }
+
+    .meta-value small{
+      display:block;
+      font-size:.75rem;
+      opacity:.82;
+      font-weight:700;
+      margin-top:2px;
+    }
+
+    .warn-box{
+      margin-top:14px;
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.16);
+      color:#fff;
+      line-height:1.5;
+      font-size:.82rem;
+      position:relative;
+      z-index:1;
+    }
+
+    .warn-box b{font-weight:900}
+
+    .form-card{
+      margin-top:14px;
+      background:rgba(255,255,255,.94);
+      border:1px solid var(--line);
+      border-radius:26px;
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+
+    .section-title{
+      font-size:.95rem;
+      font-weight:900;
+      margin-bottom:12px;
+      letter-spacing:-.2px;
+    }
+
+    .field{
+      margin-bottom:12px;
+    }
+
+    .label{
+      display:block;
+      margin-bottom:6px;
+      font-size:.72rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:1.1px;
+      font-weight:800;
+    }
+
+    .input, .select{
+      width:100%;
+      border-radius:16px;
+      border:1px solid rgba(17,24,39,.1);
+      background:#fff;
+      padding:13px 14px;
+      color:var(--text);
+      outline:none;
+      transition:border-color .15s, box-shadow .15s;
+      font-size:.95rem;
+      font-weight:600;
+    }
+
+    .input:focus, .select:focus{
+      border-color:rgba(37,99,235,.45);
+      box-shadow:0 0 0 4px rgba(37,99,235,.08);
+    }
+
+    .split{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .switch-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .switch-btn{
+      border-radius:16px;
+      padding:12px 12px;
+      background:#fff;
+      border:1px solid rgba(17,24,39,.08);
+      color:#374151;
+      font-weight:900;
+      transition:.15s;
+    }
+    .switch-btn.active{
+      background:rgba(37,99,235,.08);
+      border-color:rgba(37,99,235,.25);
+      color:var(--accent);
+    }
+
+    .info-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .info-box{
+      background:#f8fafc;
+      border:1px solid rgba(17,24,39,.06);
+      border-radius:16px;
+      padding:12px;
+    }
+
+    .info-k{
+      font-size:.68rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:1.1px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .info-v{
+      font-size:.96rem;
+      font-weight:900;
+      color:#111827;
+      line-height:1.25;
+    }
+
+    .btn-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .btn{
+      border-radius:18px;
+      padding:14px 14px;
+      font-weight:900;
+      font-size:.96rem;
+      transition:.15s;
+    }
+
+    .btn-primary{
+      background:linear-gradient(180deg,var(--accent),var(--accent2));
+      color:#fff;
+      box-shadow:0 12px 24px rgba(37,99,235,.2);
+    }
+    .btn-primary:active{transform:scale(.98)}
+    .btn-light{
+      background:#fff;
+      color:#374151;
+      border:1px solid rgba(17,24,39,.08);
+    }
+    .btn-light:active{transform:scale(.98)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+
+    .small-note{
+      margin-top:12px;
+      font-size:.8rem;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%) translateY(16px);
+      opacity:0;
+      pointer-events:none;
+      background:#111827;
+      color:#fff;
+      padding:11px 16px;
+      border-radius:999px;
+      box-shadow:0 14px 30px rgba(17,24,39,.2);
+      transition:opacity .2s, transform .2s;
+      z-index:100;
+      font-size:.88rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    .hidden{display:none !important}
+
+    @media (max-width: 390px){
+      .qr-preview{min-height:400px}
+      .merchant-name{font-size:1.05rem}
+      .qr-box-wrap{width:min(100%,250px)}
+      .split,.switch-row,.btn-row,.qr-meta-grid,.info-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <button class="back-btn" id="backBtn">←</button>
+      <div class="title-wrap">
+        <div class="brand">NUBIASTORE</div>
+        <div class="subtitle">QR Transfer Internal</div>
+      </div>
+      <button class="action-btn" id="refreshBtn">↻</button>
+    </div>
+
+    <section class="hero-card">
+      <div class="hero-head">
+        <div class="hero-left">
+          <div class="hero-kicker">TERIMA TRANSFER</div>
+          <div class="hero-title">Buat QR internal untuk saldo masuk</div>
+          <div class="hero-sub">
+            QR ini khusus user NUBIASTORE. Penerima scan QR lalu sistem akan membaca data transfer dari Firestore.
+          </div>
+        </div>
+        <div class="status-chip" id="statusChip">Belum login</div>
+      </div>
+
+      <div class="qr-shell">
+        <div class="qr-card">
+          <div class="qr-preview">
+            <div class="qr-preview-top">
+              <div class="qr-logo">NUBIA QR</div>
+              <div class="qr-pill" id="expiryPill">Aktif: —</div>
+            </div>
+
+            <div class="merchant">
+              <div class="merchant-name" id="merchantName">—</div>
+              <div class="merchant-sub" id="merchantSub">—</div>
+            </div>
+
+            <div class="qr-box-wrap">
+              <div class="qr-box">
+                <div id="qrCode" class="qr-code"></div>
+              </div>
+              <div class="qr-token" id="qrTokenText">—</div>
+            </div>
+
+            <div class="qr-meta">
+              <div class="qr-meta-grid">
+                <div class="meta-box">
+                  <div class="meta-label">Jenis Saldo</div>
+                  <div class="meta-value" id="walletTypeText">—</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-label">Mode Nominal</div>
+                  <div class="meta-value" id="amountModeText">—</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-label">Nominal</div>
+                  <div class="meta-value" id="amountText">—</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-label">Status</div>
+                  <div class="meta-value" id="statusText">—</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="warn-box">
+              <b>Internal QR only.</b> QR ini menyimpan ID transfer di Firestore. Bukan QRIS bank asli.
+              Cocok untuk alur transfer saldo antar user NUBIASTORE.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <div class="section-title">Pengaturan QR</div>
+
+      <div class="switch-row">
+        <button class="switch-btn active" id="walletBalanceBtn">Saldo NUBIAPAY</button>
+        <button class="switch-btn" id="walletCoinBtn">NUBIAPAY COIN</button>
+      </div>
+
+      <div class="switch-row">
+        <button class="switch-btn active" id="modeStaticBtn">Nominal Statis</button>
+        <button class="switch-btn" id="modeDynamicBtn">Nominal Dinamis</button>
+      </div>
+
+      <div class="field">
+        <label class="label">Nominal Transfer</label>
+        <input class="input" type="number" id="amountInput" value="50000" min="1000" step="1000" />
+      </div>
+
+      <div class="split">
+        <div class="field">
+          <label class="label">Masa Aktif (menit)</label>
+          <input class="input" type="number" id="ttlInput" value="15" min="1" step="1" />
+        </div>
+        <div class="field">
+          <label class="label">Token / Expiry Label</label>
+          <input class="input" type="text" id="labelInput" value="A0002" maxlength="12" />
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-k">Wallet Target</div>
+          <div class="info-v" id="walletInfo">Saldo NUBIAPAY</div>
+        </div>
+        <div class="info-box">
+          <div class="info-k">Transfer Mode</div>
+          <div class="info-v" id="modeInfo">Statis</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="createBtn">Buat QR Baru</button>
+        <button class="btn btn-light" id="copyBtn">Salin ID</button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-light" id="shareBtn">Bagikan QR</button>
+        <button class="btn btn-light" id="saveBtn">Simpan Draft</button>
+      </div>
+
+      <div class="small-note">
+        QR akan otomatis tersimpan di Firestore pada koleksi <b>qrTransfers</b>.  
+        Halaman scan nanti tinggal baca <b>transferId</b> lalu validasi status, expiry, dan wallet target.
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",
+      authDomain: "zestoreid-f9e85.firebaseapp.com",
+      projectId: "zestoreid-f9e85",
+      storageBucket: "zestoreid-f9e85.firebasestorage.app",
+      messagingSenderId: "426093692154",
+      appId: "1:426093692154:web:38c6e9c143af626a623543"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const el = {
+      backBtn: document.getElementById('backBtn'),
+      refreshBtn: document.getElementById('refreshBtn'),
+      statusChip: document.getElementById('statusChip'),
+      merchantName: document.getElementById('merchantName'),
+      merchantSub: document.getElementById('merchantSub'),
+      expiryPill: document.getElementById('expiryPill'),
+      walletTypeText: document.getElementById('walletTypeText'),
+      amountModeText: document.getElementById('amountModeText'),
+      amountText: document.getElementById('amountText'),
+      statusText: document.getElementById('statusText'),
+      qrTokenText: document.getElementById('qrTokenText'),
+      walletInfo: document.getElementById('walletInfo'),
+      modeInfo: document.getElementById('modeInfo'),
+      amountInput: document.getElementById('amountInput'),
+      ttlInput: document.getElementById('ttlInput'),
+      labelInput: document.getElementById('labelInput'),
+      walletBalanceBtn: document.getElementById('walletBalanceBtn'),
+      walletCoinBtn: document.getElementById('walletCoinBtn'),
+      modeStaticBtn: document.getElementById('modeStaticBtn'),
+      modeDynamicBtn: document.getElementById('modeDynamicBtn'),
+      createBtn: document.getElementById('createBtn'),
+      copyBtn: document.getElementById('copyBtn'),
+      shareBtn: document.getElementById('shareBtn'),
+      saveBtn: document.getElementById('saveBtn'),
+      qrCode: document.getElementById('qrCode'),
+      toast: document.getElementById('toast'),
+    };
+
+    let currentUser = null;
+    let walletType = 'nubiPayBalance'; // or nubiPayCoin
+    let amountMode = 'static';         // or dynamic
+    let activeTransfer = null;
+
+    function toast(msg) {
+      el.toast.textContent = msg;
+      el.toast.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.toast.classList.remove('show'), 1800);
+    }
+
+    function fmt(n) {
+      const num = Number(n || 0);
+      return 'Rp ' + num.toLocaleString('id-ID');
+    }
+
+    function fmtCoin(n) {
+      const num = Number(n || 0);
+      return num.toLocaleString('id-ID') + ' Coin';
+    }
+
+    function shortUid(uid) {
+      if (!uid) return '—';
+      return uid.slice(0, 6) + '...' + uid.slice(-4);
+    }
+
+    function randomHex(len = 64) {
+      const chars = 'abcdef0123456789';
+      let out = '';
+      crypto.getRandomValues(new Uint8Array(len)).forEach(v => {
+        out += chars[v % chars.length];
+      });
+      return out;
+    }
+
+    function makeTransferId() {
+      return 'TRF_' + Date.now().toString(36).toUpperCase() + '_' + randomHex(16).toUpperCase();
+    }
+
+    function buildPayload(data) {
+      return JSON.stringify({
+        type: 'NUBIASTORE_INTERNAL_QR',
+        version: 1,
+        transferId: data.transferId,
+        token: data.qrToken,
+        uid: data.creatorUid,
+        walletType: data.walletType,
+        amountMode: data.amountMode,
+        amount: data.amount,
+        expiryAt: data.expiryAtMs
+      });
+    }
+
+    function renderQR(payload) {
+      el.qrCode.innerHTML = '';
+      const box = document.createElement('div');
+      box.style.width = '100%';
+      box.style.height = '100%';
+      el.qrCode.appendChild(box);
+
+      new QRCode(box, {
+        text: payload,
+        width: 240,
+        height: 240,
+        colorDark: "#111111",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    function updateUI(data) {
+      if (!data) return;
+
+      el.merchantName.textContent = data.creatorName || 'NUBIASTORE USER';
+      el.merchantSub.textContent = shortUid(data.creatorUid) + ' • QR internal transfer';
+      el.qrTokenText.textContent = data.qrTokenLabel || data.transferId;
+      el.walletTypeText.textContent = data.walletType === 'nubiPayCoin' ? 'NUBIAPAY COIN' : 'NUBIAPAY BALANCE';
+      el.amountModeText.textContent = data.amountMode === 'dynamic' ? 'Dinamis' : 'Statis';
+      el.amountText.textContent = data.amountMode === 'dynamic' ? 'Mengikuti nominal input' : (data.walletType === 'nubiPayCoin' ? fmtCoin(data.amount) : fmt(data.amount));
+      el.statusText.textContent = data.status || 'aktif';
+      el.expiryPill.textContent = 'Aktif: ' + new Date(data.expiryAtMs).toLocaleString('id-ID', {
+        day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+
+      el.walletInfo.textContent = data.walletType === 'nubiPayCoin' ? 'NUBIAPAY COIN' : 'Saldo NUBIAPAY';
+      el.modeInfo.textContent = data.amountMode === 'dynamic' ? 'Dinamis' : 'Statis';
+
+      const walletTxt = data.walletType === 'nubiPayCoin' ? 'COIN' : 'BALANCE';
+      el.statusChip.textContent = currentUser ? `Login • ${walletTxt}` : 'Belum login';
+    }
+
+    async function ensureUserDoc(uid, email, displayName) {
+      const ref = doc(db, 'users', uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, {
+          email: email || '',
+          displayName: displayName || '',
+          nubiPayBalance: 0,
+          nubiPayCoin: 0,
+          nubiPayBonusCoin: 0,
+          createdAt: serverTimestamp()
+        });
+      } else {
+        const updates = {};
+        const data = snap.data();
+        if (!data.email && email) updates.email = email;
+        if (!data.displayName && displayName) updates.displayName = displayName;
+        if (Object.keys(updates).length) {
+          await updateDoc(ref, updates);
+        }
+      }
+    }
+
+    function setWalletType(type) {
+      walletType = type;
+      el.walletBalanceBtn.classList.toggle('active', walletType === 'nubiPayBalance');
+      el.walletCoinBtn.classList.toggle('active', walletType === 'nubiPayCoin');
+      el.walletInfo.textContent = walletType === 'nubiPayCoin' ? 'NUBIAPAY COIN' : 'Saldo NUBIAPAY';
+    }
+
+    function setAmountMode(mode) {
+      amountMode = mode;
+      el.modeStaticBtn.classList.toggle('active', amountMode === 'static');
+      el.modeDynamicBtn.classList.toggle('active', amountMode === 'dynamic');
+      el.modeInfo.textContent = amountMode === 'dynamic' ? 'Dinamis' : 'Statis';
+    }
+
+    function collectForm() {
+      const amount = Math.max(0, Number(el.amountInput.value || 0));
+      const ttlMin = Math.max(1, Number(el.ttlInput.value || 15));
+      const label = String(el.labelInput.value || '').trim() || 'A0002';
+      const transferId = makeTransferId();
+      const qrToken = randomHex(64).toUpperCase();
+      const expiryAtMs = Date.now() + ttlMin * 60 * 1000;
+
+      return {
+        transferId,
+        qrToken,
+        qrTokenLabel: label,
+        creatorUid: currentUser.uid,
+        creatorName: currentUser.displayName || currentUser.email || 'NUBIASTORE USER',
+        creatorEmail: currentUser.email || '',
+        walletType,
+        amountMode,
+        amount,
+        ttlMin,
+        expiryAtMs,
+        status: 'active',
+        usedBy: null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+    }
+
+    async function saveTransfer(data) {
+      const ref = doc(db, 'qrTransfers', data.transferId);
+      await setDoc(ref, {
+        ...data,
+        expiryAt: data.expiryAtMs,
+        updatedAt: serverTimestamp()
+      });
+    }
+
+    async function createTransfer() {
+      if (!currentUser) {
+        toast('Login dulu');
+        return;
+      }
+
+      const data = collectForm();
+      activeTransfer = data;
+
+      await saveTransfer(data);
+
+      const payload = buildPayload(data);
+      renderQR(payload);
+      updateUI(data);
+
+      await updateDoc(doc(db, 'users', currentUser.uid), {
+        lastQrTransferId: data.transferId,
+        lastQrToken: data.qrToken,
+        lastQrUpdatedAt: serverTimestamp()
+      }).catch(() => {});
+
+      toast('QR berhasil dibuat');
+    }
+
+    async function refreshTransfer() {
+      await createTransfer();
+    }
+
+    async function saveDraft() {
+      if (!currentUser) {
+        toast('Login dulu');
+        return;
+      }
+      const data = collectForm();
+      activeTransfer = data;
+      await saveTransfer(data);
+      updateUI(data);
+      toast('Draft tersimpan');
+    }
+
+    async function copyTransferId() {
+      if (!activeTransfer?.transferId) {
+        toast('Belum ada QR');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(activeTransfer.transferId);
+        toast('ID transfer disalin');
+      } catch {
+        toast('Gagal menyalin');
+      }
+    }
+
+    async function shareTransfer() {
+      if (!activeTransfer?.transferId) {
+        toast('Buat QR dulu');
+        return;
+      }
+      const text = `QR Transfer NUBIASTORE\nID: ${activeTransfer.transferId}\nWallet: ${activeTransfer.walletType === 'nubiPayCoin' ? 'NUBIAPAY COIN' : 'NUBIAPAY BALANCE'}\nNominal: ${activeTransfer.amountMode === 'dynamic' ? 'Dinamis' : activeTransfer.amount}\nExpired: ${new Date(activeTransfer.expiryAtMs).toLocaleString('id-ID')}`;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: 'NUBIASTORE QR Transfer', text });
+        } else {
+          await navigator.clipboard.writeText(text);
+          toast('Detail QR disalin');
+        }
+      } catch {
+        toast('Bagikan dibatalkan');
+      }
+    }
+
+    el.walletBalanceBtn.addEventListener('click', () => setWalletType('nubiPayBalance'));
+    el.walletCoinBtn.addEventListener('click', () => setWalletType('nubiPayCoin'));
+    el.modeStaticBtn.addEventListener('click', () => setAmountMode('static'));
+    el.modeDynamicBtn.addEventListener('click', () => setAmountMode('dynamic'));
+    el.createBtn.addEventListener('click', createTransfer);
+    el.refreshBtn.addEventListener('click', refreshTransfer);
+    el.copyBtn.addEventListener('click', copyTransferId);
+    el.shareBtn.addEventListener('click', shareTransfer);
+    el.saveBtn.addEventListener('click', saveDraft);
+
+    el.backBtn.addEventListener('click', () => {
+      const back = sessionStorage.getItem('nubiastore_qr_back') || '/';
+      location.href = back;
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user || null;
+      if (user) {
+        el.statusChip.textContent = 'Login';
+        await ensureUserDoc(user.uid, user.email, user.displayName);
+        if (!activeTransfer) {
+          await createTransfer();
+        } else {
+          updateUI(activeTransfer);
+        }
+      } else {
+        el.statusChip.textContent = 'Belum login';
+      }
+    });
+
+    // Init default preview without QR until logged in
+    setWalletType('nubiPayBalance');
+    setAmountMode('static');
+
+    const preview = {
+      creatorUid: '—',
+      creatorName: 'NUBIASTORE USER',
+      qrToken: '—',
+      qrTokenLabel: 'A0002',
+      walletType,
+      amountMode,
+      amount: Number(el.amountInput.value || 0),
+      expiryAtMs: Date.now() + Number(el.ttlInput.value || 15) * 60000,
+      status: 'menunggu login'
+    };
+    updateUI(preview);
+    renderQR(JSON.stringify({
+      type: 'NUBIASTORE_INTERNAL_QR',
+      version: 1,
+      preview: true
+    }));
+  </script>
+</body>
+</html>
