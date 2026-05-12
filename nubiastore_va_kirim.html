@@ -1,14 +1,14 @@
 <!doctype html>
-
 <html lang="id">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>NUBIASTORE — Kirim Saldo</title>
+
   <style>
     /* ══════════════════════════════════
        DESIGN SYSTEM — iOS Luxury Banking
-    ══════════════════════════════════ */
+       ══════════════════════════════════ */
     :root {
       --bg:          #F2F2F7;
       --card:        #FFFFFF;
@@ -33,12 +33,17 @@
       --r:           14px;
       --r-xl:        20px;
     }
+
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
     html, body {
-  min-height:100%;
-  overflow-x:hidden;
-  overflow-y:auto;
-}
+      min-height:100%;
+      overflow-x:hidden;
+      overflow-y:auto;
+      overscroll-behavior-y:none;
+      -webkit-text-size-adjust:100%;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text',
                    'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
@@ -47,437 +52,435 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+
     button, input { font:inherit; border:none; background:none; }
     button { cursor:pointer; -webkit-tap-highlight-color:transparent; }
 
-```
-/* ── SCREENS ── */
-.screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100dvh;
+    /* ── SCREENS ── */
+    .screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
 
-  overflow-y: auto;
-  overflow-x: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      touch-action: pan-y;
 
-  -webkit-overflow-scrolling: touch;
-  background: var(--bg);
+      background: var(--bg);
 
-  transition:
-    transform .4s cubic-bezier(.32,.72,0,1),
-    opacity .4s cubic-bezier(.32,.72,0,1);
-}
-.s-active { transform:translateX(0);    opacity:1; z-index:10; }
-.s-right  { transform:translateX(100%); opacity:1; z-index:20; }
-.s-left   { transform:translateX(-26%); opacity:.55; pointer-events:none; z-index:5; }
+      transition:
+        transform .4s cubic-bezier(.32,.72,0,1),
+        opacity .4s cubic-bezier(.32,.72,0,1);
+    }
+    .s-active { transform:translateX(0);    opacity:1; z-index:10; }
+    .s-right  { transform:translateX(100%); opacity:1; z-index:20; }
+    .s-left   { transform:translateX(-26%); opacity:.55; pointer-events:none; z-index:5; }
 
-/* ── NAV ── */
-.nav {
-  position:sticky; top:0; z-index:50;
-  display:flex; align-items:center;
-  padding: max(env(safe-area-inset-top),14px) 16px 14px;
-  background: rgba(242,242,247,.92);
-  backdrop-filter: saturate(180%) blur(28px);
-  -webkit-backdrop-filter: saturate(180%) blur(28px);
-  border-bottom: .5px solid var(--sep);
-}
-.nav-btn {
-  display:flex; align-items:center; gap:3px;
-  color:var(--tint); font-size:.97rem; font-weight:400;
-  min-width:72px; padding:6px 0;
-}
-.nav-btn svg { width:21px; height:21px; }
-.nav-btn.r { justify-content:flex-end; font-weight:600; }
-.nav-title {
-  flex:1; text-align:center;
-  font-size:1.06rem; font-weight:700;
-  letter-spacing:-.3px; color:var(--text);
-}
+    /* ── NAV ── */
+    .nav {
+      position:sticky; top:0; z-index:50;
+      display:flex; align-items:center;
+      padding: max(env(safe-area-inset-top),14px) 16px 14px;
+      background: rgba(242,242,247,.92);
+      backdrop-filter: saturate(180%) blur(28px);
+      -webkit-backdrop-filter: saturate(180%) blur(28px);
+      border-bottom: .5px solid var(--sep);
+    }
+    .nav-btn {
+      display:flex; align-items:center; gap:3px;
+      color:var(--tint); font-size:.97rem; font-weight:400;
+      min-width:72px; padding:6px 0;
+    }
+    .nav-btn svg { width:21px; height:21px; }
+    .nav-btn.r { justify-content:flex-end; font-weight:600; }
+    .nav-title {
+      flex:1; text-align:center;
+      font-size:1.06rem; font-weight:700;
+      letter-spacing:-.3px; color:var(--text);
+    }
 
-.wrap { max-width:430px; margin:0 auto; padding:18px 16px 56px; }
+    .wrap { max-width:430px; margin:0 auto; padding:18px 16px 56px; }
 
-/* ── BALANCE CARD ── */
-.bal-card {
-  background: var(--card);
-  border-radius: var(--r-xl);
-  box-shadow: var(--shadow-md);
-  padding:18px 16px 16px;
-  margin-bottom:18px;
-}
-.bal-card-top {
-  display:flex; align-items:center; gap:13px; margin-bottom:16px;
-}
-.avatar {
-  width:46px; height:46px; border-radius:50%; flex-shrink:0;
-  background: linear-gradient(145deg,#007AFF 0%,#5AC8FA 100%);
-  display:flex; align-items:center; justify-content:center;
-  color:#fff; font-size:1.05rem; font-weight:800;
-  box-shadow: 0 3px 12px rgba(0,122,255,.25);
-}
-.bc-name  { font-size:1rem; font-weight:700; letter-spacing:-.2px; }
-.bc-uid   { font-size:.76rem; color:var(--text2); margin-top:2px; }
-.bc-badge {
-  margin-left:auto; flex-shrink:0;
-  padding:5px 12px; border-radius:99px;
-  font-size:.72rem; font-weight:700;
-}
-.bd-on  { background:var(--green-soft); color:var(--green); }
-.bd-off { background:var(--fill);       color:var(--text2); }
-.bal-row {
-  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
-}
-.bal-cell {
-  background: var(--fill2);
-  border: .5px solid var(--sep);
-  border-radius:12px;
-  padding:11px 10px 12px;
-}
-.bal-lbl {
-  font-size:.6rem; font-weight:700; text-transform:uppercase;
-  letter-spacing:.9px; color:var(--text3); margin-bottom:5px;
-}
-.bal-num { font-size:.92rem; font-weight:700; }
-.c-blue   { color:var(--tint);   }
-.c-green  { color:var(--green);  }
-.c-orange { color:var(--orange); }
+    /* ── BALANCE CARD ── */
+    .bal-card {
+      background: var(--card);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-md);
+      padding:18px 16px 16px;
+      margin-bottom:18px;
+    }
+    .bal-card-top {
+      display:flex; align-items:center; gap:13px; margin-bottom:16px;
+    }
+    .avatar {
+      width:46px; height:46px; border-radius:50%; flex-shrink:0;
+      background: linear-gradient(145deg,#007AFF 0%,#5AC8FA 100%);
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:1.05rem; font-weight:800;
+      box-shadow: 0 3px 12px rgba(0,122,255,.25);
+    }
+    .bc-name  { font-size:1rem; font-weight:700; letter-spacing:-.2px; }
+    .bc-uid   { font-size:.76rem; color:var(--text2); margin-top:2px; }
+    .bc-badge {
+      margin-left:auto; flex-shrink:0;
+      padding:5px 12px; border-radius:99px;
+      font-size:.72rem; font-weight:700;
+    }
+    .bd-on  { background:var(--green-soft); color:var(--green); }
+    .bd-off { background:var(--fill);       color:var(--text2); }
+    .bal-row {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+    }
+    .bal-cell {
+      background: var(--fill2);
+      border: .5px solid var(--sep);
+      border-radius:12px;
+      padding:11px 10px 12px;
+    }
+    .bal-lbl {
+      font-size:.6rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.9px; color:var(--text3); margin-bottom:5px;
+    }
+    .bal-num { font-size:.92rem; font-weight:700; }
+    .c-blue   { color:var(--tint);   }
+    .c-green  { color:var(--green);  }
+    .c-orange { color:var(--orange); }
 
-/* ── SECTION LABEL ── */
-.sec-lbl {
-  font-size:.8rem; font-weight:600; color:var(--text2);
-  padding:0 4px 9px; letter-spacing:-.1px;
-}
+    /* ── SECTION LABEL ── */
+    .sec-lbl {
+      font-size:.8rem; font-weight:600; color:var(--text2);
+      padding:0 4px 9px; letter-spacing:-.1px;
+    }
 
-/* ── METHOD PICKER ── */
-.method-list {
-  background: var(--card);
-  border-radius: var(--r-xl);
-  box-shadow: var(--shadow-md);
-  overflow:hidden; margin-bottom:18px;
-}
-.method-item {
-  display:flex; align-items:center;
-  padding:15px 16px; gap:14px;
-  border-bottom:.5px solid var(--sep);
-  width:100%; text-align:left;
-  transition: background .12s;
-}
-.method-item:last-child { border-bottom:none; }
-.method-item:active { background:var(--fill); }
-.method-item.selected { background:rgba(0,122,255,.04); }
-.mi-icon {
-  width:44px; height:44px; border-radius:14px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:.82rem; font-weight:800; flex-shrink:0;
-  letter-spacing:.5px;
-}
-.mi-pay    { background:linear-gradient(145deg,#007AFF,#5AC8FA); color:#fff; box-shadow:0 3px 10px rgba(0,122,255,.28); }
-.mi-coin   { background:linear-gradient(145deg,#34C759,#30D158); color:#fff; box-shadow:0 3px 10px rgba(52,199,89,.28); }
-.mi-key    { background:linear-gradient(145deg,#FF9500,#FFCC00); color:#fff; box-shadow:0 3px 10px rgba(255,149,0,.28); }
-.mi-text { flex:1; min-width:0; }
-.mi-name { font-size:.97rem; font-weight:700; letter-spacing:-.2px; }
-.mi-sub  { font-size:.78rem; color:var(--text2); margin-top:2px; }
-.mi-bal  { font-size:.84rem; font-weight:700; text-align:right; flex-shrink:0; }
-.radio-dot {
-  width:22px; height:22px; border-radius:50%; flex-shrink:0;
-  border:1.5px solid rgba(120,120,128,.3);
-  display:flex; align-items:center; justify-content:center;
-  transition:.15s;
-}
-.radio-dot.on {
-  background:var(--tint); border-color:var(--tint);
-}
-.radio-dot.on::after {
-  content:''; width:9px; height:9px; border-radius:50%; background:#fff;
-}
+    /* ── METHOD PICKER ── */
+    .method-list {
+      background: var(--card);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-md);
+      overflow:hidden; margin-bottom:18px;
+    }
+    .method-item {
+      display:flex; align-items:center;
+      padding:15px 16px; gap:14px;
+      border-bottom:.5px solid var(--sep);
+      width:100%; text-align:left;
+      transition: background .12s;
+    }
+    .method-item:last-child { border-bottom:none; }
+    .method-item:active { background:var(--fill); }
+    .method-item.selected { background:rgba(0,122,255,.04); }
+    .mi-icon {
+      width:44px; height:44px; border-radius:14px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:.82rem; font-weight:800; flex-shrink:0;
+      letter-spacing:.5px;
+    }
+    .mi-pay    { background:linear-gradient(145deg,#007AFF,#5AC8FA); color:#fff; box-shadow:0 3px 10px rgba(0,122,255,.28); }
+    .mi-coin   { background:linear-gradient(145deg,#34C759,#30D158); color:#fff; box-shadow:0 3px 10px rgba(52,199,89,.28); }
+    .mi-key    { background:linear-gradient(145deg,#FF9500,#FFCC00); color:#fff; box-shadow:0 3px 10px rgba(255,149,0,.28); }
+    .mi-text { flex:1; min-width:0; }
+    .mi-name { font-size:.97rem; font-weight:700; letter-spacing:-.2px; }
+    .mi-sub  { font-size:.78rem; color:var(--text2); margin-top:2px; }
+    .mi-bal  { font-size:.84rem; font-weight:700; text-align:right; flex-shrink:0; }
+    .radio-dot {
+      width:22px; height:22px; border-radius:50%; flex-shrink:0;
+      border:1.5px solid rgba(120,120,128,.3);
+      display:flex; align-items:center; justify-content:center;
+      transition:.15s;
+    }
+    .radio-dot.on {
+      background:var(--tint); border-color:var(--tint);
+    }
+    .radio-dot.on::after {
+      content:'';
+      width:9px; height:9px; border-radius:50%; background:#fff;
+    }
 
-/* ── VA INPUT CARD ── */
-.input-card {
-  background: var(--card);
-  border-radius: var(--r-xl);
-  box-shadow: var(--shadow-md);
-  padding:16px;
-  margin-bottom:18px;
-}
-.input-lbl {
-  font-size:.76rem; font-weight:600; color:var(--text2);
-  text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px;
-}
-.va-input-wrap {
-  display:flex; align-items:center; gap:10px;
-  background:var(--fill2);
-  border:1.5px solid var(--sep);
-  border-radius:14px;
-  padding:0 14px;
-  transition:border-color .15s, box-shadow .15s;
-}
-.va-input-wrap:focus-within {
-  border-color:rgba(0,122,255,.45);
-  box-shadow:0 0 0 4px rgba(0,122,255,.08);
-}
-.va-input-icon { color:var(--text3); flex-shrink:0; }
-.va-input-icon svg { width:18px; height:18px; display:block; }
-.va-input {
-  flex:1; padding:15px 0;
-  font-size:1.08rem; font-weight:600;
-  color:var(--text); outline:none;
-  background:transparent;
-  letter-spacing:1.8px;
-}
-.va-input::placeholder { color:var(--text3); letter-spacing:.5px; font-size:1rem; font-weight:500; }
-.va-clear {
-  color:var(--text3); flex-shrink:0; padding:4px;
-  opacity:0; transition:opacity .15s; pointer-events:none;
-}
-.va-clear.show { opacity:1; pointer-events:all; }
-.va-clear svg { width:17px; height:17px; display:block; }
+    /* ── VA INPUT CARD ── */
+    .input-card {
+      background: var(--card);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-md);
+      padding:16px;
+      margin-bottom:18px;
+    }
+    .input-lbl {
+      font-size:.76rem; font-weight:600; color:var(--text2);
+      text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px;
+    }
+    .va-input-wrap {
+      display:flex; align-items:center; gap:10px;
+      background:var(--fill2);
+      border:1.5px solid var(--sep);
+      border-radius:14px;
+      padding:0 14px;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    .va-input-wrap:focus-within {
+      border-color:rgba(0,122,255,.45);
+      box-shadow:0 0 0 4px rgba(0,122,255,.08);
+    }
+    .va-input-icon { color:var(--text3); flex-shrink:0; }
+    .va-input-icon svg { width:18px; height:18px; display:block; }
+    .va-input {
+      flex:1; padding:15px 0;
+      font-size:1.08rem; font-weight:600;
+      color:var(--text); outline:none;
+      background:transparent;
+      letter-spacing:1.8px;
+    }
+    .va-input::placeholder { color:var(--text3); letter-spacing:.5px; font-size:1rem; font-weight:500; }
+    .va-clear {
+      color:var(--text3); flex-shrink:0; padding:4px;
+      opacity:0; transition:opacity .15s; pointer-events:none;
+    }
+    .va-clear.show { opacity:1; pointer-events:all; }
+    .va-clear svg { width:17px; height:17px; display:block; }
 
-.hint-row {
-  display:flex; align-items:center; gap:6px;
-  margin-top:10px; padding:10px 12px;
-  background:rgba(0,122,255,.05);
-  border-radius:10px; font-size:.8rem; color:var(--tint); font-weight:600;
-}
-.hint-row svg { width:14px; height:14px; flex-shrink:0; }
+    .hint-row {
+      display:flex; align-items:center; gap:6px;
+      margin-top:10px; padding:10px 12px;
+      background:rgba(0,122,255,.05);
+      border-radius:10px; font-size:.8rem; color:var(--tint); font-weight:600;
+    }
+    .hint-row svg { width:14px; height:14px; flex-shrink:0; }
 
-/* ── BUTTONS ── */
-.btn-primary {
-  width:100%; border-radius:14px; padding:16px;
-  background:var(--tint); color:#fff;
-  font-size:1.04rem; font-weight:700;
-  box-shadow:0 6px 20px rgba(0,122,255,.22);
-  transition:opacity .12s, transform .12s;
-}
-.btn-primary:active:not(:disabled) { opacity:.78; transform:scale(.98); }
-.btn-primary:disabled {
-  background:rgba(120,120,128,.18);
-  color:rgba(60,60,67,.38);
-  box-shadow:none; cursor:not-allowed;
-}
-.btn-ghost {
-  width:100%; border-radius:14px; padding:16px;
-  background:var(--fill); color:var(--tint);
-  font-size:1.04rem; font-weight:700;
-  transition:opacity .12s, transform .12s;
-}
-.btn-ghost:active { opacity:.72; transform:scale(.98); }
-.btn-icon {
-  display:flex; align-items:center; justify-content:center; gap:7px;
-}
+    /* ── BUTTONS ── */
+    .btn-primary {
+      width:100%; border-radius:14px; padding:16px;
+      background:var(--tint); color:#fff;
+      font-size:1.04rem; font-weight:700;
+      box-shadow:0 6px 20px rgba(0,122,255,.22);
+      transition:opacity .12s, transform .12s;
+    }
+    .btn-primary:active:not(:disabled) { opacity:.78; transform:scale(.98); }
+    .btn-primary:disabled {
+      background:rgba(120,120,128,.18);
+      color:rgba(60,60,67,.38);
+      box-shadow:none; cursor:not-allowed;
+    }
+    .btn-ghost {
+      width:100%; border-radius:14px; padding:16px;
+      background:var(--fill); color:var(--tint);
+      font-size:1.04rem; font-weight:700;
+      transition:opacity .12s, transform .12s;
+    }
+    .btn-ghost:active { opacity:.72; transform:scale(.98); }
+    .btn-icon {
+      display:flex; align-items:center; justify-content:center; gap:7px;
+    }
 
-/* ── LOADING OVERLAY ── */
-.loading-overlay {
-  position:fixed; inset:0; z-index:300;
-  background:rgba(242,242,247,.72);
-  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:14px; opacity:0; pointer-events:none; transition:opacity .2s;
-}
-.loading-overlay.show { opacity:1; pointer-events:all; }
-.loader {
-  width:44px; height:44px; border-radius:50%;
-  border:3px solid rgba(0,122,255,.2);
-  border-top-color:var(--tint);
-  animation:rot .6s linear infinite;
-}
-.loading-lbl { font-size:.9rem; font-weight:600; color:var(--text2); }
-@keyframes rot { to { transform:rotate(360deg); } }
+    /* ── LOADING OVERLAY ── */
+    .loading-overlay {
+      position:fixed; inset:0; z-index:300;
+      background:rgba(242,242,247,.72);
+      backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:14px; opacity:0; pointer-events:none; transition:opacity .2s;
+    }
+    .loading-overlay.show { opacity:1; pointer-events:all; }
+    .loader {
+      width:44px; height:44px; border-radius:50%;
+      border:3px solid rgba(0,122,255,.2);
+      border-top-color:var(--tint);
+      animation:rot .6s linear infinite;
+    }
+    .loading-lbl { font-size:.9rem; font-weight:600; color:var(--text2); }
+    @keyframes rot { to { transform:rotate(360deg); } }
 
-/* ── SCREEN 2 — CONFIRM ── */
-.recipient-card {
-  background:var(--card); border-radius:var(--r-xl);
-  box-shadow:var(--shadow-md); overflow:hidden;
-  margin-bottom:14px;
-}
-.rc-row {
-  display:flex; align-items:center; gap:14px;
-  padding:16px; border-bottom:.5px solid var(--sep);
-}
-.rc-row:last-child { border-bottom:none; }
-.rc-icon {
-  width:46px; height:46px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  color:#fff; font-size:1rem; font-weight:800;
-}
-.rc-icon-tint   { background:linear-gradient(145deg,#007AFF,#5AC8FA); box-shadow:0 3px 10px rgba(0,122,255,.25); }
-.rc-icon-purple { background:linear-gradient(145deg,#5856D6,#AF52DE); box-shadow:0 3px 10px rgba(88,86,214,.25); }
-.rc-name { font-size:.97rem; font-weight:700; letter-spacing:-.2px; }
-.rc-sub  { font-size:.78rem; color:var(--text2); margin-top:2px; }
+    /* ── SCREEN 2 — CONFIRM ── */
+    .recipient-card {
+      background:var(--card); border-radius:var(--r-xl);
+      box-shadow:var(--shadow-md); overflow:hidden;
+      margin-bottom:14px;
+    }
+    .rc-row {
+      display:flex; align-items:center; gap:14px;
+      padding:16px; border-bottom:.5px solid var(--sep);
+    }
+    .rc-row:last-child { border-bottom:none; }
+    .rc-icon {
+      width:46px; height:46px; border-radius:50%; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:1rem; font-weight:800;
+    }
+    .rc-icon-tint   { background:linear-gradient(145deg,#007AFF,#5AC8FA); box-shadow:0 3px 10px rgba(0,122,255,.25); }
+    .rc-icon-purple { background:linear-gradient(145deg,#5856D6,#AF52DE); box-shadow:0 3px 10px rgba(88,86,214,.25); }
+    .rc-name { font-size:.97rem; font-weight:700; letter-spacing:-.2px; }
+    .rc-sub  { font-size:.78rem; color:var(--text2); margin-top:2px; }
 
-/* Amount area */
-.amt-card {
-  background:var(--card); border-radius:var(--r-xl);
-  box-shadow:var(--shadow-md);
-  padding:20px 18px 18px; margin-bottom:14px;
-}
-.amt-lbl {
-  font-size:.78rem; font-weight:500; color:var(--text2); margin-bottom:10px;
-}
-.amt-input-wrap {
-  display:flex; align-items:baseline; gap:6px; margin-bottom:14px;
-}
-.amt-currency {
-  font-size:1.5rem; font-weight:800; color:var(--text3);
-}
-.amt-input {
-  flex:1; font-size:2.1rem; font-weight:800;
-  letter-spacing:-.5px; color:var(--text);
-  outline:none; min-width:0;
-  border-bottom:2px solid var(--sep);
-  padding-bottom:4px;
-  transition:border-color .15s;
-}
-.amt-input:focus { border-color:var(--tint); }
-.amt-input::placeholder { color:var(--text3); }
-.amt-div { height:.5px; background:var(--sep); margin-bottom:14px; }
-.warn-box {
-  display:flex; gap:9px; padding:12px;
-  background:var(--red-soft); border-radius:11px;
-  margin-bottom:12px;
-}
-.warn-box svg { width:16px; height:16px; flex-shrink:0; margin-top:1px; stroke:var(--red); fill:none; stroke-width:2; stroke-linecap:round; }
-.warn-box-txt { font-size:.83rem; color:var(--red); line-height:1.45; }
-.warn-box-txt b { font-weight:700; display:block; margin-bottom:1px; }
-.avail-row {
-  font-size:.84rem; color:var(--text2);
-}
-.avail-row span { font-weight:700; color:var(--text); }
+    /* Amount area */
+    .amt-card {
+      background:var(--card); border-radius:var(--r-xl);
+      box-shadow:var(--shadow-md);
+      padding:20px 18px 18px; margin-bottom:14px;
+    }
+    .amt-lbl {
+      font-size:.78rem; font-weight:500; color:var(--text2); margin-bottom:10px;
+    }
+    .amt-input-wrap {
+      display:flex; align-items:baseline; gap:6px; margin-bottom:14px;
+    }
+    .amt-currency {
+      font-size:1.5rem; font-weight:800; color:var(--text3);
+    }
+    .amt-input {
+      flex:1; font-size:2.1rem; font-weight:800;
+      letter-spacing:-.5px; color:var(--text);
+      outline:none; min-width:0;
+      border-bottom:2px solid var(--sep);
+      padding-bottom:4px;
+      transition:border-color .15s;
+    }
+    .amt-input:focus { border-color:var(--tint); }
+    .amt-input::placeholder { color:var(--text3); }
+    .amt-div { height:.5px; background:var(--sep); margin-bottom:14px; }
+    .warn-box {
+      display:flex; gap:9px; padding:12px;
+      background:var(--red-soft); border-radius:11px;
+      margin-bottom:12px;
+    }
+    .warn-box svg { width:16px; height:16px; flex-shrink:0; margin-top:1px; stroke:var(--red); fill:none; stroke-width:2; stroke-linecap:round; }
+    .warn-box-txt { font-size:.83rem; color:var(--red); line-height:1.45; }
+    .warn-box-txt b { font-weight:700; display:block; margin-bottom:1px; }
+    .avail-row {
+      font-size:.84rem; color:var(--text2);
+    }
+    .avail-row span { font-weight:700; color:var(--text); }
 
-/* Info table */
-.info-card {
-  background:var(--card); border-radius:var(--r-xl);
-  box-shadow:var(--shadow-md); overflow:hidden;
-  margin-bottom:14px;
-}
-.info-row {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:13px 16px; border-bottom:.5px solid var(--sep); gap:16px;
-}
-.info-row:last-child { border-bottom:none; }
-.info-k { font-size:.9rem; color:var(--text2); }
-.info-v { font-size:.9rem; font-weight:600; text-align:right; }
-.info-v.grn { color:var(--green); }
-.info-v.blu { color:var(--tint); }
+    /* Info table */
+    .info-card {
+      background:var(--card); border-radius:var(--r-xl);
+      box-shadow:var(--shadow-md); overflow:hidden;
+      margin-bottom:14px;
+    }
+    .info-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:13px 16px; border-bottom:.5px solid var(--sep); gap:16px;
+    }
+    .info-row:last-child { border-bottom:none; }
+    .info-k { font-size:.9rem; color:var(--text2); }
+    .info-v { font-size:.9rem; font-weight:600; text-align:right; }
+    .info-v.grn { color:var(--green); }
+    .info-v.blu { color:var(--tint); }
 
-/* ── RECEIPT SHEET ── */
-.rcpt-bg {
-  position:fixed; inset:0; background:rgba(0,0,0,.45);
-  z-index:400; opacity:0; pointer-events:none; transition:opacity .3s;
-}
-.rcpt-bg.show { opacity:1; pointer-events:all; }
-.rcpt-sheet {
-  position:fixed; bottom:0; left:0; right:0;
-  max-height:94vh; background:#fff;
-  border-radius:22px 22px 0 0;
-  z-index:401; transform:translateY(105%);
-  transition:transform .42s cubic-bezier(.32,.72,0,1);
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
-}
-.rcpt-sheet.show { transform:translateY(0); }
-.rcpt-handle {
-  width:38px; height:4px; background:rgba(60,60,67,.16);
-  border-radius:99px; margin:13px auto 0;
-}
-.rcpt-body { padding:8px 20px 52px; max-width:430px; margin:0 auto; }
+    /* ── RECEIPT SHEET ── */
+    .rcpt-bg {
+      position:fixed; inset:0; background:rgba(0,0,0,.45);
+      z-index:400; opacity:0; pointer-events:none; transition:opacity .3s;
+    }
+    .rcpt-bg.show { opacity:1; pointer-events:all; }
+    .rcpt-sheet {
+      position:fixed; bottom:0; left:0; right:0;
+      max-height:94vh; background:#fff;
+      border-radius:22px 22px 0 0;
+      z-index:401; transform:translateY(105%);
+      transition:transform .42s cubic-bezier(.32,.72,0,1);
+      overflow-y:auto; -webkit-overflow-scrolling:touch;
+    }
+    .rcpt-sheet.show { transform:translateY(0); }
+    .rcpt-handle {
+      width:38px; height:4px; background:rgba(60,60,67,.16);
+      border-radius:99px; margin:13px auto 0;
+    }
+    .rcpt-body { padding:8px 20px 52px; max-width:430px; margin:0 auto; }
 
-.rcpt-icon-wrap {
-  width:72px; height:72px; border-radius:50%;
-  background:var(--green-soft);
-  display:flex; align-items:center; justify-content:center;
-  margin:14px auto 14px;
-}
-.rcpt-icon-wrap svg { width:36px; height:36px; }
+    .rcpt-icon-wrap {
+      width:72px; height:72px; border-radius:50%;
+      background:var(--green-soft);
+      display:flex; align-items:center; justify-content:center;
+      margin:14px auto 14px;
+    }
+    .rcpt-icon-wrap svg { width:36px; height:36px; }
 
-.rcpt-title { text-align:center; font-size:1.3rem; font-weight:800; margin-bottom:4px; }
-.rcpt-sub   { text-align:center; font-size:.86rem; color:var(--text2); line-height:1.45; margin-bottom:16px; }
+    .rcpt-title { text-align:center; font-size:1.3rem; font-weight:800; margin-bottom:4px; }
+    .rcpt-sub   { text-align:center; font-size:.86rem; color:var(--text2); line-height:1.45; margin-bottom:16px; }
 
-.rcpt-amt-block { text-align:center; margin-bottom:14px; }
-.rcpt-amt       { font-size:2.1rem; font-weight:800; color:var(--green); letter-spacing:-.5px; }
-.rcpt-amt-meta  { font-size:.76rem; color:var(--text3); margin-top:3px; }
+    .rcpt-amt-block { text-align:center; margin-bottom:14px; }
+    .rcpt-amt       { font-size:2.1rem; font-weight:800; color:var(--green); letter-spacing:-.5px; }
+    .rcpt-amt-meta  { font-size:.76rem; color:var(--text3); margin-top:3px; }
 
-.status-pill {
-  display:flex; align-items:center; justify-content:center; gap:5px;
-  width:fit-content; margin:0 auto 18px;
-  background:var(--green-soft); color:var(--green);
-  font-size:.76rem; font-weight:700;
-  padding:6px 14px; border-radius:99px;
-}
-.status-pill svg { width:10px; height:10px; }
+    .status-pill {
+      display:flex; align-items:center; justify-content:center; gap:5px;
+      width:fit-content; margin:0 auto 18px;
+      background:var(--green-soft); color:var(--green);
+      font-size:.76rem; font-weight:700;
+      padding:6px 14px; border-radius:99px;
+    }
+    .status-pill svg { width:10px; height:10px; }
 
-.rcpt-table {
-  background:rgba(120,120,128,.06);
-  border-radius:16px; overflow:hidden; margin-bottom:16px;
-}
-.rcpt-row {
-  display:flex; justify-content:space-between; align-items:flex-start;
-  padding:12px 15px; border-bottom:.5px solid rgba(60,60,67,.07); gap:16px;
-}
-.rcpt-row:last-child { border-bottom:none; }
-.rk { font-size:.85rem; color:var(--text2); flex-shrink:0; }
-.rv { font-size:.85rem; font-weight:600; text-align:right; word-break:break-word; }
-.rv.grn { color:var(--green); }
+    .rcpt-table {
+      background:rgba(120,120,128,.06);
+      border-radius:16px; overflow:hidden; margin-bottom:16px;
+    }
+    .rcpt-row {
+      display:flex; justify-content:space-between; align-items:flex-start;
+      padding:12px 15px; border-bottom:.5px solid rgba(60,60,67,.07); gap:16px;
+    }
+    .rcpt-row:last-child { border-bottom:none; }
+    .rk { font-size:.85rem; color:var(--text2); flex-shrink:0; }
+    .rv { font-size:.85rem; font-weight:600; text-align:right; word-break:break-word; }
+    .rv.grn { color:var(--green); }
 
-.rcpt-ref {
-  text-align:center; margin-bottom:20px;
-  padding:13px 16px; background:var(--fill2);
-  border:1px dashed var(--sep); border-radius:12px;
-}
-.rcpt-ref-lbl { font-size:.68rem; color:var(--text3); text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; }
-.rcpt-ref-val { font-size:.8rem; font-weight:700; letter-spacing:.4px; word-break:break-all; font-family:ui-monospace,monospace; }
+    .rcpt-ref {
+      text-align:center; margin-bottom:20px;
+      padding:13px 16px; background:var(--fill2);
+      border:1px dashed var(--sep); border-radius:12px;
+    }
+    .rcpt-ref-lbl { font-size:.68rem; color:var(--text3); text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; }
+    .rcpt-ref-val { font-size:.8rem; font-weight:700; letter-spacing:.4px; word-break:break-all; font-family:ui-monospace,monospace; }
 
-.btn-row { display:grid; grid-template-columns:1fr; gap:10px; }
+    .btn-row { display:grid; grid-template-columns:1fr; gap:10px; }
 
-/* ── TOAST ── */
-.toast {
-  position:fixed; left:50%; bottom:24px;
-  transform:translateX(-50%) translateY(16px);
-  opacity:0; pointer-events:none;
-  background:rgba(28,28,30,.9); color:#fff;
-  padding:11px 20px; border-radius:99px;
-  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
-  font-size:.87rem; font-weight:600; white-space:nowrap;
-  z-index:600; transition:opacity .2s, transform .2s;
-}
-.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    /* ── TOAST ── */
+    .toast {
+      position:fixed; left:50%; bottom:24px;
+      transform:translateX(-50%) translateY(16px);
+      opacity:0; pointer-events:none;
+      background:rgba(28,28,30,.9); color:#fff;
+      padding:11px 20px; border-radius:99px;
+      backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+      font-size:.87rem; font-weight:600; white-space:nowrap;
+      z-index:600; transition:opacity .2s, transform .2s;
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-/* ── QUICK AMOUNTS ── */
-.quick-row {
-  display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;
-}
-.quick-chip {
-  padding:7px 14px; border-radius:99px;
-  background:var(--fill); color:var(--tint);
-  font-size:.8rem; font-weight:700;
-  border:.5px solid var(--sep);
-  transition:background .12s;
-}
-.quick-chip:active { background:var(--tint-soft); }
+    /* ── QUICK AMOUNTS ── */
+    .quick-row {
+      display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;
+    }
+    .quick-chip {
+      padding:7px 14px; border-radius:99px;
+      background:var(--fill); color:var(--tint);
+      font-size:.8rem; font-weight:700;
+      border:.5px solid var(--sep);
+      transition:background .12s;
+    }
+    .quick-chip:active { background:var(--tint-soft); }
 
-/* ── SPIN INLINE ── */
-.spin {
-  display:inline-block; width:18px; height:18px;
-  border:2.5px solid rgba(255,255,255,.3);
-  border-top-color:#fff; border-radius:50%;
-  animation:rot .65s linear infinite;
-  vertical-align:middle;
-}
+    /* ── SPIN INLINE ── */
+    .spin {
+      display:inline-block; width:18px; height:18px;
+      border:2.5px solid rgba(255,255,255,.3);
+      border-top-color:#fff; border-radius:50%;
+      animation:rot .65s linear infinite;
+      vertical-align:middle;
+    }
 
-@media(max-width:390px) {
-  .bal-lbl { font-size:.56rem; }
-  .rcpt-amt { font-size:1.82rem; }
-  .amt-input { font-size:1.8rem; }
-}
-```
-
+    @media(max-width:390px) {
+      .bal-lbl { font-size:.56rem; }
+      .rcpt-amt { font-size:1.82rem; }
+      .amt-input { font-size:1.8rem; }
+    }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════
-  SCREEN 1 — PILIH METODE + NOMOR VA
-══════════════════════════════ -->
-
+<!-- SCREEN 1 -->
 <div id="s1" class="screen s-active">
   <div class="nav">
     <button class="nav-btn" id="backBtn">
@@ -489,104 +492,95 @@
   </div>
 
   <div class="wrap">
-
-
-<!-- Balance -->
-<div class="bal-card">
-  <div class="bal-card-top">
-    <div class="avatar" id="av1">?</div>
-    <div style="min-width:0; flex:1">
-      <div class="bc-name" id="acName">Memuat…</div>
-      <div class="bc-uid"  id="acUid">—</div>
+    <!-- Balance -->
+    <div class="bal-card">
+      <div class="bal-card-top">
+        <div class="avatar" id="av1">?</div>
+        <div style="min-width:0; flex:1">
+          <div class="bc-name" id="acName">Memuat…</div>
+          <div class="bc-uid"  id="acUid">—</div>
+        </div>
+        <div class="bc-badge bd-off" id="acBadge">Offline</div>
+      </div>
+      <div class="bal-row">
+        <div class="bal-cell">
+          <div class="bal-lbl">NubiaPay</div>
+          <div class="bal-num c-blue" id="b1">Rp 0</div>
+        </div>
+        <div class="bal-cell">
+          <div class="bal-lbl">NubiaCoin</div>
+          <div class="bal-num c-green" id="b2">0</div>
+        </div>
+        <div class="bal-cell">
+          <div class="bal-lbl">NubiaKey</div>
+          <div class="bal-num c-orange" id="b3">0</div>
+        </div>
+      </div>
     </div>
-    <div class="bc-badge bd-off" id="acBadge">Offline</div>
-  </div>
-  <div class="bal-row">
-    <div class="bal-cell">
-      <div class="bal-lbl">NubiaPay</div>
-      <div class="bal-num c-blue"   id="b1">Rp 0</div>
-    </div>
-    <div class="bal-cell">
-      <div class="bal-lbl">NubiaCoin</div>
-      <div class="bal-num c-green"  id="b2">0</div>
-    </div>
-    <div class="bal-cell">
-      <div class="bal-lbl">NubiaKey</div>
-      <div class="bal-num c-orange" id="b3">0</div>
-    </div>
-  </div>
-</div>
 
-<!-- Method selection -->
-<div class="sec-lbl">Jenis Saldo yang Dikirim</div>
-<div class="method-list">
+    <!-- Method selection -->
+    <div class="sec-lbl">Jenis Saldo yang Dikirim</div>
+    <div class="method-list">
+      <button class="method-item selected" id="mPay" data-method="nubiapay">
+        <div class="mi-icon mi-pay">PAY</div>
+        <div class="mi-text">
+          <div class="mi-name">Nubiapay</div>
+          <div class="mi-sub">Saldo utama NUBIASTORE</div>
+        </div>
+        <div class="mi-bal c-blue" id="mPayBal">Rp 0</div>
+        <div class="radio-dot on" id="rPay"></div>
+      </button>
 
-  <button class="method-item selected" id="mPay" data-method="nubiapay">
-    <div class="mi-icon mi-pay">PAY</div>
-    <div class="mi-text">
-      <div class="mi-name">Nubiapay</div>
-      <div class="mi-sub">Saldo utama NUBIASTORE</div>
+      <button class="method-item" id="mCoin" data-method="nubiacoin">
+        <div class="mi-icon mi-coin">COIN</div>
+        <div class="mi-text">
+          <div class="mi-name">Nubiacoin</div>
+          <div class="mi-sub">Koin internal NUBIASTORE</div>
+        </div>
+        <div class="mi-bal c-green" id="mCoinBal">0 Coin</div>
+        <div class="radio-dot" id="rCoin"></div>
+      </button>
+
+      <button class="method-item" id="mKey" data-method="nubiakey">
+        <div class="mi-icon mi-key">KEY</div>
+        <div class="mi-text">
+          <div class="mi-name">Nubiakey</div>
+          <div class="mi-sub">Saldo identitas tambahan</div>
+        </div>
+        <div class="mi-bal c-orange" id="mKeyBal">0 Key</div>
+        <div class="radio-dot" id="rKey"></div>
+      </button>
     </div>
-    <div class="mi-bal c-blue" id="mPayBal">Rp 0</div>
-    <div class="radio-dot on" id="rPay"></div>
-  </button>
 
-  <button class="method-item" id="mCoin" data-method="nubiacoin">
-    <div class="mi-icon mi-coin">COIN</div>
-    <div class="mi-text">
-      <div class="mi-name">Nubiacoin</div>
-      <div class="mi-sub">Koin internal NUBIASTORE</div>
+    <!-- VA Input -->
+    <div class="sec-lbl">Nomor Virtual Account Penerima</div>
+    <div class="input-card">
+      <div class="input-lbl">Masukkan nomor VA</div>
+      <div class="va-input-wrap">
+        <div class="va-input-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="7.5" cy="14.5" r=".5" fill="currentColor"/><circle cx="11.5" cy="14.5" r=".5" fill="currentColor"/></svg>
+        </div>
+        <input class="va-input" id="vaInput" type="tel"
+               inputmode="numeric" pattern="[0-9 ]*"
+               placeholder="Mis. 11 0000 0000 0000 00" maxlength="22" />
+        <button class="va-clear" id="vaClear">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </button>
+      </div>
+      <div class="hint-row">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>
+        Nomor VA unik 16 digit yang diberikan kepada penerima
+      </div>
     </div>
-    <div class="mi-bal c-green" id="mCoinBal">0 Coin</div>
-    <div class="radio-dot" id="rCoin"></div>
-  </button>
 
-  <button class="method-item" id="mKey" data-method="nubiakey">
-    <div class="mi-icon mi-key">KEY</div>
-    <div class="mi-text">
-      <div class="mi-name">Nubiakey</div>
-      <div class="mi-sub">Saldo identitas tambahan</div>
-    </div>
-    <div class="mi-bal c-orange" id="mKeyBal">0 Key</div>
-    <div class="radio-dot" id="rKey"></div>
-  </button>
-
-</div>
-
-<!-- VA Input -->
-<div class="sec-lbl">Nomor Virtual Account Penerima</div>
-<div class="input-card">
-  <div class="input-lbl">Masukkan nomor VA</div>
-  <div class="va-input-wrap">
-    <div class="va-input-icon">
-      <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="7.5" cy="14.5" r=".5" fill="currentColor"/><circle cx="11.5" cy="14.5" r=".5" fill="currentColor"/></svg>
-    </div>
-    <input class="va-input" id="vaInput" type="tel"
-           inputmode="numeric" pattern="[0-9 ]*"
-           placeholder="Mis. 11 0000 0000 0000 00" maxlength="22" />
-    <button class="va-clear" id="vaClear">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    <button class="btn-primary btn-icon" id="lookupBtn" disabled>
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Cari Penerima
     </button>
   </div>
-  <div class="hint-row">
-    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>
-    Nomor VA unik 16 digit yang diberikan kepada penerima
-  </div>
 </div>
 
-<button class="btn-primary btn-icon" id="lookupBtn" disabled>
-  <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-  Cari Penerima
-</button>
-
-
-  </div>
-</div><!-- /s1 -->
-
-<!-- ══════════════════════════════
-  SCREEN 2 — KONFIRMASI TRANSFER
-══════════════════════════════ -->
-
+<!-- SCREEN 2 -->
 <div id="s2" class="screen s-right">
   <div class="nav">
     <button class="nav-btn" id="s2Back">
@@ -598,160 +592,144 @@
   </div>
 
   <div class="wrap">
+    <!-- Recipient -->
+    <div class="recipient-card">
+      <div class="rc-row">
+        <div class="rc-icon rc-icon-tint" id="c2Av">?</div>
+        <div style="flex:1; min-width:0">
+          <div class="rc-name" id="c2Name">—</div>
+          <div class="rc-sub">NUBIASTORE Internal Transfer</div>
+        </div>
+      </div>
+      <div class="rc-row">
+        <div class="rc-icon rc-icon-purple" style="font-size:.62rem;font-weight:800">VA</div>
+        <div style="flex:1; min-width:0">
+          <div class="rc-name" style="font-family:ui-monospace,monospace;font-size:.9rem;letter-spacing:1.2px" id="c2Va">—</div>
+          <div class="rc-sub" id="c2MethodSub">—</div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Amount -->
+    <div class="amt-card">
+      <div class="amt-lbl">Nominal Transaksi</div>
+      <div class="amt-input-wrap">
+        <span class="amt-currency" id="c2Currency">Rp</span>
+        <input class="amt-input" id="amtInput" type="number"
+               inputmode="decimal" placeholder="0" min="1000" step="1000" />
+      </div>
 
-<!-- Recipient -->
-<div class="recipient-card">
-  <div class="rc-row">
-    <div class="rc-icon rc-icon-tint" id="c2Av">?</div>
-    <div style="flex:1; min-width:0">
-      <div class="rc-name" id="c2Name">—</div>
-      <div class="rc-sub">NUBIASTORE Internal Transfer</div>
+      <div class="quick-row" id="quickRow">
+        <button class="quick-chip" data-v="10000">10K</button>
+        <button class="quick-chip" data-v="25000">25K</button>
+        <button class="quick-chip" data-v="50000">50K</button>
+        <button class="quick-chip" data-v="100000">100K</button>
+        <button class="quick-chip" data-v="200000">200K</button>
+        <button class="quick-chip" data-v="500000">500K</button>
+      </div>
+
+      <div class="amt-div" style="margin-top:14px"></div>
+
+      <div id="warnInsuf" class="warn-box" style="display:none">
+        <svg stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="#FF3B30"/></svg>
+        <div class="warn-box-txt">
+          <b>Saldo tidak mencukupi</b>
+          Silakan tambah saldo atau kurangi nominal transfer.
+        </div>
+      </div>
+
+      <div class="avail-row">Saldo tersedia: <span id="c2Avail">—</span></div>
+    </div>
+
+    <!-- Info rows -->
+    <div class="info-card">
+      <div class="info-row">
+        <div class="info-k">Biaya Transaksi</div>
+        <div class="info-v grn">Gratis</div>
+      </div>
+      <div class="info-row">
+        <div class="info-k">Jenis Saldo</div>
+        <div class="info-v" id="c2WalletType">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-k">Nomor VA</div>
+        <div class="info-v" style="font-family:ui-monospace,monospace; letter-spacing:.8px; font-size:.84rem" id="c2VaFmt">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-k">Penerima</div>
+        <div class="info-v" id="c2RecipientUid" style="font-size:.78rem; font-family:ui-monospace,monospace; letter-spacing:.4px">—</div>
+      </div>
+    </div>
+
+    <!-- Platform -->
+    <div class="info-card" style="margin-bottom:24px">
+      <div class="info-row">
+        <div class="info-k">Platform</div>
+        <div class="info-v blu">NUBIASTORE</div>
+      </div>
+      <div class="info-row">
+        <div class="info-k">Nama Acquirer</div>
+        <div class="info-v">NUBIAPAY INTERNAL</div>
+      </div>
+      <div class="info-row">
+        <div class="info-k">Tipe Transfer</div>
+        <div class="info-v">VA Internal</div>
+      </div>
+    </div>
+
+    <button class="btn-primary btn-icon" id="confirmBtn" disabled>Lanjut</button>
+    <div style="text-align:center; margin-top:12px; font-size:.76rem; color:var(--text3)">
+      Transfer tidak dapat dibatalkan setelah dikonfirmasi
     </div>
   </div>
-  <div class="rc-row">
-    <div class="rc-icon rc-icon-purple" style="font-size:.62rem;font-weight:800">VA</div>
-    <div style="flex:1; min-width:0">
-      <div class="rc-name" style="font-family:ui-monospace,monospace;font-size:.9rem;letter-spacing:1.2px" id="c2Va">—</div>
-      <div class="rc-sub" id="c2MethodSub">—</div>
-    </div>
-  </div>
 </div>
 
-<!-- Amount -->
-<div class="amt-card">
-  <div class="amt-lbl">Nominal Transaksi</div>
-  <div class="amt-input-wrap">
-    <span class="amt-currency" id="c2Currency">Rp</span>
-    <input class="amt-input" id="amtInput" type="number"
-           inputmode="decimal" placeholder="0" min="1000" step="1000" />
-  </div>
-
-  <!-- Quick chips -->
-  <div class="quick-row" id="quickRow">
-    <button class="quick-chip" data-v="10000">10K</button>
-    <button class="quick-chip" data-v="25000">25K</button>
-    <button class="quick-chip" data-v="50000">50K</button>
-    <button class="quick-chip" data-v="100000">100K</button>
-    <button class="quick-chip" data-v="200000">200K</button>
-    <button class="quick-chip" data-v="500000">500K</button>
-  </div>
-
-  <div class="amt-div" style="margin-top:14px"></div>
-
-  <!-- Insufficient warning -->
-  <div id="warnInsuf" class="warn-box" style="display:none">
-    <svg stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="#FF3B30"/></svg>
-    <div class="warn-box-txt">
-      <b>Saldo tidak mencukupi</b>
-      Silakan tambah saldo atau kurangi nominal transfer.
-    </div>
-  </div>
-
-  <div class="avail-row">Saldo tersedia: <span id="c2Avail">—</span></div>
-</div>
-
-<!-- Info rows -->
-<div class="info-card">
-  <div class="info-row">
-    <div class="info-k">Biaya Transaksi</div>
-    <div class="info-v grn">Gratis</div>
-  </div>
-  <div class="info-row">
-    <div class="info-k">Jenis Saldo</div>
-    <div class="info-v" id="c2WalletType">—</div>
-  </div>
-  <div class="info-row">
-    <div class="info-k">Nomor VA</div>
-    <div class="info-v" style="font-family:ui-monospace,monospace; letter-spacing:.8px; font-size:.84rem" id="c2VaFmt">—</div>
-  </div>
-  <div class="info-row">
-    <div class="info-k">Penerima</div>
-    <div class="info-v" id="c2RecipientUid" style="font-size:.78rem; font-family:ui-monospace,monospace; letter-spacing:.4px">—</div>
-  </div>
-</div>
-
-<!-- Platform -->
-<div class="info-card" style="margin-bottom:24px">
-  <div class="info-row">
-    <div class="info-k">Platform</div>
-    <div class="info-v blu">NUBIASTORE</div>
-  </div>
-  <div class="info-row">
-    <div class="info-k">Nama Acquirer</div>
-    <div class="info-v">NUBIAPAY INTERNAL</div>
-  </div>
-  <div class="info-row">
-    <div class="info-k">Tipe Transfer</div>
-    <div class="info-v">VA Internal</div>
-  </div>
-</div>
-
-<button class="btn-primary btn-icon" id="confirmBtn" disabled>
-  Lanjut
-</button>
-<div style="text-align:center; margin-top:12px; font-size:.76rem; color:var(--text3)">
-  Transfer tidak dapat dibatalkan setelah dikonfirmasi
-</div>
-
-
-  </div>
-</div><!-- /s2 -->
-
-<!-- ══════════════════════════════
-  RECEIPT BOTTOM SHEET
-══════════════════════════════ -->
-
-<div class="rcpt-bg"    id="rcptBg"></div>
+<!-- RECEIPT -->
+<div class="rcpt-bg" id="rcptBg"></div>
 <div class="rcpt-sheet" id="rcptSheet">
   <div class="rcpt-handle"></div>
   <div class="rcpt-body">
+    <div class="rcpt-icon-wrap">
+      <svg fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
 
-```
-<div class="rcpt-icon-wrap">
-  <svg fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-</div>
+    <div class="rcpt-title">Transfer Berhasil</div>
+    <div class="rcpt-sub" id="rSub">—</div>
 
-<div class="rcpt-title">Transfer Berhasil</div>
-<div class="rcpt-sub" id="rSub">—</div>
+    <div class="rcpt-amt-block">
+      <div class="rcpt-amt" id="rAmt">—</div>
+      <div class="rcpt-amt-meta" id="rAmtMeta">—</div>
+    </div>
 
-<div class="rcpt-amt-block">
-  <div class="rcpt-amt"  id="rAmt">—</div>
-  <div class="rcpt-amt-meta" id="rAmtMeta">—</div>
-</div>
+    <div class="status-pill">
+      <svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      SUKSES
+    </div>
 
-<div class="status-pill">
-  <svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  SUKSES
-</div>
+    <div class="rcpt-table">
+      <div class="rcpt-row"><div class="rk">Dari (Pengirim)</div><div class="rv" id="rFrom">—</div></div>
+      <div class="rcpt-row"><div class="rk">Kepada (Penerima)</div><div class="rv" id="rTo">—</div></div>
+      <div class="rcpt-row"><div class="rk">Nomor VA</div><div class="rv" id="rVa" style="font-family:ui-monospace,monospace;font-size:.8rem;letter-spacing:.8px">—</div></div>
+      <div class="rcpt-row"><div class="rk">Nominal</div><div class="rv grn" id="rAmtRow">—</div></div>
+      <div class="rcpt-row"><div class="rk">Jenis Saldo</div><div class="rv" id="rWallet">—</div></div>
+      <div class="rcpt-row"><div class="rk">Biaya Admin</div><div class="rv grn">Gratis</div></div>
+      <div class="rcpt-row"><div class="rk">Waktu</div><div class="rv" id="rTime">—</div></div>
+      <div class="rcpt-row"><div class="rk">Status</div><div class="rv grn">Berhasil ✓</div></div>
+    </div>
 
-<div class="rcpt-table">
-  <div class="rcpt-row"><div class="rk">Dari (Pengirim)</div><div class="rv" id="rFrom">—</div></div>
-  <div class="rcpt-row"><div class="rk">Kepada (Penerima)</div><div class="rv" id="rTo">—</div></div>
-  <div class="rcpt-row"><div class="rk">Nomor VA</div><div class="rv" id="rVa" style="font-family:ui-monospace,monospace;font-size:.8rem;letter-spacing:.8px">—</div></div>
-  <div class="rcpt-row"><div class="rk">Nominal</div><div class="rv grn" id="rAmtRow">—</div></div>
-  <div class="rcpt-row"><div class="rk">Jenis Saldo</div><div class="rv" id="rWallet">—</div></div>
-  <div class="rcpt-row"><div class="rk">Biaya Admin</div><div class="rv grn">Gratis</div></div>
-  <div class="rcpt-row"><div class="rk">Waktu</div><div class="rv" id="rTime">—</div></div>
-  <div class="rcpt-row"><div class="rk">Status</div><div class="rv grn">Berhasil ✓</div></div>
-</div>
+    <div class="rcpt-ref">
+      <div class="rcpt-ref-lbl">Nomor Referensi / Invoice</div>
+      <div class="rcpt-ref-val" id="rRef">—</div>
+    </div>
 
-<div class="rcpt-ref">
-  <div class="rcpt-ref-lbl">Nomor Referensi / Invoice</div>
-  <div class="rcpt-ref-val" id="rRef">—</div>
-</div>
-
-<div class="btn-row">
-  <button class="btn-primary" id="rDone">Selesai</button>
-  <button class="btn-ghost" style="margin-top:10px" id="rShare">Bagikan Struk</button>
-</div>
-```
-
+    <div class="btn-row">
+      <button class="btn-primary" id="rDone">Selesai</button>
+      <button class="btn-ghost" style="margin-top:10px" id="rShare">Bagikan Struk</button>
+    </div>
   </div>
 </div>
 
 <!-- Loading overlay -->
-
 <div class="loading-overlay" id="loadOverlay">
   <div class="loader"></div>
   <div class="loading-lbl" id="loadLbl">Memproses…</div>
@@ -760,7 +738,6 @@
 <div class="toast" id="toast"></div>
 
 <!-- Firebase -->
-
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -778,42 +755,56 @@ const FB = {
   messagingSenderId: "426093692154",
   appId:             "1:426093692154:web:38c6e9c143af626a623543"
 };
-const db   = getFirestore(initializeApp(FB));
-const auth = getAuth();
+const app = initializeApp(FB);
+const db   = getFirestore(app);
+const auth = getAuth(app);
 const $    = id => document.getElementById(id);
 
 /* ─── Methods config ─── */
 const METHODS = {
-  nubiapay:  { label:'Nubiapay',  field:'nubiPayBalance',   unit:'rp',   currency:'Rp', code:'11' },
-  nubiacoin: { label:'Nubiacoin', field:'nubiPayCoin',      unit:'coin', currency:'',    code:'22' },
-  nubiakey:  { label:'Nubiakey',  field:'nubiakeyBalance',  unit:'key',  currency:'',    code:'33' },
+  nubiapay:  { label:'Nubiapay',  field:'nubiPayBalance',  unit:'rp',   currency:'Rp', code:'11' },
+  nubiacoin: { label:'Nubiacoin',  field:'nubiPayCoin',     unit:'coin', currency:'',    code:'22' },
+  nubiakey:  { label:'Nubiakey',   field:'nubiakeyBalance', unit:'key',  currency:'',    code:'33' },
 };
 
 /* ─── State ─── */
-let user         = null;
-let balance      = { nubiPayBalance:0, nubiPayCoin:0, nubiakeyBalance:0 };
-let selMethod    = 'nubiapay';
-let recipient    = null;   // { uid, name, vaNumber, method }
-let lastResult   = null;   // transfer result for share
-let isBusy       = false;
+let user       = null;
+let balance    = { nubiPayBalance:0, nubiPayCoin:0, nubiakeyBalance:0 };
+let selMethod  = 'nubiapay';
+let recipient  = null;   // { uid, name, vaNumber, method }
+let lastResult = null;   // transfer result for share
+let isBusy     = false;
 
 /* ─── Helpers ─── */
-const fmtRp   = n => 'Rp ' + Number(n||0).toLocaleString('id-ID');
-const fmtNum  = n => Number(n||0).toLocaleString('id-ID');
-const sUid    = u => u ? u.slice(0,6)+'…'+u.slice(-4) : '—';
-const initials= s => (s||'?').replace(/[^a-z ]/gi,'').trim().split(/\s+/).map(w=>w[0]||'').slice(0,2).join('').toUpperCase()||'?';
-const cleanVA = s => String(s||'').replace(/\D/g,'');
-const fmtVA   = s => { const d=cleanVA(s); return d.replace(/(.{4})/g,'$1 ').trim(); };
+const fmtRp = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+const fmtNum = n => Number(n || 0).toLocaleString('id-ID');
+const sUid = u => u ? u.slice(0,6) + '…' + u.slice(-4) : '—';
+const initials = s => (s || '?')
+  .replace(/[^a-z ]/gi,'')
+  .trim()
+  .split(/\s+/)
+  .map(w => w[0] || '')
+  .slice(0,2)
+  .join('')
+  .toUpperCase() || '?';
+const cleanVA = s => String(s || '').replace(/\D/g, '');
+const fmtVA = s => {
+  const d = cleanVA(s);
+  return d ? d.replace(/(.{4})/g, '$1 ').trim() : '—';
+};
 
 function fmtBal(n, method) {
   const m = METHODS[method];
+  if (!m) return fmtNum(n);
   if (m.unit === 'rp') return fmtRp(n);
   return fmtNum(n) + ' ' + (m.unit === 'coin' ? 'Coin' : 'Key');
 }
 
 function genTxId() {
-  return 'TRX_' + Date.now().toString(36).toUpperCase() + '_'
-       + Array.from(crypto.getRandomValues(new Uint8Array(5)), v => v.toString(36)).join('').toUpperCase();
+  return 'TRX_' + Date.now().toString(36).toUpperCase() + '_' +
+    Array.from(crypto.getRandomValues(new Uint8Array(5)), v => v.toString(36))
+      .join('')
+      .toUpperCase();
 }
 
 function toast(msg) {
@@ -829,6 +820,17 @@ function loading(show, msg = 'Memproses…') {
   $('loadOverlay').classList.toggle('show', show);
 }
 
+function resetScrollPositions() {
+  const s1 = $('s1');
+  const s2 = $('s2');
+  const sheet = $('rcptSheet');
+
+  if (s1) s1.scrollTop = 0;
+  if (s2) s2.scrollTop = 0;
+  if (sheet) sheet.scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
 /* ─── Screen navigation ─── */
 function goTo(n) {
   const s1 = $('s1'), s2 = $('s2');
@@ -839,6 +841,7 @@ function goTo(n) {
     s2.className = 'screen s-right';
     s1.className = 'screen s-active';
   }
+  requestAnimationFrame(resetScrollPositions);
 }
 
 /* ─── Auth & profile ─── */
@@ -858,7 +861,7 @@ function renderProfile() {
 
   $('mPayBal').textContent  = fmtRp(balance.nubiPayBalance);
   $('mCoinBal').textContent = fmtNum(balance.nubiPayCoin) + ' Coin';
-  $('mKeyBal').textContent  = fmtNum(balance.nubiakeyBalance)  + ' Key';
+  $('mKeyBal').textContent  = fmtNum(balance.nubiakeyBalance) + ' Key';
 }
 
 async function loadBalance() {
@@ -878,8 +881,8 @@ async function loadBalance() {
 /* ─── Method selector ─── */
 const methodEls = {
   nubiapay:  { btn:$('mPay'),  radio:$('rPay')  },
-  nubiacoin:  { btn:$('mCoin'), radio:$('rCoin') },
-  nubiakey:   { btn:$('mKey'),  radio:$('rKey')  },
+  nubiacoin: { btn:$('mCoin'), radio:$('rCoin') },
+  nubiakey:  { btn:$('mKey'),  radio:$('rKey')  },
 };
 
 function selectMethod(m) {
@@ -915,6 +918,7 @@ $('lookupBtn').addEventListener('click', lookupVA);
 
 async function lookupVA() {
   if (!user) { toast('Login dulu'); return; }
+
   const raw = cleanVA($('vaInput').value);
   if (raw.length < 16) { toast('Nomor VA tidak lengkap'); return; }
   if (raw.length > 16) { toast('Nomor VA terlalu panjang (maks 16 digit)'); return; }
@@ -948,7 +952,7 @@ async function lookupVA() {
     populateConfirm();
     goTo(2);
 
-  } catch(e) {
+  } catch (e) {
     console.error(e);
     toast(e.message || 'Gagal mencari VA');
   } finally {
@@ -990,16 +994,17 @@ document.querySelectorAll('.quick-chip').forEach(chip => {
 
 function updateConfirmCalc() {
   if (!recipient) return;
+
   const amt = parseFloat($('amtInput').value || '0');
   const m   = METHODS[selMethod];
   const bal = balance[m.field] || 0;
   const ok  = !isNaN(amt) && amt >= 1 && bal >= amt;
   const low = !isNaN(amt) && amt >= 1 && bal < amt;
 
-  $('warnInsuf').style.display  = low ? '' : 'none';
+  $('warnInsuf').style.display = low ? '' : 'none';
   $('c2Avail').textContent      = fmtBal(bal, selMethod);
   $('confirmBtn').disabled      = !ok;
-  $('confirmBtn').textContent   = ok ? 'Lanjut' : (low ? 'Saldo Tidak Cukup' : 'Lanjut');
+  $('confirmBtn').textContent    = ok ? 'Lanjut' : (low ? 'Saldo Tidak Cukup' : 'Lanjut');
 }
 
 /* ─── Execute Transfer ─── */
@@ -1021,7 +1026,7 @@ async function doTransfer() {
   const receiverRef = doc(db, 'users', recipient.uid);
   const txId        = genTxId();
   const txRef       = doc(db, 'transfers', txId);
-  const sentRef     = doc(db, 'users', user.uid,      'sentTransfers',     txId);
+  const sentRef     = doc(db, 'users', user.uid, 'sentTransfers', txId);
   const rcvdRef     = doc(db, 'users', recipient.uid, 'receivedTransfers', txId);
 
   try {
@@ -1035,7 +1040,6 @@ async function doTransfer() {
       const sData = sSnap.data() || {};
       const rData = rSnap.data() || {};
       const sBal = Number(sData[m.field] || 0);
-      const rBal = Number(rData[m.field] || 0);
 
       if (sBal < amt) throw new Error('Saldo tidak mencukupi');
 
@@ -1070,6 +1074,7 @@ async function doTransfer() {
 
     lastResult = {
       txId,
+      invoice: 'INV-' + txId,
       senderName: user.displayName || user.email || 'Pengirim',
       senderUid: user.uid,
       receiverName: recipient.name,
@@ -1081,7 +1086,7 @@ async function doTransfer() {
     };
     openReceipt(lastResult);
 
-  } catch(e) {
+  } catch (e) {
     console.error('doTransfer error:', e);
     toast(e.message || 'Transfer gagal');
     $('confirmBtn').disabled = false;
@@ -1105,23 +1110,35 @@ function openReceipt(r) {
     hour:'2-digit', minute:'2-digit', second:'2-digit'
   });
 
+  const invoice = r.invoice || ('INV-' + r.txId);
+
   $('rSub').textContent     = amtTxt + ' berhasil dikirim ke ' + r.receiverName;
   $('rAmt').textContent     = amtTxt;
-  $('rAmtLbl').textContent  = m.label + ' · NUBIASTORE';
+  $('rAmtMeta').textContent  = invoice + ' · ' + r.txId;
   $('rFrom').textContent    = r.senderName + ' (' + sUid(r.senderUid) + ')';
   $('rTo').textContent      = r.receiverName + ' (' + sUid(r.receiverUid) + ')';
+  $('rVa').textContent      = fmtVA(r.vaNumber);
   $('rAmtRow').textContent  = amtTxt;
   $('rWallet').textContent  = m.label;
   $('rTime').textContent    = nowStr;
-  $('rRef').textContent     = r.txId;
+  $('rRef').textContent     = invoice;
 
   $('rcptBg').classList.add('show');
   $('rcptSheet').classList.add('show');
+
+  requestAnimationFrame(() => {
+    const sheet = $('rcptSheet');
+    if (sheet) sheet.scrollTop = 0;
+    window.scrollTo(0, 0);
+  });
 }
 
 function closeReceipt() {
   $('rcptBg').classList.remove('show');
   $('rcptSheet').classList.remove('show');
+  $('rcptSheet').scrollTop = 0;
+  resetScrollPositions();
+
   goTo(1);
   recipient = null;
   $('vaInput').value = '';
@@ -1133,9 +1150,12 @@ function closeReceipt() {
 
 async function shareReceipt() {
   if (!lastResult) return;
+
   const r = lastResult;
   const amtTxt = fmtAmtByMethod(r.amount, r.method);
   const m = METHODS[r.method];
+  const invoice = r.invoice || ('INV-' + r.txId);
+
   const txt = [
     '✅ STRUK TRANSFER NUBIASTORE',
     '────────────────────────────',
@@ -1144,6 +1164,7 @@ async function shareReceipt() {
     `Nomor VA  : ${fmtVA(r.vaNumber)}`,
     `Nominal   : ${amtTxt}`,
     `Jenis     : ${m.label}`,
+    `Invoice   : ${invoice}`,
     `Biaya     : Gratis`,
     `Waktu     : ${new Date(r.time).toLocaleString('id-ID')}`,
     `Referensi : ${r.txId}`,
@@ -1151,22 +1172,29 @@ async function shareReceipt() {
     '────────────────────────────',
     'NUBIASTORE Internal Transfer',
   ].join('\n');
+
   try {
     if (navigator.share) await navigator.share({ title:'Struk Transfer NUBIASTORE', text:txt });
     else { await navigator.clipboard.writeText(txt); toast('Struk disalin'); }
-  } catch(e) { if(e?.name !== 'AbortError') toast('Gagal berbagi'); }
+  } catch (e) {
+    if (e?.name !== 'AbortError') toast('Gagal berbagi');
+  }
 }
 
 /* ─── Event wiring ─── */
-$('backBtn').addEventListener('click',  () => location.href = sessionStorage.getItem('nubiastore_qr_back') || '/');
-$('refreshBtn').addEventListener('click', async () => { await loadBalance(); toast('Saldo diperbarui'); });
-$('s2Back').addEventListener('click',   () => goTo(1));
-$('mPay').addEventListener('click',     () => selectMethod('nubiapay'));
-$('mCoin').addEventListener('click',    () => selectMethod('nubiacoin'));
-$('mKey').addEventListener('click',     () => selectMethod('nubiakey'));
-$('rcptBg').addEventListener('click',    closeReceipt);
-$('rDone').addEventListener('click',    closeReceipt);
-$('rShare').addEventListener('click',   shareReceipt);
+$('backBtn').addEventListener('click', () => location.href = sessionStorage.getItem('nubiastore_qr_back') || '/');
+$('refreshBtn').addEventListener('click', async () => {
+  await loadBalance();
+  toast('Saldo diperbarui');
+  resetScrollPositions();
+});
+$('s2Back').addEventListener('click', () => goTo(1));
+$('mPay').addEventListener('click', () => selectMethod('nubiapay'));
+$('mCoin').addEventListener('click', () => selectMethod('nubiacoin'));
+$('mKey').addEventListener('click', () => selectMethod('nubiakey'));
+$('rcptBg').addEventListener('click', closeReceipt);
+$('rDone').addEventListener('click', closeReceipt);
+$('rShare').addEventListener('click', shareReceipt);
 
 /* ─── Auth ─── */
 onAuthStateChanged(auth, async u => {
@@ -1179,11 +1207,13 @@ onAuthStateChanged(auth, async u => {
     renderProfile();
     $('lookupBtn').disabled = true;
   }
+  resetScrollPositions();
 });
 
 /* ─── Init ─── */
 selectMethod('nubiapay');
 renderProfile();
+resetScrollPositions();
 </script>
 
 </body>
