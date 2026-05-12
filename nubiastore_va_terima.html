@@ -375,16 +375,16 @@ const el = {
 };
 
 const METHOD = {
-  nubiapay: { label: 'Nubiapay', short: 'P', balanceField: 'nubiPayBalance', code: '11', unit: 'rp' },
-  nubiacoin:{ label: 'Nubiacoin', short: 'C', balanceField: 'nubiPayCoin', code: '22', unit: 'coin' },
-  nubiakey: { label: 'Nubiakey', short: 'K', balanceField: 'nubiakeyBalance', code: '33', unit: 'key' }
+  nubiapay: { label: 'Nubiapay', short: 'P', balanceField: 'nubiapayBalance', code: '11' },
+  nubiacoin:{ label: 'Nubiacoin', short: 'C', balanceField: 'nubiacoinBalance', code: '22' },
+  nubiakey: { label: 'Nubiakey', short: 'K', balanceField: 'nubiakeyBalance', code: '33' }
 };
 const METHOD_KEYS = Object.keys(METHOD);
 
 let currentUser = null;
 let profile = {
   displayName: 'Memuat...', email: '—', uid: '—',
-  nubiPayBalance: 0, nubiPayCoin: 0, nubiakeyBalance: 0,
+  nubiapayBalance: 0, nubiacoinBalance: 0, nubiakeyBalance: 0,
   vaMap: { nubiapay: null, nubiacoin: null, nubiakey: null }
 };
 let userUnsub = null;
@@ -399,9 +399,7 @@ const fmtRp = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
 const fmtNum = n => Number(n || 0).toLocaleString('id-ID');
 const sUid = u => u ? u.slice(0,6) + '…' + u.slice(-4) : '—';
 const initials = s => (s || '?').replace(/[^a-z ]/gi,'').trim().split(/\s+/).map(w => w[0] || '').slice(0,2).join('').toUpperCase() || '?';
-const fmtTs = ms => new Date(Number(ms)).toLocaleString('id-ID',{
-  day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'
-});
+const fmtTs = ms => new Date(Number(ms)).toLocaleString('id-ID',{ day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
 function toast(msg) {
   el.toast.textContent = msg;
@@ -409,7 +407,6 @@ function toast(msg) {
   clearTimeout(toast._t);
   toast._t = setTimeout(() => el.toast.classList.remove('show'), 2100);
 }
-
 function setScreen(screen) {
   if (screen === 1) {
     el.s2.classList.remove('s-enter'); el.s2.classList.add('s-push');
@@ -419,19 +416,15 @@ function setScreen(screen) {
     el.s2.classList.remove('s-push'); el.s2.classList.add('s-enter');
   }
 }
-
 function methodLabel(method) {
   return METHOD[method]?.label || '—';
 }
-
 function methodShort(method) {
   return METHOD[method]?.short || '?';
 }
-
 function balanceField(method) {
-  return METHOD[method]?.balanceField || 'nubiPayBalance';
+  return METHOD[method]?.balanceField || 'nubiapayBalance';
 }
-
 function renderProfile() {
   const name = currentUser?.displayName || currentUser?.email || profile.displayName || 'NUBIASTORE USER';
   el.acName.textContent = name;
@@ -441,37 +434,14 @@ function renderProfile() {
   el.acBadge.className = 'acct-badge ' + (currentUser ? 'badge-online' : 'badge-offline');
   el.profileState.textContent = currentUser ? 'Login' : 'Belum login';
 
-  el.bPay.textContent = fmtRp(profile.nubiPayBalance);
-  el.bCoin.textContent = fmtNum(profile.nubiPayCoin);
+  el.bPay.textContent = fmtRp(profile.nubiapayBalance);
+  el.bCoin.textContent = fmtNum(profile.nubiacoinBalance);
   el.bKey.textContent = fmtNum(profile.nubiakeyBalance);
 
-  el.methodPayBal.textContent = fmtRp(profile.nubiPayBalance);
-  el.methodCoinBal.textContent = fmtNum(profile.nubiPayCoin) + ' Coin';
+  el.methodPayBal.textContent = fmtRp(profile.nubiapayBalance);
+  el.methodCoinBal.textContent = fmtNum(profile.nubiacoinBalance) + ' Coin';
   el.methodKeyBal.textContent = fmtNum(profile.nubiakeyBalance) + ' Key';
 }
-
-function formatAmountByMethod(amount, method) {
-  if (method === 'nubiapay') return fmtRp(amount);
-  if (method === 'nubiacoin') return fmtNum(amount) + ' Coin';
-  return fmtNum(amount) + ' Key';
-}
-
-function formatVa(v) {
-  const digits = String(v || '').replace(/\D/g, '');
-  if (!digits) return '—';
-  return digits.replace(/(.{4})/g, '$1 ').trim();
-}
-
-function escapeHtml(str) {
-  return String(str || '').replace(/[&<>'"]/g, s => ({
-    '&':'&amp;',
-    '<':'&lt;',
-    '>':'&gt;',
-    '\'':'&#39;',
-    '"':'&quot;'
-  }[s]));
-}
-
 function renderMethodScreen(method) {
   const m = METHOD[method];
   const va = profile.vaMap?.[method] || activeVa?.vaNumber || '—';
@@ -482,14 +452,12 @@ function renderMethodScreen(method) {
   el.vaSub.textContent = 'Nomor Akun Virtual';
   el.vaNumber.textContent = formatVa(va);
   el.detailMethod.textContent = m.label;
-  el.detailBalance.textContent = m.unit === 'rp'
-    ? fmtRp(bal)
-    : (fmtNum(bal) + (m.unit === 'coin' ? ' Coin' : ' Key'));
+  el.detailBalance.textContent = method === 'nubiapay' ? fmtRp(bal) : (fmtNum(bal) + (method === 'nubiacoin' ? ' Coin' : ' Key'));
   el.detailUid.textContent = currentUser ? currentUser.uid : '—';
   el.vaNote.textContent = 'Nomor ini unik untuk metode yang dipilih dan tersimpan di Firestore. Saat transfer masuk, saldo akan diproses otomatis dan muncul pop-up notifikasi.';
 
   el.inst1.textContent = `Transfer ke nomor virtual ${m.label} yang tampil di atas.`;
-  el.inst2.textContent = m.unit === 'rp'
+  el.inst2.textContent = method === 'nubiapay'
     ? 'Masukkan nominal transfer sesuai kebutuhan top up saldo utama.'
     : `Masukkan nominal transfer sesuai kebutuhan saldo ${m.label.toLowerCase()}.`;
   el.inst3.textContent = `Saldo masuk otomatis ke akun yang terhubung pada metode ${m.label}.`;
@@ -501,7 +469,6 @@ function renderMethodScreen(method) {
 
   renderHistory();
 }
-
 function renderHistory() {
   if (!activeHistory.length) {
     el.historyCard.innerHTML = `
@@ -516,7 +483,6 @@ function renderHistory() {
       </div>`;
     return;
   }
-
   el.historyCard.innerHTML = activeHistory.slice(0,4).map(item => `
     <div class="history-item">
       <div class="history-top">
@@ -529,14 +495,27 @@ function renderHistory() {
     </div>
   `).join('');
 }
+function formatAmountByMethod(amount, method) {
+  if (method === 'nubiapay') return fmtRp(amount);
+  if (method === 'nubiacoin') return fmtNum(amount) + ' Coin';
+  return fmtNum(amount) + ' Key';
+}
+function formatVa(v) {
+  const digits = String(v || '').replace(/\D/g, '');
+  if (!digits) return '—';
+  return digits.replace(/(.{4})/g, '$1 ').trim();
+}
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>'"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','"':'&quot;'}[s]));
+}
 
 function ensureProfileDoc(u) {
   const ref = doc(db, 'users', u.uid);
   return setDoc(ref, {
     email: u.email || '',
     displayName: u.displayName || u.email || 'NUBIASTORE USER',
-    nubiPayBalance: 0,
-    nubiPayCoin: 0,
+    nubiapayBalance: 0,
+    nubiacoinBalance: 0,
     nubiakeyBalance: 0,
     vaMap: { nubiapay: null, nubiacoin: null, nubiakey: null },
     createdAt: serverTimestamp(),
@@ -604,8 +583,8 @@ function subscribeUser(uid) {
       displayName: d.displayName || currentUser?.displayName || currentUser?.email || 'NUBIASTORE USER',
       email: d.email || currentUser?.email || '—',
       uid,
-      nubiPayBalance: Number(d.nubiPayBalance || 0),
-      nubiPayCoin: Number(d.nubiPayCoin || 0),
+      nubiapayBalance: Number(d.nubiapayBalance || 0),
+      nubiacoinBalance: Number(d.nubiacoinBalance || 0),
       nubiakeyBalance: Number(d.nubiakeyBalance || 0),
       vaMap: d.vaMap || profile.vaMap || { nubiapay:null, nubiacoin:null, nubiakey:null }
     });
@@ -732,7 +711,6 @@ async function markTransferSuccess(method, amount, senderUid, senderName, recipi
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   });
-
   await setDoc(rRef, {
     id: txId,
     senderUid,
@@ -749,7 +727,6 @@ async function markTransferSuccess(method, amount, senderUid, senderName, recipi
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   });
-
   await setDoc(sRef, {
     id: txId,
     senderUid,
@@ -765,6 +742,11 @@ async function markTransferSuccess(method, amount, senderUid, senderName, recipi
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   });
+}
+
+async function simulateIncomingTransfer() {
+  // helper internal untuk testing / future integration
+  if (!currentUser || !activeVa?.vaNumber) return;
 }
 
 async function processReceive(method, amount, senderUid, senderName, recipientUid, recipientName, recipientVa) {
@@ -817,7 +799,6 @@ function openReceiptOverlay() {
   el.rcptBg.classList.add('show');
   el.rcptSheet.classList.add('show');
 }
-
 function closeReceipt() {
   el.rcptBg.classList.remove('show');
   el.rcptSheet.classList.remove('show');
@@ -892,6 +873,7 @@ initAuth();
 renderProfile();
 renderMethodScreen(selectedMethod);
 
+// expose helper for integration testing from console only
 window.__NUBIASTORE_RECEIVE = {
   processReceive,
   markTransferSuccess,
