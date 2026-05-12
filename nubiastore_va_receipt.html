@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>NUBIASTORE — Virtual Account</title>
+  <style>
+    :root {
+      --bg:#F2F2F7; --card:#FFFFFF; --text:#1C1C1E; --text2:rgba(60,60,67,.60);
+      --text3:rgba(60,60,67,.35); --sep:rgba(60,60,67,.12); --fill:rgba(120,120,128,.10);
+      --tint:#007AFF; --green:#34C759; --red:#FF3B30; --orange:#FF9500; --r:12px; --r-lg:18px;
+      --shadow:0 1px 4px rgba(0,0,0,.07), 0 0 0 .5px rgba(0,0,0,.04);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+    button,input{font:inherit;border:none;background:none}
+    button{cursor:pointer}
+
+    .screen{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);transition:transform .38s cubic-bezier(.32,.72,0,1),opacity .38s cubic-bezier(.32,.72,0,1)}
+    .s-enter{transform:translateX(0);opacity:1}
+    .s-push{transform:translateX(100%);opacity:1}
+    .s-pull{transform:translateX(-22%);opacity:.6;pointer-events:none}
+
+    .nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;padding:max(env(safe-area-inset-top),12px) 16px 12px;background:rgba(242,242,247,.88);backdrop-filter:saturate(200%) blur(24px);-webkit-backdrop-filter:saturate(200%) blur(24px);border-bottom:.5px solid var(--sep)}
+    .nav-btn{display:flex;align-items:center;gap:4px;color:var(--tint);font-size:.95rem;font-weight:400;min-width:74px;padding:6px 0;-webkit-tap-highlight-color:transparent}
+    .nav-btn svg{width:20px;height:20px}
+    .nav-btn.right{justify-content:flex-end;font-weight:600}
+    .nav-title{flex:1;text-align:center;font-size:1.05rem;font-weight:700;letter-spacing:-.25px}
+
+    .wrap{max-width:430px;margin:0 auto;padding:16px 16px 52px}
+    .sec-hd{font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;padding:0 4px 8px}
+
+    .acct-card,.card,.method-card,.mini-card,.info-card,.va-card{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+    .acct-card{padding:16px;margin-bottom:12px}
+    .acct-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .avatar{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#007AFF,#5AC8FA);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;font-weight:800}
+    .acct-name{font-size:1rem;font-weight:700}
+    .acct-uid{font-size:.78rem;color:var(--text2);margin-top:2px}
+    .acct-badge{margin-left:auto;padding:5px 12px;border-radius:999px;flex-shrink:0;font-size:.72rem;font-weight:700}
+    .badge-online{background:rgba(52,199,89,.13);color:var(--green)}
+    .badge-offline{background:var(--fill);color:var(--text2)}
+    .bal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .bal-item{background:var(--fill);border-radius:10px;padding:10px 10px 11px}
+    .bal-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:4px}
+    .bal-val{font-size:.93rem;font-weight:700}
+    .c-blue{color:var(--tint)} .c-green{color:var(--green)} .c-orange{color:var(--orange)}
+
+    .grid-methods{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+    .method-card{min-height:136px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;position:relative;transition:transform .12s,opacity .12s}
+    .method-card:active{transform:scale(.98);opacity:.78}
+    .method-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .method-icon{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#f6f7fb,#ffffff);border:.5px solid rgba(60,60,67,.10);display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:800;color:#111;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+    .method-name{font-size:1.02rem;font-weight:800;letter-spacing:-.25px}
+    .method-sub{font-size:.8rem;color:var(--text2);margin-top:4px;line-height:1.35}
+    .method-balance{font-size:.82rem;font-weight:700;color:var(--text)}
+    .method-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(0,122,255,.08);color:var(--tint);font-size:.72rem;font-weight:700;width:fit-content}
+    .method-pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.9}
+    .ripple{position:absolute;inset:auto 12px 12px auto;font-size:.72rem;color:var(--text3);font-weight:700}
+
+    .info-card{padding:14px 16px;margin-bottom:12px}
+    .info-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:.5px solid var(--sep);gap:16px}
+    .info-row:last-child{border-bottom:none;padding-bottom:0}
+    .info-row:first-child{padding-top:0}
+    .info-lbl{font-size:.9rem;color:var(--text2)}
+    .info-val{font-size:.9rem;font-weight:600;text-align:right;word-break:break-word}
+    .info-val.grn{color:var(--green)} .info-val.blu{color:var(--tint)}
+
+    .va-card{padding:16px;margin-bottom:12px}
+    .va-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .va-brand{display:flex;align-items:center;gap:10px}
+    .va-brand-badge{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#007AFF,#5AC8FA);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+    .va-brand-title{font-size:1.15rem;font-weight:800;letter-spacing:-.25px}
+    .va-brand-sub{font-size:.78rem;color:var(--text2);margin-top:2px}
+    .chip{padding:8px 12px;border-radius:999px;background:rgba(52,199,89,.12);color:var(--green);font-weight:700;font-size:.76rem;white-space:nowrap}
+    .va-label{font-size:.78rem;color:var(--text2);margin-bottom:8px}
+    .va-number{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#F08A00;color:#fff;border-radius:16px;padding:18px 18px;font-size:1.18rem;font-weight:800;letter-spacing:1.8px;box-shadow:0 8px 24px rgba(240,138,0,.18)}
+    .va-number code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;word-break:break-all}
+    .copy-btn{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.18);color:#fff;flex-shrink:0}
+    .va-note{margin-top:10px;padding:11px 14px;background:rgba(120,120,128,.08);border-radius:12px;font-size:.84rem;color:var(--text2);line-height:1.45}
+    .subtle{color:var(--text2)}
+
+    .btn{border-radius:12px;padding:14px 12px;font-size:.92rem;font-weight:600;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .12s,transform .12s;-webkit-tap-highlight-color:transparent}
+    .btn:active:not(:disabled){opacity:.72;transform:scale(.96)}
+    .btn:disabled{opacity:.38;cursor:not-allowed}
+    .btn-tint{background:var(--tint);color:#fff}
+    .btn-sec{background:var(--fill);color:var(--tint)}
+    .btn-green{background:rgba(52,199,89,.12);color:var(--green)}
+    .btn-ghost{background:rgba(120,120,128,.10);color:var(--text)}
+    .btn-full{width:100%;border-radius:14px;padding:16px;font-size:1.03rem;font-weight:700}
+    .btn-full-primary{background:var(--tint);color:#fff;box-shadow:0 6px 20px rgba(0,122,255,.22)}
+    .btn-full-ghost{background:var(--fill);color:var(--tint)}
+    .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+
+    .instructions{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px}
+    .inst-row{padding:13px 16px;border-bottom:.5px solid var(--sep);display:flex;gap:12px;align-items:flex-start}
+    .inst-row:last-child{border-bottom:none}
+    .inst-n{width:24px;height:24px;border-radius:50%;background:rgba(0,122,255,.08);color:var(--tint);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;flex-shrink:0;margin-top:1px}
+    .inst-t{font-size:.88rem;line-height:1.5;color:var(--text)}
+    .inst-t b{font-weight:800}
+
+    .history-card{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px}
+    .history-item{padding:13px 16px;border-bottom:.5px solid var(--sep)}
+    .history-item:last-child{border-bottom:none}
+    .history-top{display:flex;justify-content:space-between;gap:16px;align-items:center}
+    .history-name{font-size:.95rem;font-weight:700}
+    .history-sub{font-size:.78rem;color:var(--text2);margin-top:3px}
+    .history-amt{font-size:.95rem;font-weight:800;color:var(--green);text-align:right}
+
+    .rcpt-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:400;opacity:0;pointer-events:none;transition:opacity .24s}
+    .rcpt-backdrop.show{opacity:1;pointer-events:all}
+    .rcpt-sheet{position:fixed;bottom:0;left:0;right:0;max-height:92vh;background:#fff;border-radius:20px 20px 0 0;z-index:401;transform:translateY(102%);transition:transform .34s cubic-bezier(.32,.72,0,1);overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .rcpt-sheet.show{transform:translateY(0)}
+    .rcpt-handle{width:36px;height:4px;background:rgba(60,60,67,.18);border-radius:99px;margin:12px auto 6px}
+    .rcpt-body{padding:6px 20px 44px;max-width:430px;margin:0 auto}
+    .rcpt-icon{width:68px;height:68px;border-radius:50%;background:rgba(52,199,89,.12);display:flex;align-items:center;justify-content:center;margin:10px auto 14px}
+    .rcpt-icon svg{width:34px;height:34px}
+    .rcpt-title{text-align:center;font-size:1.28rem;font-weight:800;margin-bottom:3px}
+    .rcpt-sub{text-align:center;font-size:.85rem;color:var(--text2);line-height:1.45;margin-bottom:18px}
+    .rcpt-amt-wrap{text-align:center;margin-bottom:16px}
+    .rcpt-amt{font-size:2rem;font-weight:800;color:var(--green);letter-spacing:-.5px}
+    .rcpt-amt-lbl{font-size:.78rem;color:var(--text3);margin-top:3px}
+    .status-badge{display:flex;align-items:center;justify-content:center;gap:6px;width:fit-content;margin:0 auto 18px;background:rgba(52,199,89,.12);color:var(--green);font-size:.78rem;font-weight:700;padding:6px 14px;border-radius:999px}
+    .status-badge svg{width:11px;height:11px}
+    .rcpt-table{background:rgba(120,120,128,.07);border-radius:14px;overflow:hidden;margin-bottom:16px}
+    .rcpt-row{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;border-bottom:.5px solid rgba(60,60,67,.08);gap:16px}
+    .rcpt-row:last-child{border-bottom:none}
+    .rcpt-k{font-size:.84rem;color:var(--text2);flex-shrink:0}
+    .rcpt-v{font-size:.84rem;font-weight:600;text-align:right;word-break:break-word}
+    .rcpt-v.grn{color:var(--green)}
+    .rcpt-ref{text-align:center;margin-bottom:20px}
+    .rcpt-ref-lbl{font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+    .rcpt-ref-val{font-size:.78rem;font-weight:700;letter-spacing:.4px;word-break:break-all}
+
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(14px);opacity:0;pointer-events:none;background:rgba(28,28,30,.88);color:#fff;padding:10px 18px;border-radius:999px;backdrop-filter:blur(20px);font-size:.87rem;font-weight:600;white-space:nowrap;z-index:500;transition:opacity .2s,transform .2s}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .spin{width:18px;height:18px;display:inline-block;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .6s linear infinite}
+    @keyframes rot{to{transform:rotate(360deg)}}
+    .warn{color:var(--orange)}
+
+    @media(max-width:390px){
+      .grid-methods{grid-template-columns:1fr 1fr}
+      .method-card{min-height:128px}
+      .va-number{font-size:1.03rem;letter-spacing:1.2px}
+      .rcpt-amt{font-size:1.85rem}
+    }
+  </style>
+</head>
+<body>
+
+<div id="s1" class="screen s-enter" style="z-index:10">
+  <div class="nav">
+    <button class="nav-btn" id="backBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Kembali
+    </button>
+    <div class="nav-title">Isi Saldo</div>
+    <button class="nav-btn right" id="refreshBtn">Refresh</button>
+  </div>
+
+  <div class="wrap">
+    <div class="acct-card">
+      <div class="acct-top">
+        <div class="avatar" id="av">?</div>
+        <div>
+          <div class="acct-name" id="acName">Memuat...</div>
+          <div class="acct-uid" id="acUid">—</div>
+        </div>
+        <div class="acct-badge badge-offline" id="acBadge">Offline</div>
+      </div>
+      <div class="bal-grid">
+        <div class="bal-item"><div class="bal-lbl">Nubiapay</div><div class="bal-val c-blue" id="bPay">Rp 0</div></div>
+        <div class="bal-item"><div class="bal-lbl">Nubiacoin</div><div class="bal-val c-green" id="bCoin">0</div></div>
+        <div class="bal-item"><div class="bal-lbl">Nubiakey</div><div class="bal-val c-orange" id="bKey">0</div></div>
+      </div>
+    </div>
+
+    <div class="sec-hd">Pilih Metode</div>
+    <div class="grid-methods">
+      <button class="method-card" id="methodPay">
+        <div class="method-top">
+          <div>
+            <div class="method-name">Nubiapay</div>
+            <div class="method-sub">Metode saldo utama untuk isi dan terima transfer.</div>
+          </div>
+          <div class="method-icon">P</div>
+        </div>
+        <div>
+          <div class="method-pill"><span class="dot"></span> rekening virtual</div>
+          <div class="method-balance" id="methodPayBal">Rp 0</div>
+        </div>
+      </button>
+
+      <button class="method-card" id="methodCoin">
+        <div class="method-top">
+          <div>
+            <div class="method-name">Nubiacoin</div>
+            <div class="method-sub">Saldo koin internal untuk jalur transfer khusus.</div>
+          </div>
+          <div class="method-icon">C</div>
+        </div>
+        <div>
+          <div class="method-pill"><span class="dot"></span> rekening virtual</div>
+          <div class="method-balance" id="methodCoinBal">0</div>
+        </div>
+      </button>
+
+      <button class="method-card" id="methodKey">
+        <div class="method-top">
+          <div>
+            <div class="method-name">Nubiakey</div>
+            <div class="method-sub">Jalur identitas saldo alternatif yang tetap valid.</div>
+          </div>
+          <div class="method-icon">K</div>
+        </div>
+        <div>
+          <div class="method-pill"><span class="dot"></span> rekening virtual</div>
+          <div class="method-balance" id="methodKeyBal">0</div>
+        </div>
+      </button>
+    </div>
+
+    <div class="info-card">
+      <div class="info-row"><div class="info-lbl">Status Akun</div><div class="info-val blu" id="profileState">Belum login</div></div>
+      <div class="info-row"><div class="info-lbl">Mode</div><div class="info-val">Virtual Account</div></div>
+      <div class="info-row"><div class="info-lbl">Keterangan</div><div class="info-val">Pilih salah satu metode untuk melihat nomor VA</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="s2" class="screen s-push" style="z-index:20">
+  <div class="nav">
+    <button class="nav-btn" id="s2Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Kembali
+    </button>
+    <div class="nav-title">Nomor VA</div>
+    <div style="min-width:74px"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="va-card">
+      <div class="va-head">
+        <div class="va-brand">
+          <div class="va-brand-badge" id="vaBadge">N</div>
+          <div>
+            <div class="va-brand-title" id="vaTitle">Nubiapay</div>
+            <div class="va-brand-sub" id="vaSub">Nomor Akun Virtual</div>
+          </div>
+        </div>
+        <div class="chip" id="vaStatusChip">Aktif</div>
+      </div>
+
+      <div class="va-label">Nomor Akun Virtual Anda</div>
+      <div class="va-number">
+        <code id="vaNumber">—</code>
+        <button class="copy-btn" id="copyVaBtn" aria-label="Salin VA">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
+      </div>
+      <div class="va-note" id="vaNote">Nomor ini unik untuk metode yang dipilih dan tersimpan di Firestore. Saat transfer masuk, saldo akan diproses otomatis dan muncul pop-up notifikasi.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-sec" id="changeMethodBtn">Ganti Metode</button>
+      <button class="btn btn-tint" id="shareVaBtn">Bagikan</button>
+    </div>
+
+    <div class="info-card">
+      <div class="info-row"><div class="info-lbl">Metode</div><div class="info-val" id="detailMethod">—</div></div>
+      <div class="info-row"><div class="info-lbl">Saldo Terkait</div><div class="info-val" id="detailBalance">—</div></div>
+      <div class="info-row"><div class="info-lbl">UID Akun</div><div class="info-val" id="detailUid">—</div></div>
+      <div class="info-row"><div class="info-lbl">Status VA</div><div class="info-val grn">Valid</div></div>
+    </div>
+
+    <div class="sec-hd">Cara Transfer Masuk</div>
+    <div class="instructions" id="instBox">
+      <div class="inst-row"><div class="inst-n">1</div><div class="inst-t" id="inst1">Transfer ke nomor virtual yang tampil di atas.</div></div>
+      <div class="inst-row"><div class="inst-n">2</div><div class="inst-t" id="inst2">Masukkan nominal sesuai kebutuhan top up.</div></div>
+      <div class="inst-row"><div class="inst-n">3</div><div class="inst-t" id="inst3">Saldo masuk otomatis ke akun yang terhubung.</div></div>
+      <div class="inst-row"><div class="inst-n">4</div><div class="inst-t" id="inst4">Setelah sukses, struk penerimaan akan muncul.</div></div>
+    </div>
+
+    <div class="sec-hd">Transfer Masuk Terbaru</div>
+    <div class="history-card" id="historyCard">
+      <div class="history-item"><div class="history-top"><div><div class="history-name">Belum ada transfer</div><div class="history-sub">Riwayat masuk akan tampil di sini.</div></div><div class="history-amt">—</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="rcpt-backdrop" id="rcptBg"></div>
+<div class="rcpt-sheet" id="rcptSheet">
+  <div class="rcpt-handle"></div>
+  <div class="rcpt-body">
+    <div class="rcpt-icon">
+      <svg fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="rcpt-title">Transfer Diterima</div>
+    <div class="rcpt-sub" id="rSub">—</div>
+    <div class="rcpt-amt-wrap">
+      <div class="rcpt-amt" id="rAmt">—</div>
+      <div class="rcpt-amt-lbl" id="rAmtLbl">—</div>
+    </div>
+    <div class="status-badge"><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> BERHASIL</div>
+    <div class="rcpt-table">
+      <div class="rcpt-row"><div class="rcpt-k">Dari</div><div class="rcpt-v" id="rFrom">—</div></div>
+      <div class="rcpt-row"><div class="rcpt-k">Ke</div><div class="rcpt-v" id="rTo">—</div></div>
+      <div class="rcpt-row"><div class="rcpt-k">Metode</div><div class="rcpt-v grn" id="rMethod">—</div></div>
+      <div class="rcpt-row"><div class="rcpt-k">Waktu</div><div class="rcpt-v" id="rTime">—</div></div>
+      <div class="rcpt-row"><div class="rcpt-k">Referensi</div><div class="rcpt-v" id="rRef">—</div></div>
+    </div>
+    <div class="rcpt-ref"><div class="rcpt-ref-lbl">Invoice</div><div class="rcpt-ref-val" id="rInvoice">—</div></div>
+    <button class="btn btn-full btn-full-primary" id="rDoneBtn" style="margin-bottom:10px">Selesai</button>
+    <button class="btn btn-full btn-full-ghost" id="rShareBtn">Bagikan Struk</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot,
+  collection, query, orderBy, limit, runTransaction, serverTimestamp, increment
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc',
+  authDomain: 'zestoreid-f9e85.firebaseapp.com',
+  projectId: 'zestoreid-f9e85',
+  storageBucket: 'zestoreid-f9e85.firebasestorage.app',
+  messagingSenderId: '426093692154',
+  appId: '1:426093692154:web:38c6e9c143af626a623543'
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = id => document.getElementById(id);
+const el = {
+  s1: $('s1'), s2: $('s2'),
+  backBtn: $('backBtn'), refreshBtn: $('refreshBtn'),
+  av: $('av'), acName: $('acName'), acUid: $('acUid'), acBadge: $('acBadge'),
+  bPay: $('bPay'), bCoin: $('bCoin'), bKey: $('bKey'), profileState: $('profileState'),
+  methodPay: $('methodPay'), methodCoin: $('methodCoin'), methodKey: $('methodKey'),
+  methodPayBal: $('methodPayBal'), methodCoinBal: $('methodCoinBal'), methodKeyBal: $('methodKeyBal'),
+  s2Back: $('s2Back'), vaBadge: $('vaBadge'), vaTitle: $('vaTitle'), vaSub: $('vaSub'), vaStatusChip: $('vaStatusChip'),
+  vaNumber: $('vaNumber'), copyVaBtn: $('copyVaBtn'), changeMethodBtn: $('changeMethodBtn'), shareVaBtn: $('shareVaBtn'),
+  vaNote: $('vaNote'), detailMethod: $('detailMethod'), detailBalance: $('detailBalance'), detailUid: $('detailUid'),
+  inst1: $('inst1'), inst2: $('inst2'), inst3: $('inst3'), inst4: $('inst4'), historyCard: $('historyCard'),
+  rcptBg: $('rcptBg'), rcptSheet: $('rcptSheet'), rSub: $('rSub'), rAmt: $('rAmt'), rAmtLbl: $('rAmtLbl'), rFrom: $('rFrom'), rTo: $('rTo'),
+  rMethod: $('rMethod'), rTime: $('rTime'), rRef: $('rRef'), rInvoice: $('rInvoice'), rDoneBtn: $('rDoneBtn'), rShareBtn: $('rShareBtn'),
+  toast: $('toast')
+};
+
+const METHOD = {
+  nubiapay: { label: 'Nubiapay', short: 'P', balanceField: 'nubiapayBalance', code: '11' },
+  nubiacoin:{ label: 'Nubiacoin', short: 'C', balanceField: 'nubiacoinBalance', code: '22' },
+  nubiakey: { label: 'Nubiakey', short: 'K', balanceField: 'nubiakeyBalance', code: '33' }
+};
+const METHOD_KEYS = Object.keys(METHOD);
+
+let currentUser = null;
+let profile = {
+  displayName: 'Memuat...', email: '—', uid: '—',
+  nubiapayBalance: 0, nubiacoinBalance: 0, nubiakeyBalance: 0,
+  vaMap: { nubiapay: null, nubiacoin: null, nubiakey: null }
+};
+let userUnsub = null;
+let incomingUnsub = null;
+let selectedMethod = 'nubiapay';
+let activeVa = null;
+let activeHistory = [];
+let seenIncoming = new Set();
+let lastReceipt = null;
+
+const fmtRp = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+const fmtNum = n => Number(n || 0).toLocaleString('id-ID');
+const sUid = u => u ? u.slice(0,6) + '…' + u.slice(-4) : '—';
+const initials = s => (s || '?').replace(/[^a-z ]/gi,'').trim().split(/\s+/).map(w => w[0] || '').slice(0,2).join('').toUpperCase() || '?';
+const fmtTs = ms => new Date(Number(ms)).toLocaleString('id-ID',{ day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+
+function toast(msg) {
+  el.toast.textContent = msg;
+  el.toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.toast.classList.remove('show'), 2100);
+}
+function setScreen(screen) {
+  if (screen === 1) {
+    el.s2.classList.remove('s-enter'); el.s2.classList.add('s-push');
+    el.s1.classList.remove('s-pull'); el.s1.classList.add('s-enter');
+  } else {
+    el.s1.classList.remove('s-enter'); el.s1.classList.add('s-pull');
+    el.s2.classList.remove('s-push'); el.s2.classList.add('s-enter');
+  }
+}
+function methodLabel(method) {
+  return METHOD[method]?.label || '—';
+}
+function methodShort(method) {
+  return METHOD[method]?.short || '?';
+}
+function balanceField(method) {
+  return METHOD[method]?.balanceField || 'nubiapayBalance';
+}
+function renderProfile() {
+  const name = currentUser?.displayName || currentUser?.email || profile.displayName || 'NUBIASTORE USER';
+  el.acName.textContent = name;
+  el.acUid.textContent = currentUser ? 'UID: ' + sUid(currentUser.uid) : '—';
+  el.av.textContent = initials(name);
+  el.acBadge.textContent = currentUser ? 'Online' : 'Offline';
+  el.acBadge.className = 'acct-badge ' + (currentUser ? 'badge-online' : 'badge-offline');
+  el.profileState.textContent = currentUser ? 'Login' : 'Belum login';
+
+  el.bPay.textContent = fmtRp(profile.nubiapayBalance);
+  el.bCoin.textContent = fmtNum(profile.nubiacoinBalance);
+  el.bKey.textContent = fmtNum(profile.nubiakeyBalance);
+
+  el.methodPayBal.textContent = fmtRp(profile.nubiapayBalance);
+  el.methodCoinBal.textContent = fmtNum(profile.nubiacoinBalance) + ' Coin';
+  el.methodKeyBal.textContent = fmtNum(profile.nubiakeyBalance) + ' Key';
+}
+function renderMethodScreen(method) {
+  const m = METHOD[method];
+  const va = profile.vaMap?.[method] || activeVa?.vaNumber || '—';
+  const bal = profile[m.balanceField] || 0;
+
+  el.vaBadge.textContent = m.short;
+  el.vaTitle.textContent = m.label;
+  el.vaSub.textContent = 'Nomor Akun Virtual';
+  el.vaNumber.textContent = formatVa(va);
+  el.detailMethod.textContent = m.label;
+  el.detailBalance.textContent = method === 'nubiapay' ? fmtRp(bal) : (fmtNum(bal) + (method === 'nubiacoin' ? ' Coin' : ' Key'));
+  el.detailUid.textContent = currentUser ? currentUser.uid : '—';
+  el.vaNote.textContent = 'Nomor ini unik untuk metode yang dipilih dan tersimpan di Firestore. Saat transfer masuk, saldo akan diproses otomatis dan muncul pop-up notifikasi.';
+
+  el.inst1.textContent = `Transfer ke nomor virtual ${m.label} yang tampil di atas.`;
+  el.inst2.textContent = method === 'nubiapay'
+    ? 'Masukkan nominal transfer sesuai kebutuhan top up saldo utama.'
+    : `Masukkan nominal transfer sesuai kebutuhan saldo ${m.label.toLowerCase()}.`;
+  el.inst3.textContent = `Saldo masuk otomatis ke akun yang terhubung pada metode ${m.label}.`;
+  el.inst4.textContent = 'Setelah sukses, struk penerimaan akan muncul seperti invoice.';
+
+  el.vaStatusChip.textContent = 'Valid';
+  el.vaStatusChip.style.background = 'rgba(52,199,89,.12)';
+  el.vaStatusChip.style.color = 'var(--green)';
+
+  renderHistory();
+}
+function renderHistory() {
+  if (!activeHistory.length) {
+    el.historyCard.innerHTML = `
+      <div class="history-item">
+        <div class="history-top">
+          <div>
+            <div class="history-name">Belum ada transfer</div>
+            <div class="history-sub">Riwayat masuk akan tampil di sini.</div>
+          </div>
+          <div class="history-amt">—</div>
+        </div>
+      </div>`;
+    return;
+  }
+  el.historyCard.innerHTML = activeHistory.slice(0,4).map(item => `
+    <div class="history-item">
+      <div class="history-top">
+        <div>
+          <div class="history-name">${escapeHtml(item.senderName || 'User')}</div>
+          <div class="history-sub">${methodLabel(item.method)} · ${fmtTs(item.createdAt?.seconds ? item.createdAt.seconds * 1000 : item.createdAtMs || Date.now())}</div>
+        </div>
+        <div class="history-amt">+${formatAmountByMethod(item.amount, item.method)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function formatAmountByMethod(amount, method) {
+  if (method === 'nubiapay') return fmtRp(amount);
+  if (method === 'nubiacoin') return fmtNum(amount) + ' Coin';
+  return fmtNum(amount) + ' Key';
+}
+function formatVa(v) {
+  const digits = String(v || '').replace(/\D/g, '');
+  if (!digits) return '—';
+  return digits.replace(/(.{4})/g, '$1 ').trim();
+}
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>'"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','"':'&quot;'}[s]));
+}
+
+function ensureProfileDoc(u) {
+  const ref = doc(db, 'users', u.uid);
+  return setDoc(ref, {
+    email: u.email || '',
+    displayName: u.displayName || u.email || 'NUBIASTORE USER',
+    nubiapayBalance: 0,
+    nubiacoinBalance: 0,
+    nubiakeyBalance: 0,
+    vaMap: { nubiapay: null, nubiacoin: null, nubiakey: null },
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  }, { merge: true });
+}
+
+function randomDigits(len) {
+  const a = new Uint8Array(len);
+  crypto.getRandomValues(a);
+  return Array.from(a, n => String(n % 10)).join('');
+}
+
+async function allocateVaNumber(uid, method) {
+  const prefix = METHOD[method].code;
+  for (let i = 0; i < 20; i++) {
+    const candidate = prefix + randomDigits(14);
+    const regRef = doc(db, 'vaRegistry', candidate);
+    const snap = await getDoc(regRef);
+    if (!snap.exists()) {
+      await setDoc(regRef, {
+        uid,
+        method,
+        createdAt: serverTimestamp(),
+        active: true
+      });
+      return candidate;
+    }
+  }
+  throw new Error('Gagal membuat VA unik');
+}
+
+async function ensureVirtualAccounts(u) {
+  const userRef = doc(db, 'users', u.uid);
+  const snap = await getDoc(userRef);
+  const data = snap.exists() ? (snap.data() || {}) : {};
+  const vaMap = { ...(data.vaMap || {}) };
+  let changed = false;
+
+  for (const method of METHOD_KEYS) {
+    if (!vaMap[method]) {
+      const va = await allocateVaNumber(u.uid, method);
+      vaMap[method] = va;
+      changed = true;
+    }
+  }
+
+  if (changed || !snap.exists()) {
+    await setDoc(userRef, {
+      email: u.email || data.email || '',
+      displayName: u.displayName || data.displayName || u.email || 'NUBIASTORE USER',
+      vaMap,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+  }
+
+  return vaMap;
+}
+
+function subscribeUser(uid) {
+  if (userUnsub) userUnsub();
+  userUnsub = onSnapshot(doc(db, 'users', uid), snap => {
+    const d = snap.exists() ? (snap.data() || {}) : {};
+    Object.assign(profile, {
+      displayName: d.displayName || currentUser?.displayName || currentUser?.email || 'NUBIASTORE USER',
+      email: d.email || currentUser?.email || '—',
+      uid,
+      nubiapayBalance: Number(d.nubiapayBalance || 0),
+      nubiacoinBalance: Number(d.nubiacoinBalance || 0),
+      nubiakeyBalance: Number(d.nubiakeyBalance || 0),
+      vaMap: d.vaMap || profile.vaMap || { nubiapay:null, nubiacoin:null, nubiakey:null }
+    });
+    activeVa = activeVa || { method: selectedMethod, vaNumber: profile.vaMap?.[selectedMethod] || '' };
+    renderProfile();
+    if (activeVa) renderMethodScreen(activeVa.method);
+  }, err => console.warn('user snapshot error:', err));
+}
+
+function subscribeIncoming(uid) {
+  if (incomingUnsub) incomingUnsub();
+  const q = query(collection(db, 'users', uid, 'receivedTransfers'), orderBy('createdAt', 'desc'), limit(20));
+  incomingUnsub = onSnapshot(q, snap => {
+    const rows = [];
+    snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
+    activeHistory = rows;
+    renderHistory();
+
+    for (const item of rows) {
+      if (item.notifiedReceiver) continue;
+      if (seenIncoming.has(item.id)) continue;
+      seenIncoming.add(item.id);
+      showIncomingReceipt(item).catch(console.warn);
+    }
+  }, err => console.warn('incoming snapshot error:', err));
+}
+
+function openMethod(method) {
+  selectedMethod = method;
+  activeVa = { method, vaNumber: profile.vaMap?.[method] || '' };
+  renderMethodScreen(method);
+  setScreen(2);
+  if (!activeVa.vaNumber || activeVa.vaNumber === '') {
+    ensureMethodReady(method).catch(console.warn);
+  }
+}
+
+async function ensureMethodReady(method) {
+  if (!currentUser) return;
+  const uid = currentUser.uid;
+  const snap = await getDoc(doc(db, 'users', uid));
+  const d = snap.exists() ? (snap.data() || {}) : {};
+  let va = d.vaMap?.[method];
+  if (!va) {
+    va = await allocateVaNumber(uid, method);
+    await updateDoc(doc(db, 'users', uid), { [`vaMap.${method}`]: va, updatedAt: serverTimestamp() }).catch(() => {});
+  }
+  profile.vaMap = { ...(profile.vaMap || {}), [method]: va };
+  activeVa = { method, vaNumber: va };
+  renderMethodScreen(method);
+}
+
+async function copyVa() {
+  const va = activeVa?.vaNumber || profile.vaMap?.[selectedMethod];
+  if (!va) { toast('VA belum siap'); return; }
+  try {
+    await navigator.clipboard.writeText(va);
+    toast('Nomor VA disalin');
+  } catch {
+    toast('Gagal menyalin VA');
+  }
+}
+
+async function shareVa() {
+  const va = activeVa?.vaNumber || profile.vaMap?.[selectedMethod];
+  if (!va) { toast('VA belum siap'); return; }
+  const txt = [
+    'NUBIASTORE Virtual Account',
+    `Metode : ${methodLabel(selectedMethod)}`,
+    `VA     : ${formatVa(va)}`,
+    `UID    : ${currentUser?.uid || '—'}`
+  ].join('\n');
+  try {
+    if (navigator.share) await navigator.share({ title: 'NUBIASTORE VA', text: txt });
+    else { await navigator.clipboard.writeText(txt); toast('Detail VA disalin'); }
+  } catch (e) { if (e?.name !== 'AbortError') toast('Gagal berbagi'); }
+}
+
+async function showIncomingReceipt(item) {
+  const amount = Number(item.amount || 0);
+  const method = item.method || selectedMethod;
+  const sender = item.senderName || 'User';
+  const recipient = item.recipientName || profile.displayName || 'Anda';
+  const va = item.recipientVa || activeVa?.vaNumber || profile.vaMap?.[method] || '—';
+  const time = fmtTs(item.createdAt?.seconds ? item.createdAt.seconds * 1000 : item.createdAtMs || Date.now());
+  const amtText = formatAmountByMethod(amount, method);
+
+  lastReceipt = item;
+  el.rSub.textContent = `${amtText} diterima dari ${sender}`;
+  el.rAmt.textContent = amtText;
+  el.rAmtLbl.textContent = methodLabel(method);
+  el.rFrom.textContent = sender + ' (' + sUid(item.senderUid || '') + ')';
+  el.rTo.textContent = recipient + ' (' + sUid(currentUser?.uid || '') + ')';
+  el.rMethod.textContent = methodLabel(method) + ' · ' + formatVa(va);
+  el.rTime.textContent = time;
+  el.rRef.textContent = item.reference || item.id || '—';
+  el.rInvoice.textContent = item.invoice || item.id || '—';
+
+  el.rcptBg.classList.add('show');
+  el.rcptSheet.classList.add('show');
+
+  toast(`Berhasil terima ${amtText}`);
+  await updateDoc(doc(db, 'users', currentUser.uid, 'receivedTransfers', item.id), { notifiedReceiver: true, notifiedAt: serverTimestamp() }).catch(() => {});
+}
+
+async function markTransferSuccess(method, amount, senderUid, senderName, recipientUid, recipientName, recipientVa) {
+  const txId = 'TRX_' + Date.now().toString(36).toUpperCase() + '_' + Math.random().toString(36).slice(2, 8).toUpperCase();
+  const tRef = doc(db, 'transfers', txId);
+  const rRef = doc(db, 'users', recipientUid, 'receivedTransfers', txId);
+  const sRef = doc(db, 'users', senderUid, 'sentTransfers', txId);
+
+  await setDoc(tRef, {
+    id: txId,
+    senderUid,
+    senderName,
+    recipientUid,
+    recipientName,
+    recipientVa,
+    method,
+    amount,
+    status: 'success',
+    reference: txId,
+    invoice: 'INV-' + txId,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+  await setDoc(rRef, {
+    id: txId,
+    senderUid,
+    senderName,
+    recipientUid,
+    recipientName,
+    recipientVa,
+    method,
+    amount,
+    status: 'success',
+    reference: txId,
+    invoice: 'INV-' + txId,
+    notifiedReceiver: false,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+  await setDoc(sRef, {
+    id: txId,
+    senderUid,
+    senderName,
+    recipientUid,
+    recipientName,
+    recipientVa,
+    method,
+    amount,
+    status: 'success',
+    reference: txId,
+    invoice: 'INV-' + txId,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+}
+
+async function simulateIncomingTransfer() {
+  // helper internal untuk testing / future integration
+  if (!currentUser || !activeVa?.vaNumber) return;
+}
+
+async function processReceive(method, amount, senderUid, senderName, recipientUid, recipientName, recipientVa) {
+  const field = balanceField(method);
+  const senderRef = doc(db, 'users', senderUid);
+  const recipientRef = doc(db, 'users', recipientUid);
+  const txId = 'TRX_' + Date.now().toString(36).toUpperCase() + '_' + Math.random().toString(36).slice(2, 8).toUpperCase();
+  const transferRef = doc(db, 'transfers', txId);
+  const receivedRef = doc(db, 'users', recipientUid, 'receivedTransfers', txId);
+  const sentRef = doc(db, 'users', senderUid, 'sentTransfers', txId);
+
+  await runTransaction(db, async tx => {
+    const sSnap = await tx.get(senderRef);
+    const rSnap = await tx.get(recipientRef);
+    if (!sSnap.exists()) throw new Error('Akun pengirim tidak ditemukan');
+    if (!rSnap.exists()) throw new Error('Akun penerima tidak ditemukan');
+
+    const sData = sSnap.data() || {};
+    const rData = rSnap.data() || {};
+    const sBal = Number(sData[field] || 0);
+    const rBal = Number(rData[field] || 0);
+    if (sBal < amount) throw new Error('Saldo pengirim tidak cukup');
+
+    tx.update(senderRef, { [field]: increment(-amount), updatedAt: serverTimestamp() });
+    tx.update(recipientRef, { [field]: increment(amount), updatedAt: serverTimestamp() });
+
+    const payload = {
+      id: txId,
+      senderUid, senderName,
+      recipientUid, recipientName, recipientVa,
+      method, amount,
+      status: 'success',
+      reference: txId,
+      invoice: 'INV-' + txId,
+      notifiedReceiver: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    tx.set(transferRef, payload);
+    tx.set(receivedRef, payload);
+    tx.set(sentRef, payload);
+  });
+
+  return txId;
+}
+
+function openReceiptOverlay() {
+  if (!lastReceipt) return;
+  el.rcptBg.classList.add('show');
+  el.rcptSheet.classList.add('show');
+}
+function closeReceipt() {
+  el.rcptBg.classList.remove('show');
+  el.rcptSheet.classList.remove('show');
+}
+
+el.methodPay.addEventListener('click', () => openMethod('nubiapay'));
+el.methodCoin.addEventListener('click', () => openMethod('nubiacoin'));
+el.methodKey.addEventListener('click', () => openMethod('nubiakey'));
+el.backBtn.addEventListener('click', () => location.href = sessionStorage.getItem('nubiastore_qr_back') || '/');
+el.refreshBtn.addEventListener('click', async () => {
+  if (currentUser) {
+    await ensureVirtualAccounts(currentUser).catch(() => {});
+    toast('Data diperbarui');
+  } else {
+    toast('Belum login');
+  }
+});
+el.s2Back.addEventListener('click', () => setScreen(1));
+el.changeMethodBtn.addEventListener('click', () => setScreen(1));
+el.copyVaBtn.addEventListener('click', copyVa);
+el.shareVaBtn.addEventListener('click', shareVa);
+el.rcptBg.addEventListener('click', closeReceipt);
+el.rDoneBtn.addEventListener('click', closeReceipt);
+el.rShareBtn.addEventListener('click', async () => {
+  if (!lastReceipt) return;
+  const amt = formatAmountByMethod(lastReceipt.amount, lastReceipt.method);
+  const txt = [
+    '✅ STRUK PENERIMAAN NUBIASTORE',
+    `Dari    : ${lastReceipt.senderName || 'User'}`,
+    `Kepada  : ${lastReceipt.recipientName || profile.displayName || 'Anda'}`,
+    `Metode  : ${methodLabel(lastReceipt.method)}`,
+    `Nominal : ${amt}`,
+    `Ref     : ${lastReceipt.reference || lastReceipt.id || '—'}`,
+    `Status  : BERHASIL`
+  ].join('\n');
+  try {
+    if (navigator.share) await navigator.share({ title: 'Struk Penerimaan', text: txt });
+    else { await navigator.clipboard.writeText(txt); toast('Struk disalin'); }
+  } catch (e) { if (e?.name !== 'AbortError') toast('Gagal berbagi'); }
+});
+
+async function initAuth() {
+  try {
+    onAuthStateChanged(auth, async u => {
+      currentUser = u || null;
+      if (!currentUser) {
+        try { await signInAnonymously(auth); } catch (e) { console.warn('anonymous sign-in failed', e); }
+        return;
+      }
+
+      try {
+        await ensureProfileDoc(currentUser);
+        const vaMap = await ensureVirtualAccounts(currentUser);
+        profile.vaMap = vaMap;
+        selectedMethod = 'nubiapay';
+        activeVa = { method: selectedMethod, vaNumber: vaMap[selectedMethod] };
+        renderProfile();
+        renderMethodScreen(selectedMethod);
+        subscribeUser(currentUser.uid);
+        subscribeIncoming(currentUser.uid);
+      } catch (e) {
+        console.error(e);
+        toast('Gagal sinkron data');
+      }
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+initAuth();
+renderProfile();
+renderMethodScreen(selectedMethod);
+
+// expose helper for integration testing from console only
+window.__NUBIASTORE_RECEIVE = {
+  processReceive,
+  markTransferSuccess,
+  openMethod,
+  copyVa,
+  shareVa
+};
+</script>
+</body>
+</html>
