@@ -751,12 +751,12 @@
 <!-- Firebase -->
 
 <script type="module">
-import { initializeApp }           from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   getFirestore, doc, getDoc, setDoc,
   runTransaction, serverTimestamp, increment
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 /* ─── Firebase ─── */
 const FB = {
@@ -773,16 +773,16 @@ const $    = id => document.getElementById(id);
 
 /* ─── Methods config ─── */
 const METHODS = {
-  nubiapay:  { label:'Nubiapay',  field:'nubiapayBalance',  unit:'rp',   currency:'Rp', code:'11' },
-  nubiacoin: { label:'Nubiacoin', field:'nubiacoinBalance', unit:'coin', currency:'',   code:'22' },
-  nubiakey:  { label:'Nubiakey',  field:'nubiakeyBalance',  unit:'key',  currency:'',   code:'33' },
+  nubiapay:  { label:'Nubiapay',  field:'nubiPayBalance',   unit:'rp',   currency:'Rp', code:'11' },
+  nubiacoin: { label:'Nubiacoin', field:'nubiPayCoin',      unit:'coin', currency:'',    code:'22' },
+  nubiakey:  { label:'Nubiakey',  field:'nubiakeyBalance',  unit:'key',  currency:'',    code:'33' },
 };
 
 /* ─── State ─── */
 let user         = null;
-let balance      = { nubiapayBalance:0, nubiacoinBalance:0, nubiakeyBalance:0 };
+let balance      = { nubiPayBalance:0, nubiPayCoin:0, nubiakeyBalance:0 };
 let selMethod    = 'nubiapay';
-let recipient    = null;   // { uid, name, vaNumber }
+let recipient    = null;   // { uid, name, vaNumber, method }
 let lastResult   = null;   // transfer result for share
 let isBusy       = false;
 
@@ -797,7 +797,7 @@ const fmtVA   = s => { const d=cleanVA(s); return d.replace(/(.{4})/g,'$1 ').tri
 function fmtBal(n, method) {
   const m = METHODS[method];
   if (m.unit === 'rp') return fmtRp(n);
-  return fmtNum(n) + ' ' + m.label.replace('Nubia','');
+  return fmtNum(n) + ' ' + (m.unit === 'coin' ? 'Coin' : 'Key');
 }
 
 function genTxId() {
@@ -836,14 +836,17 @@ function renderProfile() {
   $('av1').textContent    = initials(name);
   $('acName').textContent = name;
   $('acUid').textContent  = user ? 'UID: ' + sUid(user.uid) : '—';
+
   const badge = $('acBadge');
   badge.textContent = user ? 'Online' : 'Offline';
   badge.className   = 'bc-badge ' + (user ? 'bd-on' : 'bd-off');
-  $('b1').textContent = fmtRp(balance.nubiapayBalance);
-  $('b2').textContent = fmtNum(balance.nubiacoinBalance);
+
+  $('b1').textContent = fmtRp(balance.nubiPayBalance);
+  $('b2').textContent = fmtNum(balance.nubiPayCoin);
   $('b3').textContent = fmtNum(balance.nubiakeyBalance);
-  $('mPayBal').textContent  = fmtRp(balance.nubiapayBalance);
-  $('mCoinBal').textContent = fmtNum(balance.nubiacoinBalance) + ' Coin';
+
+  $('mPayBal').textContent  = fmtRp(balance.nubiPayBalance);
+  $('mCoinBal').textContent = fmtNum(balance.nubiPayCoin) + ' Coin';
   $('mKeyBal').textContent  = fmtNum(balance.nubiakeyBalance)  + ' Key';
 }
 
@@ -853,9 +856,9 @@ async function loadBalance() {
   if (snap.exists()) {
     const d = snap.data() || {};
     balance = {
-      nubiapayBalance:  Number(d.nubiapayBalance  || 0),
-      nubiacoinBalance: Number(d.nubiacoinBalance || 0),
-      nubiakeyBalance:  Number(d.nubiakeyBalance  || 0),
+      nubiPayBalance: Number(d.nubiPayBalance || 0),
+      nubiPayCoin:    Number(d.nubiPayCoin || 0),
+      nubiakeyBalance:Number(d.nubiakeyBalance || 0),
     };
   }
   renderProfile();
@@ -864,8 +867,8 @@ async function loadBalance() {
 /* ─── Method selector ─── */
 const methodEls = {
   nubiapay:  { btn:$('mPay'),  radio:$('rPay')  },
-  nubiacoin: { btn:$('mCoin'), radio:$('rCoin') },
-  nubiakey:  { btn:$('mKey'),  radio:$('rKey')  },
+  nubiacoin:  { btn:$('mCoin'), radio:$('rCoin') },
+  nubiakey:   { btn:$('mKey'),  radio:$('rKey')  },
 };
 
 function selectMethod(m) {
@@ -875,24 +878,17 @@ function selectMethod(m) {
     btn.classList.toggle('selected', on);
     radio.classList.toggle('on', on);
   });
-  // update confirm screen currency hint
-  const mc = METHODS[m];
-  $('c2Currency').textContent = mc.unit === 'rp' ? 'Rp' : '';
+  $('c2Currency').textContent = METHODS[m].unit === 'rp' ? 'Rp' : '';
   updateConfirmCalc();
 }
 
 /* ─── VA Input ─── */
 $('vaInput').addEventListener('input', () => {
   const raw = $('vaInput').value;
-  // Auto-format with spaces every 4 digits (visual only)
   const clean = cleanVA(raw);
-  // Rebuild formatted
   const formatted = clean.slice(0,16).replace(/(.{4})/g,'$1 ').trim();
-  const cursor = $('vaInput').selectionStart;
   $('vaInput').value = formatted;
-  // Show clear btn
   $('vaClear').classList.toggle('show', clean.length > 0);
-  // Enable lookup if ≥ 16 digits
   $('lookupBtn').disabled = clean.length < 16 || !user;
 });
 
@@ -908,7 +904,7 @@ $('lookupBtn').addEventListener('click', lookupVA);
 
 async function lookupVA() {
   if (!user) { toast('Login dulu'); return; }
-  const raw   = cleanVA($('vaInput').value);
+  const raw = cleanVA($('vaInput').value);
   if (raw.length < 16) { toast('Nomor VA tidak lengkap'); return; }
   if (raw.length > 16) { toast('Nomor VA terlalu panjang (maks 16 digit)'); return; }
 
@@ -922,7 +918,7 @@ async function lookupVA() {
 
     const vaMethod = regData.method;
     if (vaMethod !== selMethod) {
-      throw new Error(`VA ini adalah ${METHODS[vaMethod]?.label||vaMethod}, bukan ${METHODS[selMethod].label}. Ganti jenis saldo.`);
+      throw new Error(`VA ini adalah ${METHODS[vaMethod]?.label || vaMethod}, bukan ${METHODS[selMethod].label}. Ganti jenis saldo.`);
     }
 
     if (regData.uid === user.uid) throw new Error('Tidak bisa kirim ke VA milik sendiri.');
@@ -932,10 +928,10 @@ async function lookupVA() {
 
     const uData = userSnap.data() || {};
     recipient = {
-      uid:      regData.uid,
-      name:     uData.displayName || uData.email || 'NUBIASTORE USER',
+      uid: regData.uid,
+      name: uData.displayName || uData.email || 'NUBIASTORE USER',
       vaNumber: raw,
-      method:   vaMethod,
+      method: vaMethod,
     };
 
     populateConfirm();
@@ -955,20 +951,19 @@ function populateConfirm() {
   const m   = METHODS[selMethod];
   const bal = balance[m.field] || 0;
 
-  $('c2Av').textContent       = initials(recipient.name);
-  $('c2Name').textContent     = recipient.name;
-  $('c2Va').textContent       = fmtVA(recipient.vaNumber);
-  $('c2MethodSub').textContent= m.label + ' · ' + sUid(recipient.uid);
+  $('c2Av').textContent = initials(recipient.name);
+  $('c2Name').textContent = recipient.name;
+  $('c2Va').textContent = fmtVA(recipient.vaNumber);
+  $('c2MethodSub').textContent = m.label + ' · ' + sUid(recipient.uid);
   $('c2Currency').textContent = m.unit === 'rp' ? 'Rp' : '';
   $('c2WalletType').textContent = m.label;
-  $('c2VaFmt').textContent    = fmtVA(recipient.vaNumber);
+  $('c2VaFmt').textContent = fmtVA(recipient.vaNumber);
   $('c2RecipientUid').textContent = sUid(recipient.uid);
-  $('c2Avail').textContent    = fmtBal(bal, selMethod);
-  $('amtInput').value         = '';
-  $('confirmBtn').disabled    = true;
-  $('warnInsuf').style.display= 'none';
+  $('c2Avail').textContent = fmtBal(bal, selMethod);
+  $('amtInput').value = '';
+  $('confirmBtn').disabled = true;
+  $('warnInsuf').style.display = 'none';
 
-  // Quick chips — hide for coin/key (no Rp denomination chips needed)
   $('quickRow').style.display = m.unit === 'rp' ? '' : 'none';
 }
 
@@ -1002,8 +997,8 @@ $('confirmBtn').addEventListener('click', doTransfer);
 async function doTransfer() {
   if (!user || !recipient || isBusy) return;
 
-  const amt    = parseFloat($('amtInput').value || '0');
-  const m      = METHODS[selMethod];
+  const amt = parseFloat($('amtInput').value || '0');
+  const m   = METHODS[selMethod];
   if (isNaN(amt) || amt < 1) { toast('Masukkan nominal yang valid'); return; }
 
   isBusy = true;
@@ -1015,74 +1010,70 @@ async function doTransfer() {
   const receiverRef = doc(db, 'users', recipient.uid);
   const txId        = genTxId();
   const txRef       = doc(db, 'transfers', txId);
-  const sentRef     = doc(db, 'users', user.uid,       'sentTransfers',     txId);
-  const rcvdRef     = doc(db, 'users', recipient.uid,  'receivedTransfers', txId);
+  const sentRef     = doc(db, 'users', user.uid,      'sentTransfers',     txId);
+  const rcvdRef     = doc(db, 'users', recipient.uid, 'receivedTransfers', txId);
 
   try {
     await runTransaction(db, async tx => {
-      /* ── All reads first ── */
       const sSnap = await tx.get(senderRef);
       const rSnap = await tx.get(receiverRef);
 
       if (!sSnap.exists()) throw new Error('Akun pengirim tidak ditemukan');
       if (!rSnap.exists()) throw new Error('Akun penerima tidak ditemukan');
 
-      const sData  = sSnap.data() || {};
-      const rData  = rSnap.data() || {};
-      const sBal   = Number(sData[m.field] || 0);
-      const rBal   = Number(rData[m.field] || 0);
+      const sData = sSnap.data() || {};
+      const rData = rSnap.data() || {};
+      const sBal = Number(sData[m.field] || 0);
+      const rBal = Number(rData[m.field] || 0);
 
       if (sBal < amt) throw new Error('Saldo tidak mencukupi');
 
-      const senderName   = sData.displayName || user.displayName || user.email || 'Pengirim';
+      const senderName = sData.displayName || user.displayName || user.email || 'Pengirim';
       const receiverName = rData.displayName || recipient.name || 'Penerima';
 
       const payload = {
-        id:            txId,
-        senderUid:     user.uid,
+        id: txId,
+        senderUid: user.uid,
         senderName,
-        recipientUid:  recipient.uid,
+        recipientUid: recipient.uid,
         recipientName: receiverName,
-        recipientVa:   recipient.vaNumber,
-        method:        selMethod,
-        amount:        amt,
-        status:        'success',
-        reference:     txId,
-        invoice:       'INV-' + txId,
+        recipientVa: recipient.vaNumber,
+        method: selMethod,
+        amount: amt,
+        status: 'success',
+        reference: txId,
+        invoice: 'INV-' + txId,
         notifiedReceiver: false,
-        createdAt:     serverTimestamp(),
-        updatedAt:     serverTimestamp()
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
       };
 
-      /* ── All writes ── */
       tx.update(senderRef,   { [m.field]: increment(-amt), updatedAt: serverTimestamp() });
       tx.update(receiverRef, { [m.field]: increment(+amt), updatedAt: serverTimestamp() });
-      tx.set(txRef,   payload);
+      tx.set(txRef, payload);
       tx.set(sentRef, payload);
       tx.set(rcvdRef, payload);
     });
 
-    // Refresh balance
     await loadBalance();
 
-    // Show receipt
     lastResult = {
       txId,
-      senderName:   user.displayName || user.email || 'Pengirim',
-      senderUid:    user.uid,
+      senderName: user.displayName || user.email || 'Pengirim',
+      senderUid: user.uid,
       receiverName: recipient.name,
-      receiverUid:  recipient.uid,
-      vaNumber:     recipient.vaNumber,
-      method:       selMethod,
-      amount:       amt,
-      time:         Date.now(),
+      receiverUid: recipient.uid,
+      vaNumber: recipient.vaNumber,
+      method: selMethod,
+      amount: amt,
+      time: Date.now(),
     };
     openReceipt(lastResult);
 
   } catch(e) {
     console.error('doTransfer error:', e);
     toast(e.message || 'Transfer gagal');
-    $('confirmBtn').disabled  = false;
+    $('confirmBtn').disabled = false;
     $('confirmBtn').textContent = 'Lanjut';
   } finally {
     isBusy = false;
@@ -1096,23 +1087,22 @@ function fmtAmtByMethod(n, method) {
 }
 
 function openReceipt(r) {
-  const m       = METHODS[r.method];
-  const amtTxt  = fmtAmtByMethod(r.amount, r.method);
-  const nowStr  = new Date(r.time).toLocaleString('id-ID', {
+  const m = METHODS[r.method];
+  const amtTxt = fmtAmtByMethod(r.amount, r.method);
+  const nowStr = new Date(r.time).toLocaleString('id-ID', {
     day:'2-digit', month:'long', year:'numeric',
     hour:'2-digit', minute:'2-digit', second:'2-digit'
   });
 
-  $('rSub').textContent    = amtTxt + ' berhasil dikirim ke ' + r.receiverName;
-  $('rAmt').textContent    = amtTxt;
-  $('rAmtMeta').textContent= m.label + ' · NUBIASTORE';
-  $('rFrom').textContent   = r.senderName   + ' (' + sUid(r.senderUid)   + ')';
-  $('rTo').textContent     = r.receiverName + ' (' + sUid(r.receiverUid) + ')';
-  $('rVa').textContent     = fmtVA(r.vaNumber);
-  $('rAmtRow').textContent = amtTxt;
-  $('rWallet').textContent = m.label;
-  $('rTime').textContent   = nowStr;
-  $('rRef').textContent    = r.txId;
+  $('rSub').textContent     = amtTxt + ' berhasil dikirim ke ' + r.receiverName;
+  $('rAmt').textContent     = amtTxt;
+  $('rAmtLbl').textContent  = m.label + ' · NUBIASTORE';
+  $('rFrom').textContent    = r.senderName + ' (' + sUid(r.senderUid) + ')';
+  $('rTo').textContent      = r.receiverName + ' (' + sUid(r.receiverUid) + ')';
+  $('rAmtRow').textContent  = amtTxt;
+  $('rWallet').textContent  = m.label;
+  $('rTime').textContent    = nowStr;
+  $('rRef').textContent     = r.txId;
 
   $('rcptBg').classList.add('show');
   $('rcptSheet').classList.add('show');
@@ -1121,7 +1111,6 @@ function openReceipt(r) {
 function closeReceipt() {
   $('rcptBg').classList.remove('show');
   $('rcptSheet').classList.remove('show');
-  // Reset flow back to s1
   goTo(1);
   recipient = null;
   $('vaInput').value = '';
@@ -1133,9 +1122,9 @@ function closeReceipt() {
 
 async function shareReceipt() {
   if (!lastResult) return;
-  const r      = lastResult;
+  const r = lastResult;
   const amtTxt = fmtAmtByMethod(r.amount, r.method);
-  const m      = METHODS[r.method];
+  const m = METHODS[r.method];
   const txt = [
     '✅ STRUK TRANSFER NUBIASTORE',
     '────────────────────────────',
@@ -1164,7 +1153,7 @@ $('s2Back').addEventListener('click',   () => goTo(1));
 $('mPay').addEventListener('click',     () => selectMethod('nubiapay'));
 $('mCoin').addEventListener('click',    () => selectMethod('nubiacoin'));
 $('mKey').addEventListener('click',     () => selectMethod('nubiakey'));
-$('rcptBg').addEventListener('click',   closeReceipt);
+$('rcptBg').addEventListener('click',    closeReceipt);
 $('rDone').addEventListener('click',    closeReceipt);
 $('rShare').addEventListener('click',   shareReceipt);
 
@@ -1175,7 +1164,7 @@ onAuthStateChanged(auth, async u => {
     await loadBalance();
     $('lookupBtn').disabled = cleanVA($('vaInput').value).length < 16;
   } else {
-    balance = { nubiapayBalance:0, nubiacoinBalance:0, nubiakeyBalance:0 };
+    balance = { nubiPayBalance:0, nubiPayCoin:0, nubiakeyBalance:0 };
     renderProfile();
     $('lookupBtn').disabled = true;
   }
