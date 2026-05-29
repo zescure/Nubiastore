@@ -1729,7 +1729,7 @@ function renderSeasonality(){
       <b>${bullMonths} bulan bullish</b> dari 12 · Rata-rata return tahunan historis: <span style="color:var(--green);font-weight:800">+${(seededRand(seed+99)*12+2).toFixed(1)}%</span>
     </div>
     <div class="season-grid">${cells}</div>
-    <div style="margin-top:9px;font-size:11px;color:var(--muted)">* Berdasarkan data historis simulasi pasar NUBIA. Bukan prediksi masa depan.</div>`;
+    <div style="margin-top:9px;font-size:11px;color:var(--muted)">* Berdasarkan data historis pasar NUBIA. Bukan prediksi masa depan.</div>`;
 }
 
 /* ── PROFILE ── */
@@ -1738,13 +1738,13 @@ function renderProfile(){
   const id=m.id||'x';
   const h=str=>{let h=5381;for(let i=0;i<str.length;i++)h=((h<<5)+h)+str.charCodeAt(i);return Math.abs(h)};
   const seed=h(id);
-  const sectors=['Teknologi','Keuangan','Energi','Kesehatan','Konsumer','Industri','Properti','Telekomunikasi'];
+  const sectors=['Teknologi','Keuangan','Stabil Aset','Private Capital'];
   const sector=sectors[Math.floor(seededRand(seed+1)*sectors.length)];
   const employees=Math.round(500+seededRand(seed+2)*50000);
   const founded=Math.round(1970+seededRand(seed+3)*40);
-  const countries=['Indonesia','Singapura','Malaysia','Amerika Serikat','Jepang'];
+  const countries=['Indonesia','Bogor','Jakarta','Tanggerang','Bekasi'];
   const country=countries[Math.floor(seededRand(seed+4)*countries.length)];
-  const descItems=['Platform teknologi terkemuka','Perusahaan energi terbarukan','Pemimpin pasar keuangan digital','Inovator di sektor kesehatan','Perusahaan konsumer multinasional'];
+  const descItems=['Platform teknologi Keuangan','Digital Aset','Pemimpin pasar keuangan digital di sektor Ai','Perusahaan multiaset','Private Capital','Volume aset digital','Media baru'];
   const desc=descItems[Math.floor(seededRand(seed+5)*descItems.length)];
   const sym=m.symbol||(m.name?m.name.slice(0,2).toUpperCase():'—');
   el.profileContent.innerHTML=`
