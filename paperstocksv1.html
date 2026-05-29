@@ -1072,8 +1072,8 @@ const walletDb=getFirestore(walletApp);
 setPersistence(walletAuth,browserLocalPersistence).catch(()=>{});
 
 /* ── Constants ── */
-const LOT_SIZE=100, BUY_SPREAD=0.017, SELL_SPREAD=0.017, ORDER_FEE=112.5;
-const DEPOSIT_INTEREST_PER_LOT=500, DIVIDEND_PER_LOT=680, UNLOCK_FEE=0.017;
+const LOT_SIZE=100, BUY_SPREAD=0.017, SELL_SPREAD=0.019, ORDER_FEE=112.5;
+const DEPOSIT_INTEREST_PER_LOT=50, DIVIDEND_PER_LOT=68, UNLOCK_FEE=0.017;
 const YEAR_MS=365*24*60*60*1000;
 const ADMIN_UID='8z9b0u1LYfTVM0sCP7qHXbYHvGi1';
 
@@ -1744,8 +1744,8 @@ function renderProfile(){
   const seed=h(id);
   const sectors=['Teknologi','Keuangan','Stabil Aset','Private Capital'];
   const sector=sectors[Math.floor(seededRand(seed+1)*sectors.length)];
-  const employees=Math.round(500+seededRand(seed+2)*50000);
-  const founded=Math.round(1970+seededRand(seed+3)*40);
+  const employees=Math.round(5+seededRand(seed+2)*50);
+  const founded=Math.round(2021+seededRand(seed+3)*40);
   const countries=['Indonesia','Bogor','Jakarta','Tanggerang','Bekasi'];
   const country=countries[Math.floor(seededRand(seed+4)*countries.length)];
   const descItems=['Platform teknologi Keuangan','Digital Aset','Pemimpin pasar keuangan digital di sektor Ai','Perusahaan multiaset','Private Capital','Volume aset digital','Media baru'];
@@ -2251,7 +2251,7 @@ $('btnSellBondConfirm').addEventListener('click',async()=>{
   closeModal('modalSellBond');showLoading('Mengajukan penjualan…','Menunggu konfirmasi Admin');
   try{
     await setDoc(doc(walletDb,'users',currentUser.uid,'bondHoldings',sellBondHoldingId),{sellStatus:'pending',sellRequestAt:serverTimestamp()},{merge:true});
-    toast('✅ Pengajuan jual dikirim ke Admin');
+    toast('✅ Pengajuan jual dikirim');
   }catch(e){toast(e.message||'Gagal ajukan jual')}
   finally{hideLoading()}
 });
@@ -2778,7 +2778,7 @@ function subscribeAdmin(){
 /* ── Nav ── */
 el.btnPortfolio.addEventListener('click',()=>setPage('portfolio'));
 el.btnBonds.addEventListener('click',()=>setPage('bonds'));
-el.btnDeposit.addEventListener('click',()=>window.location.href='/topup');
+el.btnDeposit.addEventListener('click',()=>window.location.href='/nubiastore_va_terima');
 el.btnWithdraw.addEventListener('click',()=>setPage('deposit'));
 el.btnMarketList.addEventListener('click',()=>setPage('home'));
 el.lotInput.addEventListener('input',()=>{if(tradeInputMode==='lot'&&Number(el.lotInput.value)<1)el.lotInput.value='1';updateTradePreview()});
