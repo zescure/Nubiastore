@@ -91,7 +91,7 @@ header{
 .small-muted{font-size:11px;color:var(--muted);font-weight:500}
 
 /* ── ACTION GRID ── */
-.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:11px}
+.action-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:11px}
 .action-btn{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:9px 5px;border-radius:13px;min-height:60px;cursor:pointer;
@@ -1090,7 +1090,11 @@ const el={
   btnBuy:$('btnBuy'),btnSell:$('btnSell'),
   btnBuyLimit:$('btnBuyLimit'),btnSellLimit:$('btnSellLimit'),
   limitPrice:$('limitPrice'),limitLot:$('limitLot'),limitPreview:$('limitPreview'),
-  btnDeposit:$('btnDeposit'),btnWithdraw:$('btnWithdraw'),btnPortfolio:$('btnPortfolio'),btnBonds:$('btnBonds'),
+  btnDeposit:$('btnDeposit'),
+btnWithdraw:$('btnWithdraw'),
+btnPortfolio:$('btnPortfolio'),
+btnBonds:$('btnBonds'),
+btnMarketList:$('btnMarketList'),
   positionsList:$('positionsList'),tradesList:$('tradesList'),totalPnl:$('totalPnl'),
   portfolioLimitsList:$('portfolioLimitsList'),
   chartCanvas:$('chartCanvas'),chartWrap:$('chartWrap'),crosshairInfo:$('crosshairInfo'),
@@ -2772,6 +2776,7 @@ el.btnPortfolio.addEventListener('click',()=>setPage('portfolio'));
 el.btnBonds.addEventListener('click',()=>setPage('bonds'));
 el.btnDeposit.addEventListener('click',()=>window.location.href='/topup');
 el.btnWithdraw.addEventListener('click',()=>setPage('deposit'));
+el.btnMarketList.addEventListener('click',()=>setPage('home'));
 el.lotInput.addEventListener('input',()=>{if(tradeInputMode==='lot'&&Number(el.lotInput.value)<1)el.lotInput.value='1';updateTradePreview()});
 el.btnBuy.addEventListener('click',buyLots);
 el.btnSell.addEventListener('click',()=>{const m=currentMarket||marketsCache[selectedMarketId];if(!m)return toast('Pilih market dulu');openSellModal(m.id)});
