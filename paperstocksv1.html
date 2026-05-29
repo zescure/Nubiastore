@@ -1,0 +1,2823 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>PaperStocks — NUBIA Stocks</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f0f5;--surface:#09090b;--muted:#71717a;--text:#09090b;
+  --accent:#fbbf24;--accent2:#f59e0b;--danger:#ef4444;--danger2:#dc2626;
+  --card:#ffffff;--shadow:0 2px 12px rgba(9,9,11,0.06),0 1px 3px rgba(9,9,11,0.04);
+  --radius:18px;--green:#16a34a;--green2:#22c55e;--blue:#3b82f6;--purple:#8b5cf6;
+  --indigo:#6366f1;--orange:#f97316;--teal:#14b8a6;
+  --border:rgba(9,9,11,0.07);
+}
+*{box-sizing:border-box;font-family:'Geist',system-ui,sans-serif;text-rendering:optimizeLegibility;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+button{cursor:pointer}
+
+/* ── LAYOUT ── */
+.app{max-width:430px;margin:0 auto;padding:12px 12px 110px;display:flex;flex-direction:column;gap:10px}
+
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:linear-gradient(150deg,#09090b 0%,#18181b 100%);
+  color:#fff;padding:11px 13px;border-radius:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.22);
+  position:sticky;top:10px;z-index:50;
+}
+.logo{display:flex;align-items:center;gap:9px}
+.logo .brand{
+  height:38px;width:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#09090b;font-size:16px;
+  box-shadow:0 3px 10px rgba(251,191,36,0.35);
+  font-family:'Geist Mono',monospace;
+}
+.logo h1{margin:0;font-size:15px;font-weight:800;letter-spacing:-.4px}
+.logo .tag{font-size:10px;color:rgba(255,255,255,0.5);margin-top:1px;font-weight:500}
+.top-actions{display:flex;gap:6px;align-items:center}
+.user-pill{
+  padding:5px 9px;border-radius:999px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.09);
+  font-weight:700;font-size:11px;color:#fff;
+  max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.admin-badge{
+  padding:3px 7px;border-radius:999px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#09090b;font-size:10px;font-weight:900;letter-spacing:.2px;
+}
+
+/* ── BUTTONS ── */
+.btn{
+  height:38px;border-radius:10px;border:0;padding:0 13px;
+  font-weight:700;cursor:pointer;display:inline-flex;
+  align-items:center;justify-content:center;gap:5px;
+  font-size:13px;transition:all .14s;letter-spacing:-.1px;
+}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:#fff}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#09090b;box-shadow:0 3px 12px rgba(251,191,36,0.28)}
+.btn-danger{background:linear-gradient(135deg,#f87171,var(--danger));color:#fff;box-shadow:0 3px 10px rgba(239,68,68,0.25)}
+.btn-green{background:linear-gradient(135deg,var(--green2),var(--green));color:#fff;box-shadow:0 3px 10px rgba(34,197,94,0.25)}
+.btn-blue{background:linear-gradient(135deg,#60a5fa,var(--blue));color:#fff;box-shadow:0 3px 10px rgba(59,130,246,0.25)}
+.btn-purple{background:linear-gradient(135deg,#a78bfa,var(--purple));color:#fff;box-shadow:0 3px 10px rgba(139,92,246,0.25)}
+.btn-indigo{background:linear-gradient(135deg,#818cf8,var(--indigo));color:#fff}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-sm{height:30px;font-size:11px;padding:0 10px;border-radius:8px}
+.btn-xs{height:26px;font-size:10px;padding:0 8px;border-radius:7px;font-weight:800}
+.btn-full{width:100%;height:46px;font-size:14px;border-radius:13px;font-weight:800}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card);border-radius:var(--radius);
+  padding:14px;box-shadow:var(--shadow);border:1px solid var(--border);
+}
+.card-dark{
+  background:linear-gradient(150deg,#0c0c0e,#141416);
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 8px 32px rgba(0,0,0,0.28);
+}
+.card h2{margin:0 0 4px 0;font-size:15px;font-weight:800;letter-spacing:-.3px}
+.muted{color:var(--muted);font-size:12.5px;font-weight:500}
+.small-muted{font-size:11px;color:var(--muted);font-weight:500}
+
+/* ── ACTION GRID ── */
+.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:11px}
+.action-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:9px 5px;border-radius:13px;min-height:60px;cursor:pointer;
+  font-weight:800;color:var(--text);background:#f8f8fa;
+  border:1px solid var(--border);transition:transform .12s,box-shadow .12s;
+}
+.action-btn:active{transform:scale(.95)}
+.action-btn .icon{font-size:19px;margin-bottom:4px;line-height:1}
+.action-btn .label{font-size:10.5px;font-weight:800;text-align:center;letter-spacing:-.1px}
+.action-btn.primary{
+  background:linear-gradient(150deg,var(--accent),var(--accent2));border:0;
+  box-shadow:0 5px 16px rgba(251,191,36,0.22);
+}
+
+/* ── LIST ── */
+.list{display:flex;flex-direction:column;gap:7px;margin-top:7px}
+.list-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:11px 12px;border-radius:12px;background:var(--card);
+  border:1px solid var(--border);
+}
+.list-item .meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.list-item .price{font-weight:900;font-family:'Geist Mono',monospace;font-size:14px}
+.list-item .subsmall{font-size:11px;color:var(--muted);font-weight:500}
+.list-item .right{text-align:right;min-width:90px;flex-shrink:0}
+
+/* ── CHART ── */
+.chart-wrap{
+  position:relative;height:260px;border-radius:13px;overflow:hidden;
+  background:#fff;border:1px solid var(--border);margin-top:10px;
+  user-select:none;-webkit-user-select:none;
+}
+.chart-wrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+.chart-toolbar{
+  display:flex;align-items:center;gap:6px;padding:8px 10px 5px;
+  background:#fafafa;border-bottom:1px solid var(--border);
+  position:relative;z-index:5;flex-wrap:wrap;
+}
+.tf-btn{
+  padding:4px 9px;border-radius:8px;font-size:11px;font-weight:700;
+  border:1.5px solid transparent;background:transparent;
+  cursor:pointer;color:var(--muted);transition:all .12s;
+}
+.tf-btn.active{background:var(--surface);border-color:var(--surface);color:#fff}
+.chart-mode-btns{display:flex;gap:4px;margin-left:auto}
+.cmode-btn{
+  padding:4px 8px;border-radius:7px;font-size:10px;font-weight:800;
+  border:1.5px solid var(--border);background:#fff;cursor:pointer;
+  color:var(--muted);transition:all .12s;
+}
+.cmode-btn.active{background:var(--surface);border-color:var(--surface);color:#fff}
+.marker-toggle{
+  display:flex;align-items:center;gap:4px;
+  padding:4px 8px;border-radius:7px;
+  background:#f0f0f5;font-size:10px;font-weight:700;cursor:pointer;
+  border:1.5px solid var(--border);color:var(--muted);transition:all .12s;
+}
+.marker-toggle.on{background:rgba(251,191,36,0.15);border-color:rgba(251,191,36,0.4);color:#92400e}
+
+/* ── MARKET DETAIL TABS ── */
+.market-tabs{
+  display:flex;gap:0;margin:10px 0 0;
+  background:#f4f4f6;border-radius:12px;padding:3px;overflow-x:auto;
+  scrollbar-width:none;
+}
+.market-tabs::-webkit-scrollbar{display:none}
+.mtab{
+  flex:0 0 auto;padding:7px 11px;border-radius:9px;
+  font-size:11.5px;font-weight:700;border:0;background:transparent;
+  cursor:pointer;color:var(--muted);white-space:nowrap;transition:all .14s;
+}
+.mtab.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.08);font-weight:800}
+
+/* ── MARKET TAB PANELS ── */
+.mtab-panel{display:none;margin-top:10px}
+.mtab-panel.active{display:block}
+
+/* ── STATS GRID ── */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.stat-tile{
+  padding:10px 11px;border-radius:12px;background:#fafafa;
+  border:1px solid var(--border);
+}
+.stat-tile .st-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat-tile .st-val{font-size:14px;font-weight:900;margin-top:3px;font-family:'Geist Mono',monospace;letter-spacing:-.3px}
+.stat-tile .st-note{font-size:10.5px;font-weight:700;margin-top:2px}
+.stat-section{margin-bottom:12px}
+.stat-section-title{
+  font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.7px;color:var(--muted);margin:0 0 7px;
+  display:flex;align-items:center;gap:5px;
+}
+
+/* ── TECHNICAL ── */
+.tech-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;
+}
+.tech-row:last-child{border-bottom:0}
+.tech-bull{color:var(--green);font-weight:700}
+.tech-bear{color:var(--danger);font-weight:700}
+.tech-neutral{color:var(--muted)}
+.ma-pill{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:3px 8px;border-radius:7px;font-size:10.5px;font-weight:800;
+}
+.ma-up{background:rgba(22,163,74,0.1);color:var(--green)}
+.ma-dn{background:rgba(239,68,68,0.1);color:var(--danger)}
+
+/* ── SEASONALITY ── */
+.season-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.season-cell{
+  padding:8px 6px;border-radius:10px;text-align:center;
+  border:1px solid var(--border);background:#fafafa;
+}
+.season-cell .sc-month{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.season-cell .sc-pct{font-size:13px;font-weight:900;margin-top:3px;font-family:'Geist Mono',monospace}
+.season-cell.bull{background:rgba(22,163,74,0.07);border-color:rgba(22,163,74,0.2)}
+.season-cell.bear{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.2)}
+
+/* ── COMPANY PROFILE ── */
+.profile-header{
+  display:flex;gap:11px;align-items:flex-start;margin-bottom:11px;
+  padding:11px;background:#fafafa;border-radius:12px;border:1px solid var(--border);
+}
+.profile-logo{
+  width:44px;height:44px;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:18px;color:#09090b;flex-shrink:0;
+  font-family:'Geist Mono',monospace;
+}
+.profile-name{font-weight:900;font-size:15px;letter-spacing:-.3px}
+.profile-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.profile-desc{font-size:12.5px;line-height:1.7;color:#3f3f46;margin-bottom:10px}
+.profile-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.ptag{
+  padding:4px 9px;border-radius:7px;font-size:10.5px;font-weight:700;
+  background:#f4f4f6;color:var(--muted);border:1px solid var(--border);
+}
+
+/* ── INPUTS ── */
+input[type="number"],input[type="text"],input[type="email"],input[type="password"],select,textarea{
+  width:100%;padding:11px 12px;border-radius:11px;
+  border:1.5px solid var(--border);font-size:13.5px;
+  background:#fafafa;color:var(--text);outline:none;
+  transition:border-color .14s;font-family:'Geist',sans-serif;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.input-group{display:flex;flex-direction:column;gap:5px}
+.input-label{font-size:11.5px;font-weight:700;color:var(--muted)}
+.seg-control{display:flex;gap:0;background:#f4f4f6;border-radius:10px;padding:3px;margin-bottom:10px}
+.seg-btn{
+  flex:1;padding:7px;border-radius:8px;border:0;background:transparent;
+  font-weight:700;font-size:12px;cursor:pointer;color:var(--muted);transition:all .13s;
+}
+.seg-btn.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.08);font-weight:800}
+
+/* ── ORDER BOOK ── */
+.orderbook{margin-top:10px;padding:10px;border-radius:12px;border:1px solid var(--border);background:#fafafa}
+.ob-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ob-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.book-side{padding:8px;border-radius:10px;background:#fff;border:1px solid var(--border)}
+.book-header{font-size:10.5px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.order-row{display:flex;justify-content:space-between;padding:3px 5px;border-radius:5px;font-weight:700;font-size:11.5px;margin-bottom:2px;font-family:'Geist Mono',monospace}
+.bid{color:var(--green)}.ask{color:var(--danger)}
+.ob-bar{height:2.5px;border-radius:2px;margin-top:1px;opacity:.25}
+.ob-bar-bid{background:var(--green)}.ob-bar-ask{background:var(--danger)}
+.trades-ticker{overflow-y:auto;border-radius:9px;background:#fff;border:1px solid var(--border);margin-top:7px;max-height:85px}
+.ticker-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:4px 9px;font-size:10.5px;font-weight:700;
+  border-bottom:1px solid rgba(0,0,0,0.03);
+  font-family:'Geist Mono',monospace;
+}
+.ticker-buy{color:var(--green)}.ticker-sell{color:var(--danger)}
+
+/* ── LIMIT ORDERS ── */
+.limit-order-card{
+  padding:11px 12px;border-radius:12px;background:#fff;
+  border:1px solid var(--border);display:flex;flex-direction:column;gap:8px;
+}
+.lo-header{display:flex;justify-content:space-between;align-items:flex-start}
+.lo-badge{
+  padding:3px 8px;border-radius:7px;font-size:10px;font-weight:800;
+}
+.lo-buy{background:rgba(22,163,74,0.1);color:var(--green)}
+.lo-sell{background:rgba(239,68,68,0.1);color:var(--danger)}
+.lo-pending{background:rgba(59,130,246,0.1);color:var(--blue)}
+.lo-filled{background:rgba(22,163,74,0.1);color:var(--green)}
+.lo-cancelled{background:rgba(113,113,122,0.1);color:var(--muted)}
+
+/* ── POSITIONS ── */
+.position-item{
+  padding:12px;border-radius:13px;background:#fff;
+  border:1px solid var(--border);display:flex;flex-direction:column;gap:9px;
+}
+.position-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.pnl-pos{color:var(--green);font-weight:800}
+.pnl-neg{color:var(--danger);font-weight:800}
+.pos-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;
+  padding:9px;background:#fafafa;border-radius:10px;
+}
+.pos-stat .ps-label{font-size:9.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.pos-stat .ps-val{font-size:12.5px;font-weight:800;margin-top:2px;font-family:'Geist Mono',monospace}
+.pos-actions{display:flex;gap:5px;flex-wrap:wrap}
+.autoclose-pill{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:3px 8px;border-radius:6px;font-size:10.5px;font-weight:800;
+  background:rgba(59,130,246,0.1);color:var(--blue);
+}
+
+/* ── DEPOSITS ── */
+.deposit-item{
+  padding:12px;border-radius:13px;background:#fff;
+  border:1px solid var(--border);display:flex;flex-direction:column;gap:8px;
+}
+.dep-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:800}
+.dep-active{background:rgba(22,163,74,0.1);color:var(--green)}
+.dep-locked{background:rgba(239,68,68,0.1);color:var(--danger)}
+.dep-matured{background:rgba(251,191,36,0.18);color:#92400e}
+.interest-box{
+  padding:9px 10px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(251,191,36,0.07),rgba(251,191,36,0.02));
+  border:1px solid rgba(251,191,36,0.18);
+}
+
+/* ── BONDS ── */
+.bond-card{
+  padding:13px;border-radius:14px;background:#fff;
+  border:1px solid var(--border);display:flex;flex-direction:column;gap:9px;
+}
+.bond-header{display:flex;justify-content:space-between;align-items:flex-start}
+.bond-code{font-size:13px;font-weight:900;font-family:'Geist Mono',monospace;letter-spacing:-.2px}
+.bond-name{font-size:11px;color:var(--muted);margin-top:1px}
+.bond-yield{
+  padding:4px 9px;border-radius:8px;
+  background:rgba(22,163,74,0.1);color:var(--green);
+  font-size:12px;font-weight:900;font-family:'Geist Mono',monospace;
+}
+.bond-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.bond-stat{padding:7px 8px;border-radius:9px;background:#fafafa;border:1px solid var(--border)}
+.bond-stat .bs-label{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.bond-stat .bs-val{font-size:12.5px;font-weight:900;margin-top:2px;font-family:'Geist Mono',monospace}
+.bond-holding{
+  padding:12px;border-radius:13px;background:#fff;
+  border:1px solid var(--border);display:flex;flex-direction:column;gap:8px;
+}
+.bh-status-pending{
+  padding:3px 8px;border-radius:7px;font-size:10px;font-weight:800;
+  background:rgba(249,115,22,0.1);color:var(--orange);
+}
+.bh-status-active{
+  padding:3px 8px;border-radius:7px;font-size:10px;font-weight:800;
+  background:rgba(22,163,74,0.1);color:var(--green);
+}
+.bh-status-sold{
+  padding:3px 8px;border-radius:7px;font-size:10px;font-weight:800;
+  background:rgba(113,113,122,0.1);color:var(--muted);
+}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  z-index:200;display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(4px);
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-sheet{
+  background:#fff;border-radius:22px 22px 0 0;padding:20px 18px 28px;
+  width:100%;max-width:430px;max-height:88vh;overflow-y:auto;
+  transform:translateY(40px);transition:transform .26s cubic-bezier(.34,1.56,.64,1);
+}
+.modal-overlay.open .modal-sheet{transform:translateY(0)}
+.modal-handle{width:34px;height:4px;border-radius:2px;background:rgba(0,0,0,0.1);margin:0 auto 16px}
+.modal-title{font-size:18px;font-weight:900;margin-bottom:3px;letter-spacing:-.4px}
+.modal-sub{font-size:12.5px;color:var(--muted);margin-bottom:15px;font-weight:500}
+
+/* ── TRADE PREVIEW ── */
+.trade-preview{
+  padding:10px 12px;border-radius:11px;
+  background:rgba(0,0,0,0.025);border:1px solid var(--border);
+  font-size:12.5px;line-height:1.75;margin-top:7px;
+}
+.trade-preview b{font-weight:800}
+
+/* ── PRICE BADGE ── */
+.price-badge{font-size:21px;font-weight:900;letter-spacing:-.6px;font-family:'Geist Mono',monospace}
+.change-up{color:var(--green);font-weight:700;font-size:12.5px;font-family:'Geist Mono',monospace}
+.change-dn{color:var(--danger);font-weight:700;font-size:12.5px;font-family:'Geist Mono',monospace}
+
+/* ── HLBOXes ── */
+.hlrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.hlbox{flex:1;min-width:72px;padding:8px 9px;border-radius:10px;background:#fafafa;border:1px solid var(--border)}
+.hlbox .hl-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.hlbox .hl-val{font-size:13px;font-weight:900;margin-top:2px;font-family:'Geist Mono',monospace}
+
+/* ── BID/ASK ── */
+.ba-box{
+  flex:1;padding:9px 10px;border-radius:10px;
+}
+.ba-bid{background:#f0fff4;border:1px solid rgba(22,163,74,0.15)}
+.ba-ask{background:#fff0f0;border:1px solid rgba(239,68,68,0.15)}
+.ba-vol{background:#fafafa;border:1px solid var(--border)}
+.ba-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.ba-val{font-size:14px;font-weight:900;margin-top:2px;font-family:'Geist Mono',monospace}
+
+/* ── CHIPS ── */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;font-weight:800;font-size:11px}
+.chip-yellow{background:rgba(251,191,36,0.15);color:#92400e}
+.chip-green{background:rgba(22,163,74,0.1);color:var(--green)}
+.chip-red{background:rgba(239,68,68,0.1);color:var(--danger)}
+.chip-blue{background:rgba(59,130,246,0.1);color:var(--blue)}
+.chip-purple{background:rgba(139,92,246,0.1);color:var(--purple)}
+.pill{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;background:rgba(0,0,0,0.05);font-size:11px;font-weight:800}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:10px 0}
+
+/* ── SECTION TITLE ── */
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px}
+
+/* ── LOADING ── */
+.loading-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .18s;backdrop-filter:blur(6px);
+}
+.loading-overlay.show{opacity:1;pointer-events:all}
+.loading-spinner{
+  width:44px;height:44px;
+  border:3.5px solid rgba(251,191,36,0.25);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .75s linear infinite;margin-bottom:13px;
+}
+.loading-text{color:#fff;font-weight:800;font-size:15px;letter-spacing:-.2px}
+.loading-sub{color:rgba(255,255,255,0.55);font-size:12px;margin-top:3px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(14px);
+  opacity:0;pointer-events:none;background:#18181b;color:#fff;
+  padding:10px 16px;border-radius:999px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.25);
+  transition:opacity .18s,transform .18s;z-index:1000;
+  font-size:13px;font-weight:700;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── AUTH TABS ── */
+.auth-tabs{
+  display:flex;gap:0;border-radius:11px;overflow:hidden;
+  border:1.5px solid var(--border);margin-bottom:14px;
+}
+.auth-tab{flex:1;padding:9px;font-weight:700;font-size:13px;border:0;background:transparent;cursor:pointer;color:var(--muted)}
+.auth-tab.active{background:var(--surface);color:#fff;font-weight:800}
+
+/* ── ADMIN ── */
+.admin-panel{
+  background:linear-gradient(150deg,#0a0a0c,#111113);
+  border-radius:var(--radius);padding:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.28);
+  border:1px solid rgba(255,255,255,0.06);
+}
+.admin-header{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.admin-icon{
+  width:34px;height:34px;border-radius:9px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+}
+.admin-title{color:#fff;font-weight:900;font-size:14px;letter-spacing:-.2px}
+.admin-sub{color:rgba(255,255,255,0.45);font-size:10.5px;margin-top:1px}
+.admin-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:11px}
+.admin-stat{
+  padding:9px;border-radius:10px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);text-align:center;
+}
+.admin-stat .as-val{font-size:17px;font-weight:900;color:#fff;font-family:'Geist Mono',monospace}
+.admin-stat .as-label{font-size:9.5px;color:rgba(255,255,255,0.4);margin-top:2px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.admin-search{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);
+  color:#fff;border-radius:10px;padding:9px 12px;width:100%;font-size:13px;margin-bottom:9px;
+}
+.admin-search::placeholder{color:rgba(255,255,255,0.28)}
+.admin-search:focus{outline:none;border-color:var(--accent)}
+.admin-tabs{
+  display:flex;gap:0;border-radius:10px;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.07);margin-bottom:9px;
+}
+.admin-tab{
+  flex:1;padding:7px;font-weight:700;font-size:11px;
+  border:0;background:transparent;cursor:pointer;color:rgba(255,255,255,0.38);
+}
+.admin-tab.active{background:rgba(251,191,36,0.13);color:var(--accent)}
+.admin-user-card{
+  background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.055);
+  border-radius:12px;padding:11px;margin-bottom:7px;
+}
+.auc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px}
+.auc-email{color:#fff;font-weight:700;font-size:12.5px;word-break:break-all}
+.auc-uid{color:rgba(255,255,255,0.35);font-size:9.5px;font-family:'Geist Mono',monospace;margin-top:2px}
+.auc-coin{color:var(--accent);font-weight:900;font-size:13.5px;font-family:'Geist Mono',monospace}
+.auc-pos-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:5px 7px;background:rgba(255,255,255,0.025);
+  border-radius:7px;font-size:11.5px;font-weight:700;margin-bottom:4px;
+}
+.admin-empty{color:rgba(255,255,255,0.28);font-size:13px;text-align:center;padding:18px 0}
+.admin-bond-card{
+  background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.055);
+  border-radius:12px;padding:11px;margin-bottom:7px;
+}
+.admin-bond-title{color:#fff;font-weight:900;font-size:13px;font-family:'Geist Mono',monospace}
+.admin-bond-sub{color:rgba(255,255,255,0.45);font-size:11px;margin-top:2px}
+.sell-req-card{
+  background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);
+  border-radius:12px;padding:11px;margin-bottom:7px;
+}
+.sell-req-title{color:#fff;font-weight:800;font-size:12.5px}
+.sell-req-sub{color:rgba(255,255,255,0.5);font-size:11px;margin-top:2px}
+
+/* ── MISC ── */
+.hidden{display:none!important}
+@keyframes priceUp{0%{color:inherit}50%{color:var(--green)}100%{color:inherit}}
+@keyframes priceDn{0%{color:inherit}50%{color:var(--danger)}100%{color:inherit}}
+.flash-up{animation:priceUp .55s ease}
+.flash-dn{animation:priceDn .55s ease}
+@keyframes pricePulse{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}
+.price-updating{animation:pricePulse .45s ease}
+
+.crosshair-info{
+  position:absolute;top:8px;right:8px;
+  background:rgba(9,9,11,0.82);color:#fff;
+  padding:5px 8px;border-radius:8px;
+  font-size:10.5px;font-weight:700;line-height:1.6;
+  pointer-events:none;z-index:10;
+  font-family:'Geist Mono',monospace;
+  backdrop-filter:blur(4px);
+  display:none;
+}
+
+@media(min-width:430px){.app{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="brand">PS</div>
+    <div>
+      <h1>PaperStocks</h1>
+      <div class="tag">NUBIA Stocks · Lot Trading</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <div id="adminBadge" class="admin-badge hidden">⚡ ADMIN</div>
+    <div id="userInfo" class="user-pill">Belum Login</div>
+    <button id="btnSignIn" class="btn btn-ghost btn-sm">Login</button>
+    <button id="btnSignOut" class="btn btn-ghost btn-sm hidden">Keluar</button>
+  </div>
+</header>
+
+<!-- DASHBOARD -->
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+    <div><h2>Dashboard</h2><div class="muted">Saldo & ringkasan akun</div></div>
+    <div style="text-align:right">
+      <div class="small-muted" style="font-weight:700;letter-spacing:.3px">NUBIAPAY COIN</div>
+      <div id="balCoin" class="price-badge">—</div>
+      <div class="small-muted" style="margin-top:2px">Balance: <span id="balRp" style="font-family:'Geist Mono',monospace">—</span></div>
+    </div>
+  </div>
+  <div class="action-grid">
+    <div class="action-btn primary" id="btnDeposit"><div class="icon">⚡</div><div class="label">Top Up</div></div>
+    <div class="action-btn" id="btnWithdraw"><div class="icon">🏦</div><div class="label">Deposit</div></div>
+    <div class="action-btn" id="btnBonds"><div class="icon">📜</div><div class="label">Obligasi</div></div>
+    <div class="action-btn" id="btnPortfolio"><div class="icon">📦</div><div class="label">Portfolio</div></div>
+  </div>
+</div>
+
+<!-- MARKET LIST -->
+<div id="page-home" class="card">
+  <div class="section-title">
+    <div><div style="font-weight:800;font-size:14px">Daftar Market</div><div class="muted">Pilih untuk trading</div></div>
+    <div class="pill" id="visibleCountTop">0 market</div>
+  </div>
+  <div id="marketList" class="list" style="max-height:300px;overflow:auto"></div>
+</div>
+
+<!-- MARKET VIEW -->
+<div id="page-market" class="card hidden">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+    <div style="min-width:0">
+      <div id="marketName" style="font-weight:900;font-size:17px;letter-spacing:-.4px">—</div>
+      <div id="marketSymbol" class="muted" style="font-family:'Geist Mono',monospace">—</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <div id="marketPrice" class="price-badge">—</div>
+      <div id="marketChangeDisplay" class="change-up" style="margin-top:2px">—</div>
+    </div>
+  </div>
+  <div class="hlrow">
+    <div class="hlbox"><div class="hl-label">Open</div><div class="hl-val" id="mktOpen">—</div></div>
+    <div class="hlbox"><div class="hl-label">High</div><div class="hl-val" id="mktHigh" style="color:var(--green)">—</div></div>
+    <div class="hlbox"><div class="hl-label">Low</div><div class="hl-val" id="mktLow" style="color:var(--danger)">—</div></div>
+    <div class="hlbox"><div class="hl-label">Spread</div><div class="hl-val" id="mktSpread">—</div></div>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-toolbar">
+    <button class="tf-btn" data-tf="15">15m</button>
+    <button class="tf-btn" data-tf="60">1H</button>
+    <button class="tf-btn" data-tf="240">4H</button>
+    <button class="tf-btn active" data-tf="400">1D</button>
+    <button class="tf-btn" data-tf="9999">All</button>
+    <div class="chart-mode-btns">
+      <button class="cmode-btn active" data-cm="candle">🕯</button>
+      <button class="cmode-btn" data-cm="line">📈</button>
+      <button class="cmode-btn" data-cm="area">🏔</button>
+    </div>
+    <button id="markerToggle" class="marker-toggle on" title="Toggle trade markers">B/S</button>
+  </div>
+  <div class="chart-wrap" id="chartWrap">
+    <canvas id="chartCanvas"></canvas>
+    <div class="crosshair-info" id="crosshairInfo"></div>
+  </div>
+
+  <!-- MARKET TABS -->
+  <div class="market-tabs" id="marketTabs">
+    <button class="mtab active" data-mt="trade">Trade</button>
+    <button class="mtab" data-mt="book">Order Book</button>
+    <button class="mtab" data-mt="stats">Key Stats</button>
+    <button class="mtab" data-mt="analysis">Analisis</button>
+    <button class="mtab" data-mt="season">Seasonality</button>
+    <button class="mtab" data-mt="profile">Profil</button>
+    <button class="mtab" data-mt="limits">Limit Order</button>
+  </div>
+
+  <!-- TAB: TRADE -->
+  <div id="mtab-trade" class="mtab-panel active">
+    <div style="display:flex;gap:7px;margin-bottom:8px">
+      <div class="ba-box ba-bid" style="flex:1">
+        <div class="ba-label">BID (Beli)</div>
+        <div id="marketBid" class="ba-val" style="color:var(--green)">—</div>
+      </div>
+      <div class="ba-box ba-ask" style="flex:1">
+        <div class="ba-label">ASK (Jual)</div>
+        <div id="marketAsk" class="ba-val" style="color:var(--danger)">—</div>
+      </div>
+      <div class="ba-box ba-vol" style="flex:1">
+        <div class="ba-label">Volume</div>
+        <div id="marketVolume" class="ba-val">—</div>
+      </div>
+    </div>
+
+    <!-- Trade Form -->
+    <div class="seg-control" id="tradeTypeSeg">
+      <button class="seg-btn active" data-tt="market">Market Order</button>
+      <button class="seg-btn" data-tt="limit">Limit Order</button>
+    </div>
+
+    <!-- Market Order Panel -->
+    <div id="marketOrderPanel">
+      <div style="display:flex;gap:7px;align-items:flex-end">
+        <div class="seg-control" style="margin:0;flex:0 0 auto" id="lotNomSeg">
+          <button class="seg-btn active btn-xs" data-ln="lot">Lot</button>
+          <button class="seg-btn btn-xs" data-ln="nominal">Nominal</button>
+        </div>
+        <div style="flex:1">
+          <div class="input-label" id="tradeInputLabel">Jumlah Lot</div>
+          <input id="lotInput" type="number" value="1" min="1" step="1"/>
+        </div>
+      </div>
+      <div class="small-muted" id="sharesDisplay" style="margin:5px 0 0 1px">= 100 lembar</div>
+      <div class="trade-preview" id="tradePreview">Pilih market untuk estimasi.</div>
+      <div style="display:flex;gap:7px;margin-top:9px">
+        <button id="btnBuy" class="btn btn-primary" style="flex:1;height:46px;font-size:13.5px;font-weight:800">Beli</button>
+        <button id="btnSell" class="btn btn-danger" style="flex:1;height:46px;font-size:13.5px;font-weight:800">Jual</button>
+      </div>
+    </div>
+
+    <!-- Limit Order Panel -->
+    <div id="limitOrderPanel" class="hidden">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
+        <div class="input-group">
+          <div class="input-label">Harga Limit</div>
+          <input id="limitPrice" type="number" placeholder="0.00"/>
+        </div>
+        <div class="input-group">
+          <div class="input-label">Jumlah Lot</div>
+          <input id="limitLot" type="number" value="1" min="1"/>
+        </div>
+      </div>
+      <div class="trade-preview" id="limitPreview">Set harga dan lot untuk limit order.</div>
+      <div style="display:flex;gap:7px;margin-top:9px">
+        <button id="btnBuyLimit" class="btn btn-primary" style="flex:1;height:46px;font-size:13px;font-weight:800">Beli Limit</button>
+        <button id="btnSellLimit" class="btn btn-danger" style="flex:1;height:46px;font-size:13px;font-weight:800">Jual Limit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ORDER BOOK -->
+  <div id="mtab-book" class="mtab-panel">
+    <div class="orderbook">
+      <div class="ob-header">
+        <div style="font-weight:800;font-size:13px">Order Book</div>
+        <div id="orderbookSummary" class="small-muted">—</div>
+      </div>
+      <div class="ob-grid">
+        <div class="book-side" id="book-asks"><div class="book-header ask">Asks</div></div>
+        <div class="book-side" id="book-bids"><div class="book-header bid">Bids</div></div>
+      </div>
+      <div style="margin-top:7px">
+        <div class="small-muted" style="margin-bottom:4px;font-weight:700">Recent Trades</div>
+        <div class="trades-ticker" id="recentTradesTicker"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: KEY STATS -->
+  <div id="mtab-stats" class="mtab-panel">
+    <div id="keyStatsContent"></div>
+  </div>
+
+  <!-- TAB: ANALYSIS -->
+  <div id="mtab-analysis" class="mtab-panel">
+    <div id="analysisContent"></div>
+  </div>
+
+  <!-- TAB: SEASONALITY -->
+  <div id="mtab-season" class="mtab-panel">
+    <div id="seasonContent"></div>
+  </div>
+
+  <!-- TAB: PROFILE -->
+  <div id="mtab-profile" class="mtab-panel">
+    <div id="profileContent"></div>
+  </div>
+
+  <!-- TAB: LIMIT ORDERS -->
+  <div id="mtab-limits" class="mtab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-weight:800;font-size:13px">Limit Order Aktif</div>
+      <div class="chip chip-blue" id="activeLimitCount">0 order</div>
+    </div>
+    <div id="limitOrdersList"></div>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<div id="page-portfolio" class="card hidden">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><div style="font-weight:900;font-size:15px;letter-spacing:-.3px">Portfolio</div><div class="muted">Posisi & histori</div></div>
+    <div style="text-align:right">
+      <div class="small-muted">Unrealized PnL</div>
+      <div id="totalPnl" style="font-weight:900;font-size:17px;font-family:'Geist Mono',monospace">—</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+      <div style="font-weight:800;font-size:13px">Posisi Terbuka</div>
+      <div class="chip chip-green" style="font-size:10px">● LIVE</div>
+    </div>
+    <div id="positionsList" class="list"></div>
+  </div>
+  <div class="divider"></div>
+  <div>
+    <div style="font-weight:800;font-size:13px;margin-bottom:7px">Histori Transaksi</div>
+    <div id="tradesList" class="list" style="max-height:240px;overflow:auto"></div>
+  </div>
+  <div class="divider"></div>
+  <div>
+    <div style="font-weight:800;font-size:13px;margin-bottom:7px">Limit Orders</div>
+    <div id="portfolioLimitsList" class="list" style="max-height:200px;overflow:auto"></div>
+  </div>
+</div>
+
+<!-- DEPOSIT SAHAM -->
+<div id="page-deposit" class="card hidden">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><div style="font-weight:900;font-size:15px;letter-spacing:-.3px">Deposit Saham</div><div class="muted">Lock saham, bunga & dividen</div></div>
+    <div class="chip chip-yellow">🏦 Staking</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px">
+    <div class="hlbox"><div class="hl-label">Bunga / Lot</div><div class="hl-val" style="color:var(--green)">500 / lot</div><div class="small-muted" style="font-size:10px">per tahun</div></div>
+    <div class="hlbox"><div class="hl-label">Dividen / Lot</div><div class="hl-val" style="color:var(--blue)">680 / lot</div><div class="small-muted" style="font-size:10px">per tahun</div></div>
+    <div class="hlbox"><div class="hl-label">Fee Unlock Awal</div><div class="hl-val" style="color:var(--danger)">1.7%</div><div class="small-muted" style="font-size:10px">dari nilai koin</div></div>
+    <div class="hlbox"><div class="hl-label">Jatuh Tempo</div><div class="hl-val">1 Tahun</div><div class="small-muted" style="font-size:10px">auto unlock</div></div>
+  </div>
+  <div class="divider"></div>
+  <div><div style="font-weight:800;font-size:13px;margin-bottom:7px">Tersedia untuk Deposit</div><div id="depositAvailList" class="list"></div></div>
+  <div class="divider"></div>
+  <div><div style="font-weight:800;font-size:13px;margin-bottom:7px">Deposit Aktif</div><div id="depositActiveList" class="list"></div></div>
+</div>
+
+<!-- OBLIGASI / BONDS -->
+<div id="page-bonds" class="card hidden">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><div style="font-weight:900;font-size:15px;letter-spacing:-.3px">Obligasi FR</div><div class="muted">Fixed income · Kupon tahunan</div></div>
+    <div class="chip chip-yellow">📜 Bonds</div>
+  </div>
+  <div class="divider" style="margin:10px 0 8px"/>
+  <div style="font-weight:800;font-size:13px;margin-bottom:7px">Produk Tersedia</div>
+  <div id="bondProductsList" class="list"></div>
+  <div class="divider"/>
+  <div style="font-weight:800;font-size:13px;margin-bottom:7px">Kepemilikan Saya</div>
+  <div id="bondHoldingsList" class="list"></div>
+</div>
+
+<!-- EVENTS -->
+<div id="page-events" class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><div style="font-weight:900">Kalender & News</div><div class="muted">Event market</div></div>
+    <div class="pill" id="eventsMarketTag">—</div>
+  </div>
+  <div id="eventsList" class="list" style="margin-top:7px;max-height:180px;overflow:auto">
+    <div class="list-item"><div class="meta"><div style="font-weight:700">Pilih market untuk event</div></div></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="page-admin" class="admin-panel hidden">
+  <div class="admin-header">
+    <div class="admin-icon">⚙️</div>
+    <div>
+      <div class="admin-title">Panel Admin</div>
+      <div class="admin-sub">Manajemen user, posisi & obligasi</div>
+    </div>
+  </div>
+  <div class="admin-stats">
+    <div class="admin-stat"><div class="as-val" id="adminStatUsers">—</div><div class="as-label">Users</div></div>
+    <div class="admin-stat"><div class="as-val" id="adminStatPositions">—</div><div class="as-label">Posisi</div></div>
+    <div class="admin-stat"><div class="as-val" id="adminStatCoins">—</div><div class="as-label">Total Coin</div></div>
+  </div>
+  <div class="admin-tabs">
+    <button class="admin-tab active" id="atAll" onclick="switchAdminTab('all')">Users</button>
+    <button class="admin-tab" id="atBonds" onclick="switchAdminTab('bonds')">Obligasi</button>
+    <button class="admin-tab" id="atSellReqs" onclick="switchAdminTab('sellreqs')">Jual Req</button>
+    <button class="admin-tab" id="atPositions" onclick="switchAdminTab('positions')">Posisi</button>
+  </div>
+  <input class="admin-search" id="adminSearch" type="text" placeholder="🔍 Cari email atau UID…"/>
+  <div id="adminUserList"></div>
+</div>
+
+</div><!-- end .app -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">OK</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">Memproses…</div>
+  <div class="loading-sub" id="loadingSub">Mohon tunggu sebentar</div>
+</div>
+
+<!-- MODAL: LOGIN -->
+<div class="modal-overlay" id="modalLogin">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Login ke PaperStocks</div>
+    <div class="modal-sub">Masuk dengan Google atau Email</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabGoogle" onclick="switchAuthTab('google')">Google</button>
+      <button class="auth-tab" id="tabEmail" onclick="switchAuthTab('email')">Email</button>
+    </div>
+    <div id="authGoogle">
+      <button id="btnGoogleLogin" class="btn btn-outline btn-full" style="gap:8px">
+        <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.96 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Lanjutkan dengan Google
+      </button>
+    </div>
+    <div id="authEmail" class="hidden">
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <input type="email" id="emailInput" placeholder="Email" style="height:46px"/>
+        <input type="password" id="passInput" placeholder="Password" style="height:46px"/>
+        <button id="btnEmailLogin" class="btn btn-primary btn-full">Masuk</button>
+        <button id="btnEmailRegister" class="btn btn-outline btn-full">Daftar Akun Baru</button>
+      </div>
+    </div>
+    <button onclick="closeModal('modalLogin')" class="btn btn-outline btn-full" style="margin-top:10px">Batal</button>
+  </div>
+</div>
+
+<!-- MODAL: SELL -->
+<div class="modal-overlay" id="modalSell">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalSellTitle">Jual Saham</div>
+    <div class="modal-sub" id="modalSellSub">—</div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div class="input-group"><div class="input-label">Jumlah Lot</div><input type="number" id="modalSellLot" value="1" min="1"/></div>
+      <div class="trade-preview" id="modalSellPreview">—</div>
+      <div style="display:flex;gap:7px">
+        <button id="modalSellConfirm" class="btn btn-danger" style="flex:1;height:46px;font-weight:800">Konfirmasi Jual</button>
+        <button onclick="closeModal('modalSell')" class="btn btn-outline" style="flex:1;height:46px">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: AUTO-CLOSE -->
+<div class="modal-overlay" id="modalAutoClose">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Auto-Close Order</div>
+    <div class="modal-sub" id="modalACsub">Set TP / SL otomatis</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px">
+      <div style="padding:10px;background:#f0fff4;border-radius:12px;border:1px solid rgba(22,163,74,0.15)">
+        <div style="font-weight:900;color:var(--green);margin-bottom:7px;font-size:12.5px">🎯 Take Profit</div>
+        <div class="input-label" style="margin-bottom:3px">By Harga</div>
+        <input type="number" id="acTPprice" placeholder="0.00" style="margin-bottom:6px"/>
+        <div class="input-label" style="margin-bottom:3px">atau By %</div>
+        <input type="number" id="acTPpct" placeholder="e.g. 5"/>
+      </div>
+      <div style="padding:10px;background:#fff0f0;border-radius:12px;border:1px solid rgba(239,68,68,0.15)">
+        <div style="font-weight:900;color:var(--danger);margin-bottom:7px;font-size:12.5px">🛡️ Stop Loss</div>
+        <div class="input-label" style="margin-bottom:3px">By Harga</div>
+        <input type="number" id="acSLprice" placeholder="0.00" style="margin-bottom:6px"/>
+        <div class="input-label" style="margin-bottom:3px">atau By %</div>
+        <input type="number" id="acSLpct" placeholder="e.g. 5"/>
+      </div>
+    </div>
+    <div class="input-group" style="margin-bottom:9px"><div class="input-label">Lot (kosong = semua)</div><input type="number" id="acLots" placeholder="e.g. 2"/></div>
+    <div class="trade-preview" id="acPreview">—</div>
+    <div style="display:flex;gap:7px;margin-top:11px">
+      <button id="btnSetAC" class="btn btn-blue" style="flex:1;height:46px">Set Auto-Close</button>
+      <button id="btnClearAC" class="btn btn-outline" style="flex:1;height:46px">Hapus</button>
+      <button onclick="closeModal('modalAutoClose')" class="btn btn-outline" style="height:46px;width:46px;padding:0">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DEPOSIT CONFIRM -->
+<div class="modal-overlay" id="modalDepositConfirm">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Konfirmasi Deposit Saham</div>
+    <div class="modal-sub" id="depositConfirmSub">—</div>
+    <div class="trade-preview" id="depositConfirmDetail">Saham dikunci 1 tahun · Bunga & Dividen per Lot/thn</div>
+    <div class="input-group" style="margin-top:10px;margin-bottom:8px">
+      <div class="input-label">Jumlah Lot</div>
+      <input type="number" id="depositLotInput" value="1" min="1"/>
+    </div>
+    <div class="trade-preview" id="depositLotPreview">—</div>
+    <div style="display:flex;gap:7px;margin-top:11px">
+      <button id="btnDepositConfirm" class="btn btn-green" style="flex:1;height:46px;font-weight:800">Deposit & Lock 🔒</button>
+      <button onclick="closeModal('modalDepositConfirm')" class="btn btn-outline" style="flex:1;height:46px">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: UNLOCK -->
+<div class="modal-overlay" id="modalUnlock">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Unlock Deposit</div>
+    <div class="modal-sub" id="unlockSub">—</div>
+    <div class="trade-preview" id="unlockDetail">—</div>
+    <div style="display:flex;gap:7px;margin-top:11px">
+      <button id="btnUnlockConfirm" class="btn btn-danger" style="flex:1;height:46px">Unlock (kena fee 1.7%)</button>
+      <button onclick="closeModal('modalUnlock')" class="btn btn-outline" style="flex:1;height:46px">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: BUY BOND -->
+<div class="modal-overlay" id="modalBuyBond">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="buyBondTitle">Beli Obligasi</div>
+    <div class="modal-sub" id="buyBondSub">—</div>
+    <div class="trade-preview" id="buyBondDetail">—</div>
+    <div class="input-group" style="margin-top:10px;margin-bottom:8px">
+      <div class="input-label">Jumlah Unit</div>
+      <input type="number" id="buyBondUnits" value="1" min="1"/>
+    </div>
+    <div class="trade-preview" id="buyBondPreview">—</div>
+    <div style="display:flex;gap:7px;margin-top:11px">
+      <button id="btnBuyBondConfirm" class="btn btn-primary" style="flex:1;height:46px;font-weight:800">Beli Obligasi 📜</button>
+      <button onclick="closeModal('modalBuyBond')" class="btn btn-outline" style="flex:1;height:46px">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SELL BOND REQUEST -->
+<div class="modal-overlay" id="modalSellBond">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Jual Obligasi</div>
+    <div class="modal-sub" id="sellBondSub">Pengajuan jual ke admin</div>
+    <div class="trade-preview" id="sellBondDetail">—</div>
+    <div style="margin-top:10px;padding:10px;background:rgba(249,115,22,0.07);border-radius:11px;border:1px solid rgba(249,115,22,0.2);font-size:12.5px;color:#9a3412">
+      ⏳ Penjualan obligasi sebelum jatuh tempo memerlukan konfirmasi admin. Setelah disetujui, koin akan otomatis masuk ke saldo Anda.
+    </div>
+    <div style="display:flex;gap:7px;margin-top:11px">
+      <button id="btnSellBondConfirm" class="btn btn-danger" style="flex:1;height:46px;font-weight:800">Ajukan Jual</button>
+      <button onclick="closeModal('modalSellBond')" class="btn btn-outline" style="flex:1;height:46px">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CREATE BOND (ADMIN) -->
+<div class="modal-overlay" id="modalCreateBond">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Buat Produk Obligasi</div>
+    <div class="modal-sub">Admin · Hanya terlihat oleh Anda</div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div class="input-group"><div class="input-label">Kode Obligasi (e.g. FR0100)</div><input type="text" id="cbCode" placeholder="FR0100"/></div>
+      <div class="input-group"><div class="input-label">Nama Obligasi</div><input type="text" id="cbName" placeholder="Obligasi Negara FR0100"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="input-group"><div class="input-label">Yield/Thn (%)</div><input type="number" id="cbYield" placeholder="7.5" step="0.01"/></div>
+        <div class="input-group"><div class="input-label">Harga / Unit (coin)</div><input type="number" id="cbPrice" placeholder="1000000"/></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="input-group"><div class="input-label">Min. Beli (unit)</div><input type="number" id="cbMinUnit" value="1" min="1"/></div>
+        <div class="input-group"><div class="input-label">Max. Beli (0=bebas)</div><input type="number" id="cbMaxUnit" value="0" min="0"/></div>
+      </div>
+      <div class="input-group"><div class="input-label">Tanggal Jatuh Tempo</div><input type="date" id="cbMaturity"/></div>
+      <div class="input-group"><div class="input-label">Deskripsi (opsional)</div><textarea id="cbDesc" rows="2" placeholder="Deskripsi singkat..."></textarea></div>
+    </div>
+    <div style="display:flex;gap:7px;margin-top:12px">
+      <button id="btnCreateBondConfirm" class="btn btn-primary" style="flex:1;height:46px;font-weight:800">Buat Obligasi</button>
+      <button onclick="closeModal('modalCreateBond')" class="btn btn-outline" style="flex:1;height:46px">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getFirestore, doc, getDoc, setDoc, onSnapshot, runTransaction, serverTimestamp,
+  collection, query, orderBy, limit, getDocs, Timestamp, deleteDoc, where, addDoc
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* ── Firebase Config ── */
+const marketConfig={apiKey:"AIzaSyDVUEZ3ZVmH4ld7LVnEq_L368wEJpEs-l8",authDomain:"zeepaylater-93a94.firebaseapp.com",projectId:"zeepaylater-93a94",storageBucket:"zeepaylater-93a94.appspot.com",messagingSenderId:"358065954807",appId:"1:358065954807:web:66619211fea82a4b2518f2"};
+const walletConfig={apiKey:"AIzaSyA3KhNSK0AaKYvXuZE9hi0ZRN9Ysmh9aXc",authDomain:"zestoreid-f9e85.firebaseapp.com",projectId:"zestoreid-f9e85",storageBucket:"zestoreid-f9e85.firebasestorage.app",messagingSenderId:"426093692154",appId:"1:426093692154:web:38c6e9c143af626a623543"};
+const marketApp=getApps().some(a=>a.name==='marketApp')?getApp('marketApp'):initializeApp(marketConfig,'marketApp');
+const walletApp=getApps().some(a=>a.name==='walletApp')?getApp('walletApp'):initializeApp(walletConfig,'walletApp');
+const marketDb=getFirestore(marketApp);
+const walletAuth=getAuth(walletApp);
+const walletDb=getFirestore(walletApp);
+setPersistence(walletAuth,browserLocalPersistence).catch(()=>{});
+
+/* ── Constants ── */
+const LOT_SIZE=100, BUY_SPREAD=0.017, SELL_SPREAD=0.017, ORDER_FEE=112.5;
+const DEPOSIT_INTEREST_PER_LOT=500, DIVIDEND_PER_LOT=680, UNLOCK_FEE=0.017;
+const YEAR_MS=365*24*60*60*1000;
+const ADMIN_UID='8z9b0u1LYfTVM0sCP7qHXbYHvGi1';
+
+/* ── DOM shortcuts ── */
+const $=id=>document.getElementById(id);
+const el={
+  userInfo:$('userInfo'),btnSignIn:$('btnSignIn'),btnSignOut:$('btnSignOut'),adminBadge:$('adminBadge'),
+  balCoin:$('balCoin'),balRp:$('balRp'),toast:$('toast'),
+  marketList:$('marketList'),visibleCountTop:$('visibleCountTop'),
+  pageHome:$('page-home'),pageMarket:$('page-market'),pagePortfolio:$('page-portfolio'),
+  pageEvents:$('page-events'),pageDeposit:$('page-deposit'),pageBonds:$('page-bonds'),pageAdmin:$('page-admin'),
+  marketName:$('marketName'),marketSymbol:$('marketSymbol'),
+  marketPrice:$('marketPrice'),marketChangeDisplay:$('marketChangeDisplay'),
+  marketBid:$('marketBid'),marketAsk:$('marketAsk'),marketVolume:$('marketVolume'),
+  orderbookSummary:$('orderbookSummary'),bookAsks:$('book-asks'),bookBids:$('book-bids'),
+  recentTicker:$('recentTradesTicker'),
+  lotInput:$('lotInput'),sharesDisplay:$('sharesDisplay'),
+  btnBuy:$('btnBuy'),btnSell:$('btnSell'),
+  btnBuyLimit:$('btnBuyLimit'),btnSellLimit:$('btnSellLimit'),
+  limitPrice:$('limitPrice'),limitLot:$('limitLot'),limitPreview:$('limitPreview'),
+  btnDeposit:$('btnDeposit'),btnWithdraw:$('btnWithdraw'),btnPortfolio:$('btnPortfolio'),btnBonds:$('btnBonds'),
+  positionsList:$('positionsList'),tradesList:$('tradesList'),totalPnl:$('totalPnl'),
+  portfolioLimitsList:$('portfolioLimitsList'),
+  chartCanvas:$('chartCanvas'),chartWrap:$('chartWrap'),crosshairInfo:$('crosshairInfo'),
+  eventsList:$('eventsList'),eventsMarketTag:$('eventsMarketTag'),
+  tradePreview:$('tradePreview'),
+  mktOpen:$('mktOpen'),mktHigh:$('mktHigh'),mktLow:$('mktLow'),mktSpread:$('mktSpread'),
+  depositAvailList:$('depositAvailList'),depositActiveList:$('depositActiveList'),
+  bondProductsList:$('bondProductsList'),bondHoldingsList:$('bondHoldingsList'),
+  loadingOverlay:$('loadingOverlay'),loadingText:$('loadingText'),loadingSub:$('loadingSub'),
+  adminUserList:$('adminUserList'),adminSearch:$('adminSearch'),
+  adminStatUsers:$('adminStatUsers'),adminStatPositions:$('adminStatPositions'),adminStatCoins:$('adminStatCoins'),
+  keyStatsContent:$('keyStatsContent'),analysisContent:$('analysisContent'),
+  seasonContent:$('seasonContent'),profileContent:$('profileContent'),
+  limitOrdersList:$('limitOrdersList'),activeLimitCount:$('activeLimitCount'),
+  markerToggle:$('markerToggle'),
+};
+
+/* ── State ── */
+let currentUser=null;
+let walletUnsub=null,positionUnsub=null,tradesUnsub=null,depositUnsub=null;
+let limitOrdersUnsub=null,bondProductsUnsub=null,bondHoldingsUnsub=null;
+let currentCoin=0,currentBalance=0;
+let marketsCache={},limitOrdersCache=[],bondProductsCache=[],bondHoldingsCache=[];
+let selectedMarketId=null,currentMarketUnsub=null,currentTicksUnsub=null,currentMarket=null;
+let marketHistoryFull=[];
+let currentEvents=[],positionsCache=[],tradesCache=[],depositsCache=[];
+let autoCloseOrders={};
+let acTargetMarketId=null,sellModalMarketId=null,depositModalMarketId=null,unlockModalDepositId=null;
+let buyBondId=null,sellBondHoldingId=null;
+let selectedTF=400,obTick=0,recentTradesData=[];
+let sessionOpenPrices={};
+let chartMode='candle',showMarkers=true;
+let adminTab='all',adminUsersCache={},adminSearchQuery='';
+let tradeInputMode='lot';
+let tradeTypeMode='market';
+let chartOffsetX=0,chartScale=1;
+let isDragging=false,dragStartX=0,dragStartOffset=0;
+let isPinching=false,pinchStartDist=0,pinchStartScale=1;
+let mouseX=-1,mouseY=-1,crosshairActive=false;
+
+/* ── Canvas ── */
+const chartCtx=el.chartCanvas.getContext('2d');
+let DPR=window.devicePixelRatio||1;
+function resizeCanvas(){
+  const r=el.chartWrap.getBoundingClientRect();
+  el.chartCanvas.width=Math.max(1,Math.floor(r.width*DPR));
+  el.chartCanvas.height=Math.max(1,Math.floor(r.height*DPR));
+  chartCtx.setTransform(DPR,0,0,DPR,0,0);
+}
+let rAF=null;
+window.addEventListener('resize',()=>{clearTimeout(rAF);rAF=setTimeout(()=>{DPR=window.devicePixelRatio||1;resizeCanvas();drawChart()},80)});
+resizeCanvas();
+
+/* ── Utils ── */
+const fmtCoin=n=>Number(n||0).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtRp=n=>'Rp '+Number(n||0).toLocaleString('id-ID');
+const round2=n=>Math.round(Number(n||0)*100)/100;
+const round4=n=>Math.round(Number(n||0)*10000)/10000;
+const shortUid=uid=>uid?uid.slice(0,8)+'…':'-';
+const seededRand=seed=>{const x=Math.sin(seed+1)*10000;return x-Math.floor(x)};
+const fmtSI=n=>{const v=Math.abs(Number(n||0));if(v>=1e12)return(n/1e12).toFixed(1)+'T';if(v>=1e9)return(n/1e9).toFixed(1)+'B';if(v>=1e6)return(n/1e6).toFixed(1)+'M';if(v>=1e3)return(n/1e3).toFixed(1)+'K';return String(n)};
+
+function toast(msg,dur=1800){el.toast.textContent=msg;el.toast.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.toast.classList.remove('show'),dur)}
+function openModal(id){$(id).classList.add('open')}
+function closeModal(id){$(id).classList.remove('open')}
+window.closeModal=closeModal;
+function showLoading(text='Memproses…',sub='Mohon tunggu'){el.loadingText.textContent=text;el.loadingSub.textContent=sub;el.loadingOverlay.classList.add('show')}
+function hideLoading(){el.loadingOverlay.classList.remove('show')}
+
+/* ── Pages ── */
+function setPage(page){
+  [el.pageHome,el.pageMarket,el.pagePortfolio,el.pageDeposit,el.pageBonds].forEach(p=>p.classList.add('hidden'));
+  el.pageEvents.classList.remove('hidden');
+  if(page==='home'){el.pageHome.classList.remove('hidden')}
+  else if(page==='markets'){el.pageHome.classList.remove('hidden');el.pageMarket.classList.remove('hidden')}
+  else if(page==='portfolio'){el.pagePortfolio.classList.remove('hidden');el.pageEvents.classList.add('hidden')}
+  else if(page==='deposit'){el.pageDeposit.classList.remove('hidden');el.pageEvents.classList.add('hidden')}
+  else if(page==='bonds'){el.pageBonds.classList.remove('hidden');el.pageEvents.classList.add('hidden')}
+  if(currentUser?.uid===ADMIN_UID) el.pageAdmin.classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+window.switchAuthTab=function(tab){
+  $('tabGoogle').classList.toggle('active',tab==='google');
+  $('tabEmail').classList.toggle('active',tab==='email');
+  $('authGoogle').classList.toggle('hidden',tab!=='google');
+  $('authEmail').classList.toggle('hidden',tab!=='email');
+};
+window.switchAdminTab=function(tab){
+  adminTab=tab;
+  ['atAll','atBonds','atSellReqs','atPositions'].forEach(id=>{const el2=$(id);if(el2)el2.classList.remove('active')});
+  ({all:'atAll',bonds:'atBonds',sellreqs:'atSellReqs',positions:'atPositions'}[tab]&&$({all:'atAll',bonds:'atBonds',sellreqs:'atSellReqs',positions:'atPositions'}[tab]).classList.add('active'));
+  renderAdminPanel();
+};
+
+/* ── Market Tabs ── */
+document.querySelectorAll('.mtab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.mtab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    const panel=$('mtab-'+btn.dataset.mt);
+    if(panel)panel.classList.add('active');
+    if(btn.dataset.mt==='stats')renderKeyStats();
+    if(btn.dataset.mt==='analysis')renderAnalysis();
+    if(btn.dataset.mt==='season')renderSeasonality();
+    if(btn.dataset.mt==='profile')renderProfile();
+    if(btn.dataset.mt==='limits')renderLimitOrdersList();
+  });
+});
+
+/* ── Trade type toggle ── */
+document.querySelectorAll('#tradeTypeSeg .seg-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#tradeTypeSeg .seg-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');tradeTypeMode=btn.dataset.tt;
+    $('marketOrderPanel').classList.toggle('hidden',tradeTypeMode!=='market');
+    $('limitOrderPanel').classList.toggle('hidden',tradeTypeMode!=='limit');
+    if(tradeTypeMode==='limit')updateLimitPreview();
+  });
+});
+
+/* ── Lot / Nominal toggle ── */
+document.querySelectorAll('#lotNomSeg .seg-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#lotNomSeg .seg-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');tradeInputMode=btn.dataset.ln;
+    $('tradeInputLabel').textContent=tradeInputMode==='lot'?'Jumlah Lot':'Nominal (Coin)';
+    el.lotInput.value=tradeInputMode==='lot'?'1':'';
+    el.lotInput.step=tradeInputMode==='lot'?'1':'1000';
+    el.lotInput.min=tradeInputMode==='lot'?'1':'0';
+    updateTradePreview();
+  });
+});
+
+/* ── Chart Mode ── */
+document.querySelectorAll('.cmode-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.cmode-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');chartMode=btn.dataset.cm;drawChart();
+  });
+});
+
+/* ── Marker Toggle ── */
+el.markerToggle.addEventListener('click',()=>{
+  showMarkers=!showMarkers;
+  el.markerToggle.classList.toggle('on',showMarkers);
+  drawChart();
+});
+
+/* ── TF buttons ── */
+document.querySelectorAll('.tf-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');selectedTF=Number(btn.dataset.tf);
+    chartOffsetX=0;chartScale=1;drawChart();
+  });
+});
+
+/* ── Math ── */
+const buyCost=(price,lots)=>round2(lots*LOT_SIZE*price*(1+BUY_SPREAD)+ORDER_FEE);
+const sellProceeds=(price,lots)=>round2(lots*LOT_SIZE*price*(1-SELL_SPREAD)-ORDER_FEE);
+function deriveBidAsk(m){
+  const price=Number(m.price||0),vol=Number(m.volatility||1);
+  const spread=Math.max(0.01,price*(0.001+vol*0.0002));
+  return{bid:Math.max(0.01,round2(price-spread/2)),ask:round2(price+spread/2),volume:Math.max(1000,Math.round(100000/Math.max(price,0.1)*(0.8+seededRand(price+obTick)*0.4)))};
+}
+function lotsFromNominal(nominal,price){
+  if(!price||price<=0)return 0;
+  const lotsRaw=nominal/(LOT_SIZE*price*(1+BUY_SPREAD)+ORDER_FEE/LOT_SIZE);
+  return Math.max(0,Math.floor(lotsRaw));
+}
+
+/* ═══════════════════════════════════════════════
+   PROFESSIONAL CHART ENGINE
+   - Candle / Line / Area modes
+   - Pinch-zoom & drag pan
+   - Crosshair with OHLC tooltip
+   - Buy/Sell trade markers (like Binance)
+═══════════════════════════════════════════════ */
+function getFilteredHistory(){
+  const n=selectedTF===9999?marketHistoryFull.length:selectedTF;
+  return marketHistoryFull.slice(-Math.min(n,marketHistoryFull.length));
+}
+
+function buildCandles(prices){
+  /* Group raw tick prices into OHLC candles of ~8 ticks each */
+  const CHUNK=8;const out=[];
+  for(let i=0;i<prices.length;i+=CHUNK){
+    const seg=prices.slice(i,Math.min(i+CHUNK,prices.length));
+    if(!seg.length)continue;
+    out.push({o:seg[0],h:Math.max(...seg),l:Math.min(...seg),c:seg[seg.length-1]});
+  }
+  return out;
+}
+
+function getTradeMarkersForChart(arr){
+  /* Map trade history onto chart positions */
+  if(!showMarkers||!tradesCache.length||!arr.length)return[];
+  const total=marketHistoryFull.length;
+  const visible=arr.length;
+  const startIdx=total-visible;
+  return tradesCache.filter(t=>t.marketId===selectedMarketId).slice(0,30).map(t=>{
+    const price=Number(t.execPrice||t.price||0);
+    const tTotal=tradesCache.filter(x=>x.marketId===selectedMarketId).length;
+    const idx=tradesCache.indexOf(t);
+    const relIdx=Math.round((1-(idx/Math.max(1,tTotal-1)))*visible);
+    return{side:t.side,price,idx:Math.max(0,Math.min(visible-1,relIdx))};
+  });
+}
+
+function drawChart(){
+  const W=el.chartCanvas.clientWidth||10, H=el.chartCanvas.clientHeight||10;
+  const ctx=chartCtx;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+
+  const arr=getFilteredHistory();
+  if(!arr.length){
+    ctx.fillStyle='#a1a1aa';ctx.font='700 13px Geist,sans-serif';
+    ctx.textAlign='center';ctx.fillText('Pilih market untuk chart',W/2,H/2);return;
+  }
+
+  const padL=46,padR=10,padT=18,padB=28;
+  const candles=buildCandles(arr);
+  const N=candles.length;
+  if(!N)return;
+
+  const allH=candles.map(c=>c.h),allL=candles.map(c=>c.l);
+  let minP=Math.min(...allL),maxP=Math.max(...allH);
+  const range=Math.max(maxP-minP,0.001);
+  const pad=range*0.08;
+  minP-=pad;maxP+=pad;
+
+  /* Apply zoom & pan */
+  const baseW=(W-padL-padR);
+  const zoomedW=baseW*chartScale;
+  const maxOffset=Math.max(0,zoomedW-baseW);
+  const clampedOffset=Math.max(-maxOffset,Math.min(0,chartOffsetX));
+  const startFrac=-clampedOffset/zoomedW;
+  const endFrac=startFrac+baseW/zoomedW;
+  const startIdx=Math.max(0,Math.floor(startFrac*N));
+  const endIdx=Math.min(N,Math.ceil(endFrac*N));
+  const visible=candles.slice(startIdx,endIdx);
+  if(!visible.length)return;
+
+  const toX=i=>{const t=(startIdx+i-startFrac*N)/(endFrac-startFrac)*1;return padL+(t/(endIdx-startIdx))*(W-padL-padR)};
+  const toXI=i=>padL+((i-startIdx)/(Math.max(1,endIdx-startIdx-1)))*(W-padL-padR);
+  const toY=v=>padT+((maxP-v)/(maxP-minP))*(H-padT-padB);
+
+  /* Grid */
+  ctx.strokeStyle='rgba(0,0,0,0.05)';ctx.lineWidth=1;
+  const steps=5;
+  for(let i=0;i<=steps;i++){
+    const y=padT+i*((H-padT-padB)/steps);
+    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();
+    const v=maxP-(maxP-minP)*(i/steps);
+    ctx.fillStyle='#a1a1aa';ctx.font='600 9.5px Geist Mono,monospace';ctx.textAlign='right';
+    ctx.fillText(fmtCoin(v),padL-3,y+3.5);
+  }
+
+  /* Vertical grid lines */
+  const vSteps=Math.min(5,visible.length);
+  for(let i=0;i<vSteps;i++){
+    const idx=Math.round(i*(visible.length-1)/(vSteps-1));
+    const x=toXI(startIdx+idx);
+    ctx.strokeStyle='rgba(0,0,0,0.04)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,H-padB);ctx.stroke();
+  }
+
+  /* Bottom axis labels */
+  if(arr.length>1){
+    ctx.fillStyle='#a1a1aa';ctx.font='600 9px Geist Mono,monospace';ctx.textAlign='center';
+    for(let i=0;i<Math.min(4,visible.length);i++){
+      const idx=Math.round(i*(visible.length-1)/Math.max(1,Math.min(3,visible.length-1)));
+      const x=toXI(startIdx+idx);
+      const label=String(startIdx+idx+1);
+      ctx.fillText(label,x,H-padB+12);
+    }
+  }
+
+  /* ── Draw by chart mode ── */
+  if(chartMode==='candle'){
+    const cW=Math.max(1.5,Math.min(14,(W-padL-padR)/Math.max(1,visible.length)*0.72));
+    visible.forEach((c,i)=>{
+      const x=toXI(startIdx+i);
+      const isUp=c.c>=c.o;
+      const col=isUp?'#16a34a':'#ef4444';
+      /* Wick */
+      ctx.strokeStyle=col;ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(x,toY(c.h));ctx.lineTo(x,toY(c.l));ctx.stroke();
+      /* Body */
+      const yO=toY(c.o),yC=toY(c.c);
+      const bodyH=Math.max(1.5,Math.abs(yC-yO));
+      const bodyY=Math.min(yO,yC);
+      ctx.fillStyle=col;
+      ctx.fillRect(x-cW/2,bodyY,cW,bodyH);
+      if(isUp){ctx.strokeStyle='rgba(22,163,74,0.4)';ctx.lineWidth=0.5;ctx.strokeRect(x-cW/2,bodyY,cW,bodyH)}
+    });
+  } else if(chartMode==='line'){
+    const prices=visible.map(c=>c.c);
+    const isUp=prices[prices.length-1]>=prices[0];
+    ctx.beginPath();
+    prices.forEach((p,i)=>{const x=toXI(startIdx+i),y=toY(p);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+    ctx.strokeStyle=isUp?'#16a34a':'#ef4444';ctx.lineWidth=2;ctx.stroke();
+    /* Last dot */
+    const lx=toXI(startIdx+visible.length-1),ly=toY(prices[prices.length-1]);
+    ctx.beginPath();ctx.arc(lx,ly,4,0,Math.PI*2);ctx.fillStyle=isUp?'#16a34a':'#ef4444';ctx.fill();
+    ctx.beginPath();ctx.arc(lx,ly,7,0,Math.PI*2);ctx.fillStyle=isUp?'rgba(22,163,74,0.18)':'rgba(239,68,68,0.18)';ctx.fill();
+  } else if(chartMode==='area'){
+    const prices=visible.map(c=>c.c);
+    const isUp=prices[prices.length-1]>=prices[0];
+    const pts=prices.map((p,i)=>({x:toXI(startIdx+i),y:toY(p)}));
+    const grad=ctx.createLinearGradient(0,padT,0,H-padB);
+    grad.addColorStop(0,isUp?'rgba(22,163,74,0.22)':'rgba(239,68,68,0.18)');
+    grad.addColorStop(1,'rgba(255,255,255,0.01)');
+    ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+    ctx.lineTo(pts[pts.length-1].x,H-padB);ctx.lineTo(pts[0].x,H-padB);ctx.closePath();
+    ctx.fillStyle=grad;ctx.fill();
+    ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+    ctx.strokeStyle=isUp?'#16a34a':'#ef4444';ctx.lineWidth=2;ctx.stroke();
+  }
+
+  /* ── Trade Markers (B/S like Binance) ── */
+  if(showMarkers&&tradesCache.length){
+    const myTrades=tradesCache.filter(t=>t.marketId===selectedMarketId).slice(0,25);
+    const totalTrades=myTrades.length;
+    myTrades.forEach((t,ti)=>{
+      const price=Number(t.execPrice||t.price||0);
+      if(!price)return;
+      const isBuy=t.side==='BUY';
+      /* Map trade index to chart position proportionally */
+      const frac=(ti/(Math.max(1,totalTrades-1)));
+      const chartI=Math.round((1-frac)*(visible.length-1));
+      const x=toXI(startIdx+chartI);
+      const y=toY(price);
+      const col=isBuy?'#16a34a':'#ef4444';
+
+      /* Vertical dashed line at marker */
+      ctx.setLineDash([2,3]);ctx.strokeStyle=isBuy?'rgba(22,163,74,0.25)':'rgba(239,68,68,0.25)';
+      ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,H-padB);ctx.stroke();
+      ctx.setLineDash([]);
+
+      /* Horizontal price line */
+      ctx.setLineDash([3,4]);ctx.strokeStyle=isBuy?'rgba(22,163,74,0.35)':'rgba(239,68,68,0.35)';
+      ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();
+      ctx.setLineDash([]);
+
+      /* Marker circle */
+      const r=9;
+      ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fillStyle=col;ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='700 9px Geist,sans-serif';ctx.textAlign='center';
+      ctx.fillText(isBuy?'B':'S',x,y+3.3);
+
+      /* Price label */
+      ctx.fillStyle=col;ctx.font='700 9px Geist Mono,monospace';ctx.textAlign='left';
+      ctx.fillText(fmtCoin(price),padL+2,y-3);
+    });
+  }
+
+  /* ── Crosshair ── */
+  if(crosshairActive&&mouseX>=padL&&mouseX<=W-padR&&mouseY>=padT&&mouseY<=H-padB){
+    ctx.strokeStyle='rgba(9,9,11,0.25)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(mouseX,padT);ctx.lineTo(mouseX,H-padB);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(padL,mouseY);ctx.lineTo(W-padR,mouseY);ctx.stroke();
+    ctx.setLineDash([]);
+    /* Price at crosshair */
+    const priceAtY=maxP-(mouseY-padT)/(H-padT-padB)*(maxP-minP);
+    ctx.fillStyle='rgba(9,9,11,0.85)';
+    const lbl=fmtCoin(priceAtY);
+    const tw=ctx.measureText(lbl).width+10;
+    ctx.fillRect(padL-tw-2,mouseY-8,tw,16);
+    ctx.fillStyle='#fff';ctx.font='700 9.5px Geist Mono,monospace';ctx.textAlign='right';
+    ctx.fillText(lbl,padL-4,mouseY+3.5);
+    /* Find closest candle */
+    const frac2=(mouseX-padL)/(W-padL-padR);
+    const ci=Math.round(frac2*(visible.length-1));
+    if(ci>=0&&ci<visible.length){
+      const c=visible[ci];
+      el.crosshairInfo.style.display='block';
+      el.crosshairInfo.innerHTML=`O: ${fmtCoin(c.o)}<br>H: ${fmtCoin(c.h)}<br>L: ${fmtCoin(c.l)}<br>C: ${fmtCoin(c.c)}`;
+    }
+  } else {
+    el.crosshairInfo.style.display='none';
+  }
+
+  /* ── Live price line ── */
+  const livePr=Number(currentMarket?.price||0);
+  if(livePr){
+    const y=toY(livePr);
+    if(y>=padT&&y<=H-padB){
+      ctx.strokeStyle='rgba(251,191,36,0.7)';ctx.lineWidth=1.2;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='rgba(251,191,36,0.92)';
+      const lbl2=fmtCoin(livePr);const tw2=ctx.measureText(lbl2).width+8;
+      ctx.fillRect(W-padR-tw2-2,y-8,tw2+4,16);
+      ctx.fillStyle='#09090b';ctx.font='800 9.5px Geist Mono,monospace';ctx.textAlign='right';
+      ctx.fillText(lbl2,W-padR,y+3.5);
+    }
+  }
+}
+
+/* ── Chart Interaction ── */
+function getEvtX(e){return e.touches?e.touches[0].clientX:e.clientX}
+function getEvtY(e){return e.touches?e.touches[0].clientY:e.clientY}
+function getCanvasXY(e){
+  const r=el.chartCanvas.getBoundingClientRect();
+  if(e.touches&&e.touches.length>0){return{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top}}
+  return{x:e.clientX-r.left,y:e.clientY-r.top};
+}
+
+el.chartCanvas.addEventListener('mouseenter',()=>{crosshairActive=true});
+el.chartCanvas.addEventListener('mouseleave',()=>{crosshairActive=false;el.crosshairInfo.style.display='none';drawChart()});
+el.chartCanvas.addEventListener('mousemove',e=>{
+  const{x,y}=getCanvasXY(e);mouseX=x;mouseY=y;crosshairActive=true;drawChart();
+});
+el.chartCanvas.addEventListener('mousedown',e=>{
+  isDragging=true;dragStartX=e.clientX;dragStartOffset=chartOffsetX;
+  el.chartCanvas.style.cursor='grabbing';
+});
+window.addEventListener('mouseup',()=>{isDragging=false;el.chartCanvas.style.cursor='default'});
+window.addEventListener('mousemove',e=>{
+  if(!isDragging)return;
+  const dx=e.clientX-dragStartX;chartOffsetX=dragStartOffset+dx;drawChart();
+});
+el.chartCanvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const factor=e.deltaY<0?1.15:0.87;
+  chartScale=Math.max(1,Math.min(20,chartScale*factor));
+  drawChart();
+},{passive:false});
+el.chartCanvas.addEventListener('touchstart',e=>{
+  if(e.touches.length===2){
+    isPinching=true;
+    pinchStartDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    pinchStartScale=chartScale;
+  } else if(e.touches.length===1){
+    isDragging=true;dragStartX=e.touches[0].clientX;dragStartOffset=chartOffsetX;
+  }
+},{passive:true});
+el.chartCanvas.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(isPinching&&e.touches.length===2){
+    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    chartScale=Math.max(1,Math.min(20,pinchStartScale*(d/pinchStartDist)));
+    drawChart();
+  } else if(isDragging&&e.touches.length===1){
+    const dx=e.touches[0].clientX-dragStartX;chartOffsetX=dragStartOffset+dx;drawChart();
+  }
+},{passive:false});
+el.chartCanvas.addEventListener('touchend',()=>{isDragging=false;isPinching=false});
+
+/* ── Wallet UI ── */
+function renderWallet(){
+  if(currentUser){
+    el.userInfo.textContent=currentUser.displayName||currentUser.email||shortUid(currentUser.uid);
+    el.btnSignIn.classList.add('hidden');el.btnSignOut.classList.remove('hidden');
+    el.adminBadge.classList.toggle('hidden',currentUser.uid!==ADMIN_UID);
+  }else{
+    el.userInfo.textContent='Belum Login';
+    el.btnSignIn.classList.remove('hidden');el.btnSignOut.classList.add('hidden');
+    el.adminBadge.classList.add('hidden');
+  }
+  el.balCoin.textContent=fmtCoin(currentCoin);
+  el.balRp.textContent=fmtRp(currentBalance);
+}
+
+/* ── Trade Preview ── */
+function updateTradePreview(){
+  const m=currentMarket||marketsCache[selectedMarketId];
+  let lots=1;
+  if(tradeInputMode==='lot'){lots=Math.max(1,Math.floor(Number(el.lotInput.value||1)))}
+  else{const nom=Number(el.lotInput.value||0);lots=lotsFromNominal(nom,Number(m?.price||0))||1}
+  el.sharesDisplay.textContent=`= ${lots*LOT_SIZE} lembar`;
+  if(!m){el.tradePreview.innerHTML='Pilih market untuk estimasi.';return}
+  const price=Number(m.price||0);
+  const buy=buyCost(price,lots),sell=sellProceeds(price,lots);
+  el.tradePreview.innerHTML=`<b>${m.name||m.id}</b> · Lot <b>${lots}</b> (${lots*LOT_SIZE} lbr)<br/>💰 Beli: <b>${fmtCoin(buy)} coin</b> · 💸 Jual: <b>${fmtCoin(sell)} coin</b><br/>📊 Spread: <b>${fmtCoin(round2(buy-sell))} coin</b>`;
+}
+
+function updateLimitPreview(){
+  const m=currentMarket||marketsCache[selectedMarketId];
+  const limitP=Number(el.limitPrice.value||0);
+  const lots=Math.max(1,Math.floor(Number(el.limitLot.value||1)));
+  if(!limitP||!m){el.limitPreview.innerHTML='Set harga dan lot untuk limit order.';return}
+  const buy=buyCost(limitP,lots),sell=sellProceeds(limitP,lots);
+  const liveP=Number(m.price||0);
+  const diff=round2(((limitP-liveP)/Math.max(1,liveP))*100);
+  el.limitPreview.innerHTML=`<b>${m.name||m.id}</b> · Lot <b>${lots}</b><br/>🎯 Harga limit: <b>${fmtCoin(limitP)}</b> (${diff>=0?'+':''}${diff}% dari live)<br/>💰 Estimasi beli: <b>${fmtCoin(buy)}</b> · Jual: <b>${fmtCoin(sell)}</b>`;
+}
+
+function setMarketButtons(){
+  const ok=!!currentUser&&!!currentMarket;
+  [el.btnBuy,el.btnSell,el.btnBuyLimit,el.btnSellLimit].forEach(b=>{if(b)b.disabled=!ok});
+}
+
+/* ── Market Header ── */
+function refreshMarketHeader(){
+  const m=currentMarket||marketsCache[selectedMarketId];if(!m)return;
+  const d=deriveBidAsk(m),price=Number(m.price||0);
+  if(!sessionOpenPrices[m.id])sessionOpenPrices[m.id]=price;
+  const open=sessionOpenPrices[m.id],chg=round2(price-open),chgPct=open?round4((chg/open)*100):0;
+  const arr=getFilteredHistory(),high=arr.length?Math.max(...arr):price,low=arr.length?Math.min(...arr):price;
+  el.marketName.textContent=m.name||m.id;el.marketSymbol.textContent=m.symbol||m.id;
+  el.marketPrice.textContent=fmtCoin(price);
+  el.marketPrice.classList.add('price-updating');setTimeout(()=>el.marketPrice.classList.remove('price-updating'),450);
+  el.marketChangeDisplay.textContent=`${chg>=0?'+':''}${fmtCoin(chg)} (${chgPct>=0?'+':''}${chgPct}%)`;
+  el.marketChangeDisplay.className=chg>=0?'change-up':'change-dn';
+  el.marketBid.textContent=fmtCoin(d.bid);el.marketAsk.textContent=fmtCoin(d.ask);el.marketVolume.textContent=d.volume.toLocaleString();
+  el.mktOpen.textContent=fmtCoin(open);el.mktHigh.textContent=fmtCoin(high);el.mktLow.textContent=fmtCoin(low);el.mktSpread.textContent=fmtCoin(d.ask-d.bid);
+  updateOrderbook(m);updateTradePreview();updateLimitPreview();setMarketButtons();
+  checkAutoClose(m.id,price);checkLimitOrders(m.id,price);
+}
+
+/* ── KEY STATS ── */
+function renderKeyStats(){
+  const m=currentMarket||marketsCache[selectedMarketId];if(!m){el.keyStatsContent.innerHTML='<div class="muted">Pilih market dulu</div>';return}
+  const fa=getFundamentals(m);if(!fa)return;
+  el.keyStatsContent.innerHTML=`
+    <div class="stat-section">
+      <div class="stat-section-title">💰 Valuasi</div>
+      <div class="stats-grid">
+        ${stTile('Market Cap',fmtSI(fa.marketCap),'','')}
+        ${stTile('P/E Ratio',fa.pe.toFixed(1)+'×',fa.pe<20?'Murah':fa.pe>35?'Mahal':'Wajar',fa.pe<20?'var(--green)':fa.pe>35?'var(--danger)':'var(--muted)')}
+        ${stTile('EPS',fmtCoin(fa.eps),'','')}
+        ${stTile('Book Value',fmtCoin(fa.bookVal),'','')}
+        ${stTile('P/BV',fa.pbRatio.toFixed(2)+'×',fa.pbRatio<2?'Undervalue':'Overvalue',fa.pbRatio<2?'var(--green)':'var(--danger)')}
+        ${stTile('Div. Yield',fa.divYield.toFixed(2)+'%',fa.divYield>3?'Tinggi':'Rendah',fa.divYield>3?'var(--green)':'var(--muted)')}
+      </div>
+    </div>
+    <div class="stat-section">
+      <div class="stat-section-title">📈 Pertumbuhan & Profitabilitas</div>
+      <div class="stats-grid">
+        ${stTile('Rev. Growth',fa.revGrowth.toFixed(1)+'%',fa.revGrowth>10?'Kuat':fa.revGrowth>0?'Positif':'Negatif',fa.revGrowth>0?'var(--green)':'var(--danger)')}
+        ${stTile('ROE',fa.roe.toFixed(1)+'%',fa.roe>15?'Baik':'Rendah',fa.roe>15?'var(--green)':'var(--muted)')}
+        ${stTile('Profit Margin',fa.profitMargin.toFixed(1)+'%',fa.profitMargin>15?'Sehat':'Tipis',fa.profitMargin>15?'var(--green)':'var(--muted)')}
+        ${stTile('Debt/Equity',fa.debtEq.toFixed(2),fa.debtEq<1?'Aman':'Tinggi',fa.debtEq<1?'var(--green)':'var(--danger)')}
+        ${stTile('Current Ratio',fa.currentRatio.toFixed(2),fa.currentRatio>=1?'Likuid':'Seret',fa.currentRatio>=1?'var(--green)':'var(--danger)')}
+        ${stTile('FCF',fmtSI(fa.fcf),'','')}
+      </div>
+    </div>
+    <div class="stat-section">
+      <div class="stat-section-title">📊 52-Week Range</div>
+      ${range52w(m,fa)}
+    </div>`;
+}
+function stTile(label,val,note,noteColor){
+  return`<div class="stat-tile"><div class="st-label">${label}</div><div class="st-val">${val}</div>${note?`<div class="st-note" style="color:${noteColor||'var(--muted)'}">${note}</div>`:''}</div>`;
+}
+function range52w(m,fa){
+  const price=Number(m.price||0);
+  const pos=price>0?Math.max(0,Math.min(100,((price-fa.w52lo)/(Math.max(0.001,fa.w52hi-fa.w52lo)))*100)):50;
+  return`<div style="padding:11px;background:#fafafa;border-radius:12px;border:1px solid var(--border)">
+    <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:800;margin-bottom:8px">
+      <span style="color:var(--danger)">${fmtCoin(fa.w52lo)}</span>
+      <span style="color:var(--muted)">Now: ${fmtCoin(price)}</span>
+      <span style="color:var(--green)">${fmtCoin(fa.w52hi)}</span>
+    </div>
+    <div style="height:8px;background:#f0f0f5;border-radius:4px;position:relative;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:${pos}%;background:linear-gradient(90deg,var(--danger),var(--accent),var(--green));border-radius:4px"></div>
+      <div style="position:absolute;top:-3px;left:${pos}%;transform:translateX(-50%);width:14px;height:14px;background:#fff;border-radius:50%;border:2.5px solid #09090b;box-shadow:0 1px 4px rgba(0,0,0,0.15)"></div>
+    </div>
+  </div>`;
+}
+
+/* ── ANALYSIS ── */
+function renderAnalysis(){
+  const m=currentMarket||marketsCache[selectedMarketId];if(!m){el.analysisContent.innerHTML='<div class="muted">Pilih market dulu</div>';return}
+  const fa=getFundamentals(m),price=Number(m.price||0);
+  const ratingColors={green:'chip-green',yellow:'chip-yellow',red:'chip-red'};
+  el.analysisContent.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:11px;background:#fafafa;border-radius:12px;border:1px solid var(--border)">
+      <div style="font-size:28px;font-weight:900;color:${fa.score>=4?'var(--green)':fa.score>=3?'#d97706':'var(--danger)'}">${fa.score.toFixed(1)}</div>
+      <div>
+        <div style="font-weight:900;font-size:14px">${fa.ratingLabel}</div>
+        <div style="font-size:11px;color:var(--muted)">${fa.totalAnalysts} analis</div>
+      </div>
+      <span class="chip ${ratingColors[fa.ratingColor]||'chip-green'}" style="margin-left:auto">${fa.ratingLabel}</span>
+    </div>
+    <div class="stat-section-title">⚡ Sinyal Teknikal</div>
+    <div style="margin-bottom:12px">
+      ${fa.signals.map(s=>`<div class="tech-row"><span>${s.label}</span><span class="${s.bull?'tech-bull':s.bear?'tech-bear':'tech-neutral'}">${s.val}</span></div>`).join('')}
+    </div>
+    <div class="stat-section-title">📉 Moving Average</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      ${[{l:'MA5',v:fa.ma5},{l:'MA20',v:fa.ma20},{l:'MA50',v:fa.ma50},{l:'MA200',v:fa.ma200}].map(ma=>{
+        const up=price>=ma.v;
+        return`<div class="ma-pill ${up?'ma-up':'ma-dn'}">${ma.l} ${fmtCoin(ma.v)} ${up?'↑':'↓'}</div>`;
+      }).join('')}
+    </div>
+    <div class="stat-section-title">🧑‍💼 Konsensus Analis</div>
+    <div style="padding:10px;border-radius:12px;background:#fafafa;border:1px solid var(--border)">
+      ${[['Strong Buy',fa.strongBuy,'var(--green)'],[' Buy',fa.buy,'#4ade80'],['Hold',fa.hold,'#f59e0b'],['Sell',fa.sell,'#f87171'],['Strong Sell',fa.strongSell,'var(--danger)']].map(([lbl,cnt,clr])=>`
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:11.5px;font-weight:700">
+          <span style="width:74px;color:var(--muted)">${lbl}</span>
+          <div style="flex:1;height:7px;background:#f0f0f5;border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${fa.totalAnalysts?Math.round(cnt/fa.totalAnalysts*100):0}%;background:${clr};border-radius:3px"></div>
+          </div>
+          <span style="color:${clr};min-width:16px;text-align:right">${cnt}</span>
+        </div>`).join('')}
+    </div>
+    <div class="stat-section-title" style="margin-top:12px">🛡️ Risiko</div>
+    <div class="stats-grid">
+      ${stTile('Beta',fa.beta.toFixed(2),fa.beta<1?'Defensif':fa.beta<1.5?'Normal':'Agresif',fa.beta<1?'var(--green)':fa.beta<1.5?'var(--muted)':'var(--danger)')}
+      ${stTile('RSI',fa.rsi.toString(),fa.rsi>70?'Overbought':fa.rsi<30?'Oversold':'Normal',fa.rsi>70||fa.rsi<30?'var(--danger)':'var(--green)')}
+      ${stTile('MACD',fa.macdSignal,'',fa.macdVal>0?'var(--green)':'var(--danger)')}
+      ${stTile('Quick Ratio',fa.quickRatio.toFixed(2),fa.quickRatio>=1?'Aman':'Hati-hati',fa.quickRatio>=1?'var(--green)':'var(--danger)')}
+    </div>`;
+}
+
+/* ── SEASONALITY ── */
+function renderSeasonality(){
+  const m=currentMarket||marketsCache[selectedMarketId];if(!m){el.seasonContent.innerHTML='<div class="muted">Pilih market dulu</div>';return}
+  const id=m.id||'x';
+  const h=str=>{let h=5381;for(let i=0;i<str.length;i++)h=((h<<5)+h)+str.charCodeAt(i);return Math.abs(h)};
+  const seed=h(id);
+  const months=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const cells=months.map((mon,i)=>{
+    const v=seededRand(seed+i*73)*14-6;
+    const pct=Math.round(v*10)/10;
+    const isBull=pct>=0;
+    return`<div class="season-cell ${isBull?'bull':'bear'}">
+      <div class="sc-month">${mon}</div>
+      <div class="sc-pct" style="color:${isBull?'var(--green)':'var(--danger)'}">${isBull?'+':''}${pct}%</div>
+    </div>`;
+  }).join('');
+  const bullMonths=months.filter((_,i)=>seededRand(seed+i*73)*14-6>=0).length;
+  el.seasonContent.innerHTML=`
+    <div style="margin-bottom:9px;padding:9px 11px;background:#fafafa;border-radius:11px;border:1px solid var(--border);font-size:12.5px">
+      <b>${bullMonths} bulan bullish</b> dari 12 · Rata-rata return tahunan historis: <span style="color:var(--green);font-weight:800">+${(seededRand(seed+99)*12+2).toFixed(1)}%</span>
+    </div>
+    <div class="season-grid">${cells}</div>
+    <div style="margin-top:9px;font-size:11px;color:var(--muted)">* Berdasarkan data historis simulasi pasar NUBIA. Bukan prediksi masa depan.</div>`;
+}
+
+/* ── PROFILE ── */
+function renderProfile(){
+  const m=currentMarket||marketsCache[selectedMarketId];if(!m){el.profileContent.innerHTML='<div class="muted">Pilih market dulu</div>';return}
+  const id=m.id||'x';
+  const h=str=>{let h=5381;for(let i=0;i<str.length;i++)h=((h<<5)+h)+str.charCodeAt(i);return Math.abs(h)};
+  const seed=h(id);
+  const sectors=['Teknologi','Keuangan','Energi','Kesehatan','Konsumer','Industri','Properti','Telekomunikasi'];
+  const sector=sectors[Math.floor(seededRand(seed+1)*sectors.length)];
+  const employees=Math.round(500+seededRand(seed+2)*50000);
+  const founded=Math.round(1970+seededRand(seed+3)*40);
+  const countries=['Indonesia','Singapura','Malaysia','Amerika Serikat','Jepang'];
+  const country=countries[Math.floor(seededRand(seed+4)*countries.length)];
+  const descItems=['Platform teknologi terkemuka','Perusahaan energi terbarukan','Pemimpin pasar keuangan digital','Inovator di sektor kesehatan','Perusahaan konsumer multinasional'];
+  const desc=descItems[Math.floor(seededRand(seed+5)*descItems.length)];
+  const sym=m.symbol||(m.name?m.name.slice(0,2).toUpperCase():'—');
+  el.profileContent.innerHTML=`
+    <div class="profile-header">
+      <div class="profile-logo">${sym.slice(0,2)}</div>
+      <div>
+        <div class="profile-name">${m.name||m.id}</div>
+        <div class="profile-sub">${m.symbol||m.id} · ${sector} · ${country}</div>
+      </div>
+    </div>
+    <div class="profile-desc">${desc} yang beroperasi di ${country} dengan lebih dari ${employees.toLocaleString('id-ID')} karyawan. Didirikan pada tahun ${founded}, perusahaan ini telah berkembang menjadi salah satu pemain utama di industri ${sector.toLowerCase()}.</div>
+    <div class="profile-tags">
+      <span class="ptag">📍 ${country}</span>
+      <span class="ptag">🏭 ${sector}</span>
+      <span class="ptag">👥 ${employees.toLocaleString('id-ID')} karyawan</span>
+      <span class="ptag">📅 Est. ${founded}</span>
+    </div>
+    <div class="stat-section-title">ℹ️ Informasi Umum</div>
+    <div class="stats-grid">
+      ${stTile('Sektor',sector,'','')}
+      ${stTile('Negara',country,'','')}
+      ${stTile('Karyawan',employees.toLocaleString('id-ID'),'','')}
+      ${stTile('Berdiri',founded.toString(),'','')}
+    </div>`;
+}
+
+/* ── FUNDAMENTAL ENGINE ── */
+function getFundamentals(m){
+  if(!m)return null;
+  const price=Number(m.price||0),vol=Number(m.volatility||1),id=m.id||'x';
+  const h=str=>{let h=5381;for(let i=0;i<str.length;i++)h=((h<<5)+h)+str.charCodeAt(i);return Math.abs(h)};
+  const seed=h(id);
+  const r=(min,max,s=0)=>{const v=seededRand(seed+s+price*0.01);return round2(min+v*(max-min))};
+  const ri=(min,max,s=0)=>Math.round(r(min,max,s));
+  const pe=r(8,45,1),eps=round2(price/pe),roe=r(5,35,2),debtEq=r(0.1,2.5,3);
+  const revGrowth=r(-5,30,4),profitMargin=r(3,40,5);
+  const marketCap=round2(price*ri(50,500,6)*1000000),beta=round2(0.5+vol*0.3+seededRand(seed+7)*0.8);
+  const divYield=r(0,6,8),currentRatio=r(0.8,3.5,9),quickRatio=r(0.5,2.5,10);
+  const fcf=round2(eps*r(0.6,1.4,11)*ri(10,100,12)*1000000),bookVal=round2(price/r(0.8,5,13)),pbRatio=round2(price/bookVal);
+  const w52hi=round2(price*(1+r(0.05,0.45,14))),w52lo=round2(price*(1-r(0.05,0.40,15)));
+  const ma5=round2(price*(1+r(-0.02,0.02,16))),ma20=round2(price*(1+r(-0.05,0.05,17)));
+  const ma50=round2(price*(1+r(-0.10,0.10,18))),ma200=round2(price*(1+r(-0.20,0.20,19)));
+  const rsi=ri(25,78,20),macdVal=r(-3,3,21),macdSignal=macdVal>0?'Bullish':'Bearish';
+  const strongBuy=ri(1,8,22),buy=ri(2,10,23),hold=ri(1,7,24),sell=ri(0,4,25),strongSell=ri(0,2,26);
+  const totalAnalysts=strongBuy+buy+hold+sell+strongSell;
+  const score=round2((strongBuy*5+buy*4+hold*3+sell*2+strongSell*1)/totalAnalysts);
+  const ratingLabel=score>=4.5?'Strong Buy':score>=3.5?'Buy':score>=2.5?'Hold':score>=1.5?'Sell':'Strong Sell';
+  const ratingColor=score>=4?'green':score>=3?'yellow':'red';
+  const signals=[
+    {label:'RSI ('+rsi+')',val:rsi>70?'Overbought':rsi<30?'Oversold':'Normal',bull:rsi<70&&rsi>30,bear:rsi>70||rsi<30},
+    {label:'MACD',val:macdSignal,bull:macdVal>0,bear:macdVal<0},
+    {label:'Price vs MA20',val:price>=ma20?'Di Atas':'Di Bawah',bull:price>=ma20,bear:price<ma20},
+    {label:'Price vs MA50',val:price>=ma50?'Di Atas':'Di Bawah',bull:price>=ma50,bear:price<ma50},
+    {label:'Price vs MA200',val:price>=ma200?'Di Atas':'Di Bawah',bull:price>=ma200,bear:price<ma200},
+    {label:'Volume Trend',val:seededRand(seed+27)>0.5?'Meningkat':'Menurun',bull:seededRand(seed+27)>0.5,bear:seededRand(seed+27)<=0.5},
+    {label:'Support',val:fmtCoin(round2(price*r(0.88,0.97,28))),bull:true,bear:false},
+    {label:'Resistance',val:fmtCoin(round2(price*r(1.03,1.15,29))),bull:false,bear:true},
+  ];
+  return{pe,eps,roe,debtEq,revGrowth,profitMargin,marketCap,beta,divYield,currentRatio,quickRatio,fcf,bookVal,pbRatio,w52hi,w52lo,ma5,ma20,ma50,ma200,rsi,macdVal,macdSignal,strongBuy,buy,hold,sell,strongSell,totalAnalysts,score,ratingLabel,ratingColor,signals};
+}
+
+/* ── ORDERBOOK ── */
+let obUpdateInterval=null;
+function startObInterval(){
+  clearInterval(obUpdateInterval);
+  obUpdateInterval=setInterval(()=>{
+    obTick++;const m=currentMarket||marketsCache[selectedMarketId];
+    if(m){updateOrderbook(m);addFakeRecentTrade(m)}
+    checkAllLimitOrders();
+  },2800);
+}
+function updateOrderbook(m){
+  if(!m){el.bookAsks.innerHTML='<div class="book-header ask">Asks</div>';el.bookBids.innerHTML='<div class="book-header bid">Bids</div>';el.orderbookSummary.textContent='—';return}
+  const d=deriveBidAsk(m),price=Number(m.price||0),depth=7;
+  const tick=price>1000?1:price>100?0.5:0.1;
+  const asks=[],bids=[];
+  for(let i=0;i<depth;i++){
+    const s1=price*100+obTick*17+i*37,s2=price*100+obTick*13+i*53;
+    const base=Math.max(100,Math.round(d.volume/(5+i)));
+    asks.push({price:round2(d.ask+tick*i),size:Math.round(base*(0.7+seededRand(s1)*0.6))});
+    bids.push({price:round2(d.bid-tick*i),size:Math.round(base*(0.7+seededRand(s2)*0.6))});
+  }
+  const maxS=Math.max(...asks.map(a=>a.size),...bids.map(b=>b.size));
+  el.bookAsks.innerHTML='<div class="book-header ask">Asks</div>'+asks.map(a=>`<div class="order-row ask"><span>${fmtCoin(a.price)}</span><span>${a.size.toLocaleString()}</span></div><div class="ob-bar ob-bar-ask" style="width:${Math.min(100,(a.size/maxS)*100)}%"></div>`).join('');
+  el.bookBids.innerHTML='<div class="book-header bid">Bids</div>'+bids.map(b=>`<div class="order-row bid"><span>${fmtCoin(b.price)}</span><span>${b.size.toLocaleString()}</span></div><div class="ob-bar ob-bar-bid" style="width:${Math.min(100,(b.size/maxS)*100)}%"></div>`).join('');
+  const tB=bids.reduce((s,x)=>s+x.size,0),tA=asks.reduce((s,x)=>s+x.size,0);
+  el.orderbookSummary.textContent=`B ${tB.toLocaleString()} · A ${tA.toLocaleString()}`;
+}
+function addFakeRecentTrade(m){
+  if(!m)return;
+  const d=deriveBidAsk(m),isBuy=seededRand(obTick*19+Number(m.price||0)*3)>0.45;
+  recentTradesData.unshift({side:isBuy?'BUY':'SELL',price:isBuy?d.ask:d.bid,size:Math.round(1+seededRand(obTick*11)*15)*100,ts:Date.now()});
+  if(recentTradesData.length>15)recentTradesData.pop();
+  renderRecentTrades();
+}
+function renderRecentTrades(){
+  if(!recentTradesData.length){el.recentTicker.innerHTML='<div class="ticker-item"><span style="color:var(--muted)">—</span></div>';return}
+  el.recentTicker.innerHTML=recentTradesData.slice(0,12).map(t=>{
+    const cls=t.side==='BUY'?'ticker-buy':'ticker-sell';
+    const ago=Math.round((Date.now()-t.ts)/1000);
+    return`<div class="ticker-item"><span class="${cls}">${t.side}</span><span>${fmtCoin(t.price)}</span><span style="color:var(--muted)">${t.size.toLocaleString()}</span><span style="color:var(--muted)">${ago}s</span></div>`;
+  }).join('');
+}
+
+/* ── MARKET LIST ── */
+function renderMarketList(){
+  el.marketList.innerHTML='';
+  const list=Object.values(marketsCache).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+  el.visibleCountTop.textContent=`${list.length} market`;
+  if(!list.length){el.marketList.innerHTML='<div class="list-item"><div class="meta"><div style="font-weight:700">Belum ada market</div></div></div>';return}
+  list.forEach(m=>{
+    const d=deriveBidAsk(m),price=Number(m.price||0),open=sessionOpenPrices[m.id]||price;
+    const chgPct=open?round4(((price-open)/open)*100):0,isUp=price>=open;
+    const item=document.createElement('div');item.className='list-item';item.style.cursor='pointer';
+    item.innerHTML=`
+      <div class="meta">
+        <div style="font-weight:900;letter-spacing:-.2px">${m.name||m.id}</div>
+        <div class="subsmall" style="font-family:'Geist Mono',monospace">${m.symbol||m.id}</div>
+        <div class="subsmall" style="color:${isUp?'var(--green)':'var(--danger)'}">
+          ${isUp?'▲':'▼'} ${chgPct>=0?'+':''}${chgPct}%</div>
+      </div>
+      <div class="right">
+        <div class="price">${fmtCoin(price)}</div>
+        <div class="subsmall">Bid ${fmtCoin(d.bid)}</div>
+        <div style="margin-top:5px"><button class="btn btn-outline btn-sm" data-id="${m.id}" style="width:100%">View</button></div>
+      </div>`;
+    item.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')selectMarket(m.id)});
+    item.querySelector('button').addEventListener('click',()=>selectMarket(m.id));
+    el.marketList.appendChild(item);
+  });
+}
+
+/* ── LIMIT ORDERS ── */
+async function placeLimitOrder(side){
+  if(!currentUser)return toast('Login dulu');
+  const m=currentMarket||marketsCache[selectedMarketId];if(!m)return toast('Pilih market');
+  const limitP=Number(el.limitPrice.value||0);
+  const lots=Math.max(1,Math.floor(Number(el.limitLot.value||1)));
+  if(!limitP||limitP<=0)return toast('Masukkan harga limit');
+  const livePrice=Number(m.price||0);
+  if(side==='BUY'&&limitP>=livePrice*1.5)return toast('Harga terlalu jauh dari market');
+  if(side==='SELL'&&limitP<=livePrice*0.5)return toast('Harga terlalu rendah');
+  const cost=buyCost(limitP,lots);
+  if(side==='BUY'&&cost>currentCoin)return toast('Coin tidak cukup untuk limit order ini');
+  showLoading('Membuat limit order…','');
+  try{
+    const ref=doc(collection(walletDb,'users',currentUser.uid,'limitOrders'));
+    await setDoc(ref,{
+      side,marketId:m.id,marketName:m.name||m.id,
+      limitPrice:limitP,lots,shares:lots*LOT_SIZE,
+      estimatedCost:cost,estimatedProceeds:sellProceeds(limitP,lots),
+      status:'pending',createdAt:serverTimestamp(),
+    });
+    toast(`✅ Limit ${side} @ ${fmtCoin(limitP)} dibuat`);
+    el.limitPrice.value='';el.limitLot.value='1';
+  }catch(e){toast(e.message||'Gagal membuat limit order')}
+  finally{hideLoading()}
+}
+
+async function cancelLimitOrder(orderId){
+  if(!currentUser)return;
+  try{await deleteDoc(doc(walletDb,'users',currentUser.uid,'limitOrders',orderId));toast('Limit order dibatalkan')}
+  catch(e){toast('Gagal batalkan')}
+}
+
+function checkLimitOrders(marketId,livePrice){
+  limitOrdersCache.filter(o=>o.marketId===marketId&&o.status==='pending').forEach(async o=>{
+    const triggered=(o.side==='BUY'&&livePrice<=o.limitPrice)||(o.side==='SELL'&&livePrice>=o.limitPrice);
+    if(!triggered)return;
+    /* Execute the limit order */
+    try{
+      await setDoc(doc(walletDb,'users',currentUser.uid,'limitOrders',o.id),{status:'filling'},{merge:true});
+      if(o.side==='BUY'){await buyLotsExecute(o.marketId,o.lots,livePrice,'LIMIT')}
+      else{await sellLotsFor(o.marketId,o.lots,true)}
+      await setDoc(doc(walletDb,'users',currentUser.uid,'limitOrders',o.id),{status:'filled',filledAt:serverTimestamp(),filledPrice:livePrice},{merge:true});
+      toast(`⚡ Limit ${o.side} terisi @ ${fmtCoin(livePrice)}`);
+    }catch(e){await setDoc(doc(walletDb,'users',currentUser.uid,'limitOrders',o.id),{status:'pending'},{merge:true})}
+  });
+}
+function checkAllLimitOrders(){
+  Object.keys(marketsCache).forEach(mid=>{
+    const price=Number(marketsCache[mid]?.price||0);if(price)checkLimitOrders(mid,price);
+  });
+}
+
+function renderLimitOrdersList(){
+  const active=limitOrdersCache.filter(o=>o.status==='pending'&&(!selectedMarketId||o.marketId===selectedMarketId));
+  el.activeLimitCount.textContent=`${active.length} order`;
+  el.limitOrdersList.innerHTML='';
+  if(!active.length){el.limitOrdersList.innerHTML='<div class="muted" style="padding:10px">Tidak ada limit order aktif untuk market ini</div>';return}
+  active.forEach(o=>{
+    const div=document.createElement('div');div.className='limit-order-card';
+    const isBuy=o.side==='BUY';
+    div.innerHTML=`
+      <div class="lo-header">
+        <div>
+          <div style="font-weight:900;font-size:13px">${o.marketName||o.marketId}</div>
+          <div class="small-muted" style="margin-top:2px">Lot ${o.lots} · ${o.lots*LOT_SIZE} lembar</div>
+        </div>
+        <span class="lo-badge ${isBuy?'lo-buy':'lo-sell'}">${o.side}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+        <div><span style="color:var(--muted)">Harga Limit</span><br/><b style="font-family:'Geist Mono',monospace">${fmtCoin(o.limitPrice)}</b></div>
+        <div><span style="color:var(--muted)">${isBuy?'Est. Bayar':'Est. Terima'}</span><br/><b style="font-family:'Geist Mono',monospace">${fmtCoin(isBuy?o.estimatedCost:o.estimatedProceeds)}</b></div>
+      </div>
+      <button class="btn btn-danger btn-sm" style="align-self:flex-start" data-cancel="${o.id}">Batalkan</button>`;
+    div.querySelector('[data-cancel]').addEventListener('click',()=>cancelLimitOrder(o.id));
+    el.limitOrdersList.appendChild(div);
+  });
+}
+
+function renderPortfolioLimits(){
+  el.portfolioLimitsList.innerHTML='';
+  if(!limitOrdersCache.length){el.portfolioLimitsList.innerHTML='<div class="list-item"><div class="meta"><div style="font-weight:700">Tidak ada limit order</div></div></div>';return}
+  limitOrdersCache.slice(0,30).forEach(o=>{
+    const isBuy=o.side==='BUY',statusCls=o.status==='pending'?'lo-pending':o.status==='filled'?'lo-filled':'lo-cancelled';
+    const div=document.createElement('div');div.className='list-item';
+    div.innerHTML=`
+      <div class="meta">
+        <div style="font-weight:800"><span class="${isBuy?'pnl-pos':'pnl-neg'}">${o.side}</span> · ${o.marketName||o.marketId}</div>
+        <div class="subsmall">Lot ${o.lots} · Limit @ ${fmtCoin(o.limitPrice)}</div>
+        ${o.filledPrice?`<div class="subsmall" style="color:var(--green)">Terisi @ ${fmtCoin(o.filledPrice)}</div>`:''}
+      </div>
+      <div class="right">
+        <span class="lo-badge ${statusCls}">${o.status}</span>
+        ${o.status==='pending'?`<div style="margin-top:6px"><button class="btn btn-danger btn-xs" data-cancel="${o.id}">Batal</button></div>`:''}
+      </div>`;
+    div.querySelector('[data-cancel]')?.addEventListener('click',()=>cancelLimitOrder(o.id));
+    el.portfolioLimitsList.appendChild(div);
+  });
+}
+
+/* ── POSITIONS ── */
+function renderPositions(){
+  el.positionsList.innerHTML='';
+  if(!currentUser){el.positionsList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:700">Login dulu</div></div></div>`;el.totalPnl.textContent='—';return}
+  const open=positionsCache.filter(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0);
+  if(!open.length){el.positionsList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:700">Belum ada posisi</div><div class="subsmall">Beli lot untuk memulai.</div></div></div>`;el.totalPnl.textContent='+0.00';return}
+  let totalUnreal=0;
+  open.forEach(p=>{
+    const m=marketsCache[p.marketId],livePrice=Number(m?.price||p.avgCostPerShare||0);
+    const costPerShare=Number(p.avgCostPerShare||0);
+    const pnlPerShare=round2(livePrice-costPerShare),totalPnlPos=round2(pnlPerShare*Number(p.shares||0));
+    const pct=costPerShare?round4((pnlPerShare/costPerShare)*100):0;
+    totalUnreal+=totalPnlPos;
+    const depLots=Number(p.depositedLots||0),availLots=Math.max(0,Number(p.lots||0)-depLots);
+    const ac=autoCloseOrders[p.marketId];
+    let acBadge='';
+    if(ac){const parts=[];if(ac.tpPrice||ac.tpPct)parts.push(`TP: ${ac.tpPrice?fmtCoin(ac.tpPrice):ac.tpPct+'%'}`);if(ac.slPrice||ac.slPct)parts.push(`SL: ${ac.slPrice?fmtCoin(ac.slPrice):ac.slPct+'%'}`);if(parts.length)acBadge=`<div class="autoclose-pill">⚙ ${parts.join(' · ')}</div>`}
+    const item=document.createElement('div');item.className='position-item';
+    item.innerHTML=`
+      <div class="position-header">
+        <div>
+          <div style="font-weight:900;font-size:14px;letter-spacing:-.2px">${p.marketName||p.marketId}</div>
+          <div class="small-muted">${m?.symbol||p.marketId} · ${Number(p.lots||0)} Lot${depLots>0?` (${depLots} terkunci)`:''}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="${totalPnlPos>=0?'pnl-pos':'pnl-neg'}" style="font-size:15px;font-family:'Geist Mono',monospace">${totalPnlPos>=0?'+':''}${fmtCoin(totalPnlPos)}</div>
+          <div class="${pct>=0?'pnl-pos':'pnl-neg'}" style="font-size:11px;opacity:.8">${pct>=0?'+':''}${pct}%</div>
+        </div>
+      </div>
+      <div class="pos-stats">
+        <div class="pos-stat"><div class="ps-label">Lot</div><div class="ps-val">${Number(p.lots||0)}</div></div>
+        <div class="pos-stat"><div class="ps-label">Avg Cost</div><div class="ps-val">${fmtCoin(costPerShare)}</div></div>
+        <div class="pos-stat"><div class="ps-label">Live</div><div class="ps-val" style="color:${livePrice>=costPerShare?'var(--green)':'var(--danger)'}">${fmtCoin(livePrice)}</div></div>
+      </div>
+      ${acBadge?`<div>${acBadge}</div>`:''}
+      <div class="pos-actions">
+        ${availLots>0?`<button class="btn btn-danger btn-sm" data-sell="${p.marketId}">Jual</button>`:''}
+        <button class="btn btn-blue btn-sm" data-ac="${p.marketId}">Auto-Close</button>
+        ${availLots>0?`<button class="btn btn-outline btn-sm" data-dep="${p.marketId}">Deposit</button>`:''}
+        <button class="btn btn-outline btn-sm" data-view="${p.marketId}">View Chart</button>
+      </div>`;
+    item.querySelector('[data-sell]')?.addEventListener('click',()=>openSellModal(p.marketId));
+    item.querySelector('[data-ac]')?.addEventListener('click',()=>openACModal(p.marketId));
+    item.querySelector('[data-dep]')?.addEventListener('click',()=>openDepositModal(p.marketId));
+    item.querySelector('[data-view]')?.addEventListener('click',()=>selectMarket(p.marketId));
+    el.positionsList.appendChild(item);
+  });
+  el.totalPnl.textContent=`${totalUnreal>=0?'+':''}${fmtCoin(totalUnreal)}`;
+  el.totalPnl.style.color=totalUnreal>=0?'var(--green)':'var(--danger)';
+}
+
+/* ── TRADES ── */
+function renderTrades(){
+  el.tradesList.innerHTML='';
+  if(!tradesCache.length){el.tradesList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:700">Belum ada histori</div></div></div>`;return}
+  tradesCache.slice(0,50).forEach(t=>{
+    const ts=t.createdAt?.toDate?t.createdAt.toDate():null;
+    const pnlV=Number(t.pnl||0),isBuy=t.side==='BUY';
+    const item=document.createElement('div');item.className='list-item';
+    item.innerHTML=`
+      <div class="meta">
+        <div style="font-weight:900"><span style="color:${isBuy?'var(--green)':'var(--danger)'}">${t.side}</span> · ${t.marketName||t.marketId}</div>
+        <div class="subsmall">Lot ${Number(t.lots||0)} · @ ${fmtCoin(t.execPrice||t.price||0)}</div>
+        <div class="subsmall">Fee ${fmtCoin(t.fee||0)} · <span class="${pnlV>=0?'pnl-pos':'pnl-neg'}">PnL ${pnlV>=0?'+':''}${fmtCoin(pnlV)}</span></div>
+      </div>
+      <div class="right"><div class="subsmall">${ts?ts.toLocaleDateString('id-ID'):''}</div></div>`;
+    el.tradesList.appendChild(item);
+  });
+}
+
+/* ── EVENTS ── */
+function renderEvents(){
+  el.eventsList.innerHTML='';
+  const m=selectedMarketId?marketsCache[selectedMarketId]:null;
+  el.eventsMarketTag.textContent=m?(m.symbol||m.id):'—';
+  if(!m||!currentEvents.length){el.eventsList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:700">${m?'Belum ada event':'Pilih market dulu'}</div></div></div>`;return}
+  currentEvents.forEach(ev=>{
+    const start=ev.startTs?.toDate?ev.startTs.toDate():null;
+    const item=document.createElement('div');item.className='list-item';
+    item.innerHTML=`<div class="meta"><div style="font-weight:800">${ev.title||'Event'}</div><div class="subsmall">${ev.description||''}</div><div class="subsmall">${start?start.toLocaleString('id-ID'):'-'}</div></div><div class="right"><div class="chip chip-yellow">Vol ×${Number(ev.volMultiplier||1).toFixed(1)}</div></div>`;
+    el.eventsList.appendChild(item);
+  });
+}
+
+/* ── DEPOSIT PANEL ── */
+function renderDepositPanel(){
+  el.depositAvailList.innerHTML='';
+  const open=positionsCache.filter(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0);
+  if(!currentUser||!open.length){el.depositAvailList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:700">${currentUser?'Belum ada posisi':'Login dulu'}</div></div></div>`}
+  else{
+    let hasAvail=false;
+    open.forEach(p=>{
+      const availLots=Math.max(0,Number(p.lots||0)-Number(p.depositedLots||0));
+      if(!availLots)return;hasAvail=true;
+      const m=marketsCache[p.marketId],livePrice=Number(m?.price||p.avgCostPerShare||0);
+      const interestPerLot=DEPOSIT_INTEREST_PER_LOT,dividendPerLot=DIVIDEND_PER_LOT;
+      const item=document.createElement('div');item.className='deposit-item';
+      item.innerHTML=`
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-weight:900">${p.marketName||p.marketId}</div><div class="small-muted">Tersedia: ${availLots} Lot</div></div>
+          <button class="btn btn-green btn-sm" data-depavail="${p.marketId}">Deposit</button>
+        </div>
+        <div class="interest-box">
+          <div style="font-size:12px;display:flex;gap:14px;flex-wrap:wrap">
+            <div><span style="color:var(--muted)">Bunga/lot/thn:</span> <b>+${fmtCoin(interestPerLot)}</b></div>
+            <div><span style="color:var(--muted)">Dividen/lot/thn:</span> <b>+${fmtCoin(dividendPerLot)}</b></div>
+          </div>
+        </div>`;
+      item.querySelector('[data-depavail]').addEventListener('click',()=>openDepositModal(p.marketId));
+      el.depositAvailList.appendChild(item);
+    });
+    if(!hasAvail)el.depositAvailList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:700">Semua lot sudah di-deposit</div></div></div>`;
+  }
+  el.depositActiveList.innerHTML='';
+  if(!depositsCache.length){el.depositActiveList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:700">Belum ada deposit aktif</div></div></div>`;return}
+  depositsCache.forEach(dep=>{
+    const now=Date.now(),depAt=dep.depositedAt?.toDate?dep.depositedAt.toDate().getTime():(dep.depositedAt||0);
+    const matAt=dep.maturityAt?.toDate?dep.maturityAt.toDate().getTime():(depAt+YEAR_MS);
+    const elapsedFrac=Math.max(0,now-depAt)/YEAR_MS,isMatured=now>=matAt;
+    const lots=Number(dep.lots||0),daysLeft=Math.max(0,Math.round((matAt-now)/86400000));
+    const accrued=round2(lots*DEPOSIT_INTEREST_PER_LOT*elapsedFrac);
+    const dividend=round2(lots*DIVIDEND_PER_LOT*elapsedFrac);
+    const coinVal=Number(dep.coinValue||0),unlockFeeAmt=round2(coinVal*UNLOCK_FEE);
+    const status=dep.status||'active';
+    const badgeClass=isMatured?'dep-matured':'dep-active';
+    const badgeText=isMatured?'✅ Jatuh Tempo':'🔒 Aktif';
+    const item=document.createElement('div');item.className='deposit-item';
+    item.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div style="font-weight:900">${dep.marketName||dep.marketId}</div><div class="small-muted">${lots} Lot · ${lots*LOT_SIZE} saham</div></div>
+        <div class="dep-badge ${badgeClass}">${badgeText}</div>
+      </div>
+      <div class="interest-box">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+          <div><span style="color:var(--muted)">Nilai Deposit</span><br/><b>${fmtCoin(coinVal)}</b></div>
+          <div><span style="color:var(--muted)">Bunga Akrual</span><br/><b style="color:var(--green)">+${fmtCoin(accrued)}</b></div>
+          <div><span style="color:var(--muted)">Dividen Akrual</span><br/><b style="color:var(--blue)">+${fmtCoin(dividend)}</b></div>
+          <div><span style="color:var(--muted)">${isMatured?'Matang':'Sisa Hari'}</span><br/><b>${isMatured?'—':daysLeft+' hari'}</b></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        ${status==='active'&&!isMatured?`<button class="btn btn-sm btn-outline" data-unlock="${dep.id}">Unlock (fee ${fmtCoin(unlockFeeAmt)})</button>`:''}
+        ${isMatured&&status==='active'?`<button class="btn btn-sm btn-green" data-claim="${dep.id}">Claim Maturity</button>`:''}
+      </div>`;
+    item.querySelector('[data-unlock]')?.addEventListener('click',()=>openUnlockModal(dep.id));
+    item.querySelector('[data-claim]')?.addEventListener('click',()=>claimDeposit(dep.id,true));
+    el.depositActiveList.appendChild(item);
+  });
+}
+
+/* ── BONDS ── */
+function renderBondProducts(){
+  el.bondProductsList.innerHTML='';
+  if(!bondProductsCache.length){el.bondProductsList.innerHTML='<div class="list-item"><div class="meta"><div style="font-weight:700">Belum ada produk obligasi</div></div></div>';return}
+  bondProductsCache.forEach(b=>{
+    const matDate=b.maturityDate?.toDate?b.maturityDate.toDate():null;
+    const daysLeft=matDate?Math.max(0,Math.round((matDate.getTime()-Date.now())/86400000)):null;
+    const item=document.createElement('div');item.className='bond-card';
+    item.innerHTML=`
+      <div class="bond-header">
+        <div>
+          <div class="bond-code">${b.code||b.id}</div>
+          <div class="bond-name">${b.name||''}</div>
+        </div>
+        <div class="bond-yield">${Number(b.yield||0).toFixed(2)}%/thn</div>
+      </div>
+      <div class="bond-stats">
+        <div class="bond-stat"><div class="bs-label">Harga/Unit</div><div class="bs-val">${fmtCoin(b.pricePerUnit||0)}</div></div>
+        <div class="bond-stat"><div class="bs-label">Min Beli</div><div class="bs-val">${b.minUnit||1} unit</div></div>
+        <div class="bond-stat"><div class="bs-label">Jatuh Tempo</div><div class="bs-val">${daysLeft!==null?daysLeft+' hr':'—'}</div></div>
+      </div>
+      ${b.description?`<div style="font-size:12px;color:var(--muted);line-height:1.6">${b.description}</div>`:''}
+      <div style="display:flex;gap:7px">
+        <button class="btn btn-primary" style="flex:1;height:40px;font-size:12.5px" data-buybond="${b.id}">Beli Obligasi</button>
+      </div>`;
+    item.querySelector('[data-buybond]').addEventListener('click',()=>openBuyBondModal(b.id));
+    el.bondProductsList.appendChild(item);
+  });
+}
+
+function renderBondHoldings(){
+  el.bondHoldingsList.innerHTML='';
+  if(!currentUser){el.bondHoldingsList.innerHTML='<div class="list-item"><div class="meta"><div style="font-weight:700">Login dulu</div></div></div>';return}
+  if(!bondHoldingsCache.length){el.bondHoldingsList.innerHTML='<div class="list-item"><div class="meta"><div style="font-weight:700">Belum ada kepemilikan obligasi</div></div></div>';return}
+  bondHoldingsCache.forEach(h=>{
+    const matDate=h.maturityDate?.toDate?h.maturityDate.toDate():null;
+    const now=Date.now(),boughtAt=h.boughtAt?.toDate?h.boughtAt.toDate().getTime():now;
+    const elapsed=(now-boughtAt)/YEAR_MS;
+    const accruedInterest=round2(h.totalCost*(h.bondYield/100)*Math.max(0,elapsed));
+    const daysLeft=matDate?Math.max(0,Math.round((matDate.getTime()-now)/86400000)):null;
+    const statusClass=h.sellStatus==='pending'?'bh-status-pending':h.sellStatus==='sold'?'bh-status-sold':'bh-status-active';
+    const statusText=h.sellStatus==='pending'?'Menunggu Konfirmasi Admin':h.sellStatus==='sold'?'Terjual':'Aktif';
+    const item=document.createElement('div');item.className='bond-holding';
+    item.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-weight:900;font-family:'Geist Mono',monospace">${h.bondCode||h.bondId}</div>
+          <div class="small-muted">${h.units} unit · Beli @ ${fmtCoin(h.pricePerUnit)}</div>
+        </div>
+        <span class="${statusClass}">${statusText}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;padding:9px;background:#fafafa;border-radius:10px;border:1px solid var(--border)">
+        <div><span style="color:var(--muted)">Total Investasi</span><br/><b>${fmtCoin(h.totalCost)}</b></div>
+        <div><span style="color:var(--muted)">Kupon Akrual</span><br/><b style="color:var(--green)">+${fmtCoin(accruedInterest)}</b></div>
+        <div><span style="color:var(--muted)">Yield/Thn</span><br/><b style="color:var(--green)">${Number(h.bondYield||0).toFixed(2)}%</b></div>
+        <div><span style="color:var(--muted)">${daysLeft!==null?'Jatuh Tempo':'Jatuh Tempo'}</span><br/><b>${daysLeft!==null?daysLeft+' hr':'—'}</b></div>
+      </div>
+      ${h.sellStatus!=='pending'&&h.sellStatus!=='sold'?`<button class="btn btn-danger btn-sm" style="align-self:flex-start" data-sellbond="${h.id}">Jual Sebelum Jatuh Tempo</button>`:''}`;
+    item.querySelector('[data-sellbond]')?.addEventListener('click',()=>openSellBondModal(h.id));
+    el.bondHoldingsList.appendChild(item);
+  });
+}
+
+/* ── BOND MODALS ── */
+function openBuyBondModal(bondId){
+  buyBondId=bondId;
+  const b=bondProductsCache.find(x=>x.id===bondId);if(!b)return;
+  const matDate=b.maturityDate?.toDate?b.maturityDate.toDate():null;
+  $('buyBondTitle').textContent=`Beli ${b.code||b.id}`;
+  $('buyBondSub').textContent=`${b.name||''} · Yield ${Number(b.yield||0).toFixed(2)}%/thn`;
+  $('buyBondDetail').innerHTML=`Harga/unit: <b>${fmtCoin(b.pricePerUnit)}</b> · Min: <b>${b.minUnit||1} unit</b><br/>Jatuh tempo: <b>${matDate?matDate.toLocaleDateString('id-ID'):'—'}</b><br/>💡 Koin yang dibayar otomatis masuk ke saldo Admin.`;
+  $('buyBondUnits').value=String(b.minUnit||1);$('buyBondUnits').min=String(b.minUnit||1);
+  updateBuyBondPreview();openModal('modalBuyBond');
+}
+function updateBuyBondPreview(){
+  const b=bondProductsCache.find(x=>x.id===buyBondId);if(!b)return;
+  const units=Math.max(Number(b.minUnit||1),Math.floor(Number($('buyBondUnits').value||b.minUnit||1)));
+  const total=round2(units*Number(b.pricePerUnit||0));
+  const annualReturn=round2(total*Number(b.yield||0)/100);
+  $('buyBondPreview').innerHTML=`${units} unit · Total: <b>${fmtCoin(total)} coin</b><br/>📈 Kupon/thn: <b style="color:var(--green)">+${fmtCoin(annualReturn)} coin</b>`;
+}
+$('buyBondUnits').addEventListener('input',updateBuyBondPreview);
+$('btnBuyBondConfirm').addEventListener('click',async()=>{
+  const b=bondProductsCache.find(x=>x.id===buyBondId);if(!b||!currentUser)return toast('Login dulu');
+  const units=Math.max(Number(b.minUnit||1),Math.floor(Number($('buyBondUnits').value||b.minUnit||1)));
+  if(b.maxUnit&&units>b.maxUnit)return toast(`Maks. ${b.maxUnit} unit per pembelian`);
+  const total=round2(units*Number(b.pricePerUnit||0));
+  if(total>currentCoin)return toast('Coin tidak cukup');
+  closeModal('modalBuyBond');showLoading('Membeli obligasi…','Koin akan ditransfer ke Admin');
+  try{
+    const userRef=doc(walletDb,'users',currentUser.uid);
+    const adminRef=doc(walletDb,'users',ADMIN_UID);
+    const holdingRef=doc(collection(walletDb,'users',currentUser.uid,'bondHoldings'));
+    await runTransaction(walletDb,async tx=>{
+      const uSnap=await tx.get(userRef);
+      const coin=Number(uSnap.exists()?uSnap.data().nubiPayCoin||0:0);
+      if(coin<total)throw new Error('Coin tidak cukup');
+      const aSnap=await tx.get(adminRef);
+      const adminCoin=Number(aSnap.exists()?aSnap.data().nubiPayCoin||0:0);
+      tx.set(userRef,{nubiPayCoin:round2(coin-total)},{merge:true});
+      tx.set(adminRef,{nubiPayCoin:round2(adminCoin+total)},{merge:true});
+      tx.set(holdingRef,{bondId:b.id,bondCode:b.code||b.id,bondName:b.name||'',units,pricePerUnit:b.pricePerUnit,totalCost:total,bondYield:b.yield||0,maturityDate:b.maturityDate||null,boughtAt:serverTimestamp(),sellStatus:'active',createdAt:serverTimestamp()});
+    });
+    toast(`✅ Berhasil beli ${units} unit ${b.code||b.id}`);
+  }catch(e){toast(e.message||'Gagal beli obligasi')}
+  finally{hideLoading()}
+});
+
+function openSellBondModal(holdingId){
+  sellBondHoldingId=holdingId;
+  const h=bondHoldingsCache.find(x=>x.id===holdingId);if(!h)return;
+  $('sellBondSub').textContent=`${h.bondCode||h.bondId} · ${h.units} unit`;
+  $('sellBondDetail').innerHTML=`Total investasi: <b>${fmtCoin(h.totalCost)}</b><br/>Pengajuan jual akan dikirim ke Admin untuk dikonfirmasi.`;
+  openModal('modalSellBond');
+}
+$('btnSellBondConfirm').addEventListener('click',async()=>{
+  if(!sellBondHoldingId||!currentUser)return;
+  closeModal('modalSellBond');showLoading('Mengajukan penjualan…','Menunggu konfirmasi Admin');
+  try{
+    await setDoc(doc(walletDb,'users',currentUser.uid,'bondHoldings',sellBondHoldingId),{sellStatus:'pending',sellRequestAt:serverTimestamp()},{merge:true});
+    toast('✅ Pengajuan jual dikirim ke Admin');
+  }catch(e){toast(e.message||'Gagal ajukan jual')}
+  finally{hideLoading()}
+});
+
+/* ── ADMIN PANEL ── */
+function renderAdminPanel(){
+  if(currentUser?.uid!==ADMIN_UID){el.pageAdmin.classList.add('hidden');return}
+  el.pageAdmin.classList.remove('hidden');
+  const q=adminSearchQuery.toLowerCase();
+  const allUsers=Object.values(adminUsersCache);
+  let filtered=allUsers;
+  if(adminTab==='positions')filtered=allUsers.filter(u=>u.positions?.some(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0));
+  if(q)filtered=filtered.filter(u=>(u.email||'').toLowerCase().includes(q)||(u.uid||'').toLowerCase().includes(q));
+  const totalPos=allUsers.reduce((s,u)=>{const o=u.positions?.filter(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0)||[];return s+o.length},0);
+  const totalCoins=allUsers.reduce((s,u)=>s+Number(u.coin||0),0);
+  el.adminStatUsers.textContent=allUsers.length;el.adminStatPositions.textContent=totalPos;el.adminStatCoins.textContent=fmtSI(Math.round(totalCoins));
+  el.adminUserList.innerHTML='';
+
+  if(adminTab==='bonds'){
+    /* Bond management */
+    const addBtn=document.createElement('button');
+    addBtn.className='btn btn-primary';addBtn.style.cssText='width:100%;margin-bottom:10px;height:40px;font-size:13px';
+    addBtn.textContent='+ Buat Produk Obligasi Baru';
+    addBtn.addEventListener('click',()=>openModal('modalCreateBond'));
+    el.adminUserList.appendChild(addBtn);
+    if(!bondProductsCache.length){el.adminUserList.innerHTML+='<div class="admin-empty">Belum ada produk obligasi</div>';return}
+    bondProductsCache.forEach(b=>{
+      const div=document.createElement('div');div.className='admin-bond-card';
+      const matDate=b.maturityDate?.toDate?b.maturityDate.toDate():null;
+      div.innerHTML=`
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div>
+            <div class="admin-bond-title">${b.code||b.id}</div>
+            <div class="admin-bond-sub">${b.name||''} · Yield ${Number(b.yield||0).toFixed(2)}%/thn · ${fmtCoin(b.pricePerUnit||0)}/unit</div>
+            <div class="admin-bond-sub">Jatuh: ${matDate?matDate.toLocaleDateString('id-ID'):'—'}</div>
+          </div>
+          <button class="btn btn-danger btn-sm" data-deletebond="${b.id}">Hapus</button>
+        </div>`;
+      div.querySelector('[data-deletebond]').addEventListener('click',async()=>{
+        if(!confirm('Hapus produk obligasi ini?'))return;
+        try{await deleteDoc(doc(walletDb,'bonds',b.id));toast('Obligasi dihapus')}
+        catch(e){toast('Gagal hapus')}
+      });
+      el.adminUserList.appendChild(div);
+    });
+    return;
+  }
+
+  if(adminTab==='sellreqs'){
+    /* Pending sell requests */
+    let found=false;
+    allUsers.forEach(u=>{
+      (u.bondHoldings||[]).filter(h=>h.sellStatus==='pending').forEach(h=>{
+        found=true;
+        const div=document.createElement('div');div.className='sell-req-card';
+        div.innerHTML=`
+          <div class="sell-req-title">${u.email||u.uid} · ${h.bondCode||h.bondId}</div>
+          <div class="sell-req-sub">${h.units} unit · Investasi: ${fmtCoin(h.totalCost)}</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn btn-green btn-sm" data-approve="${u.uid}:${h.id}">Setujui & Transfer</button>
+            <button class="btn btn-danger btn-sm" data-reject="${u.uid}:${h.id}">Tolak</button>
+          </div>`;
+        div.querySelector('[data-approve]').addEventListener('click',async()=>{
+          await approveBondSell(u.uid,h.id,h.totalCost);
+        });
+        div.querySelector('[data-reject]').addEventListener('click',async()=>{
+          try{
+            await setDoc(doc(walletDb,'users',u.uid,'bondHoldings',h.id),{sellStatus:'active',sellRequestAt:null},{merge:true});
+            toast('Pengajuan ditolak');
+          }catch(e){toast('Gagal')}
+        });
+        el.adminUserList.appendChild(div);
+      });
+    });
+    if(!found)el.adminUserList.innerHTML='<div class="admin-empty">Tidak ada pengajuan jual obligasi</div>';
+    return;
+  }
+
+  /* Default: user list */
+  if(!filtered.length){el.adminUserList.innerHTML=`<div class="admin-empty">${q?'Tidak ditemukan':'Belum ada user'}</div>`;return}
+  filtered.forEach(u=>{
+    const openPos=(u.positions||[]).filter(p=>(p.status||'open')==='open'&&Number(p.lots||0)>0);
+    const div=document.createElement('div');div.className='admin-user-card';
+    div.innerHTML=`
+      <div class="auc-top">
+        <div><div class="auc-email">${u.email||'(no email)'}</div><div class="auc-uid">${u.uid}</div></div>
+        <div style="text-align:right"><div class="auc-coin">${fmtCoin(u.coin)}</div><div style="color:rgba(255,255,255,0.35);font-size:9.5px;margin-top:2px">COIN</div></div>
+      </div>
+      <div>
+        ${openPos.length===0?`<div style="color:rgba(255,255,255,0.28);font-size:11.5px;padding:3px 0">Tidak ada posisi terbuka</div>`:
+        openPos.map(p=>{
+          const m=marketsCache[p.marketId],livePrice=Number(m?.price||p.avgCostPerShare||0);
+          const pnl=round2((livePrice-Number(p.avgCostPerShare||0))*Number(p.shares||0));
+          return`<div class="auc-pos-row">
+            <div style="color:rgba(255,255,255,0.8)"><b>${p.marketName||p.marketId}</b> · ${Number(p.lots||0)} Lot</div>
+            <span style="color:${pnl>=0?'var(--green2)':'var(--danger)'}">PnL ${pnl>=0?'+':''}${fmtCoin(pnl)}</span>
+          </div>`;
+        }).join('')}
+        ${(u.bondHoldings||[]).length?`<div style="color:rgba(251,191,36,0.6);font-size:11px;padding:3px 0">📜 ${(u.bondHoldings||[]).filter(h=>h.sellStatus==='active').length} obligasi aktif</div>`:''}
+      </div>`;
+    el.adminUserList.appendChild(div);
+  });
+}
+
+async function approveBondSell(userId,holdingId,totalCost){
+  showLoading('Menyetujui penjualan…','Transfer koin ke user');
+  try{
+    const adminRef=doc(walletDb,'users',ADMIN_UID);
+    const userRef=doc(walletDb,'users',userId);
+    const holdingRef=doc(walletDb,'users',userId,'bondHoldings',holdingId);
+    await runTransaction(walletDb,async tx=>{
+      const aSnap=await tx.get(adminRef),uSnap=await tx.get(userRef);
+      const adminCoin=Number(aSnap.exists()?aSnap.data().nubiPayCoin||0:0);
+      const userCoin=Number(uSnap.exists()?uSnap.data().nubiPayCoin||0:0);
+      if(adminCoin<totalCost)throw new Error('Saldo admin tidak cukup');
+      tx.set(adminRef,{nubiPayCoin:round2(adminCoin-totalCost)},{merge:true});
+      tx.set(userRef,{nubiPayCoin:round2(userCoin+totalCost)},{merge:true});
+      tx.set(holdingRef,{sellStatus:'sold',soldAt:serverTimestamp()},{merge:true});
+    });
+    toast(`✅ Transfer ${fmtCoin(totalCost)} ke user berhasil`);
+  }catch(e){toast(e.message||'Gagal approve')}
+  finally{hideLoading()}
+}
+
+/* ── Admin search ── */
+el.adminSearch.addEventListener('input',()=>{adminSearchQuery=el.adminSearch.value;renderAdminPanel()});
+
+/* ── CREATE BOND (Admin) ── */
+$('btnCreateBondConfirm').addEventListener('click',async()=>{
+  if(currentUser?.uid!==ADMIN_UID)return;
+  const code=$('cbCode').value.trim(),name=$('cbName').value.trim();
+  const yieldPct=Number($('cbYield').value||0),pricePerUnit=Number($('cbPrice').value||0);
+  const minUnit=Math.max(1,Number($('cbMinUnit').value||1)),maxUnit=Number($('cbMaxUnit').value||0);
+  const matStr=$('cbMaturity').value;
+  if(!code||!name||!yieldPct||!pricePerUnit||!matStr)return toast('Isi semua field wajib');
+  const matDate=new Date(matStr);
+  showLoading('Membuat obligasi…','');
+  try{
+    const ref=doc(collection(walletDb,'bonds'));
+    await setDoc(ref,{code,name,yield:yieldPct,pricePerUnit,minUnit,maxUnit:maxUnit||null,maturityDate:Timestamp.fromDate(matDate),description:$('cbDesc').value.trim()||'',active:true,createdBy:currentUser.uid,createdAt:serverTimestamp()});
+    closeModal('modalCreateBond');
+    ['cbCode','cbName','cbYield','cbPrice','cbMaturity','cbDesc'].forEach(id=>$(id).value='');
+    $('cbMinUnit').value='1';$('cbMaxUnit').value='0';
+    toast('✅ Obligasi berhasil dibuat');
+  }catch(e){toast(e.message||'Gagal buat obligasi')}
+  finally{hideLoading()}
+});
+
+/* ── Subscribe Bonds ── */
+function subscribeBondProducts(){
+  if(bondProductsUnsub){try{bondProductsUnsub()}catch{}}
+  const q2=query(collection(walletDb,'bonds'),where('active','==',true));
+  bondProductsUnsub=onSnapshot(q2,snap=>{
+    bondProductsCache=[];snap.forEach(d=>bondProductsCache.push({id:d.id,...d.data()}));
+    renderBondProducts();
+    if(adminTab==='bonds')renderAdminPanel();
+  },()=>{});
+}
+function subscribeBondHoldings(uid){
+  if(bondHoldingsUnsub){try{bondHoldingsUnsub()}catch{}}
+  const q2=query(collection(walletDb,'users',uid,'bondHoldings'),orderBy('boughtAt','desc'),limit(50));
+  bondHoldingsUnsub=onSnapshot(q2,snap=>{
+    bondHoldingsCache=[];snap.forEach(d=>bondHoldingsCache.push({id:d.id,...d.data()}));
+    renderBondHoldings();
+    if(adminTab==='sellreqs')renderAdminPanel();
+  },()=>{});
+}
+function subscribeLimitOrders(uid){
+  if(limitOrdersUnsub){try{limitOrdersUnsub()}catch{}}
+  const q2=query(collection(walletDb,'users',uid,'limitOrders'),orderBy('createdAt','desc'),limit(100));
+  limitOrdersUnsub=onSnapshot(q2,snap=>{
+    limitOrdersCache=[];snap.forEach(d=>limitOrdersCache.push({id:d.id,...d.data()}));
+    renderPortfolioLimits();renderLimitOrdersList();
+  },()=>{});
+}
+
+/* ── Sell Modal ── */
+function openSellModal(marketId){
+  const pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');if(!pos)return;
+  const depLots=Number(pos.depositedLots||0),availLots=Math.max(0,Number(pos.lots||0)-depLots);
+  sellModalMarketId=marketId;
+  $('modalSellTitle').textContent=`Jual ${pos.marketName||marketId}`;
+  $('modalSellSub').textContent=`${availLots} Lot tersedia · Avg ${fmtCoin(pos.avgCostPerShare||0)}`;
+  $('modalSellLot').value='1';$('modalSellLot').max=String(availLots);
+  updateSellModalPreview();openModal('modalSell');
+}
+function updateSellModalPreview(){
+  const pos=positionsCache.find(p=>p.marketId===sellModalMarketId&&(p.status||'open')==='open');
+  const m=marketsCache[sellModalMarketId];if(!pos||!m){$('modalSellPreview').innerHTML='—';return}
+  const lots=Math.max(1,Math.floor(Number($('modalSellLot').value||1)));
+  const price=Number(m.price||0),proceeds=sellProceeds(price,lots);
+  const realCost=round2(Number(pos.avgCostPerShare||0)*lots*LOT_SIZE);
+  const pnl=round2(proceeds-realCost);
+  $('modalSellPreview').innerHTML=`<b>${m.name||m.id}</b> · Lot <b>${lots}</b><br/>💸 Estimasi: <b>${fmtCoin(proceeds)} coin</b><br/>📊 PnL: <span class="${pnl>=0?'pnl-pos':'pnl-neg'}">${pnl>=0?'+':''}${fmtCoin(pnl)}</span>`;
+}
+$('modalSellLot').addEventListener('input',updateSellModalPreview);
+$('modalSellConfirm').addEventListener('click',async()=>{
+  const lots=Math.max(1,Math.floor(Number($('modalSellLot').value||1)));
+  closeModal('modalSell');await sellLotsFor(sellModalMarketId,lots);
+});
+
+/* ── Auto-Close Modal ── */
+function openACModal(marketId){
+  acTargetMarketId=marketId;
+  const m=marketsCache[marketId],pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');
+  const ac=autoCloseOrders[marketId]||{};
+  $('modalACsub').textContent=`${m?.name||marketId} · Live: ${fmtCoin(m?.price||0)} · Avg: ${fmtCoin(pos?.avgCostPerShare||0)}`;
+  $('acTPprice').value=ac.tpPrice||'';$('acTPpct').value=ac.tpPct||'';
+  $('acSLprice').value=ac.slPrice||'';$('acSLpct').value=ac.slPct||'';
+  $('acLots').value=ac.lots||'';updateACPreview();openModal('modalAutoClose');
+}
+function updateACPreview(){
+  if(!acTargetMarketId){$('acPreview').innerHTML='—';return}
+  const pos=positionsCache.find(p=>p.marketId===acTargetMarketId&&(p.status||'open')==='open');
+  const avg=Number(pos?.avgCostPerShare||0);
+  const tp=Number($('acTPprice').value)||null,tpPct=Number($('acTPpct').value)||null;
+  const sl=Number($('acSLprice').value)||null,slPct=Number($('acSLpct').value)||null;
+  const tpReal=tp||(tpPct&&avg?round2(avg*(1+tpPct/100)):null);
+  const slReal=sl||(slPct&&avg?round2(avg*(1-slPct/100)):null);
+  $('acPreview').innerHTML=`🎯 TP trigger: <b>${tpReal?fmtCoin(tpReal):'—'}</b><br/>🛡️ SL trigger: <b>${slReal?fmtCoin(slReal):'—'}</b>`;
+}
+['acTPprice','acTPpct','acSLprice','acSLpct','acLots'].forEach(id=>$(id).addEventListener('input',updateACPreview));
+$('btnSetAC').addEventListener('click',()=>{
+  if(!acTargetMarketId)return;
+  const tp=Number($('acTPprice').value)||null,tpPct=Number($('acTPpct').value)||null;
+  const sl=Number($('acSLprice').value)||null,slPct=Number($('acSLpct').value)||null;
+  const lots=Number($('acLots').value)||null;
+  if(!tp&&!tpPct&&!sl&&!slPct){toast('Isi minimal TP atau SL');return}
+  autoCloseOrders[acTargetMarketId]={tpPrice:tp,tpPct,slPrice:sl,slPct,lots};
+  closeModal('modalAutoClose');toast('Auto-close disimpan ✅');renderPositions();
+});
+$('btnClearAC').addEventListener('click',()=>{
+  if(acTargetMarketId)delete autoCloseOrders[acTargetMarketId];
+  closeModal('modalAutoClose');toast('Auto-close dihapus');renderPositions();
+});
+async function checkAutoClose(marketId,livePrice){
+  const ac=autoCloseOrders[marketId];if(!ac)return;
+  const pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');if(!pos)return;
+  const avg=Number(pos.avgCostPerShare||0);
+  const tpReal=ac.tpPrice||(ac.tpPct&&avg?round2(avg*(1+ac.tpPct/100)):null);
+  const slReal=ac.slPrice||(ac.slPct&&avg?round2(avg*(1-ac.slPct/100)):null);
+  const lots=ac.lots||Number(pos.lots||0);
+  if(tpReal&&livePrice>=tpReal){delete autoCloseOrders[marketId];toast(`⚡ TP @ ${fmtCoin(tpReal)}`,2500);await sellLotsFor(marketId,Math.min(lots,Number(pos.lots||0)))}
+  else if(slReal&&livePrice<=slReal){delete autoCloseOrders[marketId];toast(`🛡️ SL @ ${fmtCoin(slReal)}`,2500);await sellLotsFor(marketId,Math.min(lots,Number(pos.lots||0)))}
+}
+
+/* ── Deposit Modal ── */
+function openDepositModal(marketId){
+  depositModalMarketId=marketId;
+  const pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');
+  const m=marketsCache[marketId];if(!pos)return;
+  const availLots=Math.max(0,Number(pos.lots||0)-Number(pos.depositedLots||0));
+  $('depositConfirmSub').textContent=`${m?.name||marketId} · ${availLots} Lot tersedia`;
+  $('depositLotInput').value=String(availLots);$('depositLotInput').max=String(availLots);
+  updateDepositPreview();openModal('modalDepositConfirm');
+}
+function updateDepositPreview(){
+  if(!depositModalMarketId){$('depositLotPreview').innerHTML='—';return}
+  const m=marketsCache[depositModalMarketId];if(!m){$('depositLotPreview').innerHTML='—';return}
+  const lots=Math.max(1,Math.floor(Number($('depositLotInput').value||1)));
+  const price=Number(m.price||0),coinVal=round2(lots*LOT_SIZE*price);
+  $('depositLotPreview').innerHTML=`Deposit <b>${lots} Lot</b> (${lots*LOT_SIZE} saham)<br/>💰 Nilai koin: <b>${fmtCoin(coinVal)}</b><br/>📈 Bunga/thn: <b style="color:var(--green)">+${fmtCoin(lots*DEPOSIT_INTEREST_PER_LOT)}</b><br/>💎 Dividen/thn: <b style="color:var(--blue)">+${fmtCoin(lots*DIVIDEND_PER_LOT)}</b><br/>🔓 Fee unlock awal: <b style="color:var(--danger)">${fmtCoin(round2(coinVal*UNLOCK_FEE))}</b>`;
+}
+$('depositLotInput').addEventListener('input',updateDepositPreview);
+$('btnDepositConfirm').addEventListener('click',async()=>{
+  const lots=Math.max(1,Math.floor(Number($('depositLotInput').value||1)));
+  closeModal('modalDepositConfirm');await depositStock(depositModalMarketId,lots);
+});
+
+/* ── Unlock Modal ── */
+function openUnlockModal(depositId){
+  const dep=depositsCache.find(d=>d.id===depositId);if(!dep)return;
+  unlockModalDepositId=depositId;
+  const coinVal=Number(dep.coinValue||0),fee=round2(coinVal*UNLOCK_FEE);
+  const now=Date.now(),depAt=dep.depositedAt?.toDate?dep.depositedAt.toDate().getTime():(dep.depositedAt||0);
+  const elapsedFrac=Math.max(0,now-depAt)/YEAR_MS;
+  const lots=Number(dep.lots||0);
+  const accrued=round2(lots*DEPOSIT_INTEREST_PER_LOT*elapsedFrac);
+  $('unlockSub').textContent=`${dep.marketName||dep.marketId} · ${dep.lots} Lot`;
+  $('unlockDetail').innerHTML=`Nilai deposit: <b>${fmtCoin(coinVal)}</b><br/>Bunga akrual: <b style="color:var(--green)">+${fmtCoin(accrued)}</b><br/>Fee 1.7%: <b style="color:var(--danger)">-${fmtCoin(fee)}</b><br/><b>Net: ${fmtCoin(round2(accrued-fee+coinVal))} coin</b>`;
+  openModal('modalUnlock');
+}
+$('btnUnlockConfirm').addEventListener('click',async()=>{closeModal('modalUnlock');if(unlockModalDepositId)await claimDeposit(unlockModalDepositId,false)});
+
+/* ── Firestore: Buy / Sell / Deposit / Claim ── */
+async function buyLotsExecute(marketId,lots,execPrice,orderType='MARKET'){
+  const m=marketsCache[marketId];if(!m||!currentUser)return false;
+  const shares=lots*LOT_SIZE,cost=buyCost(execPrice,lots);
+  if(cost>currentCoin){toast('Coin tidak cukup');return false}
+  const userRef=doc(walletDb,'users',currentUser.uid);
+  const posRef=doc(walletDb,'users',currentUser.uid,'positions',m.id);
+  const tradeRef=doc(collection(walletDb,'users',currentUser.uid,'trades'));
+  try{
+    await runTransaction(walletDb,async tx=>{
+      const uSnap=await tx.get(userRef),pSnap=await tx.get(posRef);
+      const coin=Number(uSnap.exists()?uSnap.data().nubiPayCoin||0:0);
+      if(coin<cost)throw new Error('Coin tidak cukup');
+      let oldShares=0,oldCost=0;
+      if(pSnap.exists()){const p=pSnap.data();oldShares=Number(p.shares||0);oldCost=Number(p.costBasis||0)}
+      const newShares=oldShares+shares,newCostBasis=round2(oldCost+cost);
+      tx.set(userRef,{nubiPayCoin:round2(coin-cost)},{merge:true});
+      tx.set(posRef,{marketId:m.id,marketName:m.name||m.id,shares:newShares,lots:round2(newShares/LOT_SIZE),lotSize:LOT_SIZE,costBasis:newCostBasis,avgCostPerShare:round2(newCostBasis/newShares),status:'open',updatedAt:serverTimestamp(),createdAt:pSnap.exists()?(pSnap.data().createdAt||serverTimestamp()):serverTimestamp()},{merge:true});
+      tx.set(tradeRef,{side:'BUY',orderType,marketId:m.id,marketName:m.name||m.id,lots,shares,price:execPrice,execPrice:round2(execPrice*(1+BUY_SPREAD)),fee:ORDER_FEE,gross:round2(shares*execPrice*(1+BUY_SPREAD)),net:cost,pnl:round2(-cost),status:'FILLED',createdAt:serverTimestamp()});
+    });
+    return true;
+  }catch(e){toast(e.message||'Gagal beli');return false}
+}
+
+async function buyLots(){
+  if(!currentUser)return toast('Login dulu');
+  const m=currentMarket||marketsCache[selectedMarketId];if(!m)return toast('Pilih market dulu');
+  let lots=1;
+  if(tradeInputMode==='lot'){lots=Math.max(1,Math.floor(Number(el.lotInput.value||1)))}
+  else{lots=lotsFromNominal(Number(el.lotInput.value||0),Number(m.price||0));if(!lots)return toast('Nominal terlalu kecil')}
+  showLoading('Membeli saham…',`${lots} Lot ${m.name||m.id}`);
+  const ok=await buyLotsExecute(m.id,lots,Number(m.price||0));
+  if(ok){toast('✅ Beli berhasil!');el.lotInput.value='1';updateTradePreview()}
+  hideLoading();
+}
+
+async function sellLotsFor(marketId,sellLotsCount,silent=false){
+  if(!currentUser){if(!silent)toast('Login dulu');return}
+  const m=marketsCache[marketId];if(!m){if(!silent)toast('Market tidak ditemukan');return}
+  if(!silent)showLoading('Menjual saham…',`${sellLotsCount} Lot ${m.name||m.id}`);
+  const posRef=doc(walletDb,'users',currentUser.uid,'positions',marketId);
+  const userRef=doc(walletDb,'users',currentUser.uid);
+  const tradeRef=doc(collection(walletDb,'users',currentUser.uid,'trades'));
+  try{
+    const pSnap=await getDoc(posRef);if(!pSnap.exists()){if(!silent)toast('Posisi tidak ditemukan');return}
+    const p=pSnap.data();
+    const depLots=Number(p.depositedLots||0),availLots=Math.max(0,Number(p.lots||0)-depLots);
+    if(sellLotsCount>availLots){if(!silent)toast('Lot tidak cukup');return}
+    const sharesToSell=sellLotsCount*LOT_SIZE,price=Number(m.price||0);
+    const proceeds=sellProceeds(price,sellLotsCount);
+    const realCostBasis=round2(Number(p.avgCostPerShare||0)*sharesToSell);
+    const pnl=round2(proceeds-realCostBasis);
+    await runTransaction(walletDb,async tx=>{
+      const uSnap=await tx.get(userRef),posSnap=await tx.get(posRef);
+      if(!posSnap.exists())throw new Error('Posisi tidak ditemukan');
+      const up=posSnap.data(),curShares=Number(up.shares||0);
+      if(curShares<sharesToSell)throw new Error('Shares tidak cukup');
+      const coin=Number(uSnap.exists()?uSnap.data().nubiPayCoin||0:0);
+      const nextShares=curShares-sharesToSell,nextCostBasis=round2(Number(up.costBasis||0)-realCostBasis);
+      tx.set(userRef,{nubiPayCoin:round2(coin+proceeds)},{merge:true});
+      tx.set(posRef,nextShares<=0?{marketId,marketName:m.name||m.id,shares:0,lots:0,lotSize:LOT_SIZE,costBasis:0,avgCostPerShare:0,status:'closed',updatedAt:serverTimestamp(),closedAt:serverTimestamp()}:{shares:nextShares,lots:round2(nextShares/LOT_SIZE),costBasis:nextCostBasis,avgCostPerShare:round2(nextCostBasis/nextShares),status:'open',updatedAt:serverTimestamp()},{merge:true});
+      tx.set(tradeRef,{side:'SELL',marketId,marketName:m.name||m.id,lots:sellLotsCount,shares:sharesToSell,price,execPrice:round2(price*(1-SELL_SPREAD)),fee:ORDER_FEE,gross:round2(sharesToSell*price*(1-SELL_SPREAD)),net:proceeds,pnl,status:'FILLED',createdAt:serverTimestamp()});
+    });
+    if(!silent)toast('✅ Jual berhasil!');
+  }catch(e){if(!silent)toast(e.message||'Gagal jual')}
+  finally{if(!silent)hideLoading()}
+}
+
+async function depositStock(marketId,lots){
+  if(!currentUser)return toast('Login dulu');
+  const pos=positionsCache.find(p=>p.marketId===marketId&&(p.status||'open')==='open');
+  const m=marketsCache[marketId];if(!pos||!m)return toast('Data tidak ditemukan');
+  const availLots=Math.max(0,Number(pos.lots||0)-Number(pos.depositedLots||0));
+  if(lots>availLots)return toast('Lot tidak cukup');
+  const price=Number(m.price||0),coinValue=round2(lots*LOT_SIZE*price);
+  showLoading('Mendepositokan saham…','Saham dikunci 1 tahun');
+  try{
+    const posRef=doc(walletDb,'users',currentUser.uid,'positions',marketId);
+    const depRef=doc(collection(walletDb,'users',currentUser.uid,'deposits'));
+    await runTransaction(walletDb,async tx=>{
+      const pSnap=await tx.get(posRef);if(!pSnap.exists())throw new Error('Posisi tidak ditemukan');
+      const p=pSnap.data(),curDep=Number(p.depositedLots||0),curAvail=Math.max(0,Number(p.lots||0)-curDep);
+      if(lots>curAvail)throw new Error('Lot tidak cukup');
+      tx.set(posRef,{depositedLots:round2(curDep+lots)},{merge:true});
+      tx.set(depRef,{marketId,marketName:m.name||m.id,lots,shares:lots*LOT_SIZE,coinValue,priceAtDeposit:price,depositedAt:serverTimestamp(),maturityAt:Timestamp.fromDate(new Date(Date.now()+YEAR_MS)),status:'active',createdAt:serverTimestamp()});
+    });
+    toast('Saham berhasil di-deposit 🔒');
+  }catch(e){toast(e.message||'Gagal deposit')}
+  finally{hideLoading()}
+}
+
+async function claimDeposit(depositId,isMature){
+  if(!currentUser)return toast('Login dulu');
+  const dep=depositsCache.find(d=>d.id===depositId);if(!dep)return toast('Deposit tidak ditemukan');
+  const coinVal=Number(dep.coinValue||0),lots=Number(dep.lots||0);
+  const now=Date.now(),depAt=dep.depositedAt?.toDate?dep.depositedAt.toDate().getTime():(dep.depositedAt||0);
+  const elapsedFrac=Math.max(0,now-depAt)/YEAR_MS;
+  const accrued=round2(lots*DEPOSIT_INTEREST_PER_LOT*elapsedFrac);
+  const dividend=round2(lots*DIVIDEND_PER_LOT*elapsedFrac);
+  const fee=isMature?0:round2(coinVal*UNLOCK_FEE);
+  const net=round2(accrued+dividend-fee);
+  showLoading(isMature?'Claiming maturity…':'Unlocking deposit…','');
+  try{
+    const userRef=doc(walletDb,'users',currentUser.uid);
+    const posRef=doc(walletDb,'users',currentUser.uid,'positions',dep.marketId);
+    const depRef=doc(walletDb,'users',currentUser.uid,'deposits',depositId);
+    await runTransaction(walletDb,async tx=>{
+      const uSnap=await tx.get(userRef),pSnap=await tx.get(posRef);
+      const coin=Number(uSnap.exists()?uSnap.data().nubiPayCoin||0:0);
+      tx.set(userRef,{nubiPayCoin:round2(coin+net)},{merge:true});
+      if(pSnap.exists()){const p=pSnap.data();tx.set(posRef,{depositedLots:Math.max(0,round2(Number(p.depositedLots||0)-Number(dep.lots||0)))},{merge:true})}
+      tx.set(depRef,{status:'unlocked',unlockedAt:serverTimestamp(),feeApplied:fee,netCredited:net},{merge:true});
+    });
+    toast(`${isMature?'Maturity':'Unlock'} sukses · +${fmtCoin(net)} coin`);
+  }catch(e){toast(e.message||'Gagal unlock')}
+  finally{hideLoading()}
+}
+
+/* ── Market select ── */
+async function selectMarket(mid){
+  selectedMarketId=mid;const m=marketsCache[mid];if(!m)return;
+  if(!sessionOpenPrices[mid])sessionOpenPrices[mid]=Number(m.price||0);
+  currentMarket=m;setPage('markets');chartOffsetX=0;chartScale=1;
+  subscribeMarket(mid);await loadTicksFor(mid);await loadEvents(mid);
+  refreshMarketHeader();drawChart();renderMarketList();setMarketButtons();
+  startObInterval();recentTradesData=[];renderRecentTrades();
+  for(let i=0;i<8;i++)addFakeRecentTrade(m);
+  if(el.limitOrdersList)renderLimitOrdersList();
+}
+
+function subscribeMarket(mid){
+  if(currentMarketUnsub){try{currentMarketUnsub()}catch{}}
+  if(currentTicksUnsub){try{currentTicksUnsub()}catch{}}
+  currentMarketUnsub=onSnapshot(doc(marketDb,'markets',mid),snap=>{
+    if(!snap.exists())return;
+    const nd={id:snap.id,...snap.data()};
+    const np=Number(nd.price||0);
+    currentMarket=nd;marketsCache[mid]=nd;
+    if(!sessionOpenPrices[mid])sessionOpenPrices[mid]=np;
+    if(np&&(!marketHistoryFull.length||marketHistoryFull[marketHistoryFull.length-1]!==np)){
+      marketHistoryFull.push(np);if(marketHistoryFull.length>600)marketHistoryFull.shift();
+    }
+    refreshMarketHeader();renderPositions();drawChart();
+  });
+  const qT=query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(1200));
+  currentTicksUnsub=onSnapshot(qT,snap=>{
+    const arr=[];snap.forEach(d=>{const p=Number(d.data().price);if(!Number.isNaN(p))arr.push(p)});
+    if(arr.length){
+      if(arr.length>=marketHistoryFull.length)marketHistoryFull=arr;
+      else{const ex=marketHistoryFull.length,ov=Math.min(arr.length,ex);marketHistoryFull=[...marketHistoryFull.slice(0,ex-ov),...arr]}
+      const lp=Number(currentMarket?.price||0);
+      if(lp&&marketHistoryFull[marketHistoryFull.length-1]!==lp)marketHistoryFull.push(lp);
+      drawChart();
+    }
+  });
+}
+
+async function loadTicksFor(mid){
+  marketHistoryFull=[];
+  try{
+    const snap=await getDoc(doc(marketDb,'markets',mid));
+    let docHistory=[];
+    if(snap.exists()){const d=snap.data();if(Array.isArray(d.history)&&d.history.length)docHistory=d.history.map(Number).filter(n=>!Number.isNaN(n));else if(typeof d.price==='number')docHistory=[d.price]}
+    const tSnap=await getDocs(query(collection(marketDb,'markets',mid,'ticks'),orderBy('ts','asc'),limit(1200))).catch(()=>null);
+    let tickArr=[];if(tSnap)tSnap.forEach(d=>{const p=Number(d.data().price);if(!Number.isNaN(p))tickArr.push(p)});
+    if(tickArr.length>0&&docHistory.length>0){marketHistoryFull=tickArr.length>=docHistory.length?tickArr:docHistory.concat(tickArr)}
+    else if(tickArr.length>0)marketHistoryFull=tickArr;
+    else if(docHistory.length>0)marketHistoryFull=docHistory;
+    else if(currentMarket){const p=Number(currentMarket.price||1);marketHistoryFull=[p*.97,p*.985,p*.99,p*.995,p,p*.998,p*1.002,p]}
+    const lp=Number(currentMarket?.price||0);
+    if(lp&&(!marketHistoryFull.length||marketHistoryFull[marketHistoryFull.length-1]!==lp))marketHistoryFull.push(lp);
+  }catch(e){console.error(e)}
+}
+
+async function loadEvents(mid){
+  currentEvents=[];
+  try{const snap=await getDocs(query(collection(marketDb,'markets',mid,'events'),orderBy('startTs','asc'),limit(20))).catch(()=>null);if(snap)snap.forEach(d=>currentEvents.push({id:d.id,...d.data()}))}catch{}
+  renderEvents();
+}
+
+/* ── Wallet ── */
+async function ensureWalletDoc(uid){
+  const ref=doc(walletDb,'users',uid);const snap=await getDoc(ref);
+  if(!snap.exists()){await setDoc(ref,{displayName:currentUser?.displayName||'',email:currentUser?.email||'',nubiPayBalance:0,nubiPayCoin:0,createdAt:serverTimestamp()})}
+  else{const d=snap.data()||{},patch={};if(typeof d.nubiPayCoin!=='number')patch.nubiPayCoin=0;if(!d.email&&currentUser?.email)patch.email=currentUser.email;if(Object.keys(patch).length)await setDoc(ref,patch,{merge:true})}
+}
+async function refreshWallet(uid){
+  try{const snap=await getDoc(doc(walletDb,'users',uid));if(snap.exists()){const d=snap.data();currentCoin=Number(d.nubiPayCoin||0);currentBalance=Number(d.nubiPayBalance||0)}else{currentCoin=0;currentBalance=0}renderWallet()}catch(e){console.error(e)}
+}
+function subscribeWallet(uid){
+  if(walletUnsub){try{walletUnsub()}catch{}}
+  walletUnsub=onSnapshot(doc(walletDb,'users',uid),snap=>{
+    if(snap.exists()){const d=snap.data();currentCoin=Number(d.nubiPayCoin||0);currentBalance=Number(d.nubiPayBalance||0)}
+    else{currentCoin=0;currentBalance=0}renderWallet();
+  },e=>console.error(e));
+}
+function subscribePositions(uid){
+  if(positionUnsub){try{positionUnsub()}catch{}}
+  const q2=query(collection(walletDb,'users',uid,'positions'),orderBy('updatedAt','desc'),limit(100));
+  positionUnsub=onSnapshot(q2,snap=>{positionsCache=[];snap.forEach(d=>positionsCache.push({id:d.id,...d.data()}));renderPositions();renderDepositPanel()},e=>console.error(e));
+}
+function subscribeTrades(uid){
+  if(tradesUnsub){try{tradesUnsub()}catch{}}
+  const q2=query(collection(walletDb,'users',uid,'trades'),orderBy('createdAt','desc'),limit(100));
+  tradesUnsub=onSnapshot(q2,snap=>{tradesCache=[];snap.forEach(d=>tradesCache.push({id:d.id,...d.data()}));renderTrades()},e=>console.error(e));
+}
+function subscribeDeposits(uid){
+  if(depositUnsub){try{depositUnsub()}catch{}}
+  const q2=query(collection(walletDb,'users',uid,'deposits'),orderBy('depositedAt','desc'),limit(50));
+  depositUnsub=onSnapshot(q2,snap=>{depositsCache=[];snap.forEach(d=>{if(d.data().status==='active')depositsCache.push({id:d.id,...d.data()})});renderDepositPanel()},e=>console.error(e));
+}
+
+/* ── Admin subscribe ── */
+function subscribeAdmin(){
+  if(currentUser?.uid!==ADMIN_UID)return;
+  onSnapshot(collection(walletDb,'users'),snap=>{
+    snap.forEach(d=>{
+      const data=d.data();
+      if(!adminUsersCache[d.id])adminUsersCache[d.id]={uid:d.id,positions:[],deposits:[],bondHoldings:[]};
+      adminUsersCache[d.id].email=data.email||data.displayName||'';
+      adminUsersCache[d.id].coin=Number(data.nubiPayCoin||0);
+    });
+    renderAdminPanel();
+    snap.forEach(d=>{
+      const uid=d.id;
+      onSnapshot(collection(walletDb,'users',uid,'positions'),ps=>{
+        if(!adminUsersCache[uid])adminUsersCache[uid]={uid,positions:[],deposits:[],bondHoldings:[],email:'',coin:0};
+        adminUsersCache[uid].positions=[];ps.forEach(p=>adminUsersCache[uid].positions.push({id:p.id,...p.data()}));
+        renderAdminPanel();
+      },()=>{});
+      onSnapshot(query(collection(walletDb,'users',uid,'bondHoldings'),limit(50)),bs=>{
+        if(!adminUsersCache[uid])adminUsersCache[uid]={uid,positions:[],deposits:[],bondHoldings:[],email:'',coin:0};
+        adminUsersCache[uid].bondHoldings=[];bs.forEach(b=>adminUsersCache[uid].bondHoldings.push({id:b.id,...b.data()}));
+        renderAdminPanel();
+      },()=>{});
+    });
+  },e=>console.error(e));
+}
+
+/* ── Nav ── */
+el.btnPortfolio.addEventListener('click',()=>setPage('portfolio'));
+el.btnBonds.addEventListener('click',()=>setPage('bonds'));
+el.btnDeposit.addEventListener('click',()=>window.location.href='/topup');
+el.btnWithdraw.addEventListener('click',()=>setPage('deposit'));
+el.lotInput.addEventListener('input',()=>{if(tradeInputMode==='lot'&&Number(el.lotInput.value)<1)el.lotInput.value='1';updateTradePreview()});
+el.btnBuy.addEventListener('click',buyLots);
+el.btnSell.addEventListener('click',()=>{const m=currentMarket||marketsCache[selectedMarketId];if(!m)return toast('Pilih market dulu');openSellModal(m.id)});
+el.btnBuyLimit.addEventListener('click',()=>placeLimitOrder('BUY'));
+el.btnSellLimit.addEventListener('click',()=>placeLimitOrder('SELL'));
+el.limitPrice.addEventListener('input',updateLimitPreview);
+el.limitLot.addEventListener('input',updateLimitPreview);
+
+/* ── Auth ── */
+el.btnSignIn.addEventListener('click',()=>openModal('modalLogin'));
+el.btnSignOut.addEventListener('click',async()=>{await signOut(walletAuth)});
+$('btnGoogleLogin').addEventListener('click',async()=>{try{await signInWithPopup(walletAuth,new GoogleAuthProvider());closeModal('modalLogin')}catch(e){toast('Login Google gagal')}});
+$('btnEmailLogin').addEventListener('click',async()=>{
+  const email=$('emailInput').value.trim(),pass=$('passInput').value;
+  if(!email||!pass)return toast('Isi email & password');
+  showLoading('Masuk…','');
+  try{await signInWithEmailAndPassword(walletAuth,email,pass);closeModal('modalLogin');toast('Login berhasil ✅')}
+  catch(e){toast('Email/password salah')}finally{hideLoading()}
+});
+$('btnEmailRegister').addEventListener('click',async()=>{
+  const email=$('emailInput').value.trim(),pass=$('passInput').value;
+  if(!email||!pass)return toast('Isi email & password');
+  if(pass.length<6)return toast('Password min. 6 karakter');
+  showLoading('Membuat akun…','');
+  try{await createUserWithEmailAndPassword(walletAuth,email,pass);closeModal('modalLogin');toast('Akun dibuat ✅')}
+  catch(e){toast(e.code==='auth/email-already-in-use'?'Email sudah terdaftar':'Gagal daftar')}finally{hideLoading()}
+});
+
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+
+/* ── Auth State ── */
+onAuthStateChanged(walletAuth,async user=>{
+  currentUser=user||null;renderWallet();
+  if(currentUser){
+    await ensureWalletDoc(currentUser.uid);await refreshWallet(currentUser.uid);
+    subscribeWallet(currentUser.uid);subscribePositions(currentUser.uid);
+    subscribeTrades(currentUser.uid);subscribeDeposits(currentUser.uid);
+    subscribeLimitOrders(currentUser.uid);subscribeBondHoldings(currentUser.uid);
+    if(currentUser.uid===ADMIN_UID)subscribeAdmin();
+    else el.pageAdmin.classList.add('hidden');
+  }else{
+    currentCoin=0;currentBalance=0;positionsCache=[];tradesCache=[];depositsCache=[];limitOrdersCache=[];bondHoldingsCache=[];
+    renderPositions();renderTrades();renderDepositPanel();renderBondHoldings();renderPortfolioLimits();
+    el.pageAdmin.classList.add('hidden');
+  }
+  setMarketButtons();
+});
+
+/* ── Markets Realtime ── */
+onSnapshot(collection(marketDb,'markets'),snap=>{
+  snap.forEach(d=>{marketsCache[d.id]={id:d.id,...d.data()}});
+  const ids=new Set(snap.docs.map(d=>d.id));
+  Object.keys(marketsCache).forEach(k=>{if(!ids.has(k))delete marketsCache[k]});
+  el.visibleCountTop.textContent=`${Object.keys(marketsCache).length} market`;
+  renderMarketList();renderPositions();
+  if(!selectedMarketId&&Object.keys(marketsCache).length)selectMarket(Object.keys(marketsCache)[0]);
+},()=>{el.marketList.innerHTML=`<div class="list-item"><div class="meta"><div style="font-weight:700">Gagal load market</div></div></div>`});
+
+/* ── Init ── */
+subscribeBondProducts();
+setPage('home');renderWallet();renderPositions();renderTrades();renderDepositPanel();
+renderBondProducts();setMarketButtons();drawChart();updateTradePreview();
+setInterval(()=>{if(depositsCache.length)renderDepositPanel()},30000);
+setInterval(renderRecentTrades,5000);
+setInterval(checkAllLimitOrders,5000);
+</script>
+</body>
+</html>
