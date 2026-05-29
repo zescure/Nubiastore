@@ -518,7 +518,16 @@
         </div>
 
         <button id="btnPinConfirm" class="btn btn-primary btn-full">Lanjut</button>
-        <button id="btnPinCancel" class="btn btn-outline btn-full">Batal</button>
+
+<button
+  id="btnForgotPin"
+  class="btn btn-outline btn-full"
+  style="border-color:#fbbf24;color:#b45309"
+>
+  Lupa PIN? Buat PIN Baru
+</button>
+
+<button id="btnPinCancel" class="btn btn-outline btn-full">Batal</button>
       </div>
     </div>
   </div>
@@ -611,6 +620,7 @@
       pinDots: $('pinDots'),
       btnPinConfirm: $('btnPinConfirm'),
       btnPinCancel: $('btnPinCancel'),
+      btnForgotPin: $('btnForgotPin'),
       btnPinDel: $('btnPinDel'),
       btnPinClear: $('btnPinClear'),
       modalInfo: $('modalInfo'),
@@ -915,6 +925,26 @@
 
     el.btnPinConfirm.addEventListener('click', handlePinSubmit);
 
+    el.btnForgotPin.addEventListener('click', async () => {
+  if (!currentUser) return toast('Login dulu');
+
+  const ok = confirm(
+    'PIN lama akan diganti. Lanjut buat PIN baru?'
+  );
+
+  if (!ok) return;
+
+  pinMode = 'create';
+  el.pinInput.value = '';
+  el.pinTitle.textContent = 'Buat PIN Baru';
+  el.pinSub.textContent =
+    'Masukkan PIN baru 4–8 digit';
+  el.btnPinConfirm.textContent = 'Simpan PIN';
+
+  toast('Masukkan PIN baru');
+  setTimeout(() => el.pinInput.focus(), 50);
+});
+    
     el.btnPinCancel.addEventListener('click', () => {
       if (!currentUser) {
         closeModal('modalPin');
