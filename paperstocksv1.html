@@ -2784,7 +2784,8 @@ el.btnBuyLimit.addEventListener('click',()=>placeLimitOrder('BUY'));
 el.btnSellLimit.addEventListener('click',()=>placeLimitOrder('SELL'));
 el.limitPrice.addEventListener('input',updateLimitPreview);
 el.limitLot.addEventListener('input',updateLimitPreview);
-
+el.btnSignIn.addEventListener('click',()=>openModal('modalLogin'));
+  
 /* ── Auth ── */
 el.btnSignIn.addEventListener('click',()=>openModal('modalLogin'));
 el.btnSignOut.addEventListener('click',async()=>{await signOut(walletAuth)});
