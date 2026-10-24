@@ -2847,6 +2847,304 @@ renderBondProducts();setMarketButtons();drawChart();updateTradePreview();
 setInterval(()=>{if(depositsCache.length)renderDepositPanel()},30000);
 setInterval(renderRecentTrades,5000);
 setInterval(checkAllLimitOrders,5000);
+
+
+/* =========================================================
+   PAPERSTOCKS — BUY IMPACT ENGINE
+   Add-on only: does not replace existing trading functions.
+
+   Formula:
+   Market impact value = 50% x purchase nominal
+   Price increase/share = market impact value / shares outstanding
+
+   Supports successful market BUY and filled limit BUY trades.
+========================================================= */
+
+const PAPER_BUY_IMPACT_RATIO = 0.50;
+
+// Assumption for simulated markets that have no share-supply data.
+// Prefer a real sharesOutstanding or marketCap field when available.
+const PAPER_DEFAULT_SHARES_OUTSTANDING = 100_000;
+
+let paperStockImpactUnsub = null;
+
+
+/* Apply a single successful BUY to the shared market price.
+   The transaction marker prevents the same trade from
+   moving the price twice, including across multiple tabs. */
+async function applyPaperStockBuyImpact(uid, tradeId, trade) {
+  if (!uid || !tradeId || trade?.side !== 'BUY') return;
+
+  const marketId = String(trade.marketId || '');
+  const shares = Number(
+    trade.shares || Number(trade.lots || 0) * LOT_SIZE
+  );
+
+  if (
+    !marketId ||
+    !Number.isFinite(shares) ||
+    shares <= 0
+  ) return;
+
+  // Same trade always uses the same marker and tick document IDs.
+  const impactId = `buy_${uid}_${tradeId}`;
+
+  const marketRef = doc(marketDb, 'markets', marketId);
+  const impactRef = doc(
+    marketDb, 'markets', marketId, 'buyImpacts', impactId
+  );
+  const tickRef = doc(
+    marketDb, 'markets', marketId, 'ticks', impactId
+  );
+
+  const result = await runTransaction(marketDb, async tx => {
+    // Idempotency check: do not apply this BUY more than once.
+    const impactSnap = await tx.get(impactRef);
+
+    if (impactSnap.exists()) {
+      return { applied: false, reason: 'already-processed' };
+    }
+
+    const marketSnap = await tx.get(marketRef);
+
+    if (!marketSnap.exists()) {
+      throw new Error(`Market ${marketId} tidak ditemukan`);
+    }
+
+    const market = marketSnap.data() || {};
+    const currentPrice = Number(market.price || 0);
+
+    if (!Number.isFinite(currentPrice) || currentPrice <= 0) {
+      throw new Error(`Harga market ${marketId} tidak valid`);
+    }
+
+    // Existing BUY trade documents contain gross, shares,
+    // execPrice and price. Gross is preferred when available.
+    const executionPrice = Number(
+      trade.execPrice || trade.price || currentPrice
+    );
+
+    const storedGross = Number(trade.gross || 0);
+
+    const purchaseNominal = storedGross > 0
+      ? storedGross
+      : shares * executionPrice;
+
+    if (
+      !Number.isFinite(purchaseNominal) ||
+      purchaseNominal <= 0
+    ) {
+      throw new Error('Nominal pembelian tidak valid');
+    }
+
+    // Prefer shares outstanding saved on the market document.
+    let sharesOutstanding = Number(
+      market.sharesOutstanding ||
+      market.outstandingShares ||
+      market.totalShares ||
+      market.floatShares ||
+      0
+    );
+
+    // If only market capitalization is available, derive
+    // shares outstanding = market capitalization / price.
+    const storedMarketCap = Number(
+      market.marketCap || market.market_cap || 0
+    );
+
+    if (
+      (!Number.isFinite(sharesOutstanding) ||
+        sharesOutstanding <= 0) &&
+      Number.isFinite(storedMarketCap) &&
+      storedMarketCap > 0
+    ) {
+      sharesOutstanding = storedMarketCap / currentPrice;
+    }
+
+    // Explicit simulation assumption if neither field exists.
+    if (
+      !Number.isFinite(sharesOutstanding) ||
+      sharesOutstanding <= 0
+    ) {
+      sharesOutstanding = PAPER_DEFAULT_SHARES_OUTSTANDING;
+    }
+
+    // 50% of the purchase nominal contributes to market impact.
+    const marketImpactValue =
+      purchaseNominal * PAPER_BUY_IMPACT_RATIO;
+
+    // Convert that market-cap impact into price per share.
+    const priceIncreasePerShare =
+      marketImpactValue / sharesOutstanding;
+
+    const newPrice = currentPrice + priceIncreasePerShare;
+
+    if (
+      !Number.isFinite(newPrice) ||
+      newPrice <= currentPrice
+    ) {
+      throw new Error('Kenaikan harga tidak valid');
+    }
+
+    // Keep stored market capitalization consistent if present.
+    const marketPatch = {
+      price: newPrice,
+      updatedAt: serverTimestamp()
+    };
+
+    if (storedMarketCap > 0) {
+      if (Number(market.marketCap) > 0) {
+        marketPatch.marketCap = newPrice * sharesOutstanding;
+      }
+
+      if (Number(market.market_cap) > 0) {
+        marketPatch.market_cap = newPrice * sharesOutstanding;
+      }
+    }
+
+    // Update the shared market price.
+    tx.set(marketRef, marketPatch, { merge: true });
+
+    // Add a tick so the existing chart system can read the update.
+    tx.set(tickRef, {
+      price: newPrice,
+      ts: serverTimestamp(),
+      source: 'paper-buy-impact',
+      side: 'BUY',
+      uid,
+      tradeId,
+      purchaseNominal,
+      marketImpactValue,
+      priceIncreasePerShare
+    });
+
+    // Record the applied trade atomically with the price update.
+    tx.set(impactRef, {
+      uid,
+      tradeId,
+      marketId,
+      purchaseNominal,
+      marketImpactValue,
+      sharesOutstanding,
+      previousPrice: currentPrice,
+      newPrice,
+      priceIncreasePerShare,
+      createdAt: serverTimestamp()
+    });
+
+    return {
+      applied: true,
+      previousPrice: currentPrice,
+      newPrice,
+      priceIncreasePerShare,
+      purchaseNominal,
+      marketImpactValue
+    };
+  });
+
+  if (result.applied) {
+    console.info('[PaperStocks] BUY impact applied', {
+      marketId,
+      tradeId,
+      nominal: result.purchaseNominal,
+      impact: result.marketImpactValue,
+      oldPrice: result.previousPrice,
+      newPrice: result.newPrice,
+      increasePerShare: result.priceIncreasePerShare
+    });
+  }
+}
+
+
+/* Monitor the current user's successful BUY trade records.
+   This works independently of the existing buyLotsExecute()
+   and placeLimitOrder() functions. */
+function startPaperStockImpactMonitor(uid) {
+  if (paperStockImpactUnsub) {
+    paperStockImpactUnsub();
+    paperStockImpactUnsub = null;
+  }
+
+  // Small grace window catches a trade created just before
+  // the listener's first snapshot arrives.
+  const monitorStartedAt = Date.now() - 5000;
+  let firstSnapshot = true;
+
+  const tradesQuery = query(
+    collection(walletDb, 'users', uid, 'trades'),
+    orderBy('createdAt', 'desc'),
+    limit(100)
+  );
+
+  paperStockImpactUnsub = onSnapshot(
+    tradesQuery,
+    snapshot => {
+      for (const change of snapshot.docChanges()) {
+        if (
+          change.type !== 'added' &&
+          change.type !== 'modified'
+        ) continue;
+
+        const trade = change.doc.data();
+
+        if (trade.side !== 'BUY') continue;
+
+        // Ignore old history on initial load, but allow newly
+        // created records and their timestamp-resolution updates.
+        if (
+          firstSnapshot ||
+          change.type === 'modified'
+        ) {
+          const createdMs =
+            typeof trade.createdAt?.toMillis === 'function'
+              ? trade.createdAt.toMillis()
+              : 0;
+
+          if (
+            !createdMs ||
+            createdMs < monitorStartedAt
+          ) continue;
+        }
+
+        applyPaperStockBuyImpact(
+          uid,
+          change.doc.id,
+          trade
+        ).catch(error => {
+          console.error(
+            '[PaperStocks] Failed to apply BUY impact:',
+            error
+          );
+
+          if (error?.code === 'permission-denied') {
+            toast('Firebase Rules menolak update harga market');
+          }
+        });
+      }
+
+      firstSnapshot = false;
+    },
+    error => {
+      console.error(
+        '[PaperStocks] Trade impact listener failed:',
+        error
+      );
+    }
+  );
+}
+
+
+/* Independent authentication observer.
+   No edits to the existing onAuthStateChanged block are needed. */
+onAuthStateChanged(walletAuth, user => {
+  if (user) {
+    startPaperStockImpactMonitor(user.uid);
+  } else if (paperStockImpactUnsub) {
+    paperStockImpactUnsub();
+    paperStockImpactUnsub = null;
+  }
+});
+
 </script>
 </body>
 </html>
