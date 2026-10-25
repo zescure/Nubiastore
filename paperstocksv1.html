@@ -2851,24 +2851,24 @@ setInterval(checkAllLimitOrders,5000);
 
 /* =========================================================
    PAPERSTOCKS — BUY & SELL IMPACT ENGINE
-   BUY  : 50% nilai nominal pembelian -> harga naik
-   SELL : 100% nilai nominal penjualan -> harga turun
+   BUY  : 50% nominal pembelian -> harga naik
+   SELL : 100% nominal market saat penjualan -> harga turun
 
-   Menjaga satu trade agar tidak diproses dua kali.
-   Menggunakan marketDb dan walletDb yang sudah ada.
+   SELL nominal = jumlah saham x harga market saat dijual.
+   Tidak menggunakan harga beli atau PnL user.
+   Setiap trade diproses maksimal satu kali.
 ========================================================= */
 
 const PAPER_BUY_IMPACT_RATIO = 0.50;
 const PAPER_SELL_IMPACT_RATIO = 1.00;
 
-// Digunakan bila data jumlah saham beredar tidak tersedia.
-// Sebaiknya isi sharesOutstanding yang sebenarnya di dokumen market.
+// Fallback simulasi jika market belum memiliki data saham beredar.
 const PAPER_DEFAULT_SHARES_OUTSTANDING = 100_000;
 
 let paperStockImpactUnsub = null;
 
 
-/* Ambil jumlah saham beredar dari dokumen market. */
+/* ── Hitung jumlah saham beredar ── */
 function getPaperSharesOutstanding(market, currentPrice) {
   let sharesOutstanding = Number(
     market.sharesOutstanding ||
@@ -2878,13 +2878,13 @@ function getPaperSharesOutstanding(market, currentPrice) {
     0
   );
 
-  // Jika jumlah saham tidak ada, coba hitung dari market cap.
   const marketCap = Number(
     market.marketCap ||
     market.market_cap ||
     0
   );
 
+  // Jika data saham beredar tidak tersedia, gunakan market cap.
   if (
     (!Number.isFinite(sharesOutstanding) || sharesOutstanding <= 0) &&
     Number.isFinite(marketCap) &&
@@ -2894,7 +2894,7 @@ function getPaperSharesOutstanding(market, currentPrice) {
     sharesOutstanding = marketCap / currentPrice;
   }
 
-  // Fallback khusus simulasi PaperStocks.
+  // Fallback untuk market simulasi.
   if (
     !Number.isFinite(sharesOutstanding) ||
     sharesOutstanding <= 0
@@ -2906,7 +2906,7 @@ function getPaperSharesOutstanding(market, currentPrice) {
 }
 
 
-/* Proses dampak satu trade BUY atau SELL secara idempotent. */
+/* ── Proses impact BUY atau SELL ── */
 async function applyPaperStockTradeImpact(uid, tradeId, trade) {
   if (!uid || !tradeId || !trade) return;
 
@@ -2914,7 +2914,7 @@ async function applyPaperStockTradeImpact(uid, tradeId, trade) {
 
   if (side !== 'BUY' && side !== 'SELL') return;
 
-  // Hanya proses transaksi yang sudah berhasil.
+  // Lewati transaksi yang belum berstatus FILLED.
   if (trade.status && trade.status !== 'FILLED') return;
 
   const marketId = String(trade.marketId || '');
@@ -2929,11 +2929,15 @@ async function applyPaperStockTradeImpact(uid, tradeId, trade) {
     !Number.isFinite(shares) ||
     shares <= 0
   ) {
-    console.warn('[PaperStocks] Data trade tidak valid:', tradeId);
+    console.warn(
+      '[PaperStocks] Trade tidak valid:',
+      tradeId
+    );
     return;
   }
 
   const isBuy = side === 'BUY';
+
   const ratio = isBuy
     ? PAPER_BUY_IMPACT_RATIO
     : PAPER_SELL_IMPACT_RATIO;
@@ -2942,10 +2946,14 @@ async function applyPaperStockTradeImpact(uid, tradeId, trade) {
     ? 'buyImpacts'
     : 'sellImpacts';
 
-  // ID tetap untuk mencegah trade diproses berulang.
+  // ID unik dan konsisten untuk mencegah impact ganda.
   const impactId = `${side.toLowerCase()}_${uid}_${tradeId}`;
 
-  const marketRef = doc(marketDb, 'markets', marketId);
+  const marketRef = doc(
+    marketDb,
+    'markets',
+    marketId
+  );
 
   const impactRef = doc(
     marketDb,
@@ -2963,182 +2971,238 @@ async function applyPaperStockTradeImpact(uid, tradeId, trade) {
     impactId
   );
 
-  const result = await runTransaction(marketDb, async tx => {
-    // Kalau impact sudah tercatat, jangan mengubah harga lagi.
-    const impactSnap = await tx.get(impactRef);
+  const result = await runTransaction(
+    marketDb,
+    async tx => {
+      // Jangan menerapkan impact jika trade ini sudah diproses.
+      const impactSnap = await tx.get(impactRef);
 
-    if (impactSnap.exists()) {
+      if (impactSnap.exists()) {
+        return {
+          applied: false,
+          reason: 'already-processed'
+        };
+      }
+
+      const marketSnap = await tx.get(marketRef);
+
+      if (!marketSnap.exists()) {
+        throw new Error(
+          `Market ${marketId} tidak ditemukan`
+        );
+      }
+
+      const market = marketSnap.data() || {};
+      const currentPrice = Number(market.price || 0);
+
+      if (
+        !Number.isFinite(currentPrice) ||
+        currentPrice <= 0
+      ) {
+        throw new Error(
+          `Harga market ${marketId} tidak valid`
+        );
+      }
+
+      const storedGross = Number(trade.gross || 0);
+
+      const executionPrice = Number(
+        trade.execPrice ||
+        trade.price ||
+        currentPrice
+      );
+
+      /*
+       * RUMUS NOMINAL:
+       *
+       * BUY:
+       * Gunakan gross pembelian yang tersimpan.
+       *
+       * SELL:
+       * Gunakan jumlah saham x harga market saat dijual.
+       * Tidak memakai harga beli, PnL, atau gross setelah spread.
+       *
+       * Dalam sellLotsFor() milik lu, trade.price menyimpan
+       * harga market ketika penjualan dieksekusi.
+       */
+      let nominalValue;
+
+      if (isBuy) {
+        nominalValue = storedGross > 0
+          ? storedGross
+          : shares * executionPrice;
+      } else {
+        const sellMarketPrice = Number(
+          trade.price ||
+          trade.execPrice ||
+          currentPrice
+        );
+
+        if (
+          !Number.isFinite(sellMarketPrice) ||
+          sellMarketPrice <= 0
+        ) {
+          throw new Error(
+            'Harga market saat SELL tidak valid'
+          );
+        }
+
+        nominalValue = shares * sellMarketPrice;
+      }
+
+      if (
+        !Number.isFinite(nominalValue) ||
+        nominalValue <= 0
+      ) {
+        throw new Error(
+          `Nominal ${side} tidak valid`
+        );
+      }
+
+      const sharesOutstanding = getPaperSharesOutstanding(
+        market,
+        currentPrice
+      );
+
+      // BUY = 50%, SELL = 100% dari nominal transaksi.
+      const marketImpactValue = nominalValue * ratio;
+
+      // Besarnya dampak harga per lembar.
+      const priceImpactPerShare =
+        marketImpactValue / sharesOutstanding;
+
+      // BUY menaikkan harga, SELL menurunkan harga.
+      const proposedPrice = isBuy
+        ? currentPrice + priceImpactPerShare
+        : currentPrice - priceImpactPerShare;
+
+      // Harga market minimal 0.01.
+      const newPrice = isBuy
+        ? proposedPrice
+        : Math.max(0.01, proposedPrice);
+
+      if (
+        !Number.isFinite(newPrice) ||
+        newPrice <= 0 ||
+        (isBuy && newPrice <= currentPrice) ||
+        (!isBuy && newPrice > currentPrice)
+      ) {
+        throw new Error(
+          `Perubahan harga ${side} tidak valid`
+        );
+      }
+
+      const signedPriceChange = isBuy
+        ? newPrice - currentPrice
+        : newPrice - currentPrice;
+
+      // Update harga market utama.
+      const marketPatch = {
+        price: newPrice,
+        updatedAt: serverTimestamp()
+      };
+
+      // Perbarui market cap jika field-nya sudah tersedia.
+      if (Number(market.marketCap) > 0) {
+        marketPatch.marketCap =
+          newPrice * sharesOutstanding;
+      }
+
+      if (Number(market.market_cap) > 0) {
+        marketPatch.market_cap =
+          newPrice * sharesOutstanding;
+      }
+
+      tx.set(
+        marketRef,
+        marketPatch,
+        { merge: true }
+      );
+
+      // Simpan tick agar chart dapat membaca harga terbaru.
+      tx.set(tickRef, {
+        price: newPrice,
+        ts: serverTimestamp(),
+
+        source: isBuy
+          ? 'paper-buy-impact'
+          : 'paper-sell-impact',
+
+        side,
+        uid,
+        tradeId,
+
+        shares,
+        nominalValue,
+        marketImpactValue,
+        impactRatio: ratio,
+        sharesOutstanding,
+
+        previousPrice: currentPrice,
+        newPrice,
+        priceChangePerShare: signedPriceChange
+      });
+
+      // Marker pemrosesan untuk idempotensi.
+      tx.set(impactRef, {
+        uid,
+        tradeId,
+        marketId,
+        side,
+
+        shares,
+        nominalValue,
+        marketImpactValue,
+        impactRatio: ratio,
+        sharesOutstanding,
+
+        previousPrice: currentPrice,
+        newPrice,
+        priceChangePerShare: signedPriceChange,
+
+        createdAt: serverTimestamp()
+      });
+
       return {
-        applied: false,
-        reason: 'already-processed'
+        applied: true,
+        side,
+        marketId,
+        shares,
+        nominalValue,
+        marketImpactValue,
+        previousPrice: currentPrice,
+        newPrice,
+        priceChangePerShare: signedPriceChange
       };
     }
-
-    const marketSnap = await tx.get(marketRef);
-
-    if (!marketSnap.exists()) {
-      throw new Error(`Market ${marketId} tidak ditemukan`);
-    }
-
-    const market = marketSnap.data() || {};
-    const currentPrice = Number(market.price || 0);
-
-    if (
-      !Number.isFinite(currentPrice) ||
-      currentPrice <= 0
-    ) {
-      throw new Error(`Harga market ${marketId} tidak valid`);
-    }
-
-    // Gunakan nominal gross dari trade jika tersedia.
-    // Pada struktur trade lu, gross sudah memperhitungkan spread.
-    const storedGross = Number(trade.gross || 0);
-
-    const executionPrice = Number(
-      trade.execPrice ||
-      trade.price ||
-      currentPrice
-    );
-
-    const nominalValue = storedGross > 0
-      ? storedGross
-      : shares * executionPrice;
-
-    if (
-      !Number.isFinite(nominalValue) ||
-      nominalValue <= 0
-    ) {
-      throw new Error(`Nominal ${side} tidak valid`);
-    }
-
-    const sharesOutstanding = getPaperSharesOutstanding(
-      market,
-      currentPrice
-    );
-
-    // BUY = 50% nominal.
-    // SELL = 100% nominal.
-    const marketImpactValue = nominalValue * ratio;
-
-    // Besaran dampak per lembar saham.
-    const priceImpactPerShare =
-      marketImpactValue / sharesOutstanding;
-
-    // BUY menaikkan harga, SELL menurunkan harga.
-    // Harga tidak boleh turun sampai nol atau negatif.
-    const proposedPrice = isBuy
-      ? currentPrice + priceImpactPerShare
-      : currentPrice - priceImpactPerShare;
-
-    const newPrice = isBuy
-      ? proposedPrice
-      : Math.max(0.01, proposedPrice);
-
-    if (
-      !Number.isFinite(newPrice) ||
-      newPrice <= 0 ||
-      (isBuy && newPrice <= currentPrice) ||
-      (!isBuy && newPrice >= currentPrice)
-    ) {
-      throw new Error(`Perubahan harga ${side} tidak valid`);
-    }
-
-    const actualPriceChangePerShare = Math.abs(
-      newPrice - currentPrice
-    );
-
-    // Update harga market bersama.
-    const marketPatch = {
-      price: newPrice,
-      updatedAt: serverTimestamp()
-    };
-
-    // Sinkronkan market cap hanya jika field tersebut memang ada.
-    if (Number(market.marketCap) > 0) {
-      marketPatch.marketCap = newPrice * sharesOutstanding;
-    }
-
-    if (Number(market.market_cap) > 0) {
-      marketPatch.market_cap = newPrice * sharesOutstanding;
-    }
-
-    tx.set(marketRef, marketPatch, { merge: true });
-
-    // Catat perubahan harga untuk chart/ticks.
-    tx.set(tickRef, {
-      price: newPrice,
-      ts: serverTimestamp(),
-      source: isBuy
-        ? 'paper-buy-impact'
-        : 'paper-sell-impact',
-      side,
-      uid,
-      tradeId,
-      nominalValue,
-      marketImpactValue,
-      impactRatio: ratio,
-      sharesOutstanding,
-      previousPrice: currentPrice,
-      newPrice,
-      priceChangePerShare: isBuy
-        ? actualPriceChangePerShare
-        : -actualPriceChangePerShare
-    });
-
-    // Simpan marker pemrosesan untuk mencegah double impact.
-    tx.set(impactRef, {
-      uid,
-      tradeId,
-      marketId,
-      side,
-      nominalValue,
-      marketImpactValue,
-      impactRatio: ratio,
-      sharesOutstanding,
-      previousPrice: currentPrice,
-      newPrice,
-      priceChangePerShare: isBuy
-        ? actualPriceChangePerShare
-        : -actualPriceChangePerShare,
-      createdAt: serverTimestamp()
-    });
-
-    return {
-      applied: true,
-      side,
-      marketId,
-      nominalValue,
-      marketImpactValue,
-      previousPrice: currentPrice,
-      newPrice,
-      priceChangePerShare: isBuy
-        ? actualPriceChangePerShare
-        : -actualPriceChangePerShare
-    };
-  });
+  );
 
   if (result.applied) {
     console.info(
-      `[PaperStocks] ${result.side} impact berhasil dihitung`,
+      `[PaperStocks] ${result.side} impact berhasil`,
       result
     );
   }
 }
 
 
-/* Pantau trade user yang sedang login. */
+/* ── Pantau trade user ── */
 function startPaperStockImpactMonitor(uid) {
   if (paperStockImpactUnsub) {
     paperStockImpactUnsub();
     paperStockImpactUnsub = null;
   }
 
-  // Hindari menerapkan ulang histori lama saat halaman dibuka.
-  // Trade yang baru masuk dalam rentang waktu ini tetap diperiksa.
+  // Mencegah histori transaksi lama diterapkan ulang saat login.
   const monitorStartedAt = Date.now() - 5000;
 
   const tradesQuery = query(
-    collection(walletDb, 'users', uid, 'trades'),
+    collection(
+      walletDb,
+      'users',
+      uid,
+      'trades'
+    ),
     orderBy('createdAt', 'desc'),
     limit(100)
   );
@@ -3155,12 +3219,18 @@ function startPaperStockImpactMonitor(uid) {
         }
 
         const trade = change.doc.data();
+        const side = String(
+          trade.side || ''
+        ).toUpperCase();
 
-        if (trade.side !== 'BUY' && trade.side !== 'SELL') {
+        if (side !== 'BUY' && side !== 'SELL') {
           continue;
         }
 
-        if (trade.status && trade.status !== 'FILLED') {
+        if (
+          trade.status &&
+          trade.status !== 'FILLED'
+        ) {
           continue;
         }
 
@@ -3169,8 +3239,11 @@ function startPaperStockImpactMonitor(uid) {
             ? trade.createdAt.toMillis()
             : 0;
 
-        // Abaikan histori lama dan dokumen tanpa timestamp valid.
-        if (!createdMs || createdMs < monitorStartedAt) {
+        // Abaikan histori lama atau timestamp yang belum valid.
+        if (
+          !createdMs ||
+          createdMs < monitorStartedAt
+        ) {
           continue;
         }
 
@@ -3180,13 +3253,17 @@ function startPaperStockImpactMonitor(uid) {
           trade
         ).catch(error => {
           console.error(
-            `[PaperStocks] ${trade.side} impact gagal:`,
+            `[PaperStocks] ${side} impact gagal:`,
             error
           );
 
           if (error?.code === 'permission-denied') {
             toast(
-              'Firebase Rules menolak update harga. Perlu backend tepercaya.'
+              'Akses update market ditolak Firebase Rules. Perlu backend tepercaya.'
+            );
+          } else {
+            toast(
+              `Gagal memproses ${side} impact`
             );
           }
         });
@@ -3202,15 +3279,13 @@ function startPaperStockImpactMonitor(uid) {
 }
 
 
-/* Observer terpisah; tidak perlu mengubah observer auth yang lama. */
+/* ── Auth observer khusus impact ── */
 onAuthStateChanged(walletAuth, user => {
   if (user) {
     startPaperStockImpactMonitor(user.uid);
-  } else {
-    if (paperStockImpactUnsub) {
-      paperStockImpactUnsub();
-      paperStockImpactUnsub = null;
-    }
+  } else if (paperStockImpactUnsub) {
+    paperStockImpactUnsub();
+    paperStockImpactUnsub = null;
   }
 });
 
