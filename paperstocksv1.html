@@ -2866,9 +2866,9 @@ setInterval(checkAllLimitOrders,5000);
  * Transaksi market, tick, dan impact dilakukan atomik.
  ************************************************************/
 
-const PAPER_BUY_IMPACT_RATIO = 0.01;
-const PAPER_SELL_IMPACT_RATIO = 0.02;
-const PAPER_DEFAULT_SHARES_OUTSTANDING = 1000;
+const PAPER_BUY_IMPACT_RATIO = 0.0001;
+const PAPER_SELL_IMPACT_RATIO = 0.0003;
+const PAPER_DEFAULT_SHARES_OUTSTANDING = 10;
 
 let paperStockImpactUnsub = null;
 let paperStockImpactUid = null;
