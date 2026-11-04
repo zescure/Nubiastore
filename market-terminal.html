@@ -827,7 +827,7 @@ canvas{
           type="number"
           min="0"
           step="any"
-          value="100"
+          value="1"
           placeholder="Masukkan nominal USD"
         >
       </div>
@@ -1226,9 +1226,9 @@ const markets = {
         name: "US Dollar / Japanese Yen"
       },
       {
-        symbol: "USD/IDR",
-        ticker: "USD/IDR",
-        name: "US Dollar / Indonesian Rupiah"
+        symbol: "IDR/USD",
+        ticker: "IDR/USD",
+        name: "Indonesian Rupiah / US Dollar"
       },
       {
         symbol: "AUD/USD",
@@ -2951,7 +2951,7 @@ async function init() {
     () => {
       refreshWatchlist(true, false);
     },
-    90000
+    900000
   );
 
   /*
@@ -2963,7 +2963,7 @@ async function init() {
     () => {
       loadLiveRate(false);
     },
-    600000
+    3600000
   );
 
 }
