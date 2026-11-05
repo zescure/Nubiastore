@@ -1,1267 +1,1554 @@
 <!DOCTYPE html>
+
 <html lang="id">
+
 <head>
+
 <meta charset="utf-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
 <meta name="theme-color" content="#080b10">
+
 <title>MARKET TERMINAL — US · CRYPTO · FOREX</title>
 
 <style>
+
 :root{
+
   --bg:#080b10;
+
   --panel:#10151d;
+
   --panel2:#151c26;
+
   --line:#26313e;
+
   --text:#eef4f8;
+
   --muted:#8492a3;
+
   --green:#21d49a;
+
   --red:#ff647c;
+
   --amber:#f5bd4f;
+
   --blue:#79aaff;
+
   --radius:17px;
+
   color-scheme:dark
+
 }
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
-html{
-  background:var(--bg);
-  scroll-behavior:smooth
-}
+html{background:var(--bg);scroll-behavior:smooth}
 
 body{
+
   margin:0;
-  background:
-    radial-gradient(ellipse at 15% -15%,#122b2b 0,transparent 34%),
-    var(--bg);
+
+  background:radial-gradient(ellipse at 15% -15%,#122b2b 0,transparent 34%),var(--bg);
+
   color:var(--text);
+
   font:14px/1.45 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+
   letter-spacing:-.01em;
+
   min-height:100vh
+
 }
 
-button,input,select{font:inherit;color:inherit}
+button,input{font:inherit;color:inherit}
+
 button{border:0;cursor:pointer}
+
 button:disabled{opacity:.4;cursor:not-allowed}
 
-.wrap{
-  max-width:1280px;
-  margin:auto;
-  padding:22px 22px 70px
-}
+.wrap{max-width:1280px;margin:auto;padding:22px 22px 70px}
 
-.top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  margin-bottom:18px
-}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px
-}
+.brand{display:flex;align-items:center;gap:12px}
 
 .logo{
-  width:42px;
-  height:42px;
-  border-radius:13px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(140deg,#28e0a4,#087b67);
-  color:#041610;
-  font-size:21px;
-  font-weight:900;
-  box-shadow:0 7px 25px #21d49a2b
+
+  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+
+  background:linear-gradient(140deg,#28e0a4,#087b67);color:#041610;
+
+  font-size:21px;font-weight:900;box-shadow:0 7px 25px #21d49a2b
+
 }
 
-.brand h1{
-  font-size:16px;
-  line-height:1.15;
-  margin:0;
-  font-weight:850;
-  letter-spacing:.13em
-}
+.brand h1{font-size:16px;line-height:1.15;margin:0;font-weight:850;letter-spacing:.13em}
 
-.brand small{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  letter-spacing:.16em;
-  margin-top:5px
-}
+.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.16em;margin-top:5px}
 
-.topright{
-  display:flex;
-  align-items:center;
-  gap:9px
-}
+.topright{display:flex;align-items:center;gap:9px}
 
 .pill{
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:8px 12px;
-  color:var(--muted);
-  font-size:11px;
-  display:flex;
-  align-items:center;
-  gap:7px
+
+  border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--muted);
+
+  font-size:11px;display:flex;align-items:center;gap:7px
+
 }
 
-.dot{
-  width:7px;
-  height:7px;
-  background:var(--amber);
-  border-radius:50%;
-  display:inline-block
-}
+.dot{width:7px;height:7px;background:var(--amber);border-radius:50%;display:inline-block}
 
-.dot.live{
-  background:var(--green);
-  box-shadow:0 0 0 4px #21d49a18
-}
+.dot.live{background:var(--green);box-shadow:0 0 0 4px #21d49a18}
 
-/* ==============================
-   CURRENCY CONVERTER
-============================== */
+/* CURRENCY CONVERTER */
 
 .converter-panel{
+
   background:linear-gradient(120deg,#10251f,#101923 65%,#111b28);
-  border:1px solid #285344;
-  border-radius:var(--radius);
-  padding:19px 20px;
-  margin-bottom:18px;
-  box-shadow:0 10px 35px #0003
+
+  border:1px solid #285344;border-radius:var(--radius);padding:19px 20px;
+
+  margin-bottom:18px;box-shadow:0 10px 35px #0003
+
 }
 
-.converter-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  margin-bottom:15px
-}
+.converter-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
 
-.converter-title{
-  display:flex;
-  align-items:center;
-  gap:10px
-}
+.converter-title{display:flex;align-items:center;gap:10px}
 
-.converter-title h2{
-  font-size:13px;
-  margin:0;
-  letter-spacing:.09em;
-  font-weight:850
-}
+.converter-title h2{font-size:13px;margin:0;letter-spacing:.09em;font-weight:850}
 
-.converter-title small{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  margin-top:4px
-}
+.converter-title small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
 
 .rate-status{
-  color:#8df0c7;
-  font-size:10px;
-  border:1px solid #286b57;
-  border-radius:999px;
-  padding:6px 9px;
-  white-space:nowrap
+
+  color:#8df0c7;font-size:10px;border:1px solid #286b57;
+
+  border-radius:999px;padding:6px 9px;white-space:nowrap
+
 }
 
-.converter-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1.15fr;
-  gap:12px;
-  align-items:end
-}
+.converter-grid{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:12px;align-items:end}
 
 .converter-field label{
-  display:block;
-  font-size:10px;
-  color:#a1b1bf;
-  margin-bottom:7px;
-  font-weight:700;
-  letter-spacing:.05em
+
+  display:block;font-size:10px;color:#a1b1bf;margin-bottom:7px;
+
+  font-weight:700;letter-spacing:.05em
+
 }
 
 .converter-field input{
-  width:100%;
-  background:#080f15;
-  border:1px solid #2b3b46;
-  outline:none;
-  padding:12px;
-  border-radius:10px;
-  color:#fff;
-  font-size:15px;
-  font-weight:750;
-  min-width:0;
-  font-variant-numeric:tabular-nums
+
+  width:100%;background:#080f15;border:1px solid #2b3b46;outline:none;
+
+  padding:12px;border-radius:10px;color:#fff;font-size:15px;font-weight:750;
+
+  min-width:0;font-variant-numeric:tabular-nums
+
 }
 
-.converter-field input:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 3px #21d49a15
-}
+.converter-field input:focus{border-color:var(--green);box-shadow:0 0 0 3px #21d49a15}
 
 .converter-result{
-  min-height:44px;
-  background:#0b1714;
-  border:1px solid #285344;
-  padding:10px 13px;
-  border-radius:10px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center
+
+  min-height:44px;background:#0b1714;border:1px solid #285344;padding:10px 13px;
+
+  border-radius:10px;display:flex;flex-direction:column;justify-content:center
+
 }
 
-.converter-result small{
-  color:var(--muted);
-  font-size:10px
-}
+.converter-result small{color:var(--muted);font-size:10px}
 
 .converter-result strong{
-  font-size:19px;
-  color:var(--green);
-  font-weight:850;
-  margin-top:2px;
-  font-variant-numeric:tabular-nums;
-  overflow-wrap:anywhere
+
+  font-size:19px;color:var(--green);font-weight:850;margin-top:2px;
+
+  font-variant-numeric:tabular-nums;overflow-wrap:anywhere
+
 }
 
-.converter-bottom{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-top:12px
-}
+.converter-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
 
-.converter-bottom small{
-  color:var(--muted);
-  font-size:10px
-}
-
-.rate-actions{
-  display:flex;
-  gap:7px
-}
+.converter-bottom small{color:var(--muted);font-size:10px}
 
 .rate-btn{
-  border:1px solid #286b57;
-  color:#8df0c7;
-  background:#17352d;
-  padding:7px 10px;
-  border-radius:8px;
-  font-size:10px;
-  font-weight:800
+
+  border:1px solid #286b57;color:#8df0c7;background:#17352d;
+
+  padding:7px 10px;border-radius:8px;font-size:10px;font-weight:800
+
 }
 
-/* ==============================
-   MARKET NAVIGATION
-============================== */
+/* DAILY NEWS */
 
-.markets{
-  display:flex;
-  gap:8px;
-  margin-bottom:17px;
-  overflow:auto;
-  padding-bottom:2px
+.news-panel{
+
+  background:linear-gradient(180deg,#111821,#0e141c);border:1px solid var(--line);
+
+  border-radius:var(--radius);overflow:hidden;box-shadow:0 10px 35px #0003;
+
+  margin-bottom:18px
+
 }
+
+.news-head{
+
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+
+  padding:17px 18px;border-bottom:1px solid var(--line)
+
+}
+
+.news-head h2{font-size:13px;margin:0;letter-spacing:.08em}
+
+.news-controls{padding:14px 16px 10px;display:grid;gap:12px}
+
+.news-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+
+.news-label{
+
+  color:var(--muted);font-size:10px;font-weight:800;
+
+  letter-spacing:.08em;min-width:65px
+
+}
+
+.news-tab,.country-tab{
+
+  background:#151e29;color:var(--muted);border:1px solid var(--line);
+
+  padding:8px 12px;border-radius:9px;font-size:11px;font-weight:800
+
+}
+
+.news-tab.active,.country-tab.active{
+
+  background:#15352f;border-color:#1b8768;color:#7df3c5
+
+}
+
+.news-refresh{
+
+  margin-left:auto;background:#1d3b33;color:#8df0c7;border:1px solid #286b57;
+
+  border-radius:9px;padding:8px 11px;font-size:11px;font-weight:800
+
+}
+
+.news-list{
+
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;
+
+  padding:4px 16px 17px
+
+}
+
+.news-card{
+
+  min-width:0;background:#141d27;border:1px solid #202b37;border-radius:12px;
+
+  padding:13px;display:flex;flex-direction:column;gap:7px
+
+}
+
+.news-card a{color:var(--text);text-decoration:none;font-size:12px;font-weight:800;line-height:1.45}
+
+.news-card a:hover{color:var(--green)}
+
+.news-card p{margin:0;color:#a1afbd;font-size:11px;line-height:1.55}
+
+.news-meta{color:var(--muted);font-size:10px;margin-top:auto}
+
+.news-state{grid-column:1/-1;padding:22px 10px;text-align:center;color:var(--muted);font-size:12px}
+
+/* MARKET NAVIGATION */
+
+.markets{display:flex;gap:8px;margin-bottom:17px;overflow:auto;padding-bottom:2px}
 
 .market-btn{
-  white-space:nowrap;
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:11px 16px;
-  color:var(--muted);
-  font-weight:750;
-  letter-spacing:.04em
+
+  white-space:nowrap;background:var(--panel);border:1px solid var(--line);
+
+  border-radius:12px;padding:11px 16px;color:var(--muted);
+
+  font-weight:750;letter-spacing:.04em
+
 }
 
-.market-btn.active{
-  background:#15352f;
-  border-color:#1b8768;
-  color:#7df3c5
-}
+.market-btn.active{background:#15352f;border-color:#1b8768;color:#7df3c5}
 
-/* ==============================
-   MAIN LAYOUT
-============================== */
+/* MAIN LAYOUT */
 
-.grid{
-  display:grid;
-  grid-template-columns:minmax(0,1.55fr) minmax(300px,.85fr);
-  gap:16px;
-  align-items:start
-}
+.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.85fr);gap:16px;align-items:start}
 
 .panel{
-  background:linear-gradient(180deg,#111821,#0e141c);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  overflow:hidden;
-  box-shadow:0 10px 35px #0003
+
+  background:linear-gradient(180deg,#111821,#0e141c);border:1px solid var(--line);
+
+  border-radius:var(--radius);overflow:hidden;box-shadow:0 10px 35px #0003
+
 }
 
 .panel-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:17px 18px;
-  border-bottom:1px solid var(--line)
+
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+
+  padding:17px 18px;border-bottom:1px solid var(--line)
+
 }
 
-.panel-head h2{
-  font-size:13px;
-  margin:0;
-  font-weight:800;
-  letter-spacing:.08em
-}
+.panel-head h2{font-size:13px;margin:0;font-weight:800;letter-spacing:.08em}
 
-.sub{
-  color:var(--muted);
-  font-size:11px
-}
+.sub{color:var(--muted);font-size:11px}
 
-.hero{
-  padding:21px 21px 17px
-}
+.hero{padding:21px 21px 17px}
 
-.asset-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px
-}
+.asset-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 
-.asset-ident{
-  display:flex;
-  gap:11px;
-  align-items:center;
-  min-width:0
-}
+.asset-ident{display:flex;gap:11px;align-items:center;min-width:0}
 
 .coin-icon{
-  width:43px;
-  height:43px;
-  border-radius:14px;
-  background:#1a2632;
-  border:1px solid var(--line);
-  display:grid;
-  place-items:center;
-  font-size:14px;
-  font-weight:850;
-  color:#b8d6ff;
-  flex:none
+
+  width:43px;height:43px;border-radius:14px;background:#1a2632;border:1px solid var(--line);
+
+  display:grid;place-items:center;font-size:14px;font-weight:850;color:#b8d6ff;flex:none
+
 }
 
-.asset-name{
-  font-size:16px;
-  font-weight:800;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis
-}
+.asset-name{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.asset-symbol{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:3px
-}
+.asset-symbol{font-size:11px;color:var(--muted);margin-top:3px}
 
 .price{
-  text-align:right;
-  font-size:28px;
-  font-weight:850;
-  letter-spacing:-.05em;
-  font-variant-numeric:tabular-nums;
-  overflow-wrap:anywhere
+
+  text-align:right;font-size:28px;font-weight:850;letter-spacing:-.05em;
+
+  font-variant-numeric:tabular-nums;overflow-wrap:anywhere
+
 }
 
-.change{
-  font-weight:750;
-  margin-top:3px;
-  font-size:12px;
-  text-align:right
-}
+.change{font-weight:750;margin-top:3px;font-size:12px;text-align:right}
 
 .positive{color:var(--green)!important}
+
 .negative{color:var(--red)!important}
+
 .neutral{color:var(--muted)!important}
 
-.price-meta{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-top:19px
-}
+.price-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:19px}
 
-.metric{
-  background:#141d27;
-  border:1px solid #202b37;
-  border-radius:11px;
-  padding:10px
-}
+.metric{background:#141d27;border:1px solid #202b37;border-radius:11px;padding:10px}
 
-.metric label{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  margin-bottom:5px
-}
+.metric label{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}
 
-.metric b{
-  font-size:12px;
-  font-variant-numeric:tabular-nums;
-  overflow-wrap:anywhere
-}
+.metric b{font-size:12px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 
-/* ==============================
-   CHART
-============================== */
+/* CHART */
 
-.chartbox{
-  padding:0 16px 15px
-}
+.chartbox{padding:0 16px 15px}
 
-.chart-toolbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:3px 2px 12px
-}
+.chart-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 2px 12px}
 
-.timeframes{
-  display:flex;
-  gap:4px
-}
+.timeframes{display:flex;gap:4px}
 
 .timeframes button{
-  border-radius:7px;
-  color:var(--muted);
-  font-size:11px;
-  font-weight:700;
-  padding:6px 9px;
-  background:transparent
+
+  border-radius:7px;color:var(--muted);font-size:11px;font-weight:700;
+
+  padding:6px 9px;background:transparent
+
 }
 
-.timeframes button.active{
-  background:#1b352f;
-  color:var(--green)
-}
+.timeframes button.active{background:#1b352f;color:var(--green)}
 
-canvas{
-  width:100%;
-  height:255px;
-  display:block
-}
+canvas{width:100%;height:255px;display:block}
 
-.chart-legend{
-  display:flex;
-  justify-content:space-between;
-  color:var(--muted);
-  font-size:10px;
-  margin-top:5px
-}
+.chart-legend{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:5px}
 
-/* ==============================
-   RIGHT PANEL / WATCHLIST
-============================== */
+/* WATCHLIST */
 
-.rightcol{
-  display:grid;
-  gap:16px
-}
+.rightcol{display:grid;gap:16px}
 
-.watch-tools{
-  display:flex;
-  gap:7px;
-  align-items:center
-}
+.watch-tools{display:flex;gap:7px;align-items:center}
 
 .icon-btn{
-  height:32px;
-  width:32px;
-  border:1px solid var(--line);
-  border-radius:9px;
-  background:var(--panel2);
-  color:var(--muted);
-  font-size:16px
+
+  height:32px;width:32px;border:1px solid var(--line);border-radius:9px;
+
+  background:var(--panel2);color:var(--muted);font-size:16px
+
 }
 
-.watchlist{
-  padding:5px 10px 10px
-}
+.watchlist{padding:5px 10px 10px}
 
 .watch-row{
-  width:100%;
-  display:grid;
-  grid-template-columns:minmax(0,1fr) auto auto;
-  gap:12px;
-  align-items:center;
-  padding:12px 9px;
-  background:transparent;
-  text-align:left;
-  border-bottom:1px solid #202a35;
-  border-radius:8px
+
+  width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;
+
+  align-items:center;padding:12px 9px;background:transparent;text-align:left;
+
+  border-bottom:1px solid #202a35;border-radius:8px
+
 }
 
 .watch-row:last-child{border-bottom:0}
 
-.watch-row:hover,
-.watch-row.selected{background:#17232d}
+.watch-row:hover,.watch-row.selected{background:#17232d}
 
-.watch-main{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  min-width:0
-}
+.watch-main{display:flex;gap:10px;align-items:center;min-width:0}
 
 .mini-icon{
-  width:34px;
-  height:34px;
-  display:grid;
-  place-items:center;
-  border-radius:11px;
-  background:#1a2632;
-  font-size:11px;
-  font-weight:850;
-  color:#c9ddf6;
-  flex:none
+
+  width:34px;height:34px;display:grid;place-items:center;border-radius:11px;
+
+  background:#1a2632;font-size:11px;font-weight:850;color:#c9ddf6;flex:none
+
 }
 
-.watch-ticker{
-  font-weight:800;
-  font-size:12px
-}
+.watch-ticker{font-weight:800;font-size:12px}
 
 .watch-name{
-  display:block;
-  font-size:10px;
-  color:var(--muted);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:145px
+
+  display:block;font-size:10px;color:var(--muted);white-space:nowrap;
+
+  overflow:hidden;text-overflow:ellipsis;max-width:145px
+
 }
 
-.watch-price{
-  text-align:right;
-  font-size:12px;
-  font-weight:750;
-  font-variant-numeric:tabular-nums
+.watch-price{text-align:right;font-size:12px;font-weight:750;font-variant-numeric:tabular-nums}
+
+.watch-change{text-align:right;font-size:10px;font-weight:750;min-width:61px}
+
+.searchline{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+
+.searchline input,.input{
+
+  width:100%;min-width:0;background:#0a1017;border:1px solid var(--line);
+
+  outline:0;border-radius:10px;padding:10px 12px;font-size:12px
+
 }
 
-.watch-change{
-  text-align:right;
-  font-size:10px;
-  font-weight:750;
-  min-width:61px
-}
-
-.searchline{
-  display:flex;
-  gap:8px;
-  padding:12px 16px;
-  border-bottom:1px solid var(--line)
-}
-
-.searchline input,
-.input{
-  width:100%;
-  min-width:0;
-  background:#0a1017;
-  border:1px solid var(--line);
-  outline:0;
-  border-radius:10px;
-  padding:10px 12px;
-  font-size:12px
-}
-
-.searchline input:focus,
-.input:focus{
-  border-color:#259b79;
-  box-shadow:0 0 0 3px #21d49a15
-}
+.searchline input:focus,.input:focus{border-color:#259b79;box-shadow:0 0 0 3px #21d49a15}
 
 .small-btn{
-  background:#1d3b33;
-  color:#8df0c7;
-  border:1px solid #286b57;
-  border-radius:10px;
-  padding:9px 12px;
-  font-size:11px;
-  font-weight:800;
-  white-space:nowrap
+
+  background:#1d3b33;color:#8df0c7;border:1px solid #286b57;
+
+  border-radius:10px;padding:9px 12px;font-size:11px;font-weight:800;white-space:nowrap
+
 }
 
 .detail-body{padding:15px 17px}
 
-.detail-title{
-  font-weight:800;
-  font-size:12px;
-  margin:0 0 12px
-}
+.detail-title{font-weight:800;font-size:12px;margin:0 0 12px}
 
 .kv{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  padding:8px 0;
-  border-bottom:1px solid #202a35;
-  font-size:11px
+
+  display:flex;justify-content:space-between;gap:15px;padding:8px 0;
+
+  border-bottom:1px solid #202a35;font-size:11px
+
 }
 
 .kv:last-child{border:0}
 
 .kv span{color:var(--muted)}
-.kv b{
-  text-align:right;
-  font-variant-numeric:tabular-nums;
-  overflow-wrap:anywhere
+
+.kv b{text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+/* FOREX LIST */
+
+.forex-panel{margin-bottom:16px}
+
+.forex-note{padding:13px 17px;color:var(--muted);font-size:11px;border-bottom:1px solid var(--line)}
+
+.fx-list{padding:5px 12px 12px}
+
+.fx-row{
+
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;
+
+  padding:14px 10px;border-bottom:1px solid #202a35
+
 }
 
-/* ==============================
-   NOTICES / FOOTER / MODAL
-============================== */
+.fx-row:last-child{border-bottom:0}
+
+.fx-pair{font-weight:850;font-size:13px}
+
+.fx-name{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+
+.fx-rate{text-align:right;font-size:15px;font-weight:850;font-variant-numeric:tabular-nums}
+
+.fx-time{text-align:right;color:var(--muted);font-size:10px;margin-top:3px}
+
+/* NOTICES / FOOTER / MODAL */
 
 .notice{
-  padding:12px 15px;
-  margin:14px 0 0;
-  border:1px solid #5a4923;
-  background:#241e11;
-  color:#e9ca83;
-  border-radius:12px;
-  font-size:11px;
-  line-height:1.5
+
+  padding:12px 15px;margin:14px 0 0;border:1px solid #5a4923;background:#241e11;
+
+  color:#e9ca83;border-radius:12px;font-size:11px;line-height:1.5
+
 }
 
-.notice.error{
-  border-color:#663444;
-  background:#24141b;
-  color:#ff9cac
-}
+.notice.error{border-color:#663444;background:#24141b;color:#ff9cac}
 
-.notice.ok{
-  border-color:#205d4b;
-  background:#10241e;
-  color:#85e8bf
-}
+.notice.ok{border-color:#205d4b;background:#10241e;color:#85e8bf}
 
-.foot{
-  padding:16px 3px 0;
-  color:#718092;
-  font-size:10px;
-  display:flex;
-  justify-content:space-between;
-  gap:12px
-}
+.foot{padding:16px 3px 0;color:#718092;font-size:10px;display:flex;justify-content:space-between;gap:12px}
 
-.footer-link{
-  color:#92a5ba;
-  text-decoration:none
-}
+.footer-link{color:#92a5ba;text-decoration:none}
 
 .foot a:hover{color:var(--green)}
 
-.loader{
-  height:3px;
-  background:#18232e;
-  overflow:hidden
-}
-
-.loader i{
-  height:100%;
-  width:30%;
-  display:block;
-  background:var(--green);
-  animation:load 1.1s ease-in-out infinite alternate
-}
-
-@keyframes load{
-  from{transform:translateX(-10%)}
-  to{transform:translateX(230%)}
-}
-
-.empty{
-  padding:25px 12px;
-  text-align:center;
-  color:var(--muted);
-  font-size:12px
-}
+.empty{padding:25px 12px;text-align:center;color:var(--muted);font-size:12px}
 
 .hidden{display:none!important}
 
+.loader{height:3px;background:#18232e;overflow:hidden}
+
+.loader i{height:100%;width:30%;display:block;background:var(--green);animation:load 1.1s ease-in-out infinite alternate}
+
+@keyframes load{from{transform:translateX(-10%)}to{transform:translateX(230%)}}
+
 .modal-bg{
-  position:fixed;
-  inset:0;
-  background:#000a;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  z-index:40
+
+  position:fixed;inset:0;background:#000a;display:none;align-items:center;
+
+  justify-content:center;padding:18px;z-index:40
+
 }
 
 .modal-bg.show{display:flex}
 
 .modal{
-  width:min(460px,100%);
-  background:#121923;
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 25px 80px #0009
+
+  width:min(460px,100%);background:#121923;border:1px solid var(--line);
+
+  border-radius:18px;padding:18px;box-shadow:0 25px 80px #0009
+
 }
 
-.modal h3{
-  margin:0 0 7px;
-  font-size:16px
-}
+.modal h3{margin:0 0 7px;font-size:16px}
 
-.modal p{
-  font-size:11px;
-  color:var(--muted);
-  line-height:1.6
-}
+.modal p{font-size:11px;color:var(--muted);line-height:1.6}
 
-.modal-actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-  margin-top:16px
-}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
 
-.secondary{
-  background:#202b37;
-  color:#dce7f1
-}
-
-/* ==============================
-   RESPONSIVE
-============================== */
+.secondary{background:#202b37;color:#dce7f1}
 
 @media(max-width:860px){
+
   .wrap{padding:16px 13px 45px}
+
   .grid{grid-template-columns:1fr}
+
   .rightcol{grid-template-columns:1fr 1fr}
-  .price{font-size:25px}
-  .top{align-items:flex-start}
-  .foot{flex-direction:column}
+
+  .price{font-size:25px}.top{align-items:flex-start}.foot{flex-direction:column}
+
 }
 
 @media(max-width:650px){
+
   .converter-grid{grid-template-columns:1fr 1fr}
+
   .converter-result{grid-column:1/-1}
+
+  .news-list{grid-template-columns:1fr}
+
 }
 
 @media(max-width:560px){
+
   .rightcol{grid-template-columns:1fr}
+
   .topright .pill:last-child{display:none}
+
   .brand h1{font-size:14px}
+
   .price-meta{grid-template-columns:repeat(2,1fr)}
+
   canvas{height:220px}
+
   .hero{padding:17px}
+
   .panel-head{padding:15px}
+
   .market-btn{padding:10px 13px}
+
   .wrap{padding-left:10px;padding-right:10px}
+
   .converter-panel{padding:15px}
+
   .converter-bottom{align-items:flex-start;flex-direction:column}
+
+  .news-head{align-items:flex-start;flex-direction:column}
+
 }
+
 </style>
+
 </head>
 
 <body>
+
 <div class="wrap">
 
-  <!-- HEADER -->
-  <header class="top">
-    <div class="brand">
-      <div class="logo">M</div>
+<header class="top">
+
+  <div class="brand">
+
+    <div class="logo">M</div>
+
+    <div>
+
+      <h1>MARKET TERMINAL</h1>
+
+      <small>MARKET DATA · WATCHLIST · CHARTS</small>
+
+    </div>
+
+  </div>
+
+  <div class="topright">
+
+    <div class="pill">
+
+      <span class="dot" id="apiDot"></span>
+
+      <span id="apiState">Menghubungkan API</span>
+
+    </div>
+
+    <div class="pill" id="clock">--:--:-- WIB</div>
+
+  </div>
+
+</header>
+
+<!-- USD / IDR CONVERTER -->
+
+<section class="converter-panel">
+
+  <div class="converter-top">
+
+    <div class="converter-title">
+
+      <div class="logo" style="width:34px;height:34px;font-size:15px">₮</div>
+
       <div>
-        <h1>MARKET TERMINAL</h1>
-        <small>MARKET DATA · WATCHLIST · CHARTS</small>
+
+        <h2>USD / IDR EXCHANGE RATE</h2>
+
+        <small>Currency converter · Kurs dolar ke rupiah</small>
+
       </div>
+
     </div>
 
-    <div class="topright">
-      <div class="pill">
-        <span class="dot" id="apiDot"></span>
-        <span id="apiState">Menghubungkan API</span>
-      </div>
-      <div class="pill" id="clock">--:--:-- WIB</div>
-    </div>
-  </header>
+    <span class="rate-status" id="rateStatus">Mengambil kurs...</span>
 
-  <!-- USD / IDR CONVERTER -->
-  <section class="converter-panel">
-    <div class="converter-top">
-      <div class="converter-title">
-        <div class="logo" style="width:34px;height:34px;font-size:15px">₮</div>
-        <div>
-          <h2>USD / IDR EXCHANGE RATE</h2>
-          <small>Currency converter · Kurs dolar ke rupiah</small>
+  </div>
+
+  <div class="converter-grid">
+
+    <div class="converter-field">
+
+      <label for="usdAmount">NOMINAL USD</label>
+
+      <input id="usdAmount" type="number" min="0" step="any" value="1">
+
+    </div>
+
+    <div class="converter-field">
+
+      <label for="usdIdrRate">KURS 1 USD → IDR (EDITABLE)</label>
+
+      <input id="usdIdrRate" type="number" min="0" step="any" placeholder="Mengambil kurs...">
+
+    </div>
+
+    <div class="converter-result">
+
+      <small>HASIL KONVERSI RUPIAH</small>
+
+      <strong id="idrResult">Rp —</strong>
+
+    </div>
+
+  </div>
+
+  <div class="converter-bottom">
+
+    <small id="rateInfo">Kurs akan diambil dari Twelve Data. Kamu juga bisa mengganti nilainya secara manual.</small>
+
+    <button class="rate-btn" id="useLiveRate">↻ Gunakan kurs live</button>
+
+  </div>
+
+</section>
+
+<!-- DAILY NEWS -->
+
+<section class="news-panel">
+
+  <div class="news-head">
+
+    <div>
+
+      <h2>DAILY NEWS</h2>
+
+      <div class="sub" id="newsCaption">Berita berbahasa Indonesia · Currents API</div>
+
+    </div>
+
+    <span class="sub" id="newsUpdated">Menunggu berita...</span>
+
+  </div>
+
+  <div class="news-controls">
+
+    <div class="news-row">
+
+      <span class="news-label">NEGARA</span>
+
+      <button class="country-tab active" data-country="ID">🇮🇩 Indonesia</button>
+
+      <button class="country-tab" data-country="US">🇺🇸 Amerika</button>
+
+      <button class="country-tab" data-country="CN">🇨🇳 China</button>
+
+    </div>
+
+    <div class="news-row">
+
+      <span class="news-label">KATEGORI</span>
+
+      <button class="news-tab" data-news-type="economy">Ekonomi</button>
+
+      <button class="news-tab active" data-news-type="daily">Harian</button>
+
+      <button class="news-tab" data-news-type="entertainment">Hiburan</button>
+
+      <button class="news-refresh" id="refreshNews">↻ Refresh</button>
+
+    </div>
+
+  </div>
+
+  <div class="news-list" id="newsList">
+
+    <div class="news-state">Mengambil berita terbaru...</div>
+
+  </div>
+
+</section>
+
+<!-- MARKET NAVIGATION -->
+
+<nav class="markets" aria-label="Pilih pasar">
+
+  <button class="market-btn active" data-market="us">🇺🇸 US STOCKS</button>
+
+  <button class="market-btn" data-market="crypto">₿ CRYPTO</button>
+
+  <button class="market-btn" data-market="forex">💱 FOREX</button>
+
+</nav>
+
+<!-- MAIN STOCK / CRYPTO LAYOUT -->
+
+<div class="grid" id="gridView">
+
+  <section class="panel">
+
+    <div class="panel-head">
+
+      <div>
+
+        <h2 id="marketTitle">US EQUITIES</h2>
+
+        <div class="sub" id="marketDesc">NASDAQ · NYSE · USD</div>
+
+      </div>
+
+      <div class="sub" id="lastUpdate">Menunggu data…</div>
+
+    </div>
+
+    <div class="hero">
+
+      <div class="asset-head">
+
+        <div class="asset-ident">
+
+          <div class="coin-icon" id="bigIcon">AA</div>
+
+          <div style="min-width:0">
+
+            <div class="asset-name" id="bigName">Apple Inc.</div>
+
+            <div class="asset-symbol" id="bigSymbol">AAPL · US</div>
+
+          </div>
+
         </div>
-      </div>
-      <span class="rate-status" id="rateStatus">Mengambil kurs...</span>
-    </div>
 
-    <div class="converter-grid">
+        <div>
 
-      <div class="converter-field">
-        <label for="usdAmount">NOMINAL USD</label>
-        <input
-          id="usdAmount"
-          type="number"
-          min="0"
-          step="any"
-          value="1"
-          placeholder="Masukkan nominal USD"
-        >
+          <div class="price" id="bigPrice">—</div>
+
+          <div class="change neutral" id="bigChange">Menunggu kuotasi</div>
+
+        </div>
+
       </div>
 
-      <div class="converter-field">
-        <label for="usdIdrRate">KURS 1 USD → IDR (EDITABLE)</label>
-        <input
-          id="usdIdrRate"
-          type="number"
-          min="0"
-          step="any"
-          placeholder="Mengambil kurs..."
-        >
-      </div>
+      <div class="price-meta">
 
-      <div class="converter-result">
-        <small>HASIL KONVERSI RUPIAH</small>
-        <strong id="idrResult">Rp —</strong>
+        <div class="metric"><label>OPEN</label><b id="mOpen">—</b></div>
+
+        <div class="metric"><label>HIGH</label><b id="mHigh">—</b></div>
+
+        <div class="metric"><label>LOW</label><b id="mLow">—</b></div>
+
+        <div class="metric"><label>PREV. CLOSE</label><b id="mPrev">—</b></div>
+
       </div>
 
     </div>
 
-    <div class="converter-bottom">
-      <small id="rateInfo">
-        Kurs akan diambil dari Twelve Data. Kamu juga bisa mengganti nilainya secara manual.
-      </small>
+    <div class="chartbox">
 
-      <div class="rate-actions">
-        <button class="rate-btn" id="useLiveRate">↻ Gunakan kurs live</button>
+      <div class="chart-toolbar">
+
+        <div>
+
+          <b style="font-size:12px">Price chart</b>
+
+          <div class="sub" id="chartSub">Historical market data</div>
+
+        </div>
+
+        <div class="timeframes">
+
+          <button data-range="1D">1D</button>
+
+          <button data-range="1W">1W</button>
+
+          <button class="active" data-range="1M">1M</button>
+
+          <button data-range="1Y">1Y</button>
+
+        </div>
+
       </div>
+
+      <canvas id="chart" width="900" height="350" aria-label="Grafik harga"></canvas>
+
+      <div class="chart-legend">
+
+        <span id="chartStart">—</span>
+
+        <span id="chartEnd">—</span>
+
+      </div>
+
     </div>
+
   </section>
 
-  <!-- MARKET NAVIGATION -->
-  <nav class="markets" aria-label="Pilih pasar">
-    <button class="market-btn active" data-market="us">🇺🇸 US STOCKS</button>
-    <button class="market-btn" data-market="crypto">₿ CRYPTO</button>
-    <button class="market-btn" data-market="forex">💱 FOREX</button>
-  </nav>
+  <aside class="rightcol">
 
-  <div class="grid">
-
-    <!-- MAIN MARKET PANEL -->
     <section class="panel">
 
       <div class="panel-head">
+
         <div>
-          <h2 id="marketTitle">US EQUITIES</h2>
-          <div class="sub" id="marketDesc">NASDAQ · NYSE · USD</div>
-        </div>
-        <div class="sub" id="lastUpdate">Menunggu data…</div>
-      </div>
 
-      <div class="hero">
-        <div class="asset-head">
+          <h2>WATCHLIST</h2>
 
-          <div class="asset-ident">
-            <div class="coin-icon" id="bigIcon">AA</div>
-            <div style="min-width:0">
-              <div class="asset-name" id="bigName">Apple Inc.</div>
-              <div class="asset-symbol" id="bigSymbol">AAPL · US</div>
-            </div>
-          </div>
-
-          <div>
-            <div class="price" id="bigPrice">—</div>
-            <div class="change neutral" id="bigChange">Menunggu kuotasi</div>
-          </div>
+          <div class="sub" id="watchCount">0 instrumen</div>
 
         </div>
 
-        <div class="price-meta">
-          <div class="metric">
-            <label>OPEN</label>
-            <b id="mOpen">—</b>
-          </div>
-          <div class="metric">
-            <label>HIGH</label>
-            <b id="mHigh">—</b>
-          </div>
-          <div class="metric">
-            <label>LOW</label>
-            <b id="mLow">—</b>
-          </div>
-          <div class="metric">
-            <label>PREV. CLOSE</label>
-            <b id="mPrev">—</b>
-          </div>
-        </div>
-      </div>
+        <div class="watch-tools">
 
-      <!-- CHART -->
-      <div class="chartbox">
+          <button class="icon-btn" id="refreshBtn" title="Refresh harga">↻</button>
 
-        <div class="chart-toolbar">
-          <div>
-            <b style="font-size:12px">Price chart</b>
-            <div class="sub" id="chartSub">Historical market data</div>
-          </div>
-
-          <div class="timeframes">
-            <button data-range="1D">1D</button>
-            <button data-range="1W">1W</button>
-            <button class="active" data-range="1M">1M</button>
-            <button data-range="1Y">1Y</button>
-          </div>
-        </div>
-
-        <canvas
-          id="chart"
-          width="900"
-          height="350"
-          aria-label="Grafik harga"
-        ></canvas>
-
-        <div class="chart-legend">
-          <span id="chartStart">—</span>
-          <span id="chartEnd">—</span>
         </div>
 
       </div>
+
+      <div class="searchline">
+
+        <input id="searchInput" type="search" placeholder="Cari ticker / nama…" autocomplete="off">
+
+        <button class="small-btn" id="addBtn">+ Tambah</button>
+
+      </div>
+
+      <div class="watchlist" id="watchlist">
+
+        <div class="empty">Mengambil data pasar…</div>
+
+      </div>
+
     </section>
 
-    <!-- RIGHT COLUMN -->
-    <aside class="rightcol">
+    <section class="panel">
 
-      <!-- WATCHLIST -->
-      <section class="panel">
+      <div class="panel-head">
 
-        <div class="panel-head">
-          <div>
-            <h2>WATCHLIST</h2>
-            <div class="sub" id="watchCount">0 instrumen</div>
-          </div>
+        <div>
 
-          <div class="watch-tools">
-            <button class="icon-btn" id="refreshBtn" title="Refresh data">↻</button>
-          </div>
+          <h2>INSTRUMENT DATA</h2>
+
+          <div class="sub">Data dari provider</div>
+
         </div>
 
-        <div class="searchline">
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="Cari ticker / nama…"
-            autocomplete="off"
-          >
-          <button class="small-btn" id="addBtn">+ Tambah</button>
-        </div>
+        <span class="sub" id="detailMarket">US</span>
 
-        <div class="watchlist" id="watchlist">
-          <div class="empty">Mengambil data pasar…</div>
-        </div>
+      </div>
 
-      </section>
+      <div class="detail-body" id="details">
 
-      <!-- INSTRUMENT DETAILS -->
-      <section class="panel">
+        <div class="empty">Pilih instrumen untuk melihat data.</div>
 
-        <div class="panel-head">
-          <div>
-            <h2>INSTRUMENT DATA</h2>
-            <div class="sub">Data dari provider</div>
-          </div>
-          <span class="sub" id="detailMarket">US</span>
-        </div>
+      </div>
 
-        <div class="detail-body" id="details">
-          <div class="empty">Pilih instrumen untuk melihat data.</div>
-        </div>
+    </section>
 
-      </section>
+  </aside>
 
-    </aside>
+</div>
+
+<!-- FOREX LIST ONLY -->
+
+<section class="panel forex-panel hidden" id="forexView">
+
+  <div class="panel-head">
+
+    <div>
+
+      <h2>FOREX · IDR CURRENCY PAIRS</h2>
+
+      <div class="sub">Global currencies · Rupiah exchange rate</div>
+
+    </div>
+
+    <button class="small-btn" id="refreshForex">↻ Refresh kurs</button>
+
   </div>
 
-  <div class="notice" id="statusNote">
-    Menghubungkan ke Twelve Data...
+  <div class="forex-note">
+
+    Daftar kurs mata uang terhadap Rupiah. Panel Forex hanya menampilkan daftar nilai tukar.
+
   </div>
 
-  <footer class="foot">
-    <span>
-      Data disediakan oleh Twelve Data. Harga dapat tertunda, tidak tersedia,
-      atau dibatasi oleh paket API.
-    </span>
+  <div class="fx-list" id="forexList">
 
-    <span>
-      Personal market dashboard ·
-      <a
-        class="footer-link"
-        href="https://twelvedata.com/docs"
-        target="_blank"
-        rel="noopener"
-      >
-        API docs ↗
-      </a>
-    </span>
-  </footer>
+    <div class="empty">Mengambil kurs...</div>
+
+  </div>
+
+</section>
+
+<div class="notice" id="statusNote">Menghubungkan ke Twelve Data dan Currents API...</div>
+
+<footer class="foot">
+
+  <span>
+
+    Data disediakan oleh Twelve Data dan Currents API. Harga pasar dapat tertunda,
+
+    tidak tersedia, atau dibatasi oleh paket API.
+
+  </span>
+
+  <span>
+
+    Personal market dashboard ·
+
+    <a class="footer-link" href="https://twelvedata.com/docs" target="_blank" rel="noopener">Twelve Data docs ↗</a>
+
+    ·
+
+    <a class="footer-link" href="https://currentsapi.services/en/docs" target="_blank" rel="noopener">Currents docs ↗</a>
+
+  </span>
+
+</footer>
 
 </div>
 
 <!-- ADD INSTRUMENT MODAL -->
+
 <div class="modal-bg" id="modalBg">
+
   <div class="modal">
+
     <h3>Tambah instrumen</h3>
 
-    <p id="modalHelp">
-      Masukkan simbol sesuai format Twelve Data.
-    </p>
+    <p id="modalHelp">Masukkan simbol sesuai format Twelve Data.</p>
 
-    <input
-      id="symbolInput"
-      class="input"
-      placeholder="Contoh: AAPL"
-      autocomplete="off"
-    >
+    <input id="symbolInput" class="input" placeholder="Contoh: AAPL" autocomplete="off">
 
     <div class="modal-actions">
+
       <button class="small-btn secondary" id="cancelModal">Batal</button>
+
       <button class="small-btn" id="confirmAdd">Tambahkan</button>
+
     </div>
+
   </div>
+
 </div>
 
-
 <script>
+
+"use strict";
+
 /* =========================================================
-   MARKET TERMINAL — TWELVE DATA
 
-   Markets:
-   1. US Stocks
-   2. Crypto
-   3. Forex
+   MARKET TERMINAL
 
-   Removed:
-   - Finnhub
-   - IDX stocks
-   - Finnhub WebSocket
+   APIs:
 
-   API endpoints:
-   - /quote
-   - /time_series
-   - /exchange_rate
+   1. Twelve Data
 
-   SECURITY:
-   API key di frontend dapat dilihat melalui browser.
-   Untuk website publik, gunakan backend proxy.
+   2. Currents API
+
+   Optimizations:
+
+   - Local cache
+
+   - Cache-first rendering
+
+   - Selected-symbol quote only
+
+   - Selected-symbol chart only
+
+   - News requested only when filter changes
+
+   - Request scheduler
+
+   - Duplicate request prevention
+
    ========================================================= */
 
-
 /* ==============================
+
    API CONFIGURATION
+
 ============================== */
 
-const TWELVE_DATA_API_KEY = "5eed0710554446c0abf9db2bd6b432e4";
-const API_BASE = "https://api.twelvedata.com";
+const TWELVE_DATA_API_KEY = "5eed0710554464c0abf9db2bd6b432e4";
 
+const CURRENTS_API_KEY = "lEc8XxMOBo53bYLZM6Anme2msK2m0sK5h2wd8iesY7I_Z0kf";
+
+const TWELVE_DATA_BASE = "https://api.twelvedata.com";
+
+const CURRENTS_BASE = "https://api.currentsapi.services/v2";
 
 /* ==============================
-   ELEMENT HELPER
+
+   CACHE SETTINGS
+
 ============================== */
 
-const $ = (selector) => document.querySelector(selector);
+const CACHE = {
 
+  quote: 35 * 1000,
 
-/* ==============================
-   APP STATE
-============================== */
+  chart: 15 * 60 * 1000,
 
-const state = {
-  market: "us",
-  selected: null,
-  range: "1M",
+  rate: 30 * 60 * 1000,
 
-  watch: {},
-  quotes: {},
-  candles: {},
+  forex: 10 * 60 * 1000,
 
-  loading: false,
-  lastFetch: 0,
-  timer: null,
+  news: 30 * 60 * 1000
 
-  rateManual: false,
-  liveRate: null,
-
-  apiCallHistory: []
 };
 
+/* ==============================
+
+   API CREDIT CONTROL
+
+   Default 8 credits/minute.
+
+   Sesuaikan dengan paket API jika limit berbeda.
+
+============================== */
+
+const MAX_API_CREDITS_PER_MINUTE = 8;
+
+const state = {
+
+  market: "us",
+
+  selected: null,
+
+  selectedByMarket: {
+
+    us: "AAPL",
+
+    crypto: "BTC/USD"
+
+  },
+
+  range: "1M",
+
+  viewToken: 0,
+
+  quotes: {},
+
+  candles: {},
+
+  usdRate: null,
+
+  rateManual: false,
+
+  newsCountry: "ID",
+
+  newsType: "daily",
+
+  forexLoading: false,
+
+  apiEvents: [],
+
+  inFlight: new Map(),
+
+  timer: null,
+
+  rateTimer: null
+
+};
 
 /* ==============================
+
    MARKET CONFIGURATION
 
-   Default 6 instruments per market.
-   Each quote request consumes API credits.
 ============================== */
 
 const markets = {
 
   us: {
+
     title: "US EQUITIES",
+
     desc: "NASDAQ · NYSE · USD",
-    currency: "USD",
 
     items: [
-      {
-        symbol: "AAPL",
-        ticker: "AAPL",
-        name: "Apple Inc."
-      },
-      {
-        symbol: "MSFT",
-        ticker: "MSFT",
-        name: "Microsoft Corporation"
-      },
-      {
-        symbol: "NVDA",
-        ticker: "NVDA",
-        name: "NVIDIA Corporation"
-      },
-      {
-        symbol: "AMZN",
-        ticker: "AMZN",
-        name: "Amazon.com Inc."
-      },
-      {
-        symbol: "GOOGL",
-        ticker: "GOOGL",
-        name: "Alphabet Inc."
-      },
-      {
-        symbol: "TSLA",
-        ticker: "TSLA",
-        name: "Tesla Inc."
-      }
+
+      {symbol:"AAPL",ticker:"AAPL",name:"Apple Inc."},
+
+      {symbol:"MSFT",ticker:"MSFT",name:"Microsoft Corporation"},
+
+      {symbol:"NVDA",ticker:"NVDA",name:"NVIDIA Corporation"},
+
+      {symbol:"AMZN",ticker:"AMZN",name:"Amazon.com Inc."},
+
+      {symbol:"GOOGL",ticker:"GOOGL",name:"Alphabet Inc."},
+
+      {symbol:"TSLA",ticker:"TSLA",name:"Tesla Inc."}
+
     ]
+
   },
 
   crypto: {
+
     title: "CRYPTO ASSETS",
-    desc: "Digital Assets · USD",
-    currency: "USD",
+
+    desc: "Digital Assets · Converted to IDR",
 
     items: [
-      {
-        symbol: "BTC/USD",
-        ticker: "BTC",
-        name: "Bitcoin / US Dollar"
-      },
-      {
-        symbol: "ETH/USD",
-        ticker: "ETH",
-        name: "Ethereum / US Dollar"
-      },
-      {
-        symbol: "BNB/USD",
-        ticker: "BNB",
-        name: "BNB / US Dollar"
-      },
-      {
-        symbol: "SOL/USD",
-        ticker: "SOL",
-        name: "Solana / US Dollar"
-      },
-      {
-        symbol: "XRP/USD",
-        ticker: "XRP",
-        name: "XRP / US Dollar"
-      },
-      {
-        symbol: "DOGE/USD",
-        ticker: "DOGE",
-        name: "Dogecoin / US Dollar"
-      }
-    ]
-  },
 
-  forex: {
-    title: "FOREX MARKET",
-    desc: "Global Currency Pairs",
-    currency: "USD",
+      {symbol:"BTC/USD",ticker:"BTC",name:"Bitcoin"},
 
-    items: [
-      {
-        symbol: "EUR/USD",
-        ticker: "EUR/USD",
-        name: "Euro / US Dollar"
-      },
-      {
-        symbol: "GBP/USD",
-        ticker: "GBP/USD",
-        name: "British Pound / US Dollar"
-      },
-      {
-        symbol: "USD/JPY",
-        ticker: "USD/JPY",
-        name: "US Dollar / Japanese Yen"
-      },
-      {
-        symbol: "IDR/USD",
-        ticker: "IDR/USD",
-        name: "Indonesian Rupiah / US Dollar"
-      },
-      {
-        symbol: "AUD/USD",
-        ticker: "AUD/USD",
-        name: "Australian Dollar / US Dollar"
-      },
-      {
-        symbol: "USD/CHF",
-        ticker: "USD/CHF",
-        name: "US Dollar / Swiss Franc"
-      }
+      {symbol:"ETH/USD",ticker:"ETH",name:"Ethereum"},
+
+      {symbol:"BNB/USD",ticker:"BNB",name:"BNB"},
+
+      {symbol:"SOL/USD",ticker:"SOL",name:"Solana"},
+
+      {symbol:"XRP/USD",ticker:"XRP",name:"XRP"},
+
+      {symbol:"DOGE/USD",ticker:"DOGE",name:"Dogecoin"},
+
+      {symbol:"XAUT/USD",ticker:"XAUT",name:"Tether Gold"}
+
     ]
+
   }
 
 };
 
-
 /* ==============================
-   API RATE LIMITER
 
-   Twelve Data Basic:
-   8 API credits per minute.
-   The local scheduler limits requests to 8/minute.
+   FOREX CONFIGURATION
 
-   One quote, one time_series, and one exchange_rate
-   request each normally cost 1 credit per symbol.
+   NTD is the common name.
+
+   TWD is the ISO currency code used by API.
+
 ============================== */
 
-const MAX_API_CALLS_PER_MINUTE = 8;
+const forexPairs = [
+
+  {symbol:"USD/IDR",label:"USD / IDR",name:"US Dollar / Rupiah"},
+
+  {symbol:"EUR/IDR",label:"EUR / IDR",name:"Euro / Rupiah"},
+
+  {symbol:"JPY/IDR",label:"JPY / IDR",name:"Japanese Yen / Rupiah"},
+
+  {symbol:"MYR/IDR",label:"MYR / IDR",name:"Malaysian Ringgit / Rupiah"},
+
+  {symbol:"KWD/IDR",label:"KWD / IDR",name:"Kuwaiti Dinar / Rupiah"},
+
+  {symbol:"CNY/IDR",label:"CNY / IDR",name:"Chinese Yuan / Rupiah"},
+
+  {symbol:"TWD/IDR",label:"NTD / IDR",name:"New Taiwan Dollar / Rupiah"}
+
+];
+
+/* ==============================
+
+   NEWS CONFIGURATION
+
+============================== */
+
+const countries = {
+
+  ID: "Indonesia",
+
+  US: "Amerika",
+
+  CN: "China"
+
+};
+
+const newsTypes = {
+
+  economy: {
+
+    label: "Ekonomi",
+
+    category: "economy_business_finance"
+
+  },
+
+  daily: {
+
+    label: "Berita Harian",
+
+    category: "general"
+
+  },
+
+  entertainment: {
+
+    label: "Hiburan",
+
+    category: "arts_culture_entertainment"
+
+  }
+
+};
+
+/* ==============================
+
+   ELEMENT HELPER
+
+============================== */
+
+const $ = selector => document.querySelector(selector);
+
+/* ==============================
+
+   GENERAL HELPERS
+
+============================== */
 
 function sleep(ms) {
+
   return new Promise(resolve => setTimeout(resolve, ms));
+
 }
+
+function safeNumber(value) {
+
+  if (value === undefined || value === null || value === "") {
+
+    return null;
+
+  }
+
+  const number = Number(value);
+
+  return Number.isFinite(number) ? number : null;
+
+}
+
+function escapeHtml(value) {
+
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+
+    "&": "&amp;",
+
+    "<": "&lt;",
+
+    ">": "&gt;",
+
+    '"': "&quot;",
+
+    "'": "&#39;"
+
+  })[char]);
+
+}
+
+function formatNumber(value, decimals = 2) {
+
+  if (!Number.isFinite(Number(value))) return "—";
+
+  return new Intl.NumberFormat("id-ID", {
+
+    minimumFractionDigits: 0,
+
+    maximumFractionDigits: decimals
+
+  }).format(Number(value));
+
+}
+
+function formatIDR(value) {
+
+  if (!Number.isFinite(Number(value))) return "Rp —";
+
+  return "Rp " + new Intl.NumberFormat("id-ID", {
+
+    maximumFractionDigits: 0
+
+  }).format(Number(value));
+
+}
+
+function formatUSD(value) {
+
+  if (!Number.isFinite(Number(value))) return "—";
+
+  return "US$ " + formatNumber(value, 2);
+
+}
+
+function percent(value) {
+
+  if (!Number.isFinite(Number(value))) return "—";
+
+  const number = Number(value);
+
+  return `${number >= 0 ? "+" : ""}${number.toFixed(2)}%`;
+
+}
+
+function formatDate(value) {
+
+  if (!value) return "—";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+
+    return String(value);
+
+  }
+
+  return date.toLocaleString("id-ID", {
+
+    day: "2-digit",
+
+    month: "short",
+
+    hour: "2-digit",
+
+    minute: "2-digit"
+
+  });
+
+}
+
+function setNote(message, type = "") {
+
+  const element = $("#statusNote");
+
+  element.textContent = message;
+
+  element.className = "notice" + (type ? " " + type : "");
+
+}
+
+function setApi(ok, message) {
+
+  $("#apiDot").className = "dot" + (ok ? " live" : "");
+
+  $("#apiState").textContent = message;
+
+}
+
+/* ==============================
+
+   LOCAL CACHE
+
+============================== */
+
+function cacheRead(key) {
+
+  try {
+
+    const raw = localStorage.getItem(key);
+
+    if (!raw) return null;
+
+    const entry = JSON.parse(raw);
+
+    if (
+
+      !entry ||
+
+      typeof entry !== "object" ||
+
+      !("data" in entry)
+
+    ) {
+
+      return null;
+
+    }
+
+    return entry;
+
+  } catch {
+
+    return null;
+
+  }
+
+}
+
+function cacheWrite(key, data) {
+
+  try {
+
+    localStorage.setItem(key, JSON.stringify({
+
+      ts: Date.now(),
+
+      data
+
+    }));
+
+  } catch (error) {
+
+    console.warn("Cache storage tidak tersedia:", error);
+
+  }
+
+}
+
+function cacheFresh(key, ttl) {
+
+  const entry = cacheRead(key);
+
+  return !!entry && (
+
+    Date.now() - entry.ts < ttl
+
+  );
+
+}
+
+function cacheValue(key) {
+
+  return cacheRead(key)?.data ?? null;
+
+}
+
+/* ==============================
+
+   CACHE KEYS
+
+============================== */
+
+function quoteCacheKey(market, symbol) {
+
+  return `market_terminal_v3_quote_${market}_${symbol}`;
+
+}
+
+function chartCacheKey(market, symbol, range) {
+
+  return `market_terminal_v3_chart_${market}_${symbol}_${range}`;
+
+}
+
+function rateCacheKey(symbol) {
+
+  return `market_terminal_v3_rate_${symbol}`;
+
+}
+
+function newsCacheKey(country, type) {
+
+  return `market_terminal_v3_news_${country}_${type}`;
+
+}
+
+/* ==============================
+
+   REQUEST DEDUPLICATION
+
+============================== */
+
+function singleFlight(key, requestFunction) {
+
+  if (state.inFlight.has(key)) {
+
+    return state.inFlight.get(key);
+
+  }
+
+  const promise = Promise.resolve()
+
+    .then(requestFunction)
+
+    .finally(() => {
+
+      state.inFlight.delete(key);
+
+    });
+
+  state.inFlight.set(key, promise);
+
+  return promise;
+
+}
+
+/* ==============================
+
+   API CREDIT SCHEDULER
+
+============================== */
 
 async function waitForApiSlot() {
 
@@ -1269,628 +1556,1290 @@ async function waitForApiSlot() {
 
     const now = Date.now();
 
-    state.apiCallHistory = state.apiCallHistory.filter(
-      timestamp => now - timestamp < 60000
+    state.apiEvents = state.apiEvents.filter(
+
+      event => now - event < 60000
+
     );
 
-    if (state.apiCallHistory.length < MAX_API_CALLS_PER_MINUTE) {
-      state.apiCallHistory.push(Date.now());
+    if (state.apiEvents.length < MAX_API_CREDITS_PER_MINUTE) {
+
+      state.apiEvents.push(Date.now());
+
       return;
+
     }
 
-    const oldest = state.apiCallHistory[0];
-    const waitTime = Math.max(1000, 61000 - (now - oldest));
+    const oldest = state.apiEvents[0];
 
-    setNote(
-      "Batas request lokal tercapai. Sistem menunggu slot API berikutnya."
+    const waitTime = Math.max(
+
+      500,
+
+      61000 - (now - oldest)
+
     );
 
+    setNote("Request sedang diatur untuk menjaga batas kredit API.");
+
     await sleep(waitTime);
+
   }
+
 }
 
-
 /* ==============================
-   API REQUEST
+
+   TWELVE DATA API
+
 ============================== */
 
-function buildUrl(path, params = {}) {
+function twelveUrl(endpoint, params = {}) {
 
-  const url = new URL(API_BASE + path);
+  const url = new URL(
 
-  const finalParams = {
-    ...params,
-    apikey: TWELVE_DATA_API_KEY
-  };
+    `${TWELVE_DATA_BASE}/${endpoint}`
 
-  Object.entries(finalParams).forEach(([key, value]) => {
+  );
+
+  url.searchParams.set("apikey", TWELVE_DATA_API_KEY);
+
+  Object.entries(params).forEach(([key, value]) => {
 
     if (value !== undefined && value !== null) {
+
       url.searchParams.set(key, value);
+
     }
 
   });
 
   return url.toString();
+
 }
 
-
-async function api(path, params = {}) {
+async function fetchTwelve(endpoint, params = {}) {
 
   await waitForApiSlot();
 
-  const response = await fetch(buildUrl(path, params), {
-    headers: {
-      "Accept": "application/json"
+  const response = await fetch(
+
+    twelveUrl(endpoint, params),
+
+    {
+
+      method: "GET",
+
+      headers: {
+
+        "Accept": "application/json"
+
+      }
+
     }
+
+  );
+
+  let data;
+
+  try {
+
+    data = await response.json();
+
+  } catch {
+
+    throw new Error("Respons Twelve Data bukan JSON.");
+
+  }
+
+  if (!response.ok || data.status === "error" || data.code) {
+
+    throw new Error(
+
+      data.message ||
+
+      data.error ||
+
+      `Twelve Data HTTP ${response.status}`
+
+    );
+
+  }
+
+  return data;
+
+}
+
+/* ==============================
+
+   CURRENTS API
+
+============================== */
+
+async function fetchCurrents(country, type) {
+
+  const config = newsTypes[type];
+
+  if (!config) {
+
+    throw new Error("Kategori berita tidak valid.");
+
+  }
+
+  const url = new URL(
+
+    `${CURRENTS_BASE}/latest-news`
+
+  );
+
+  url.searchParams.set("country", country);
+
+  url.searchParams.set("language", "id");
+
+  url.searchParams.set("category", config.category);
+
+  url.searchParams.set("page_number", "1");
+
+  url.searchParams.set("page_size", "6");
+
+  const response = await fetch(url.toString(), {
+
+    method: "GET",
+
+    headers: {
+
+      "Accept": "application/json",
+
+      "Authorization": `Bearer ${CURRENTS_API_KEY}`
+
+    }
+
   });
 
   let data;
 
   try {
+
     data = await response.json();
+
   } catch {
-    throw new Error(
-      `Respons API bukan JSON. HTTP ${response.status}`
-    );
+
+    throw new Error("Respons Currents bukan JSON.");
+
   }
 
-  if (!response.ok) {
-    throw new Error(
-      data?.message ||
-      data?.error ||
-      `HTTP ${response.status}`
-    );
-  }
-
-  if (
-    data &&
-    (
-      data.status === "error" ||
-      data.code
-    )
-  ) {
-
-    const code = data.code ? `Kode ${data.code}: ` : "";
+  if (!response.ok || data.status === "error") {
 
     throw new Error(
-      code + (
-        data.message ||
-        data.error ||
-        "API mengembalikan error"
-      )
+
+      data.message ||
+
+      data.msg ||
+
+      `Currents HTTP ${response.status}`
+
     );
+
   }
 
-  return data;
+  return Array.isArray(data.news) ? data.news : [];
+
 }
 
-
 /* ==============================
-   BASIC HELPERS
+
+   MARKET HELPERS
+
 ============================== */
 
 function marketItems() {
 
-  if (!state.watch[state.market]) {
+  return markets[state.market]?.items || [];
 
-    state.watch[state.market] = markets[state.market].items.map(
-      item => ({ ...item })
-    );
-
-  }
-
-  return state.watch[state.market];
 }
 
-
-function cacheKey(symbol) {
-  return state.market + ":" + symbol;
-}
-
-
-function findItem(symbol) {
+function findItem(symbol, market = state.market) {
 
   return (
-    marketItems().find(item => item.symbol === symbol) ||
+
+    markets[market]?.items.find(item => item.symbol === symbol) ||
+
     {
+
       symbol,
+
       ticker: symbol,
+
       name: symbol
+
     }
+
   );
 
 }
-
-
-function currencyFor(item) {
-
-  if (state.market === "forex") {
-    return String(item.symbol).split("/")[1] || "USD";
-  }
-
-  if (state.market === "crypto") {
-    return String(item.symbol).split("/")[1] || "USD";
-  }
-
-  return "USD";
-}
-
-
-function money(value, item = null) {
-
-  if (
-    value === undefined ||
-    value === null ||
-    !Number.isFinite(Number(value))
-  ) {
-    return "—";
-  }
-
-  const number = Number(value);
-
-  const instrument = item || (
-    state.selected ? findItem(state.selected) : null
-  );
-
-  const currency = instrument
-    ? currencyFor(instrument)
-    : "USD";
-
-  let decimals = 2;
-
-  if (currency === "IDR") {
-    decimals = 0;
-  } else if (currency === "JPY") {
-    decimals = 3;
-  } else if (state.market === "forex") {
-    decimals = 5;
-  } else if (state.market === "crypto") {
-    decimals = Math.abs(number) >= 100 ? 2 : 6;
-  }
-
-  const formatted = new Intl.NumberFormat("id-ID", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: decimals
-  }).format(number);
-
-  return `${currency} ${formatted}`;
-}
-
-
-function compact(number) {
-
-  if (!Number.isFinite(Number(number))) {
-    return "—";
-  }
-
-  return new Intl.NumberFormat("id-ID", {
-    notation: "compact",
-    maximumFractionDigits: 2
-  }).format(Number(number));
-
-}
-
-
-function pct(number) {
-
-  if (!Number.isFinite(Number(number))) {
-    return "—";
-  }
-
-  const n = Number(number);
-
-  return `${n >= 0 ? "+" : ""}${n.toFixed(2)}%`;
-
-}
-
-
-function fmtTime(timestamp) {
-
-  if (!timestamp) return "—";
-
-  return new Date(Number(timestamp) * 1000).toLocaleString(
-    "id-ID",
-    {
-      hour: "2-digit",
-      minute: "2-digit",
-      day: "2-digit",
-      month: "short"
-    }
-  );
-
-}
-
-
-function escapeHtml(value) {
-
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-
-}
-
-
-function setNote(message, type = "") {
-
-  const element = $("#statusNote");
-
-  element.textContent = message;
-  element.className = "notice" + (type ? " " + type : "");
-
-}
-
-
-function setApi(ok, message) {
-
-  $("#apiDot").className = "dot" + (ok ? " live" : "");
-  $("#apiState").textContent = message;
-
-}
-
 
 /* ==============================
-   CURRENCY CONVERTER
+
+   CURRENCY CONVERSION
+
 ============================== */
+
+function currentUsdIdrRate() {
+
+  if (state.rateManual) {
+
+    const manual = safeNumber($("#usdIdrRate").value);
+
+    return manual > 0 ? manual : null;
+
+  }
+
+  return safeNumber(state.usdRate);
+
+}
+
+function displayMarketPrice(value, market = state.market) {
+
+  if (value === null || value === undefined) {
+
+    return "—";
+
+  }
+
+  if (market === "crypto") {
+
+    const rate = currentUsdIdrRate();
+
+    if (!rate) return "Rp —";
+
+    return formatIDR(Number(value) * rate);
+
+  }
+
+  return formatUSD(value);
+
+}
+
+function displayMarketDelta(value, market = state.market) {
+
+  if (value === null || value === undefined) {
+
+    return "—";
+
+  }
+
+  if (market === "crypto") {
+
+    const rate = currentUsdIdrRate();
+
+    if (!rate) return "Rp —";
+
+    return formatIDR(Number(value) * rate);
+
+  }
+
+  return formatUSD(value);
+
+}
 
 function calculateCurrency() {
 
-  const amount = Number($("#usdAmount").value);
-  const rate = Number($("#usdIdrRate").value);
+  const amount = safeNumber($("#usdAmount").value);
 
-  const resultElement = $("#idrResult");
+  const rate = safeNumber($("#usdIdrRate").value);
 
   if (
-    !Number.isFinite(amount) ||
-    !Number.isFinite(rate) ||
+
+    amount === null ||
+
+    rate === null ||
+
     amount < 0 ||
+
     rate <= 0
+
   ) {
 
-    resultElement.textContent = "Rp —";
+    $("#idrResult").textContent = "Rp —";
+
     return;
 
   }
 
-  const result = amount * rate;
-
-  resultElement.textContent = new Intl.NumberFormat(
-    "id-ID",
-    {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0
-    }
-  ).format(result);
+  $("#idrResult").textContent = formatIDR(amount * rate);
 
 }
 
+/* ==============================
 
-async function loadLiveRate(force = false) {
+   USD / IDR RATE
+
+============================== */
+
+async function loadUsdIdrRate(force = false) {
+
+  const key = rateCacheKey("USD/IDR");
+
+  const cached = cacheValue(key);
+
+  if (cached?.rate > 0) {
+
+    state.usdRate = cached.rate;
+
+    if (!state.rateManual) {
+
+      $("#usdIdrRate").value = cached.rate;
+
+      $("#rateStatus").textContent = "KURS CACHE";
+
+    }
+
+    calculateCurrency();
+
+  }
+
+  if (!force && cacheFresh(key, CACHE.rate)) {
+
+    return state.usdRate;
+
+  }
 
   if (state.rateManual && !force) {
-    return;
+
+    return state.usdRate;
+
   }
 
   $("#rateStatus").textContent = "Mengambil kurs...";
 
   try {
 
-    const data = await api("/exchange_rate", {
-      symbol: "USD/IDR"
-    });
+    const data = await singleFlight(
 
-    const rate = Number(data.rate);
+      "rate_USD_IDR",
 
-    if (!Number.isFinite(rate) || rate <= 0) {
-      throw new Error("Nilai kurs tidak valid.");
+      () => fetchTwelve("exchange_rate", {
+
+        symbol: "USD/IDR",
+
+        dp: 6
+
+      })
+
+    );
+
+    const rate = safeNumber(data.rate);
+
+    if (!rate || rate <= 0) {
+
+      throw new Error("Kurs USD/IDR tidak valid.");
+
     }
 
-    state.liveRate = rate;
+    state.usdRate = rate;
+
+    cacheWrite(key, {
+
+      rate,
+
+      timestamp: data.timestamp || null
+
+    });
 
     if (!state.rateManual || force) {
 
       state.rateManual = false;
 
-      $("#usdIdrRate").value = rate.toFixed(2);
+      $("#usdIdrRate").value = rate;
 
       $("#rateStatus").textContent = "KURS LIVE";
-      $("#rateStatus").style.color = "#8df0c7";
 
       $("#rateInfo").textContent =
-        `Kurs USD/IDR dari Twelve Data · Update ${new Date().toLocaleTimeString("id-ID")}`;
+
+        `Kurs USD/IDR dari Twelve Data · ${new Date().toLocaleTimeString("id-ID")}`;
 
     }
 
     calculateCurrency();
 
+    renderWatchlist();
+
+    if (state.market === "crypto" && state.selected) {
+
+      const item = findItem(state.selected);
+
+      const quote = cacheValue(
+
+        quoteCacheKey("crypto", item.symbol)
+
+      );
+
+      renderMain(item, quote);
+
+      const chart = cacheValue(
+
+        chartCacheKey("crypto", item.symbol, state.range)
+
+      );
+
+      if (chart) {
+
+        drawChart(chart, item, "crypto");
+
+      }
+
+    }
+
+    return rate;
+
   } catch (error) {
 
-    console.error("Exchange rate error:", error);
+    console.error("USD/IDR:", error);
 
     $("#rateStatus").textContent = "KURS TIDAK TERSEDIA";
 
-    if (!$("#usdIdrRate").value) {
-      $("#rateInfo").textContent =
-        "API kurs gagal dimuat. Kamu tetap bisa memasukkan kurs secara manual.";
-    } else {
-      $("#rateInfo").textContent =
-        "Gagal memperbarui kurs live. Nilai kurs manual tetap digunakan.";
-    }
+    $("#rateInfo").textContent =
+
+      "API kurs gagal dimuat. Kamu tetap bisa memasukkan kurs secara manual.";
+
+    return state.usdRate;
 
   }
 
 }
-
 
 /* ==============================
+
    QUOTE NORMALIZATION
+
 ============================== */
-
-function toNumber(value) {
-
-  if (
-    value === undefined ||
-    value === null ||
-    value === ""
-  ) {
-    return null;
-  }
-
-  const result = Number(value);
-
-  return Number.isFinite(result) ? result : null;
-
-}
-
 
 function normalizeQuote(data) {
 
-  const close = toNumber(data.close ?? data.price);
-  const previousClose = toNumber(data.previous_close);
+  const close = safeNumber(data.close ?? data.price);
 
-  let change = toNumber(data.change);
-  let percentChange = toNumber(data.percent_change);
+  const previous = safeNumber(data.previous_close);
+
+  let change = safeNumber(data.change);
+
+  let changePercent = safeNumber(data.percent_change);
 
   if (
+
     change === null &&
+
     close !== null &&
-    previousClose !== null
+
+    previous !== null
+
   ) {
-    change = close - previousClose;
+
+    change = close - previous;
+
   }
 
   if (
-    percentChange === null &&
+
+    changePercent === null &&
+
     change !== null &&
-    previousClose !== null &&
-    previousClose !== 0
+
+    previous !== null &&
+
+    previous !== 0
+
   ) {
-    percentChange = (change / previousClose) * 100;
-  }
 
-  let timestamp = toNumber(data.timestamp);
-
-  if (!timestamp && data.datetime) {
-
-    const parsed = Date.parse(data.datetime);
-
-    if (Number.isFinite(parsed)) {
-      timestamp = Math.floor(parsed / 1000);
-    }
+    changePercent = (change / previous) * 100;
 
   }
 
   return {
-    c: close,
-    o: toNumber(data.open),
-    h: toNumber(data.high),
-    l: toNumber(data.low),
-    pc: previousClose,
-    d: change,
-    dp: percentChange,
-    t: timestamp,
-    volume: toNumber(data.volume),
+
+    close,
+
+    open: safeNumber(data.open),
+
+    high: safeNumber(data.high),
+
+    low: safeNumber(data.low),
+
+    previous,
+
+    change,
+
+    changePercent,
+
+    volume: safeNumber(data.volume),
+
+    timestamp: data.timestamp || null,
+
+    datetime: data.datetime || null,
+
     exchange: data.exchange || data.mic_code || "—",
-    currency: data.currency || "—",
-    source: "Twelve Data Quote"
+
+    currency: data.currency || "USD",
+
+    source: "Twelve Data"
+
   };
 
 }
 
-
 /* ==============================
-   FETCH QUOTE
+
+   FETCH ONE QUOTE
+
 ============================== */
 
-async function fetchQuote(item) {
+async function fetchQuote(item, market) {
 
-  const key = cacheKey(item.symbol);
+  const key = quoteCacheKey(market, item.symbol);
 
-  const data = await api("/quote", {
-    symbol: item.symbol,
-    dp: 6
-  });
+  return singleFlight(
 
-  const quote = normalizeQuote(data);
+    `quote_${market}_${item.symbol}`,
 
-  if (quote.c === null) {
+    async () => {
 
-    throw new Error(
-      "Quote kosong. Simbol mungkin tidak tersedia atau tidak didukung paket API."
-    );
+      const data = await fetchTwelve("quote", {
 
-  }
+        symbol: item.symbol,
 
-  state.quotes[key] = quote;
+        dp: 6
 
-  return quote;
+      });
+
+      const quote = normalizeQuote(data);
+
+      if (quote.close === null) {
+
+        throw new Error(
+
+          "Quote kosong. Simbol mungkin tidak tersedia atau tidak didukung paket API."
+
+        );
+
+      }
+
+      cacheWrite(key, quote);
+
+      return quote;
+
+    }
+
+  );
 
 }
 
-
 /* ==============================
-   REFRESH WATCHLIST
+
+   CHART RANGE
+
 ============================== */
 
-async function refreshWatchlist(
-  silent = false,
-  loadSelectedChart = true
-) {
+function rangeParams(range) {
 
-  if (state.loading) return;
+  const options = {
 
-  state.loading = true;
+    "1D": {
 
-  $("#refreshBtn").disabled = true;
+      interval: "5min",
 
-  const items = marketItems();
+      outputsize: 78
 
-  if (!silent) {
+    },
 
-    $("#watchlist").innerHTML =
-      '<div class="loader"><i></i></div><div class="empty">Memuat harga pasar...</div>';
+    "1W": {
+
+      interval: "1h",
+
+      outputsize: 168
+
+    },
+
+    "1M": {
+
+      interval: "1day",
+
+      outputsize: 30
+
+    },
+
+    "1Y": {
+
+      interval: "1week",
+
+      outputsize: 52
+
+    }
+
+  };
+
+  return options[range] || options["1M"];
+
+}
+
+/* ==============================
+
+   NORMALIZE CANDLES
+
+============================== */
+
+function normalizeCandles(data) {
+
+  if (!Array.isArray(data?.values)) {
+
+    return [];
 
   }
 
-  let success = 0;
-  let fail = 0;
-  const failedSymbols = [];
+  return data.values.map(point => ({
 
-  /*
-    Sequential batches.
-    The API scheduler above controls actual credits per minute.
-  */
+    datetime: point.datetime,
 
-  for (let i = 0; i < items.length; i += 3) {
+    open: safeNumber(point.open),
 
-    const group = items.slice(i, i + 3);
+    high: safeNumber(point.high),
 
-    const results = await Promise.allSettled(
-      group.map(item => fetchQuote(item))
-    );
+    low: safeNumber(point.low),
 
-    results.forEach((result, index) => {
+    close: safeNumber(point.close),
 
-      if (result.status === "fulfilled") {
+    volume: safeNumber(point.volume)
 
-        success++;
+  })).filter(point => point.close !== null);
 
-      } else {
+}
 
-        fail++;
+/* ==============================
 
-        failedSymbols.push(
-          group[index].ticker
-        );
+   FETCH CHART
 
-        console.warn(
-          "Quote failed:",
-          group[index].symbol,
-          result.reason
+============================== */
+
+async function fetchChart(item, market, range) {
+
+  const key = chartCacheKey(market, item.symbol, range);
+
+  const params = rangeParams(range);
+
+  return singleFlight(
+
+    `chart_${market}_${item.symbol}_${range}`,
+
+    async () => {
+
+      const data = await fetchTwelve("time_series", {
+
+        symbol: item.symbol,
+
+        interval: params.interval,
+
+        outputsize: params.outputsize,
+
+        order: "ASC",
+
+        timezone: "Asia/Jakarta"
+
+      });
+
+      const candles = normalizeCandles(data);
+
+      if (!candles.length) {
+
+        throw new Error(
+
+          data.message || "Historical candle tidak tersedia."
+
         );
 
       }
 
-    });
+      cacheWrite(key, candles);
 
-    renderWatchlist();
+      return candles;
+
+    }
+
+  );
+
+}
+
+/* ==============================
+
+   CHART DRAWING
+
+============================== */
+
+function drawEmpty(message) {
+
+  const canvas = $("#chart");
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#8492a3";
+
+  ctx.font = "15px sans-serif";
+
+  ctx.textAlign = "center";
+
+  ctx.fillText(
+
+    message,
+
+    canvas.width / 2,
+
+    canvas.height / 2
+
+  );
+
+}
+
+function drawChart(data, item, market = state.market) {
+
+  const canvas = $("#chart");
+
+  const ctx = canvas.getContext("2d");
+
+  const W = canvas.width;
+
+  const H = canvas.height;
+
+  if (!Array.isArray(data) || !data.length) {
+
+    drawEmpty("Tidak ada data chart.");
+
+    return;
 
   }
 
-  state.loading = false;
-  $("#refreshBtn").disabled = false;
+  const rate = market === "crypto"
 
-  state.lastFetch = Date.now();
+    ? currentUsdIdrRate()
 
-  $("#lastUpdate").textContent =
-    "Update " +
-    new Date().toLocaleTimeString(
-      "id-ID",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      }
+    : 1;
+
+  if (market === "crypto" && !rate) {
+
+    drawEmpty("Menunggu kurs USD/IDR...");
+
+    return;
+
+  }
+
+  const values = data.map(point => {
+
+    return market === "crypto"
+
+      ? point.close * rate
+
+      : point.close;
+
+  }).filter(Number.isFinite);
+
+  if (!values.length) {
+
+    drawEmpty("Tidak ada data chart.");
+
+    return;
+
+  }
+
+  const count = values.length;
+
+  const min = Math.min(...values);
+
+  const max = Math.max(...values);
+
+  const range = max - min || Math.abs(max) * 0.001 || 1;
+
+  const padding = {
+
+    left: 12,
+
+    right: 100,
+
+    top: 18,
+
+    bottom: 25
+
+  };
+
+  const chartWidth =
+
+    W - padding.left - padding.right;
+
+  const chartHeight =
+
+    H - padding.top - padding.bottom;
+
+  ctx.clearRect(0, 0, W, H);
+
+  ctx.font = "12px sans-serif";
+
+  ctx.textAlign = "left";
+
+  for (let i = 0; i < 5; i++) {
+
+    const y = padding.top + i * chartHeight / 4;
+
+    const value = max - i * range / 4;
+
+    ctx.strokeStyle = "#26313e";
+
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    ctx.moveTo(padding.left, y);
+
+    ctx.lineTo(W - padding.right, y);
+
+    ctx.stroke();
+
+    ctx.fillStyle = "#8492a3";
+
+    const label = market === "crypto"
+
+      ? formatNumber(value, 0)
+
+      : formatNumber(value, 2);
+
+    ctx.fillText(
+
+      label,
+
+      W - padding.right + 8,
+
+      y + 4
+
     );
 
-  if (success > 0) {
+  }
 
-    setApi(true, "API tersambung");
+  const points = values.map((value, index) => ({
 
-    const detail = fail
-      ? ` Tidak tersedia: ${failedSymbols.join(", ")}.`
-      : "";
+    x:
 
-    setNote(
-      `${success} instrumen berhasil dimuat.${detail}`,
-      fail ? "" : "ok"
-    );
+      padding.left +
+
+      (
+
+        count === 1
+
+          ? 0.5
+
+          : index / (count - 1)
+
+      ) * chartWidth,
+
+    y:
+
+      padding.top +
+
+      (max - value) / range * chartHeight
+
+  }));
+
+  const up =
+
+    values[values.length - 1] >= values[0];
+
+  const color = up
+
+    ? "#21d49a"
+
+    : "#ff647c";
+
+  const gradient = ctx.createLinearGradient(
+
+    0,
+
+    padding.top,
+
+    0,
+
+    padding.top + chartHeight
+
+  );
+
+  gradient.addColorStop(
+
+    0,
+
+    up
+
+      ? "rgba(33,212,154,.24)"
+
+      : "rgba(255,100,124,.22)"
+
+  );
+
+  gradient.addColorStop(
+
+    1,
+
+    "rgba(8,11,16,0)"
+
+  );
+
+  ctx.beginPath();
+
+  points.forEach((point, index) => {
+
+    if (index) {
+
+      ctx.lineTo(point.x, point.y);
+
+    } else {
+
+      ctx.moveTo(point.x, point.y);
+
+    }
+
+  });
+
+  ctx.lineTo(
+
+    points[points.length - 1].x,
+
+    padding.top + chartHeight
+
+  );
+
+  ctx.lineTo(
+
+    points[0].x,
+
+    padding.top + chartHeight
+
+  );
+
+  ctx.closePath();
+
+  ctx.fillStyle = gradient;
+
+  ctx.fill();
+
+  ctx.beginPath();
+
+  points.forEach((point, index) => {
+
+    if (index) {
+
+      ctx.lineTo(point.x, point.y);
+
+    } else {
+
+      ctx.moveTo(point.x, point.y);
+
+    }
+
+  });
+
+  ctx.strokeStyle = color;
+
+  ctx.lineWidth = 3;
+
+  ctx.lineJoin = "round";
+
+  ctx.lineCap = "round";
+
+  ctx.stroke();
+
+  const last = points[points.length - 1];
+
+  ctx.beginPath();
+
+  ctx.arc(last.x, last.y, 5, 0, Math.PI * 2);
+
+  ctx.fillStyle = color;
+
+  ctx.fill();
+
+}
+
+/* ==============================
+
+   RENDER CHART LABELS
+
+============================== */
+
+function renderChartDates(data) {
+
+  $("#chartStart").textContent =
+
+    data[0]?.datetime || "—";
+
+  $("#chartEnd").textContent =
+
+    data[data.length - 1]?.datetime || "—";
+
+}
+
+/* ==============================
+
+   RENDER DETAILS
+
+============================== */
+
+function renderDetails(item, quote) {
+
+  const isCrypto = state.market === "crypto";
+
+  $("#details").innerHTML = `
+
+    <div class="detail-title">
+
+      ${escapeHtml(item.name)}
+
+    </div>
+
+    <div class="kv">
+
+      <span>Symbol</span>
+
+      <b>${escapeHtml(item.symbol)}</b>
+
+    </div>
+
+    <div class="kv">
+
+      <span>Market</span>
+
+      <b>${isCrypto ? "Cryptocurrency" : "US Equities"}</b>
+
+    </div>
+
+    <div class="kv">
+
+      <span>Displayed currency</span>
+
+      <b>${isCrypto ? "IDR" : "USD"}</b>
+
+    </div>
+
+    <div class="kv">
+
+      <span>Original price</span>
+
+      <b>${quote?.close == null ? "—" : formatUSD(quote.close)}</b>
+
+    </div>
+
+    <div class="kv">
+
+      <span>Change</span>
+
+      <b class="${
+
+        quote?.changePercent > 0
+
+          ? "positive"
+
+          : quote?.changePercent < 0
+
+            ? "negative"
+
+            : ""
+
+      }">
+
+        ${quote?.changePercent == null ? "—" : percent(quote.changePercent)}
+
+      </b>
+
+    </div>
+
+    <div class="kv">
+
+      <span>Exchange</span>
+
+      <b>${escapeHtml(quote?.exchange || "—")}</b>
+
+    </div>
+
+    <div class="kv">
+
+      <span>Volume</span>
+
+      <b>${quote?.volume == null ? "—" : formatNumber(quote.volume, 0)}</b>
+
+    </div>
+
+    <div class="kv">
+
+      <span>Provider</span>
+
+      <b>Twelve Data</b>
+
+    </div>
+
+    <div class="kv">
+
+      <span>Timestamp</span>
+
+      <b>${quote?.datetime ? escapeHtml(quote.datetime) : "—"}</b>
+
+    </div>
+
+  `;
+
+}
+
+/* ==============================
+
+   RENDER MAIN PANEL
+
+============================== */
+
+function renderMain(item, quote) {
+
+  if (!item) return;
+
+  const market = state.market;
+
+  $("#bigIcon").textContent =
+
+    item.ticker.slice(0, 4);
+
+  $("#bigName").textContent = item.name;
+
+  $("#bigSymbol").textContent =
+
+    item.symbol + " · " + market.toUpperCase();
+
+  $("#bigPrice").textContent =
+
+    quote?.close == null
+
+      ? "—"
+
+      : displayMarketPrice(quote.close, market);
+
+  const change = quote?.changePercent;
+
+  const changeElement = $("#bigChange");
+
+  if (change == null) {
+
+    changeElement.textContent = "Kuotasi belum tersedia";
+
+    changeElement.className = "change neutral";
 
   } else {
 
-    setApi(false, "Data API gagal");
+    const delta =
 
-    setNote(
-      "Tidak ada kuotasi yang berhasil dimuat. Periksa API key, kuota, simbol, atau paket Twelve Data.",
-      "error"
+      quote?.change == null
+
+        ? ""
+
+        : ` · ${quote.change >= 0 ? "+" : ""}${displayMarketDelta(quote.change, market)}`;
+
+    changeElement.textContent =
+
+      `${percent(change)}${delta}`;
+
+    changeElement.className = "change " + (
+
+      change > 0
+
+        ? "positive"
+
+        : change < 0
+
+          ? "negative"
+
+          : "neutral"
+
     );
 
   }
 
-  const selected = state.selected || items[0]?.symbol;
+  $("#mOpen").textContent =
 
-  if (selected) {
+    quote?.open == null
 
-    state.selected = selected;
+      ? "—"
 
-    const item = findItem(selected);
-    const quote = state.quotes[cacheKey(selected)];
+      : displayMarketPrice(quote.open, market);
 
-    renderMain(item, quote);
+  $("#mHigh").textContent =
 
-    if (loadSelectedChart) {
-      await loadChart(item);
-    }
+    quote?.high == null
 
-  }
+      ? "—"
+
+      : displayMarketPrice(quote.high, market);
+
+  $("#mLow").textContent =
+
+    quote?.low == null
+
+      ? "—"
+
+      : displayMarketPrice(quote.low, market);
+
+  $("#mPrev").textContent =
+
+    quote?.previous == null
+
+      ? "—"
+
+      : displayMarketPrice(quote.previous, market);
+
+  $("#detailMarket").textContent =
+
+    market.toUpperCase();
+
+  renderDetails(item, quote);
 
 }
 
-
 /* ==============================
+
    RENDER WATCHLIST
+
 ============================== */
 
 function renderWatchlist() {
 
-  const search = $("#searchInput")
+  const query = $("#searchInput")
+
     .value
+
     .trim()
+
     .toLowerCase();
 
   const items = marketItems().filter(item => {
 
     const searchable = [
+
       item.ticker,
+
       item.symbol,
+
       item.name
+
     ].join(" ").toLowerCase();
 
-    return !search || searchable.includes(search);
+    return !query || searchable.includes(query);
 
   });
 
   $("#watchCount").textContent =
+
     `${items.length} instrumen`;
 
   if (!items.length) {
 
     $("#watchlist").innerHTML =
+
       '<div class="empty">Tidak ada instrumen cocok.</div>';
 
     return;
@@ -1899,683 +2848,790 @@ function renderWatchlist() {
 
   $("#watchlist").innerHTML = items.map(item => {
 
-    const quote = state.quotes[cacheKey(item.symbol)];
+    const quote = cacheValue(
 
-    const selected =
-      state.selected === item.symbol;
+      quoteCacheKey(state.market, item.symbol)
 
-    const price = quote?.c;
-    const change = quote?.dp;
+    );
+
+    const price = quote?.close == null
+
+      ? "—"
+
+      : displayMarketPrice(quote.close, state.market);
+
+    const change = quote?.changePercent;
 
     return `
+
       <button
-        class="watch-row ${selected ? "selected" : ""}"
+
+        class="watch-row ${state.selected === item.symbol ? "selected" : ""}"
+
         data-symbol="${escapeHtml(item.symbol)}"
+
       >
 
         <span class="watch-main">
 
           <span class="mini-icon">
+
             ${escapeHtml(item.ticker.slice(0, 5))}
+
           </span>
 
           <span style="min-width:0">
+
             <span class="watch-ticker">
+
               ${escapeHtml(item.ticker)}
+
             </span>
 
             <span class="watch-name">
+
               ${escapeHtml(item.name)}
+
             </span>
+
           </span>
 
         </span>
 
-        <span class="watch-price">
-          ${price === null || price === undefined
-            ? "—"
-            : money(price, item)}
-        </span>
+        <span class="watch-price">${price}</span>
 
         <span class="watch-change ${
+
           change > 0
+
             ? "positive"
+
             : change < 0
+
               ? "negative"
+
               : "neutral"
+
         }">
-          ${change === null || change === undefined
-            ? "—"
-            : pct(change)}
+
+          ${change == null ? "—" : percent(change)}
+
         </span>
 
       </button>
+
     `;
 
   }).join("");
 
-  $("#watchlist")
-    .querySelectorAll("[data-symbol]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-        selectAsset(button.dataset.symbol);
-      });
-
-    });
-
 }
 
-
 /* ==============================
-   MAIN ASSET PANEL
+
+   LOAD SELECTED QUOTE
+
 ============================== */
 
-function renderMain(item, quote) {
+async function ensureQuote(item, market, token, force = false) {
 
-  if (!item) return;
+  const key = quoteCacheKey(market, item.symbol);
 
-  $("#bigIcon").textContent =
-    item.ticker.slice(0, 3);
+  const cached = cacheRead(key);
 
-  $("#bigName").textContent = item.name;
+  if (cached && token === state.viewToken) {
 
-  $("#bigSymbol").textContent =
-    item.symbol + " · " + state.market.toUpperCase();
+    renderMain(item, cached.data);
 
-  $("#bigPrice").textContent =
-    quote?.c !== null && quote?.c !== undefined
-      ? money(quote.c, item)
-      : "—";
-
-  const change = quote?.dp;
-
-  const changeElement = $("#bigChange");
-
-  if (change === null || change === undefined) {
-
-    changeElement.textContent =
-      "Kuotasi belum tersedia";
-
-    changeElement.className =
-      "change neutral";
-
-  } else {
-
-    changeElement.textContent =
-      `${pct(change)} ${
-        quote?.d !== null && quote?.d !== undefined
-          ? "· " + (quote.d >= 0 ? "+" : "") + money(quote.d, item)
-          : ""
-      }`;
-
-    changeElement.className =
-      "change " +
-      (
-        change > 0
-          ? "positive"
-          : change < 0
-            ? "negative"
-            : "neutral"
-      );
+    renderWatchlist();
 
   }
 
-  $("#mOpen").textContent =
-    quote?.o !== null && quote?.o !== undefined
-      ? money(quote.o, item)
-      : "—";
+  if (!force && cacheFresh(key, CACHE.quote)) {
 
-  $("#mHigh").textContent =
-    quote?.h !== null && quote?.h !== undefined
-      ? money(quote.h, item)
-      : "—";
+    return cached?.data || null;
 
-  $("#mLow").textContent =
-    quote?.l !== null && quote?.l !== undefined
-      ? money(quote.l, item)
-      : "—";
-
-  $("#mPrev").textContent =
-    quote?.pc !== null && quote?.pc !== undefined
-      ? money(quote.pc, item)
-      : "—";
-
-  $("#detailMarket").textContent =
-    state.market.toUpperCase();
-
-  renderDetails(item, quote);
-
-}
-
-
-/* ==============================
-   INSTRUMENT DETAILS
-============================== */
-
-function renderDetails(item, quote) {
-
-  const marketName = {
-    us: "US Equities",
-    crypto: "Cryptocurrency",
-    forex: "Foreign Exchange"
-  }[state.market];
-
-  const currency = currencyFor(item);
-
-  $("#details").innerHTML = `
-
-    <div class="detail-title">
-      ${escapeHtml(item.name)}
-    </div>
-
-    <div class="kv">
-      <span>Symbol</span>
-      <b>${escapeHtml(item.symbol)}</b>
-    </div>
-
-    <div class="kv">
-      <span>Market</span>
-      <b>${marketName}</b>
-    </div>
-
-    <div class="kv">
-      <span>Last price</span>
-      <b>
-        ${
-          quote?.c !== null && quote?.c !== undefined
-            ? money(quote.c, item)
-            : "Tidak tersedia"
-        }
-      </b>
-    </div>
-
-    <div class="kv">
-      <span>Change %</span>
-      <b class="${
-        quote?.dp > 0
-          ? "positive"
-          : quote?.dp < 0
-            ? "negative"
-            : ""
-      }">
-        ${
-          quote?.dp === null || quote?.dp === undefined
-            ? "—"
-            : pct(quote.dp)
-        }
-      </b>
-    </div>
-
-    <div class="kv">
-      <span>Currency</span>
-      <b>${escapeHtml(currency)}</b>
-    </div>
-
-    <div class="kv">
-      <span>Exchange</span>
-      <b>${escapeHtml(quote?.exchange || "—")}</b>
-    </div>
-
-    <div class="kv">
-      <span>Volume</span>
-      <b>
-        ${
-          quote?.volume !== null && quote?.volume !== undefined
-            ? compact(quote.volume)
-            : "—"
-        }
-      </b>
-    </div>
-
-    <div class="kv">
-      <span>Provider</span>
-      <b>Twelve Data</b>
-    </div>
-
-    <div class="kv">
-      <span>Source</span>
-      <b>${escapeHtml(quote?.source || "—")}</b>
-    </div>
-
-    <div class="kv">
-      <span>Timestamp</span>
-      <b>${quote?.t ? fmtTime(quote.t) : "—"}</b>
-    </div>
-
-  `;
-
-}
-
-
-/* ==============================
-   CHART RANGE SETTINGS
-============================== */
-
-function rangeParams(range) {
-
-  const settings = {
-
-    "1D": {
-      interval: "5min",
-      outputsize: 78
-    },
-
-    "1W": {
-      interval: "1h",
-      outputsize: 168
-    },
-
-    "1M": {
-      interval: "1day",
-      outputsize: 30
-    },
-
-    "1Y": {
-      interval: "1week",
-      outputsize: 52
-    }
-
-  };
-
-  return settings[range] || settings["1M"];
-
-}
-
-
-/* ==============================
-   LOAD CHART
-============================== */
-
-async function loadChart(item) {
-
-  if (!item) return;
-
-  drawEmpty("Mengambil data chart...");
-
-  $("#chartSub").textContent =
-    "Mengambil historical market data...";
-
-  const params = rangeParams(state.range);
+  }
 
   try {
 
-    const data = await api("/time_series", {
-
-      symbol: item.symbol,
-
-      interval: params.interval,
-
-      outputsize: params.outputsize,
-
-      order: "ASC",
-
-      timezone: "Asia/Jakarta"
-
-    });
+    const quote = await fetchQuote(item, market);
 
     if (
-      !Array.isArray(data.values) ||
-      !data.values.length
+
+      token === state.viewToken &&
+
+      state.market === market &&
+
+      state.selected === item.symbol
+
     ) {
 
-      throw new Error(
-        data.message ||
-        "Riwayat candle tidak tersedia untuk simbol atau paket API ini."
-      );
-
-    }
-
-    const values = data.values.map(point => ({
-
-      datetime: point.datetime,
-
-      open: toNumber(point.open),
-      high: toNumber(point.high),
-      low: toNumber(point.low),
-      close: toNumber(point.close),
-      volume: toNumber(point.volume)
-
-    })).filter(point => point.close !== null);
-
-    if (!values.length) {
-      throw new Error("Data candle kosong.");
-    }
-
-    state.candles[
-      cacheKey(item.symbol) + ":" + state.range
-    ] = values;
-
-    drawChart(values, item);
-
-    $("#chartSub").textContent =
-      `${state.range} · ${values.length} candle · ${params.interval}`;
-
-    $("#chartStart").textContent =
-      values[0].datetime || "—";
-
-    $("#chartEnd").textContent =
-      values[values.length - 1].datetime || "—";
-
-  } catch (error) {
-
-    console.error("Chart error:", error);
-
-    drawEmpty(
-      "Chart tidak tersedia: " + error.message
-    );
-
-    $("#chartSub").textContent =
-      "Tidak ada data candle";
-
-    $("#chartStart").textContent = "—";
-    $("#chartEnd").textContent = "—";
-
-  }
-
-}
-
-
-/* ==============================
-   CHART DRAWING
-============================== */
-
-function drawEmpty(message) {
-
-  const canvas = $("#chart");
-  const ctx = canvas.getContext("2d");
-
-  ctx.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  ctx.fillStyle = "#8492a3";
-  ctx.font = "15px sans-serif";
-  ctx.textAlign = "center";
-
-  ctx.fillText(
-    message,
-    canvas.width / 2,
-    canvas.height / 2
-  );
-
-}
-
-
-function drawChart(data, item) {
-
-  const canvas = $("#chart");
-  const ctx = canvas.getContext("2d");
-
-  const W = canvas.width;
-  const H = canvas.height;
-
-  const values = data
-    .map(point => point.close)
-    .filter(Number.isFinite);
-
-  if (!values.length) {
-    drawEmpty("Tidak ada data chart.");
-    return;
-  }
-
-  const count = values.length;
-
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-
-  const padding = {
-    left: 12,
-    right: 80,
-    top: 18,
-    bottom: 25
-  };
-
-  const chartWidth =
-    W - padding.left - padding.right;
-
-  const chartHeight =
-    H - padding.top - padding.bottom;
-
-  const range = max - min || 1;
-
-  ctx.clearRect(0, 0, W, H);
-
-  ctx.font = "12px sans-serif";
-  ctx.textAlign = "left";
-
-  // Grid and price labels
-  for (let i = 0; i < 5; i++) {
-
-    const y =
-      padding.top +
-      i * chartHeight / 4;
-
-    ctx.strokeStyle = "#26313e";
-    ctx.lineWidth = 1;
-
-    ctx.beginPath();
-    ctx.moveTo(padding.left, y);
-    ctx.lineTo(W - padding.right, y);
-    ctx.stroke();
-
-    const value =
-      max - i * range / 4;
-
-    ctx.fillStyle = "#8492a3";
-
-    ctx.fillText(
-      Number(value).toLocaleString("id-ID", {
-        maximumFractionDigits: 5
-      }),
-      W - padding.right + 9,
-      y + 4
-    );
-
-  }
-
-  const points = values.map((value, index) => ({
-
-    x:
-      padding.left +
-      (
-        count === 1
-          ? 0.5
-          : index / (count - 1)
-      ) * chartWidth,
-
-    y:
-      padding.top +
-      (max - value) / range * chartHeight
-
-  }));
-
-  const up =
-    values[values.length - 1] >= values[0];
-
-  const color =
-    up ? "#21d49a" : "#ff647c";
-
-  // Area gradient
-  const gradient = ctx.createLinearGradient(
-    0,
-    padding.top,
-    0,
-    padding.top + chartHeight
-  );
-
-  gradient.addColorStop(
-    0,
-    up
-      ? "rgba(33,212,154,.24)"
-      : "rgba(255,100,124,.22)"
-  );
-
-  gradient.addColorStop(
-    1,
-    "rgba(8,11,16,0)"
-  );
-
-  ctx.beginPath();
-
-  points.forEach((point, index) => {
-
-    if (index) {
-      ctx.lineTo(point.x, point.y);
-    } else {
-      ctx.moveTo(point.x, point.y);
-    }
-
-  });
-
-  ctx.lineTo(
-    points[points.length - 1].x,
-    padding.top + chartHeight
-  );
-
-  ctx.lineTo(
-    points[0].x,
-    padding.top + chartHeight
-  );
-
-  ctx.closePath();
-
-  ctx.fillStyle = gradient;
-  ctx.fill();
-
-  // Price line
-  ctx.beginPath();
-
-  points.forEach((point, index) => {
-
-    if (index) {
-      ctx.lineTo(point.x, point.y);
-    } else {
-      ctx.moveTo(point.x, point.y);
-    }
-
-  });
-
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 3;
-  ctx.lineJoin = "round";
-  ctx.lineCap = "round";
-  ctx.stroke();
-
-  // Last point
-  const last = points[points.length - 1];
-
-  ctx.beginPath();
-  ctx.arc(last.x, last.y, 5, 0, Math.PI * 2);
-  ctx.fillStyle = color;
-  ctx.fill();
-
-}
-
-
-/* ==============================
-   SELECT INSTRUMENT
-============================== */
-
-async function selectAsset(symbol, refresh = true) {
-
-  const item = findItem(symbol);
-
-  state.selected = symbol;
-
-  renderWatchlist();
-
-  let quote = state.quotes[cacheKey(symbol)];
-
-  if (refresh || !quote) {
-
-    try {
-
-      quote = await fetchQuote(item);
+      renderMain(item, quote);
 
       renderWatchlist();
 
-    } catch (error) {
+      $("#lastUpdate").textContent =
 
-      console.error(error);
+        "Update " + new Date().toLocaleTimeString("id-ID");
+
+      setApi(true, "API tersambung");
+
+    }
+
+    return quote;
+
+  } catch (error) {
+
+    console.error("Quote error:", error);
+
+    if (token === state.viewToken) {
 
       setNote(
+
         `Tidak bisa memuat ${item.ticker}: ${error.message}`,
+
         "error"
+
       );
 
     }
 
+    return cached?.data || null;
+
   }
-
-  renderMain(item, quote);
-
-  await loadChart(item);
 
 }
 
+/* ==============================
+
+   LOAD SELECTED CHART
+
+============================== */
+
+async function ensureChart(item, market, range, token, force = false) {
+
+  const key = chartCacheKey(market, item.symbol, range);
+
+  const cached = cacheRead(key);
+
+  if (cached && token === state.viewToken) {
+
+    drawChart(cached.data, item, market);
+
+    renderChartDates(cached.data);
+
+    $("#chartSub").textContent =
+
+      `${range} · ${cached.data.length} candle · cache`;
+
+  } else if (token === state.viewToken) {
+
+    drawEmpty("Mengambil data chart...");
+
+  }
+
+  if (!force && cacheFresh(key, CACHE.chart)) {
+
+    return cached?.data || null;
+
+  }
+
+  const config = rangeParams(range);
+
+  try {
+
+    const candles = await fetchChart(item, market, range);
+
+    if (
+
+      token === state.viewToken &&
+
+      state.market === market &&
+
+      state.selected === item.symbol &&
+
+      state.range === range
+
+    ) {
+
+      drawChart(candles, item, market);
+
+      renderChartDates(candles);
+
+      $("#chartSub").textContent =
+
+        `${range} · ${candles.length} candle · ${config.interval}`;
+
+    }
+
+    return candles;
+
+  } catch (error) {
+
+    console.warn("Chart error:", error);
+
+    if (
+
+      token === state.viewToken &&
+
+      !cached
+
+    ) {
+
+      drawEmpty("Chart tidak tersedia: " + error.message);
+
+      $("#chartSub").textContent =
+
+        "Historical data tidak tersedia";
+
+    }
+
+    return cached?.data || null;
+
+  }
+
+}
 
 /* ==============================
+
+   SELECT ASSET
+
+============================== */
+
+async function selectAsset(symbol, forceQuote = false) {
+
+  const market = state.market;
+
+  const item = findItem(symbol, market);
+
+  state.selected = symbol;
+
+  state.selectedByMarket[market] = symbol;
+
+  const token = ++state.viewToken;
+
+  renderWatchlist();
+
+  /* Show cached information immediately. */
+
+  const cachedQuote = cacheValue(
+
+    quoteCacheKey(market, symbol)
+
+  );
+
+  renderMain(item, cachedQuote);
+
+  const cachedChart = cacheValue(
+
+    chartCacheKey(market, symbol, state.range)
+
+  );
+
+  if (cachedChart) {
+
+    drawChart(cachedChart, item, market);
+
+    renderChartDates(cachedChart);
+
+  }
+
+  /* Fetch quote and chart in parallel. */
+
+  await Promise.allSettled([
+
+    ensureQuote(item, market, token, forceQuote),
+
+    ensureChart(item, market, state.range, token, false)
+
+  ]);
+
+}
+
+/* ==============================
+
    SWITCH MARKET
+
 ============================== */
 
 async function switchMarket(market) {
 
-  if (!markets[market]) return;
+  if (!markets[market] && market !== "forex") {
+
+    return;
+
+  }
 
   state.market = market;
 
-  state.selected =
-    marketItems()[0]?.symbol || null;
+  state.viewToken++;
+
+  document.querySelectorAll(".market-btn").forEach(button => {
+
+    button.classList.toggle(
+
+      "active",
+
+      button.dataset.market === market
+
+    );
+
+  });
 
   $("#searchInput").value = "";
 
-  document
-    .querySelectorAll(".market-btn")
-    .forEach(button => {
-      button.classList.toggle(
-        "active",
-        button.dataset.market === market
-      );
-    });
+  if (market === "forex") {
+
+    $("#gridView").classList.add("hidden");
+
+    $("#forexView").classList.remove("hidden");
+
+    renderForexList();
+
+    await loadForexRates(false);
+
+    return;
+
+  }
+
+  $("#forexView").classList.add("hidden");
+
+  $("#gridView").classList.remove("hidden");
 
   $("#marketTitle").textContent =
+
     markets[market].title;
 
   $("#marketDesc").textContent =
+
     markets[market].desc;
 
   $("#lastUpdate").textContent = "Memuat...";
 
-  $("#bigPrice").textContent = "—";
+  state.selected =
 
-  $("#watchlist").innerHTML =
-    '<div class="empty">Memuat daftar harga...</div>';
+    state.selectedByMarket[market] ||
 
-  $("#details").innerHTML =
-    '<div class="empty">Memuat...</div>';
+    marketItems()[0]?.symbol ||
 
-  await refreshWatchlist(false, true);
+    null;
+
+  renderWatchlist();
+
+  if (state.selected) {
+
+    await selectAsset(state.selected, false);
+
+  }
 
 }
 
+/* ==============================
+
+   FOREX DATA
+
+============================== */
+
+function renderForexList() {
+
+  $("#forexList").innerHTML = forexPairs.map(pair => {
+
+    const cached = cacheValue(
+
+      rateCacheKey(pair.symbol)
+
+    );
+
+    return `
+
+      <div class="fx-row">
+
+        <div>
+
+          <div class="fx-pair">${escapeHtml(pair.label)}</div>
+
+          <span class="fx-name">${escapeHtml(pair.name)}</span>
+
+        </div>
+
+        <div>
+
+          <div class="fx-rate">
+
+            ${cached?.rate ? formatIDR(cached.rate) : "—"}
+
+          </div>
+
+          <div class="fx-time">
+
+            ${
+
+              cached?.timestamp
+
+                ? formatDate(Number(cached.timestamp) * 1000)
+
+                : cached?.rate
+
+                  ? "Tersimpan"
+
+                  : "Menunggu kurs"
+
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }).join("");
+
+}
+
+async function fetchForexRate(pair, force = false) {
+
+  const key = rateCacheKey(pair.symbol);
+
+  if (!force && cacheFresh(key, CACHE.forex)) {
+
+    return cacheValue(key);
+
+  }
+
+  return singleFlight(
+
+    `forex_${pair.symbol}`,
+
+    async () => {
+
+      const data = await fetchTwelve("exchange_rate", {
+
+        symbol: pair.symbol,
+
+        dp: 6
+
+      });
+
+      const rate = safeNumber(data.rate);
+
+      if (!rate || rate <= 0) {
+
+        throw new Error(`Kurs ${pair.symbol} tidak valid.`);
+
+      }
+
+      const result = {
+
+        rate,
+
+        timestamp: data.timestamp || null
+
+      };
+
+      cacheWrite(key, result);
+
+      return result;
+
+    }
+
+  );
+
+}
+
+async function loadForexRates(force = false) {
+
+  if (state.forexLoading) return;
+
+  state.forexLoading = true;
+
+  renderForexList();
+
+  try {
+
+    const results = await Promise.allSettled(
+
+      forexPairs.map(pair => fetchForexRate(pair, force))
+
+    );
+
+    results.forEach((result, index) => {
+
+      if (result.status === "rejected") {
+
+        console.warn(
+
+          "Forex unavailable:",
+
+          forexPairs[index].symbol,
+
+          result.reason
+
+        );
+
+      }
+
+    });
+
+    const usdIdr = cacheValue(rateCacheKey("USD/IDR"));
+
+    if (usdIdr?.rate) {
+
+      state.usdRate = usdIdr.rate;
+
+      if (!state.rateManual) {
+
+        $("#usdIdrRate").value = usdIdr.rate;
+
+        $("#rateStatus").textContent = "KURS LIVE";
+
+        calculateCurrency();
+
+      }
+
+    }
+
+    renderForexList();
+
+    const successCount = results.filter(
+
+      result => result.status === "fulfilled"
+
+    ).length;
+
+    if (successCount === forexPairs.length) {
+
+      setNote("Seluruh kurs Forex berhasil dimuat.", "ok");
+
+    } else {
+
+      setNote(
+
+        `${successCount} dari ${forexPairs.length} pasangan kurs berhasil dimuat. Pasangan lain mungkin belum didukung API.`,
+
+        "error"
+
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error("Forex:", error);
+
+    setNote(
+
+      "Gagal mengambil data Forex: " + error.message,
+
+      "error"
+
+    );
+
+  } finally {
+
+    state.forexLoading = false;
+
+  }
+
+}
 
 /* ==============================
-   ADD INSTRUMENT MODAL
+
+   NEWS CACHE & DISPLAY
+
+============================== */
+
+function renderNews(articles) {
+
+  if (!Array.isArray(articles) || !articles.length) {
+
+    $("#newsList").innerHTML =
+
+      '<div class="news-state">Belum ada berita berbahasa Indonesia untuk filter ini. Coba negara atau kategori lain.</div>';
+
+    return;
+
+  }
+
+  $("#newsList").innerHTML = articles.map(article => {
+
+    let source = "Sumber berita";
+
+    let href = "";
+
+    try {
+
+      const url = new URL(article.url);
+
+      if (url.protocol === "https:" || url.protocol === "http:") {
+
+        href = url.href;
+
+        source = url.hostname.replace(/^www\./, "");
+
+      }
+
+    } catch {}
+
+    const title = escapeHtml(article.title || "Tanpa judul");
+
+    const description = escapeHtml(article.description || "");
+
+    const published = escapeHtml(article.published || "");
+
+    return `
+
+      <article class="news-card">
+
+        ${
+
+          href
+
+            ? `<a href="${href}" target="_blank" rel="noopener noreferrer">${title}</a>`
+
+            : `<div style="font-size:12px;font-weight:800">${title}</div>`
+
+        }
+
+        ${description ? `<p>${description}</p>` : ""}
+
+        <div class="news-meta">
+
+          ${escapeHtml(source)} · ${published ? formatDate(published) : "Waktu tidak tersedia"}
+
+        </div>
+
+      </article>
+
+    `;
+
+  }).join("");
+
+}
+
+async function loadNews(force = false) {
+
+  const country = state.newsCountry;
+
+  const type = state.newsType;
+
+  const key = newsCacheKey(country, type);
+
+  const cached = cacheRead(key);
+
+  $("#newsCaption").textContent =
+
+    `${countries[country]} · ${newsTypes[type].label} · Bahasa Indonesia`;
+
+  /* Cache appears first, no blank panel while refreshing. */
+
+  if (cached) {
+
+    renderNews(cached.data);
+
+    $("#newsUpdated").textContent =
+
+      cacheFresh(key, CACHE.news)
+
+        ? "Cache terbaru"
+
+        : "Cache tersimpan";
+
+  } else {
+
+    $("#newsList").innerHTML =
+
+      '<div class="news-state">Mengambil berita terbaru...</div>';
+
+    $("#newsUpdated").textContent = "Memuat...";
+
+  }
+
+  if (!force && cacheFresh(key, CACHE.news)) {
+
+    return;
+
+  }
+
+  try {
+
+    const articles = await singleFlight(
+
+      `news_${country}_${type}`,
+
+      () => fetchCurrents(country, type)
+
+    );
+
+    cacheWrite(key, articles);
+
+    /* Prevent old country/category response overwriting new tab. */
+
+    if (
+
+      country === state.newsCountry &&
+
+      type === state.newsType
+
+    ) {
+
+      renderNews(articles);
+
+      $("#newsUpdated").textContent =
+
+        "Update " + new Date().toLocaleTimeString("id-ID");
+
+    }
+
+  } catch (error) {
+
+    console.error("Currents API:", error);
+
+    if (
+
+      country === state.newsCountry &&
+
+      type === state.newsType
+
+    ) {
+
+      if (cached) {
+
+        renderNews(cached.data);
+
+        $("#newsUpdated").textContent = "Menampilkan cache";
+
+      } else {
+
+        $("#newsList").innerHTML =
+
+          `<div class="news-state">Gagal mengambil berita: ${escapeHtml(error.message)}</div>`;
+
+        $("#newsUpdated").textContent = "Gagal memuat";
+
+      }
+
+    }
+
+  }
+
+}
+
+/* ==============================
+
+   ADD INSTRUMENT
+
 ============================== */
 
 function openModal() {
 
   $("#symbolInput").value = "";
 
-  let help = "";
-
   if (state.market === "us") {
 
-    help =
+    $("#modalHelp").textContent =
+
       "Masukkan ticker saham US, misalnya AAPL, MSFT, NVDA.";
 
     $("#symbolInput").placeholder = "Contoh: AAPL";
@@ -2584,23 +3640,13 @@ function openModal() {
 
   if (state.market === "crypto") {
 
-    help =
-      "Masukkan pasangan crypto, misalnya BTC/USD atau ETH/USD.";
+    $("#modalHelp").textContent =
+
+      "Masukkan pasangan crypto USD, misalnya BTC/USD, ETH/USD atau XAUT/USD.";
 
     $("#symbolInput").placeholder = "Contoh: BTC/USD";
 
   }
-
-  if (state.market === "forex") {
-
-    help =
-      "Masukkan pasangan forex, misalnya EUR/USD, GBP/USD, USD/JPY.";
-
-    $("#symbolInput").placeholder = "Contoh: EUR/USD";
-
-  }
-
-  $("#modalHelp").textContent = help;
 
   $("#modalBg").classList.add("show");
 
@@ -2608,50 +3654,13 @@ function openModal() {
 
 }
 
-
 function normalizeInputSymbol(raw) {
 
-  let symbol = raw.trim().toUpperCase();
+  let symbol = raw.trim().toUpperCase().replace(/\s+/g, "");
 
-  if (!symbol) return "";
+  if (state.market === "crypto" && !symbol.includes("/")) {
 
-  if (state.market === "us") {
-
-    return symbol.replace(/\s+/g, "");
-
-  }
-
-  if (state.market === "crypto") {
-
-    symbol = symbol.replace(/\s+/g, "");
-
-    if (!symbol.includes("/")) {
-
-      symbol = symbol.replace(
-        /^(BTC|ETH|BNB|SOL|XRP|DOGE|ADA|LTC|LINK)$/,
-        "$1/USD"
-      );
-
-    }
-
-    return symbol;
-
-  }
-
-  if (state.market === "forex") {
-
-    symbol = symbol.replace(/\s+/g, "");
-
-    if (/^[A-Z]{6}$/.test(symbol)) {
-
-      symbol =
-        symbol.slice(0, 3) +
-        "/" +
-        symbol.slice(3);
-
-    }
-
-    return symbol;
+    symbol += "/USD";
 
   }
 
@@ -2659,21 +3668,46 @@ function normalizeInputSymbol(raw) {
 
 }
 
-
 async function addSymbol() {
 
-  const raw = $("#symbolInput").value.trim();
+  const market = state.market;
 
-  const symbol = normalizeInputSymbol(raw);
+  if (!markets[market]) return;
+
+  const symbol = normalizeInputSymbol(
+
+    $("#symbolInput").value
+
+  );
 
   if (!symbol) return;
+
+  if (
+
+    market === "crypto" &&
+
+    !symbol.endsWith("/USD")
+
+  ) {
+
+    setNote(
+
+      "Gunakan pasangan crypto dengan quote currency USD, misalnya BTC/USD atau XAUT/USD.",
+
+      "error"
+
+    );
+
+    return;
+
+  }
 
   const items = marketItems();
 
   if (
-    items.some(
-      item => item.symbol.toUpperCase() === symbol.toUpperCase()
-    )
+
+    items.some(item => item.symbol.toUpperCase() === symbol)
+
   ) {
 
     setNote("Instrumen sudah ada di watchlist.");
@@ -2688,9 +3722,7 @@ async function addSymbol() {
 
     symbol,
 
-    ticker: state.market === "forex"
-      ? symbol
-      : symbol.split("/")[0],
+    ticker: symbol.split("/")[0],
 
     name: symbol
 
@@ -2702,16 +3734,13 @@ async function addSymbol() {
 
   try {
 
-    /*
-      Validate symbol using actual Twelve Data response.
-      Only add to watchlist if quote is available.
-    */
+    const quote = await fetchQuote(item, market);
 
-    const quote = await fetchQuote(item);
-
-    items.unshift(item);
+    markets[market].items.unshift(item);
 
     state.selected = symbol;
+
+    state.selectedByMarket[market] = symbol;
 
     $("#modalBg").classList.remove("show");
 
@@ -2719,18 +3748,24 @@ async function addSymbol() {
 
     renderMain(item, quote);
 
-    await loadChart(item);
+    await selectAsset(symbol, false);
 
     setNote(
+
       `${symbol} berhasil ditambahkan ke watchlist.`,
+
       "ok"
+
     );
 
   } catch (error) {
 
     setNote(
+
       `Tidak bisa menambahkan ${symbol}: ${error.message}`,
+
       "error"
+
     );
 
   } finally {
@@ -2743,9 +3778,10 @@ async function addSymbol() {
 
 }
 
-
 /* ==============================
+
    CLOCK
+
 ============================== */
 
 function startClock() {
@@ -2753,15 +3789,18 @@ function startClock() {
   const tick = () => {
 
     $("#clock").textContent =
-      new Date().toLocaleTimeString(
-        "id-ID",
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZone: "Asia/Jakarta"
-        }
-      ) + " WIB";
+
+      new Date().toLocaleTimeString("id-ID", {
+
+        hour: "2-digit",
+
+        minute: "2-digit",
+
+        second: "2-digit",
+
+        timeZone: "Asia/Jakarta"
+
+      }) + " WIB";
 
   };
 
@@ -2771,148 +3810,264 @@ function startClock() {
 
 }
 
-
 /* ==============================
+
    EVENT BINDING
+
 ============================== */
 
 function bind() {
 
-  // Market navigation
-  document
-    .querySelectorAll("[data-market]")
-    .forEach(button => {
+  /* Market tabs */
 
-      button.addEventListener("click", () => {
-        switchMarket(button.dataset.market);
-      });
+  document.querySelectorAll("[data-market]").forEach(button => {
 
-    });
+    button.addEventListener("click", () => {
 
-
-  // Chart timeframe
-  document
-    .querySelectorAll("[data-range]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        document
-          .querySelector(".timeframes .active")
-          ?.classList.remove("active");
-
-        button.classList.add("active");
-
-        state.range = button.dataset.range;
-
-        if (state.selected) {
-          loadChart(findItem(state.selected));
-        }
-
-      });
+      switchMarket(button.dataset.market);
 
     });
 
+  });
 
-  // Refresh button
-  $("#refreshBtn").addEventListener(
-    "click",
-    () => refreshWatchlist(false, false)
-  );
+  /* Chart timeframes */
 
+  document.querySelectorAll("[data-range]").forEach(button => {
 
-  // Search
+    button.addEventListener("click", async () => {
+
+      document.querySelectorAll("[data-range]").forEach(element => {
+
+        element.classList.remove("active");
+
+      });
+
+      button.classList.add("active");
+
+      state.range = button.dataset.range;
+
+      if (state.selected && markets[state.market]) {
+
+        const token = state.viewToken;
+
+        await ensureChart(
+
+          findItem(state.selected),
+
+          state.market,
+
+          state.range,
+
+          token,
+
+          false
+
+        );
+
+      }
+
+    });
+
+  });
+
+  /* Watchlist delegation */
+
+  $("#watchlist").addEventListener("click", event => {
+
+    const button = event.target.closest("[data-symbol]");
+
+    if (button) {
+
+      selectAsset(button.dataset.symbol, false);
+
+    }
+
+  });
+
+  /* Refresh selected instrument only */
+
+  $("#refreshBtn").addEventListener("click", () => {
+
+    if (state.selected) {
+
+      selectAsset(state.selected, true);
+
+    }
+
+  });
+
   $("#searchInput").addEventListener(
+
     "input",
+
     renderWatchlist
+
   );
 
+  /* Add symbol */
 
-  // Add instrument
-  $("#addBtn").addEventListener(
-    "click",
-    openModal
-  );
+  $("#addBtn").addEventListener("click", openModal);
 
+  $("#cancelModal").addEventListener("click", () => {
 
-  $("#cancelModal").addEventListener(
-    "click",
-    () => {
+    $("#modalBg").classList.remove("show");
+
+  });
+
+  $("#confirmAdd").addEventListener("click", addSymbol);
+
+  $("#symbolInput").addEventListener("keydown", event => {
+
+    if (event.key === "Enter") {
+
+      addSymbol();
+
+    }
+
+  });
+
+  $("#modalBg").addEventListener("click", event => {
+
+    if (event.target.id === "modalBg") {
+
       $("#modalBg").classList.remove("show");
-    }
-  );
-
-
-  $("#confirmAdd").addEventListener(
-    "click",
-    addSymbol
-  );
-
-
-  $("#symbolInput").addEventListener(
-    "keydown",
-    event => {
-      if (event.key === "Enter") {
-        addSymbol();
-      }
-    }
-  );
-
-
-  $("#modalBg").addEventListener(
-    "click",
-    event => {
-
-      if (event.target.id === "modalBg") {
-        event.currentTarget.classList.remove("show");
-      }
 
     }
-  );
 
+  });
 
-  // Currency calculator
+  /* USD converter */
+
   $("#usdAmount").addEventListener(
+
     "input",
+
     calculateCurrency
+
   );
 
+  $("#usdIdrRate").addEventListener("input", () => {
 
-  $("#usdIdrRate").addEventListener(
-    "input",
-    () => {
+    state.rateManual = true;
 
-      state.rateManual = true;
+    $("#rateStatus").textContent = "KURS MANUAL";
 
-      $("#rateStatus").textContent = "KURS MANUAL";
-      $("#rateStatus").style.color = "#f5bd4f";
+    $("#rateInfo").textContent =
 
-      $("#rateInfo").textContent =
-        "Kamu sedang menggunakan kurs manual. Klik Gunakan kurs live untuk mengambil ulang kurs Twelve Data.";
+      "Kurs manual aktif. Konversi harga crypto dan grafik ikut menggunakan kurs ini.";
 
-      calculateCurrency();
+    calculateCurrency();
+
+    renderWatchlist();
+
+    if (state.market === "crypto" && state.selected) {
+
+      const item = findItem(state.selected);
+
+      const quote = cacheValue(
+
+        quoteCacheKey("crypto", item.symbol)
+
+      );
+
+      renderMain(item, quote);
+
+      const chart = cacheValue(
+
+        chartCacheKey("crypto", item.symbol, state.range)
+
+      );
+
+      if (chart) {
+
+        drawChart(chart, item, "crypto");
+
+      }
 
     }
-  );
 
+  });
 
-  // Restore live exchange rate
-  $("#useLiveRate").addEventListener(
-    "click",
-    async () => {
+  $("#useLiveRate").addEventListener("click", async () => {
 
-      state.rateManual = false;
+    state.rateManual = false;
 
-      await loadLiveRate(true);
+    await loadUsdIdrRate(true);
 
-    }
-  );
+  });
+
+  /* Forex refresh */
+
+  $("#refreshForex").addEventListener("click", () => {
+
+    loadForexRates(true);
+
+  });
+
+  /* News country selector */
+
+  document.querySelectorAll("[data-country]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      state.newsCountry = button.dataset.country;
+
+      document.querySelectorAll("[data-country]").forEach(element => {
+
+        element.classList.toggle(
+
+          "active",
+
+          element.dataset.country === state.newsCountry
+
+        );
+
+      });
+
+      loadNews(false);
+
+    });
+
+  });
+
+  /* News category selector */
+
+  document.querySelectorAll("[data-news-type]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      state.newsType = button.dataset.newsType;
+
+      document.querySelectorAll("[data-news-type]").forEach(element => {
+
+        element.classList.toggle(
+
+          "active",
+
+          element.dataset.newsType === state.newsType
+
+        );
+
+      });
+
+      loadNews(false);
+
+    });
+
+  });
+
+  $("#refreshNews").addEventListener("click", () => {
+
+    loadNews(true);
+
+  });
 
 }
 
-
 /* ==============================
-   INITIALIZE APP
+
+   INITIALIZE
+
 ============================== */
 
 async function init() {
@@ -2924,53 +4079,97 @@ async function init() {
   setApi(false, "Menghubungkan API");
 
   setNote(
-    "Menghubungkan ke Twelve Data..."
+
+    "Menghubungkan Twelve Data dan Currents API..."
+
   );
 
   /*
-    1. Fetch live USD/IDR rate.
-    2. Load selected market watchlist.
-    3. Load first selected instrument chart.
+
+    USD/IDR, news, dan market awal.
+
+    Ketiganya berjalan paralel.
+
   */
 
-  await loadLiveRate();
+  const initialTasks = [
 
-  state.selected =
-    marketItems()[0]?.symbol || null;
+    loadUsdIdrRate(false),
 
-  await refreshWatchlist(false, true);
+    loadNews(false),
+
+    switchMarket("us")
+
+  ];
+
+  const results = await Promise.allSettled(initialTasks);
+
+  const hasFailure = results.some(
+
+    result => result.status === "rejected"
+
+  );
+
+  if (!hasFailure) {
+
+    setApi(true, "API siap");
+
+  }
 
   /*
-    Auto refresh every 90 seconds.
-    Chart is not reloaded during routine refresh.
+
+    Auto refresh:
+
+    Hanya quote instrumen yang sedang dipilih.
+
+    Watchlist lain tidak di-request berulang.
+
   */
 
   clearInterval(state.timer);
 
-  state.timer = setInterval(
-    () => {
-      refreshWatchlist(true, false);
-    },
-    900000
-  );
+  state.timer = setInterval(() => {
+
+    if (
+
+      state.market !== "forex" &&
+
+      state.selected
+
+    ) {
+
+      selectAsset(state.selected, true);
+
+    }
+
+  }, 180000);
 
   /*
-    Update live USD/IDR periodically.
-    Manual rate is not overwritten.
+
+    Refresh USD/IDR setiap 30 menit.
+
+    Kurs manual tidak akan ditimpa.
+
   */
 
-  setInterval(
-    () => {
-      loadLiveRate(false);
-    },
-    3600000
-  );
+  clearInterval(state.rateTimer);
+
+  state.rateTimer = setInterval(() => {
+
+    if (!state.rateManual) {
+
+      loadUsdIdrRate(false);
+
+    }
+
+  }, CACHE.rate);
 
 }
-
 
 init();
 
 </script>
+
 </body>
+
 </html>
